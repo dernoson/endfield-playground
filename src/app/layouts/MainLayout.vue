@@ -5,13 +5,16 @@ import ToolbarPanel from '@/editor/toolbar/ToolbarPanel.vue';
 import FactoryCanvas from '@/editor/canvas/FactoryCanvas.vue';
 import InspectorPanel from '@/editor/inspector/InspectorPanel.vue';
 
-const inspectorCollapsed = ref(false);
+const inspectorOpen = ref(true);
 </script>
 
 <template>
-    <div class="editor-layout" :class="{ 'inspector-collapsed': inspectorCollapsed }">
+    <div class="editor-layout">
         <header class="area-navbar">
-            <Navbar />
+            <Navbar
+                :inspector-open="inspectorOpen"
+                @toggle-inspector="inspectorOpen = !inspectorOpen"
+            />
         </header>
         <main class="area-canvas">
             <FactoryCanvas />
@@ -19,11 +22,17 @@ const inspectorCollapsed = ref(false);
         <section class="area-toolbar">
             <ToolbarPanel />
         </section>
-        <aside class="area-inspector">
-            <InspectorPanel
-                :collapsed="inspectorCollapsed"
-                @toggle-collapse="inspectorCollapsed = !inspectorCollapsed"
-            />
-        </aside>
     </div>
+
+    <USlideover
+        v-model:open="inspectorOpen"
+        side="right"
+        title="Inspector"
+        description="地圖與模擬參數"
+        :close="false"
+    >
+        <template #body>
+            <InspectorPanel @close="inspectorOpen = false" />
+        </template>
+    </USlideover>
 </template>

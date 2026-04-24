@@ -4,8 +4,7 @@ import { storeToRefs } from 'pinia';
 import { useEditorStore } from '@/store/editorStore';
 import ProductionStats from '@/editor/stats/ProductionStats.vue';
 
-defineProps<{ collapsed: boolean }>();
-defineEmits<{ (event: 'toggle-collapse'): void }>();
+defineEmits<{ (event: 'close'): void }>();
 
 const editorStore = useEditorStore();
 const { mapWidth, mapHeight, snapToGrid } = storeToRefs(editorStore);
@@ -24,47 +23,33 @@ const mapHeightInput = computed({
 <template>
     <div class="panel flex h-full flex-col gap-3 p-3">
         <div class="flex items-center justify-between gap-2">
-            <h2 v-if="!collapsed" class="panel-title">Inspector</h2>
-            <button class="btn px-2 py-1 text-xs" @click="$emit('toggle-collapse')">
-                {{ collapsed ? '展開' : '收小' }}
-            </button>
+            <h2 class="panel-title">Inspector</h2>
+            <UButton
+                size="xs"
+                variant="ghost"
+                color="neutral"
+                label="收起"
+                @click="$emit('close')"
+            />
         </div>
 
-        <div v-if="!collapsed" class="space-y-3">
-            <label class="field">
-                <span>工廠寬度</span>
-                <input
-                    v-model.number="mapWidthInput"
-                    type="number"
-                    min="64"
-                    step="16"
-                    class="input"
-                />
-            </label>
+        <div class="space-y-3">
+            <UFormField label="工廠寬度">
+                <UInputNumber v-model="mapWidthInput" :min="64" :step="16" />
+            </UFormField>
 
-            <label class="field">
-                <span>工廠高度</span>
-                <input
-                    v-model.number="mapHeightInput"
-                    type="number"
-                    min="64"
-                    step="16"
-                    class="input"
-                />
-            </label>
+            <UFormField label="工廠高度">
+                <UInputNumber v-model="mapHeightInput" :min="64" :step="16" />
+            </UFormField>
 
-            <label class="inline-flex items-center gap-2 text-sm text-zinc-200">
-                <input
-                    :checked="snapToGrid"
-                    type="checkbox"
-                    class="accent-violet-500"
-                    @change="editorStore.setSnapToGrid(($event.target as HTMLInputElement).checked)"
-                />
-                Snap to grid
-            </label>
+            <UCheckbox
+                :model-value="snapToGrid"
+                label="Snap to grid"
+                @update:model-value="editorStore.setSnapToGrid(Boolean($event))"
+            />
         </div>
 
-        <div v-if="!collapsed" class="mt-2 border-t border-zinc-700 pt-3">
+        <div class="mt-2 border-t border-zinc-700 pt-3">
             <h3 class="text-xs tracking-wide text-zinc-400 uppercase">未來預留</h3>
             <ul class="mt-2 space-y-1 text-sm text-zinc-300">
                 <li>電力模式</li>
@@ -73,7 +58,7 @@ const mapHeightInput = computed({
             </ul>
         </div>
 
-        <div v-if="!collapsed" class="mt-2 border-t border-zinc-700 pt-3">
+        <div class="mt-2 border-t border-zinc-700 pt-3">
             <h3 class="text-xs tracking-wide text-zinc-400 uppercase">產能資訊</h3>
             <div class="mt-2">
                 <ProductionStats />

@@ -21,33 +21,31 @@ const equipments: Array<{ id: EquipmentType; label: string }> = [
 <template>
     <div class="panel toolbar-bottom h-full px-3 py-2">
         <div class="toolbar-section">
-            <span class="toolbar-label">操作</span>
-            <div class="toolbar-row">
-                <button
+            <UBadge color="neutral" variant="soft" size="sm" label="操作" />
+            <UFieldGroup size="sm" class="toolbar-row">
+                <UButton
                     v-for="tool in tools"
                     :key="tool.id"
-                    class="btn"
-                    :class="{ 'btn-active': editorStore.activeTool === tool.id }"
+                    color="neutral"
+                    :variant="editorStore.activeTool === tool.id ? 'solid' : 'soft'"
+                    :label="tool.label"
                     @click="editorStore.setActiveTool(tool.id)"
-                >
-                    {{ tool.label }}
-                </button>
-            </div>
+                />
+            </UFieldGroup>
         </div>
 
         <div class="toolbar-section">
-            <span class="toolbar-label">可擺設裝備</span>
-            <div class="toolbar-row">
-                <button
+            <UBadge color="neutral" variant="soft" size="sm" label="可擺設裝備" />
+            <UFieldGroup size="sm" class="toolbar-row">
+                <UButton
                     v-for="equipment in equipments"
                     :key="equipment.id"
-                    class="btn"
-                    :class="{ 'btn-active': editorStore.selectedEquipment === equipment.id }"
+                    color="neutral"
+                    :variant="editorStore.selectedEquipment === equipment.id ? 'solid' : 'soft'"
+                    :label="equipment.label"
                     @click="editorStore.setSelectedEquipment(equipment.id)"
-                >
-                    {{ equipment.label }}
-                </button>
-            </div>
+                />
+            </UFieldGroup>
         </div>
     </div>
 </template>

@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import '@nuxt/ui';
 
 :root {
     font-family: Inter, 'Segoe UI', system-ui, sans-serif;
@@ -20,19 +21,15 @@ body,
 
 .editor-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 320px;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: 56px minmax(0, 1fr) 108px;
     grid-template-areas:
-        'navbar navbar'
-        'canvas inspector'
-        'toolbar inspector';
+        'navbar'
+        'canvas'
+        'toolbar';
     width: 100%;
     height: 100%;
     background: #09090b;
-}
-
-.editor-layout.inspector-collapsed {
-    grid-template-columns: minmax(0, 1fr) 68px;
 }
 
 .area-navbar {
@@ -49,13 +46,6 @@ body,
     grid-area: canvas;
     min-height: 0;
     min-width: 0;
-}
-
-.area-inspector {
-    grid-area: inspector;
-    border-left: 1px solid #27272a;
-    min-height: 0;
-    overflow: auto;
 }
 
 .panel {

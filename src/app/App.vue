@@ -6,5 +6,7 @@ useShortcuts();
 </script>
 
 <template>
-    <MainLayout />
+    <UApp>
+        <MainLayout />
+    </UApp>
 </template>
