@@ -11,22 +11,58 @@ const equipments: Array<{ id: EquipmentType; label: string }> = [
     { id: 'conveyor-node', label: '輸送帶節點' },
     { id: 'power-node', label: '電力節點' },
 ];
+
+function handleEquipClick(equipment: EquipmentType) {
+    editorStore.armPlacement(equipment);
+}
+
+function handleEquipDragStart(event: DragEvent, equipment: EquipmentType) {
+    editorStore.setSelectedEquipment(equipment);
+
+    if (!event.dataTransfer) {
+        return;
+    }
+
+    event.dataTransfer.effectAllowed = 'copy';
+    event.dataTransfer.setData('application/x-endfield-equipment', equipment);
+}
 </script>
 
 <template>
-    <div class="panel toolbar-bottom h-full px-3 py-2">
-        <div class="toolbar-section">
-            <UBadge color="neutral" variant="soft" size="sm" label="可擺設裝備" />
-            <UFieldGroup size="sm" class="toolbar-row">
-                <UButton
-                    v-for="equipment in equipments"
-                    :key="equipment.id"
-                    color="neutral"
-                    :variant="editorStore.selectedEquipment === equipment.id ? 'solid' : 'soft'"
-                    :label="equipment.label"
-                    @click="editorStore.setSelectedEquipment(equipment.id)"
-                />
-            </UFieldGroup>
+    <div class="panel toolbar-bottom toolbar-panel">
+        <div class="toolbar-row">
+            <UButton
+                v-for="equipment in equipments"
+                :key="equipment.id"
+                color="neutral"
+                :variant="editorStore.selectedEquipment === equipment.id ? 'solid' : 'soft'"
+                :label="equipment.label"
+                class="toolbar-button"
+                draggable="true"
+                @click="handleEquipClick(equipment.id)"
+                @dragstart="handleEquipDragStart($event, equipment.id)"
+            />
         </div>
     </div>
 </template>
+
+<style scoped>
+.toolbar-panel {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+}
+
+.toolbar-row {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    width: 100%;
+    height: 100%;
+    gap: 0;
+}
+
+.toolbar-button {
+    height: 100%;
+    border-radius: 0;
+}
+</style>

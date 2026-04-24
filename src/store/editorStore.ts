@@ -35,6 +35,7 @@ export const useEditorStore = defineStore('editor', () => {
     const snapToGrid = ref(true);
     const activeTool = ref<ToolMode>('select');
     const selectedEquipment = ref<EquipmentType>('smelter');
+    const placementArmed = ref(false);
 
     const machineCount = computed(() => nodes.value.length);
     const nodeCount = computed(() => nodes.value.length);
@@ -51,10 +52,22 @@ export const useEditorStore = defineStore('editor', () => {
 
     function setActiveTool(tool: ToolMode) {
         activeTool.value = tool;
+        if (tool !== 'select') {
+            placementArmed.value = false;
+        }
     }
 
     function setSelectedEquipment(equipment: EquipmentType) {
         selectedEquipment.value = equipment;
+    }
+
+    function armPlacement(equipment: EquipmentType) {
+        selectedEquipment.value = equipment;
+        placementArmed.value = true;
+    }
+
+    function disarmPlacement() {
+        placementArmed.value = false;
     }
 
     function resetCanvas() {
@@ -70,6 +83,7 @@ export const useEditorStore = defineStore('editor', () => {
         snapToGrid,
         activeTool,
         selectedEquipment,
+        placementArmed,
         machineCount,
         nodeCount,
         edgeCount,
@@ -77,6 +91,8 @@ export const useEditorStore = defineStore('editor', () => {
         setSnapToGrid,
         setActiveTool,
         setSelectedEquipment,
+        armPlacement,
+        disarmPlacement,
         resetCanvas,
     };
 });
