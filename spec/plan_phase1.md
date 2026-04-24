@@ -96,20 +96,21 @@ src/
 
 ```
 ┌──────────────────────── Navbar ────────────────────────┐
-│ Toolbar │                 Canvas                       │ Inspector │
-│         │                                               │           │
-│         │                                               │           │
-│         │                                               │           │
-│         │                                               │           │
-│         └────────────── Production Stats ───────────────┘
+│                         Canvas                          │ Inspector │
+│                                                         │           │
+│                                                         │           │
+│                                                         │           │
+├───────────── Bottom Toolbar（可擺設裝備）───────────────┤
+└────────────────── Production Stats ─────────────────────┘
 ```
 
 使用 CSS Grid 實作：
 
 * 上方：Navbar（固定高度）
-* 左側：Toolbar（可折疊）
+* 左側：暫不放置固定面板（保留畫布空間）
 * 中央：Vue Flow Canvas
-* 右側：Inspector / 模擬檔設定
+* 右側：Inspector / 模擬檔設定（可收小）
+* 下方：Toolbar（裝備擺設列）
 * 下方：Production Stats
 
 ---
@@ -145,26 +146,27 @@ Nuxt UI：
 
 ---
 
-# 2. 工具列（Toolbar）
+# 2. 工具列（Bottom Toolbar）
 
 ## 功能
 
-提供可拖曳的工具與未來機器類型入口。
+提供可擺設裝備入口，作為遊戲工廠模式模擬器的設備面板。
 
-目前僅建立 UI 骨架。
+目前先建立 UI 骨架與裝備清單展示。
 
-### 預計工具分類
+### 預計功能
 
-* 選取工具（Select）
-* 移動畫布（Pan）
-* 連線工具（Connect）
-* 區域框選（Box Select）
+* 顯示可擺設裝備清單
+* 點擊裝備可切換目前選擇項（UI）
+* 預留後續拖放或點擊放置機制
 
-### 未來預留
+### 初期裝備清單（可調整）
 
-* Machine palette
-* Conveyor tool
-* Power tool
+* 精煉爐
+* 粉碎機
+* 組裝台
+* 輸送帶節點
+* 電力節點
 
 ### 元件
 
@@ -248,7 +250,7 @@ shortcutStore.ts
 
 # 5. Inspector（模擬檔設定區）
 
-右側面板，負責顯示整體設定。
+右側面板，負責顯示整體設定，並提供收合能力。
 
 ## 本階段顯示內容
 
@@ -257,6 +259,7 @@ shortcutStore.ts
 * 工廠寬度
 * 工廠高度
 * Snap to grid 開關
+* Inspector 收小 / 展開切換
 
 ### 未來預留
 
@@ -337,9 +340,9 @@ interface EditorState {
 
 1. 畫面具備完整編輯器 layout
 2. Vue Flow 畫布可操作（zoom / pan / drag）
-3. 左側工具列顯示並可切換工具（UI）
+3. 下方工具列可顯示並切換可擺設裝備（UI）
 4. Navbar 顯示並具備檔案操作入口（UI）
-5. 右側 Inspector 可修改地圖尺寸
+5. 右側 Inspector 可修改地圖尺寸，且可收小
 6. 下方 Production Stats 顯示統計資訊（mock）
 7. 快捷鍵系統可偵測 Delete / Copy / Paste / Undo / Redo
 

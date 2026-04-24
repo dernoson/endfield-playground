@@ -7,7 +7,7 @@ const { machineCount, nodeCount, edgeCount } = storeToRefs(editorStore);
 </script>
 
 <template>
-    <div class="panel flex h-full items-center gap-4 px-4 py-3">
+    <div class="stats-board">
         <div class="stat-item">
             <span class="stat-label">總機器數量</span>
             <strong class="stat-value">{{ machineCount }}</strong>

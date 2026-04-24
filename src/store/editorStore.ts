@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
 import type { FactoryEdge, FactoryNode } from '@/types/graph';
-import type { ToolMode } from '@/types/editor';
+import type { EquipmentType, ToolMode } from '@/types/editor';
 
 const mockNodes: FactoryNode[] = [
     {
@@ -34,6 +34,7 @@ export const useEditorStore = defineStore('editor', () => {
     const mapHeight = ref(256);
     const snapToGrid = ref(true);
     const activeTool = ref<ToolMode>('select');
+    const selectedEquipment = ref<EquipmentType>('smelter');
 
     const machineCount = computed(() => nodes.value.length);
     const nodeCount = computed(() => nodes.value.length);
@@ -52,6 +53,10 @@ export const useEditorStore = defineStore('editor', () => {
         activeTool.value = tool;
     }
 
+    function setSelectedEquipment(equipment: EquipmentType) {
+        selectedEquipment.value = equipment;
+    }
+
     function resetCanvas() {
         nodes.value = structuredClone(mockNodes);
         edges.value = structuredClone(mockEdges);
@@ -64,12 +69,14 @@ export const useEditorStore = defineStore('editor', () => {
         mapHeight,
         snapToGrid,
         activeTool,
+        selectedEquipment,
         machineCount,
         nodeCount,
         edgeCount,
         setMapSize,
         setSnapToGrid,
         setActiveTool,
+        setSelectedEquipment,
         resetCanvas,
     };
 });

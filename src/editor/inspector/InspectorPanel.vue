@@ -2,6 +2,10 @@
 import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useEditorStore } from '@/store/editorStore';
+import ProductionStats from '@/editor/stats/ProductionStats.vue';
+
+defineProps<{ collapsed: boolean }>();
+defineEmits<{ (event: 'toggle-collapse'): void }>();
 
 const editorStore = useEditorStore();
 const { mapWidth, mapHeight, snapToGrid } = storeToRefs(editorStore);
@@ -19,8 +23,14 @@ const mapHeightInput = computed({
 
 <template>
     <div class="panel flex h-full flex-col gap-3 p-3">
-        <h2 class="panel-title">Inspector</h2>
-        <div class="space-y-3">
+        <div class="flex items-center justify-between gap-2">
+            <h2 v-if="!collapsed" class="panel-title">Inspector</h2>
+            <button class="btn px-2 py-1 text-xs" @click="$emit('toggle-collapse')">
+                {{ collapsed ? '展開' : '收小' }}
+            </button>
+        </div>
+
+        <div v-if="!collapsed" class="space-y-3">
             <label class="field">
                 <span>工廠寬度</span>
                 <input
@@ -54,13 +64,20 @@ const mapHeightInput = computed({
             </label>
         </div>
 
-        <div class="mt-2 border-t border-zinc-700 pt-3">
+        <div v-if="!collapsed" class="mt-2 border-t border-zinc-700 pt-3">
             <h3 class="text-xs tracking-wide text-zinc-400 uppercase">未來預留</h3>
             <ul class="mt-2 space-y-1 text-sm text-zinc-300">
                 <li>電力模式</li>
                 <li>模擬速度</li>
                 <li>生產目標</li>
             </ul>
+        </div>
+
+        <div v-if="!collapsed" class="mt-2 border-t border-zinc-700 pt-3">
+            <h3 class="text-xs tracking-wide text-zinc-400 uppercase">產能資訊</h3>
+            <div class="mt-2">
+                <ProductionStats />
+            </div>
         </div>
     </div>
 </template>
