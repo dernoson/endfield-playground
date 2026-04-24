@@ -74,14 +74,13 @@ const projectMenuItems: NavigationMenuItem[] = [
     <USidebar
         v-model:open="open"
         collapsible="icon"
-        mode="slideover"
         rail
         @mouseenter="handleMouseEnter"
         @mouseleave="handleMouseLeave"
         :ui="{
-            gap: 'h-[calc(100%-var(--ui-header-height))]',
+            gap: 'h-[calc(100%-var(--ui-header-height))] w-16!',
             container:
-                'absolute top-(--ui-header-height) bottom-0 h-[calc(100%-var(--ui-header-height))]',
+                'absolute top-(--ui-header-height) bottom-0 h-[calc(100%-var(--ui-header-height))] bg-black',
         }"
     >
         <template #default="{ state }">
