@@ -4,19 +4,17 @@ import Navbar from '@/editor/navbar/Navbar.vue';
 import ProjectSidebar from '@/editor/sidebar/ProjectSidebar.vue';
 import ToolbarPanel from '@/editor/toolbar/ToolbarPanel.vue';
 import FactoryCanvas from '@/editor/canvas/FactoryCanvas.vue';
-import InspectorPanel from '@/editor/inspector/InspectorPanel.vue';
+import InspectorSidebar from '@/editor/inspector/InspectorSidebar.vue';
 
 const sidebarOpen = ref(false);
-const inspectorOpen = ref(false);
+const inspectorOpen = ref(true);
 </script>
 
 <template>
     <div class="editor-layout">
         <header class="area-navbar">
             <Navbar
-                :inspector-open="inspectorOpen"
                 :sidebar-open="sidebarOpen"
-                @toggle-inspector="inspectorOpen = !inspectorOpen"
                 @toggle-sidebar="sidebarOpen = !sidebarOpen"
             />
         </header>
@@ -32,18 +30,8 @@ const inspectorOpen = ref(false);
                     <ToolbarPanel />
                 </section>
             </div>
+
+            <InspectorSidebar v-model:open="inspectorOpen" />
         </div>
     </div>
-
-    <USlideover
-        v-model:open="inspectorOpen"
-        side="right"
-        title="Inspector"
-        description="地圖與模擬參數"
-        :close="false"
-    >
-        <template #body>
-            <InspectorPanel @close="inspectorOpen = false" />
-        </template>
-    </USlideover>
 </template>

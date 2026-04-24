@@ -4,12 +4,10 @@ import { ref } from 'vue';
 import { useEditorStore } from '@/store/editorStore';
 
 defineProps<{
-    inspectorOpen: boolean;
     sidebarOpen: boolean;
 }>();
 
 defineEmits<{
-    (event: 'toggle-inspector'): void;
     (event: 'toggle-sidebar'): void;
 }>();
 
@@ -48,13 +46,6 @@ const tools: Array<{ id: ToolMode; label: string }> = [
                 />
             </UFieldGroup>
             <UBadge color="neutral" variant="outline" size="md" :label="`目前檔名：${fileName}`" />
-            <UButton
-                size="sm"
-                variant="outline"
-                color="neutral"
-                :label="inspectorOpen ? '收起右側面板' : '打開右側面板'"
-                @click="$emit('toggle-inspector')"
-            />
         </template>
     </UHeader>
 </template>

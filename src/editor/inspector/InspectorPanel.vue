@@ -4,8 +4,6 @@ import { storeToRefs } from 'pinia';
 import { useEditorStore } from '@/store/editorStore';
 import ProductionStats from '@/editor/stats/ProductionStats.vue';
 
-defineEmits<{ (event: 'close'): void }>();
-
 const editorStore = useEditorStore();
 const { mapWidth, mapHeight, snapToGrid } = storeToRefs(editorStore);
 
@@ -22,17 +20,7 @@ const mapHeightInput = computed({
 
 <template>
     <div class="panel flex h-full flex-col gap-3 p-3">
-        <div class="flex items-center justify-between gap-2">
-            <h2 class="panel-title">Inspector</h2>
-            <UButton
-                size="xs"
-                variant="ghost"
-                color="neutral"
-                label="收起"
-                @click="$emit('close')"
-            />
-        </div>
-
+        <h2 class="panel-title">Inspector</h2>
         <div class="space-y-3">
             <UFormField label="工廠寬度">
                 <UInputNumber v-model="mapWidthInput" :min="64" :step="16" />
