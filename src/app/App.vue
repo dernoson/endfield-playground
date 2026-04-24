@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import MainLayout from './layouts/MainLayout.vue'
-import { useShortcuts } from '@/composables/useShortcuts'
+import MainLayout from './layouts/MainLayout.vue';
+import { useShortcuts } from '@/composables/useShortcuts';
 
-useShortcuts()
+useShortcuts();
 </script>
 
 <template>
-  <MainLayout />
+    <MainLayout />
 </template>

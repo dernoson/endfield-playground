@@ -1,0 +1,6 @@
+node_modules/**/*
+public/**/*
+src/components/ui/**/*
+*.svg
+components.json
+src/assets/**/*

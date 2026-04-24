@@ -1,9 +1,9 @@
-import type { Edge, Node } from '@vue-flow/core'
+import type { Edge, Node } from '@vue-flow/core';
 
 export type FactoryNodeData = {
-  label: string
-  machineType?: string
-}
+    label: string;
+    machineType?: string;
+};
 
-export type FactoryNode = Node<FactoryNodeData>
-export type FactoryEdge = Edge
+export type FactoryNode = Node<FactoryNodeData>;
+export type FactoryEdge = Edge;
