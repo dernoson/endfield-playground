@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import MainLayout from './layouts/MainLayout.vue';
 import { useShortcuts } from '@/composables/useShortcuts';
 
 useShortcuts();
@@ -7,6 +6,6 @@ useShortcuts();
 
 <template>
     <UApp>
-        <MainLayout />
+        <RouterView />
     </UApp>
 </template>

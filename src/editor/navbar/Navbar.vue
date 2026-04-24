@@ -3,8 +3,15 @@ import type { ToolMode } from '@/types/editor';
 import { ref } from 'vue';
 import { useEditorStore } from '@/store/editorStore';
 
-defineProps<{ inspectorOpen: boolean }>();
-defineEmits<{ (event: 'toggle-inspector'): void }>();
+defineProps<{
+    inspectorOpen: boolean;
+    sidebarOpen: boolean;
+}>();
+
+defineEmits<{
+    (event: 'toggle-inspector'): void;
+    (event: 'toggle-sidebar'): void;
+}>();
 
 const editorStore = useEditorStore();
 const fileName = ref('factory-layout-001.json');
@@ -16,14 +23,20 @@ const tools: Array<{ id: ToolMode; label: string }> = [
 </script>
 
 <template>
-    <div class="panel flex h-full items-center gap-3 px-4 py-2">
-        <UFieldGroup size="sm" class="min-w-0 flex-1">
-            <UButton variant="soft" color="neutral" label="新建專案" />
-            <UButton variant="soft" color="neutral" label="匯入設計檔" />
-            <UButton variant="soft" color="neutral" label="匯出設計檔" />
-            <UButton variant="soft" color="error" label="重設畫布" @click="editorStore.resetCanvas" />
-        </UFieldGroup>
-        <div class="flex min-w-0 flex-1 items-center justify-center">
+    <UHeader>
+        <template #left>
+            <UButton
+                size="sm"
+                variant="ghost"
+                color="neutral"
+                icon="i-lucide-panel-left"
+                :aria-label="sidebarOpen ? '收合左側選單' : '展開左側選單'"
+                @click="$emit('toggle-sidebar')"
+            />
+            <span class="text-toned text-sm font-semibold"> 終末地集成工業系統模擬器 </span>
+        </template>
+
+        <template #right>
             <UFieldGroup size="sm">
                 <UButton
                     v-for="tool in tools"
@@ -34,8 +47,6 @@ const tools: Array<{ id: ToolMode; label: string }> = [
                     @click="editorStore.setActiveTool(tool.id)"
                 />
             </UFieldGroup>
-        </div>
-        <div class="flex min-w-0 flex-1 items-center justify-end gap-3">
             <UBadge color="neutral" variant="outline" size="md" :label="`目前檔名：${fileName}`" />
             <UButton
                 size="sm"
@@ -44,6 +55,6 @@ const tools: Array<{ id: ToolMode; label: string }> = [
                 :label="inspectorOpen ? '收起右側面板' : '打開右側面板'"
                 @click="$emit('toggle-inspector')"
             />
-        </div>
-    </div>
+        </template>
+    </UHeader>
 </template>
