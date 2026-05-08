@@ -11,7 +11,8 @@ import { useSelectionStore } from '@/store/selectionStore';
 
 const editorStore = useEditorStore();
 const selectionStore = useSelectionStore();
-const { nodes, edges, snapToGrid, activeTool, selectedEquipment, placementArmed } = storeToRefs(editorStore);
+const { nodes, edges, snapToGrid, activeTool, selectedEquipment, placementArmed } =
+    storeToRefs(editorStore);
 const { screenToFlowCoordinate, addNodes } = useVueFlow();
 
 const equipmentLabelMap: Record<EquipmentType, string> = {
