@@ -1,0 +1,90 @@
+name: Discord Notifications
+
+on:
+    push:
+        branches: ['**'] # 所有 branch
+    pull_request:
+        types: [opened, synchronize, reopened, closed]
+    workflow_run:
+        workflows: ['*']
+        types: [completed]
+
+jobs:
+    notify:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Prepare message
+              id: prep
+              run: |
+                  EVENT="${{ github.event_name }}"
+                  COLOR=3447003  # blue default
+                  TITLE=""
+                  DESC=""
+                  URL="https://github.com/${{ github.repository }}"
+
+                  # ---------------- PUSH ----------------
+                  if [ "$EVENT" = "push" ]; then
+                    TITLE="📌 New Push"
+                    DESC="**${{ github.actor }}** pushed to **${{ github.ref_name }}**"
+                    URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+                    COLOR=3066993  # green
+                  fi
+
+                  # ---------------- PR EVENTS ----------------
+                  if [ "$EVENT" = "pull_request" ]; then
+                    ACTION="${{ github.event.action }}"
+                    MERGED="${{ github.event.pull_request.merged }}"
+                    PR_URL="${{ github.event.pull_request.html_url }}"
+                    PR_TITLE="${{ github.event.pull_request.title }}"
+
+                    if [ "$ACTION" = "closed" ] && [ "$MERGED" = "true" ]; then
+                      TITLE="🚀 PR Merged"
+                      COLOR=10181046  # purple
+                    else
+                      TITLE="🔧 Pull Request Updated"
+                      COLOR=15844367  # orange
+                    fi
+
+                    DESC="**${{ github.actor }}** → ${PR_TITLE}"
+                    URL="$PR_URL"
+                  fi
+
+                  # ---------------- WORKFLOW RESULT ----------------
+                  if [ "$EVENT" = "workflow_run" ]; then
+                    STATUS="${{ github.event.workflow_run.conclusion }}"
+                    WF_NAME="${{ github.event.workflow_run.name }}"
+                    URL="${{ github.event.workflow_run.html_url }}"
+
+                    if [ "$STATUS" = "success" ]; then
+                      TITLE="✅ Build Succeeded"
+                      COLOR=3066993
+                    else
+                      TITLE="❌ Build Failed"
+                      COLOR=15158332
+                    fi
+
+                    DESC="Workflow **$WF_NAME** finished with **$STATUS**"
+                  fi
+
+                  echo "title=$TITLE" >> $GITHUB_OUTPUT
+                  echo "desc=$DESC" >> $GITHUB_OUTPUT
+                  echo "color=$COLOR" >> $GITHUB_OUTPUT
+                  echo "url=$URL" >> $GITHUB_OUTPUT
+
+            - name: Send Discord Embed
+              run: |
+                  curl -H "Content-Type: application/json" \
+                  -X POST \
+                  -d "{
+                    \"embeds\": [{
+                      \"title\": \"${{ steps.prep.outputs.title }}\",
+                      \"description\": \"${{ steps.prep.outputs.desc }}\",
+                      \"color\": ${{ steps.prep.outputs.color }},
+                      \"url\": \"${{ steps.prep.outputs.url }}\",
+                      \"footer\": {
+                        \"text\": \"${{ github.repository }}\"
+                      },
+                      \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
+                    }]
+                  }" \
+                  ${{ secrets.DISCORD_WEBHOOK }}
