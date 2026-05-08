@@ -122,3 +122,7 @@ git pull --prune
 **注意！當我核可後，我會把你這個 branch 刪掉，所以你就別繼續在同一個 branch 上開發了，快點切到另一個 branch 上開發**
 
 **除非你被我退回去了啦呵呵**
+
+## 怎麼新建 branch
+
+一樣在左下角，點 branch name，就會跳出選項，選擇 "建立新分支"，然後輸入 branch name 就可以了。
