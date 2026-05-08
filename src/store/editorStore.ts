@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { computed, ref, shallowRef } from 'vue';
 import { defineStore } from 'pinia';
 import type { FactoryEdge, FactoryNode } from '@/types/graph';
 import type { EquipmentType, ToolMode } from '@/types/editor';
@@ -28,8 +28,8 @@ const mockEdges: FactoryEdge[] = [
 ];
 
 export const useEditorStore = defineStore('editor', () => {
-    const nodes = ref<FactoryNode[]>(mockNodes);
-    const edges = ref<FactoryEdge[]>(mockEdges);
+    const nodes = shallowRef<FactoryNode[]>(mockNodes);
+    const edges = shallowRef<FactoryEdge[]>(mockEdges);
     const mapWidth = ref(256);
     const mapHeight = ref(256);
     const snapToGrid = ref(true);

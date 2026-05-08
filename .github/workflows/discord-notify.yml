@@ -5,6 +5,10 @@ on:
         branches: ['**'] # 所有 branch
     pull_request:
         types: [opened, synchronize, reopened, closed]
+    issues:
+        types: [opened, reopened, closed]
+    issue_comment:
+        types: [created]
     workflow_run:
         workflows: ['*']
         types: [completed]
@@ -64,6 +68,38 @@ jobs:
                     fi
 
                     DESC="Workflow **$WF_NAME** finished with **$STATUS**"
+                  fi
+
+                  # ---------------- ISSUE EVENTS ----------------
+                  if [ "$EVENT" = "issues" ]; then
+                    ACTION="${{ github.event.action }}"
+                    ISSUE_TITLE="${{ github.event.issue.title }}"
+                    ISSUE_URL="${{ github.event.issue.html_url }}"
+
+                    if [ "$ACTION" = "opened" ]; then
+                      TITLE="🆕 Issue Opened"
+                      COLOR=3447003
+                    elif [ "$ACTION" = "reopened" ]; then
+                      TITLE="♻️ Issue Reopened"
+                      COLOR=10181046
+                    elif [ "$ACTION" = "closed" ]; then
+                      TITLE="✅ Issue Closed"
+                      COLOR=3066993
+                    fi
+
+                    DESC="**${{ github.actor }}** → ${ISSUE_TITLE}"
+                    URL="$ISSUE_URL"
+                  fi
+
+                  # ---------------- ISSUE COMMENT ----------------
+                  if [ "$EVENT" = "issue_comment" ]; then
+                    ISSUE_TITLE="${{ github.event.issue.title }}"
+                    COMMENT_URL="${{ github.event.comment.html_url }}"
+
+                    TITLE="💬 New Issue Comment"
+                    COLOR=15844367
+                    DESC="**${{ github.actor }}** commented on: ${ISSUE_TITLE}"
+                    URL="$COMMENT_URL"
                   fi
 
                   echo "title=$TITLE" >> $GITHUB_OUTPUT

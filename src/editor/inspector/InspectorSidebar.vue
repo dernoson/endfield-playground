@@ -24,15 +24,19 @@ const open = defineModel<boolean>('open', { required: true });
                 :class="state === 'collapsed' ? 'justify-center' : 'justify-between gap-2'"
             >
                 <div v-if="state === 'expanded'" class="min-w-0">
-                    <p class="truncate text-sm font-semibold text-highlighted">Inspector</p>
-                    <p class="truncate text-xs text-muted">地圖與模擬參數</p>
+                    <p class="text-highlighted truncate text-sm font-semibold">Inspector</p>
+                    <p class="text-muted truncate text-xs">地圖與模擬參數</p>
                 </div>
 
                 <UButton
                     size="sm"
                     variant="ghost"
                     color="neutral"
-                    :icon="state === 'expanded' ? 'i-lucide-panel-right-close' : 'i-lucide-panel-right-open'"
+                    :icon="
+                        state === 'expanded'
+                            ? 'i-lucide-panel-right-close'
+                            : 'i-lucide-panel-right-open'
+                    "
                     :aria-label="state === 'expanded' ? '收合右側面板' : '展開右側面板'"
                     @click="open = !open"
                 />

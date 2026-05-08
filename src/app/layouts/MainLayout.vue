@@ -13,10 +13,7 @@ const inspectorOpen = ref(true);
 <template>
     <div class="editor-layout">
         <header class="area-navbar">
-            <Navbar
-                :sidebar-open="sidebarOpen"
-                @toggle-sidebar="sidebarOpen = !sidebarOpen"
-            />
+            <Navbar :sidebar-open="sidebarOpen" @toggle-sidebar="sidebarOpen = !sidebarOpen" />
         </header>
 
         <div class="area-workspace">
