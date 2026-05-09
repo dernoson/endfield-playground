@@ -63,6 +63,8 @@ pnpm build
 │  ├─ router/          # 路由設定
 │  ├─ store/           # Pinia 狀態管理
 │  ├─ types/           # 型別定義
+│  ├─ tutorial/        # 教學文件
+|  ├─ components/      # 可重用元件
 │  └─ composables/     # 可重用邏輯
 └─ README.md
 ```
