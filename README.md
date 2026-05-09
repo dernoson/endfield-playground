@@ -29,6 +29,8 @@ pnpm install
 pnpm dev
 ```
 
+然後你在瀏覽器中打開 http://localhost:5173 就可以看到開發中的網站。
+
 ### 3) 常用指令
 
 ```bash
