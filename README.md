@@ -29,6 +29,8 @@ pnpm install
 pnpm dev
 ```
 
+然後你在瀏覽器中打開 http://localhost:5173 就可以看到開發中的網站。
+
 ### 3) 常用指令
 
 ```bash
@@ -61,6 +63,8 @@ pnpm build
 │  ├─ router/          # 路由設定
 │  ├─ store/           # Pinia 狀態管理
 │  ├─ types/           # 型別定義
+│  ├─ tutorial/        # 教學文件
+|  ├─ components/      # 可重用元件
 │  └─ composables/     # 可重用邏輯
 └─ README.md
 ```
