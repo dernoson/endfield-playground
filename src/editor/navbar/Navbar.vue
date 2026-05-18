@@ -2,8 +2,9 @@
 // src/editor/navbar/Navbar.vue
 import type { ToolMode } from '@/types/editor';
 import { ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useEditorStore } from '@/store/editorStore';
-import PipelineToolbar from '@/editor/canvas/PipelineToolbar.vue';
+import { usePipelineStore } from '@/store/pipelineStore';
 
 defineProps<{
     sidebarOpen: boolean;
@@ -14,6 +15,9 @@ defineEmits<{
 }>();
 
 const editorStore = useEditorStore();
+const pipelineStore = usePipelineStore();
+const { isPipelineMode } = storeToRefs(pipelineStore);
+
 const fileName = ref('factory-layout-001.json');
 
 const tools: Array<{ id: ToolMode; label: string }> = [
@@ -33,11 +37,11 @@ const tools: Array<{ id: ToolMode; label: string }> = [
                 :aria-label="sidebarOpen ? '收合左側選單' : '展開左側選單'"
                 @click="$emit('toggle-sidebar')"
             />
-            <span class="text-toned text-sm font-semibold"> 終末地集成工業系統模擬器 </span>
+            <span class="text-toned text-sm font-semibold">終末地集成工業系統模擬器</span>
         </template>
 
         <template #right>
-            <!-- 既有的畫布工具按鈕 -->
+            <!-- 畫布工具 -->
             <UFieldGroup size="sm">
                 <UButton
                     v-for="tool in tools"
@@ -49,15 +53,22 @@ const tools: Array<{ id: ToolMode; label: string }> = [
                 />
             </UFieldGroup>
 
-            <!-- 分隔線 -->
-            <USeparator orientation="vertical" class="h-5" />
+            <!-- 管線模式按鈕 -->
+            <UButton
+                size="sm"
+                icon="i-lucide-git-branch"
+                label="管線 (P)"
+                :variant="isPipelineMode ? 'solid' : 'soft'"
+                :color="isPipelineMode ? 'primary' : 'neutral'"
+                @click="pipelineStore.togglePipelineMode()"
+            />
 
-            <!-- 管線模式工具 -->
-            <PipelineToolbar />
-
-            <USeparator orientation="vertical" class="h-5" />
-
-            <UBadge color="neutral" variant="outline" size="md" :label="`目前檔名：${fileName}`" />
+            <UBadge
+                color="neutral"
+                variant="outline"
+                size="md"
+                :label="`目前檔名：${fileName}`"
+            />
         </template>
     </UHeader>
 </template>

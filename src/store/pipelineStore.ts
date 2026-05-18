@@ -24,16 +24,19 @@ export const usePipelineStore = defineStore('pipeline', () => {
 
     // ── 私有：把單一 Connection 轉成 VueFlow edge ──────────
     function _toVueFlowEdge(conn: Connection, highlighted: boolean) {
+        const baseColor = conn.type === 'conveyor' ? '#fb923c' : '#3b82f6';
         return {
             id: `pipeline-${conn.uid}`,
             source: conn.from.deviceUid,
             target: conn.to.deviceUid,
-            sourceHandle: conn.from.portId || null,
-            targetHandle: conn.to.portId || null,
+            sourceHandle: null,
+            targetHandle: null,
             type: 'default',
             animated: false,
+            deletable: true,
+            focusable: true,
             style: {
-                stroke: conn.type === 'conveyor' ? '#fb923c' : '#3b82f6',
+                stroke: baseColor,
                 strokeWidth: highlighted ? 4 : 3,
             },
             data: {
@@ -84,12 +87,16 @@ export const usePipelineStore = defineStore('pipeline', () => {
     }
 
     // ── 刪除管線 ────────────────────────────────────────────
-    function deleteConnection(connectionUid: string) {
+    // skipEdgeRemoval: 由 VueFlow onEdgesChange 觸發時傳 true，
+    // 因為 VueFlow 自己已處理 edge 移除，不需再呼叫 removePipelineEdge
+    function deleteConnection(connectionUid: string, skipEdgeRemoval = false) {
         const idx = connections.value.findIndex((c) => c.uid === connectionUid);
         if (idx !== -1) connections.value.splice(idx, 1);
 
-        const editorStore = useEditorStore();
-        editorStore.removePipelineEdge(`pipeline-${connectionUid}`);
+        if (!skipEdgeRemoval) {
+            const editorStore = useEditorStore();
+            editorStore.removePipelineEdge(`pipeline-${connectionUid}`);
+        }
     }
 
     // ── 從 VueFlow onConnect 事件快速建立管線 ───────────────
@@ -102,10 +109,10 @@ export const usePipelineStore = defineStore('pipeline', () => {
     }) {
         addConnection(
             params.source,
-            params.sourceHandle ?? 'default',
+            params.sourceHandle ?? '',
             params.target,
-            params.targetHandle ?? 'default',
-            'conveyor', // 預設傳送帶，之後可依 portId 判斷
+            params.targetHandle ?? '',
+            'conveyor',
         );
     }
 

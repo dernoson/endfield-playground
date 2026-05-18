@@ -5,7 +5,7 @@ import { Background } from '@vue-flow/background';
 import { Controls } from '@vue-flow/controls';
 import { MiniMap } from '@vue-flow/minimap';
 import { VueFlow, useVueFlow } from '@vue-flow/core';
-import type { Connection as VueFlowConnection } from '@vue-flow/core';
+import type { Connection as VueFlowConnection, EdgeChange } from '@vue-flow/core';
 import type { EquipmentType } from '@/types/editor';
 import type { FactoryNode } from '@/types/graph';
 import { useEditorStore } from '@/store/editorStore';
@@ -63,11 +63,6 @@ function handleCanvasDrop(event: DragEvent) {
     editorStore.disarmPlacement();
 }
 
-/**
- * VueFlow 原生拖拉連線事件
- * 使用者從節點的 handle 拖拉到另一個節點時觸發
- * → 建立管線 connection 並同步為 edge
- */
 function handleConnect(params: VueFlowConnection) {
     if (!params.source || !params.target) return;
     pipelineStore.onVueFlowConnect({
@@ -76,6 +71,15 @@ function handleConnect(params: VueFlowConnection) {
         sourceHandle: params.sourceHandle ?? null,
         targetHandle: params.targetHandle ?? null,
     });
+}
+
+function handleEdgesChange(changes: EdgeChange[]) {
+    for (const change of changes) {
+        if (change.type === 'remove' && change.id.startsWith('pipeline-')) {
+            const connectionUid = change.id.replace('pipeline-', '');
+            pipelineStore.deleteConnection(connectionUid, true);
+        }
+    }
 }
 </script>
 
@@ -92,6 +96,9 @@ function handleConnect(params: VueFlowConnection) {
             :fit-view-on-init="true"
             :nodes-draggable="!isPipelineMode"
             :nodes-connectable="isPipelineMode"
+            :edges-deletable="true"
+            :edges-focusable="true"
+            :delete-key-code="'Delete'"
             :zoom-on-scroll="true"
             :pan-on-drag="activeTool === 'pan'"
             :selection-on-drag="activeTool === 'box-select'"
@@ -100,6 +107,7 @@ function handleConnect(params: VueFlowConnection) {
             @selection-change="handleSelectionChange"
             @pane-click="handlePaneClick"
             @connect="handleConnect"
+            @edges-change="handleEdgesChange"
         >
             <Background :size="1.2" pattern-color="#3f3f46" />
             <Controls />

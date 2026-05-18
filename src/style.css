@@ -116,6 +116,18 @@ body,
     background: #0c0c0f;
 }
 
+/* 管線邊線選取高亮：覆蓋 inline style，以紫色標示選取狀態 */
+.vue-flow__edge.selected .vue-flow__edge-path {
+    stroke: #a78bfa !important;
+    stroke-width: 5px !important;
+}
+
+/* 管線邊線選取時的互動區塊（透明加粗，擴大點擊面積）也一併高亮 */
+.vue-flow__edge.selected .vue-flow__edge-interaction {
+    stroke: #a78bfa !important;
+    stroke-width: 10px !important;
+}
+
 .toolbar-bottom {
     display: flex;
     flex-direction: column;

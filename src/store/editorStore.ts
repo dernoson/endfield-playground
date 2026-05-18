@@ -19,14 +19,7 @@ const mockNodes: FactoryNode[] = [
     },
 ];
 
-const mockEdges: FactoryEdge[] = [
-    {
-        id: 'edge-1',
-        source: 'node-iron',
-        target: 'node-smelter',
-        animated: true,
-    },
-];
+const mockEdges: FactoryEdge[] = [];
 
 export const useEditorStore = defineStore('editor', () => {
     const nodes = shallowRef<FactoryNode[]>(mockNodes);
@@ -92,10 +85,11 @@ export const useEditorStore = defineStore('editor', () => {
         edges.value = edges.value.map((e) => {
             if (!e.id.startsWith('pipeline-')) return e;
             const isConveyor = e.data?.pipelineType === 'conveyor';
+            const baseColor = isConveyor ? '#fb923c' : '#3b82f6';
             return {
                 ...e,
                 style: {
-                    stroke: isConveyor ? '#fb923c' : '#3b82f6',
+                    stroke: baseColor,
                     strokeWidth: highlighted ? 4 : 3,
                 },
             };
