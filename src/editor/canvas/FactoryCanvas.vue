@@ -8,7 +8,10 @@ import type { EquipmentType } from '@/types/editor';
 import type { FactoryNode } from '@/types/graph';
 import { useEditorStore } from '@/store/editorStore';
 import { useSelectionStore } from '@/store/selectionStore';
-
+import PipelineRenderer from './PipelineRenderer.vue';
+import { usePipelineShortcuts } from '@/composables/usePipelineShortcuts';
+// 啟用管線快捷鍵
+usePipelineShortcuts();
 const editorStore = useEditorStore();
 const selectionStore = useSelectionStore();
 const { nodes, edges, snapToGrid, activeTool, selectedEquipment, placementArmed } =
@@ -72,7 +75,7 @@ function handleCanvasDrop(event: DragEvent) {
 </script>
 
 <template>
-    <div class="panel h-full overflow-hidden" @dragover.prevent @drop="handleCanvasDrop">
+    <div class="panel relative h-full overflow-hidden" @dragover.prevent @drop="handleCanvasDrop">
         <VueFlow
             v-model:nodes="nodes"
             v-model:edges="edges"
@@ -90,5 +93,8 @@ function handleCanvasDrop(event: DragEvent) {
             <Controls />
             <MiniMap />
         </VueFlow>
+ 
+        <!-- 管線渲染層：overlay 在 VueFlow 上方，不傳 offset（由內部透過 useVueFlow 取得） -->
+        <PipelineRenderer :grid-size="32" />
     </div>
 </template>
