@@ -63,12 +63,7 @@ const tools: Array<{ id: ToolMode; label: string }> = [
                 @click="pipelineStore.togglePipelineMode()"
             />
 
-            <UBadge
-                color="neutral"
-                variant="outline"
-                size="md"
-                :label="`目前檔名：${fileName}`"
-            />
+            <UBadge color="neutral" variant="outline" size="md" :label="`目前檔名：${fileName}`" />
         </template>
     </UHeader>
 </template>
