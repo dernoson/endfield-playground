@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+// src/editor/canvas/FactoryCanvas.vue
 import { storeToRefs } from 'pinia';
 import { Background } from '@vue-flow/background';
 import { Controls } from '@vue-flow/controls';
 import { MiniMap } from '@vue-flow/minimap';
 import { VueFlow, useVueFlow } from '@vue-flow/core';
+import type { Connection as VueFlowConnection } from '@vue-flow/core';
 import type { EquipmentType } from '@/types/editor';
 import type { FactoryNode } from '@/types/graph';
 import { useEditorStore } from '@/store/editorStore';
 import { useSelectionStore } from '@/store/selectionStore';
 import { usePipelineStore } from '@/store/pipelineStore';
-import PipelineRenderer from './PipelineRenderer.vue';
 
 const editorStore = useEditorStore();
 const selectionStore = useSelectionStore();
@@ -18,12 +18,9 @@ const pipelineStore = usePipelineStore();
 
 const { nodes, edges, snapToGrid, activeTool, selectedEquipment, placementArmed } =
     storeToRefs(editorStore);
-const { isPipelineMode, draftConnection } = storeToRefs(pipelineStore);
+const { isPipelineMode } = storeToRefs(pipelineStore);
 
 const { screenToFlowCoordinate, addNodes } = useVueFlow();
-
-// 畫布容器 ref，用於計算滑鼠的相對座標
-const canvasEl = ref<HTMLDivElement | null>(null);
 
 const equipmentLabelMap: Record<EquipmentType, string> = {
     smelter: '精煉爐',
@@ -35,7 +32,7 @@ const equipmentLabelMap: Record<EquipmentType, string> = {
 const equipmentTypes = Object.keys(equipmentLabelMap) as EquipmentType[];
 
 function handleSelectionChange(selection: { nodes?: Array<{ id: string }> }) {
-    selectionStore.setSelection((selection.nodes ?? []).map((node) => node.id));
+    selectionStore.setSelection((selection.nodes ?? []).map((n) => n.id));
 }
 
 function buildFactoryNode(equipment: EquipmentType, clientX: number, clientY: number): FactoryNode {
@@ -44,66 +41,57 @@ function buildFactoryNode(equipment: EquipmentType, clientX: number, clientY: nu
         id: `node-${equipment}-${Date.now()}-${Math.round(Math.random() * 10000)}`,
         type: 'default',
         position,
-        data: {
-            label: equipmentLabelMap[equipment],
-            machineType: equipment,
-        },
+        data: { label: equipmentLabelMap[equipment], machineType: equipment },
     };
-}
-
-function placeNodeAtPointer(equipment: EquipmentType, clientX: number, clientY: number) {
-    addNodes([buildFactoryNode(equipment, clientX, clientY)]);
 }
 
 function isEquipmentType(value: string): value is EquipmentType {
     return equipmentTypes.includes(value as EquipmentType);
 }
 
-function getRelativePos(event: MouseEvent): { x: number; y: number } {
-    const rect = canvasEl.value?.getBoundingClientRect();
-    if (!rect) return { x: event.clientX, y: event.clientY };
-    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
-}
-
 function handlePaneClick(event: MouseEvent) {
-    // 管線模式下：點選空格新增彎折點
-    if (isPipelineMode.value && draftConnection.value) {
-        pipelineStore.addWaypoint(getRelativePos(event));
-        return;
-    }
-
     if (!placementArmed.value || activeTool.value !== 'select') return;
-    placeNodeAtPointer(selectedEquipment.value, event.clientX, event.clientY);
+    addNodes([buildFactoryNode(selectedEquipment.value, event.clientX, event.clientY)]);
     editorStore.disarmPlacement();
-}
-
-function handleCanvasMouseMove(event: MouseEvent) {
-    if (!isPipelineMode.value || !draftConnection.value) return;
-    pipelineStore.updateCursorPos(getRelativePos(event));
 }
 
 function handleCanvasDrop(event: DragEvent) {
-    const droppedEquipment = event.dataTransfer?.getData('application/x-endfield-equipment') ?? '';
-    if (!isEquipmentType(droppedEquipment)) return;
+    const dropped = event.dataTransfer?.getData('application/x-endfield-equipment') ?? '';
+    if (!isEquipmentType(dropped)) return;
     event.preventDefault();
-    placeNodeAtPointer(droppedEquipment, event.clientX, event.clientY);
+    addNodes([buildFactoryNode(dropped, event.clientX, event.clientY)]);
     editorStore.disarmPlacement();
+}
+
+/**
+ * VueFlow 原生拖拉連線事件
+ * 使用者從節點的 handle 拖拉到另一個節點時觸發
+ * → 建立管線 connection 並同步為 edge
+ */
+function handleConnect(params: VueFlowConnection) {
+    if (!params.source || !params.target) return;
+    pipelineStore.onVueFlowConnect({
+        source: params.source,
+        target: params.target,
+        sourceHandle: params.sourceHandle ?? null,
+        targetHandle: params.targetHandle ?? null,
+    });
 }
 </script>
 
 <template>
     <div
-        ref="canvasEl"
         class="panel relative h-full overflow-hidden"
+        :class="{ 'cursor-crosshair': isPipelineMode }"
         @dragover.prevent
         @drop="handleCanvasDrop"
-        @mousemove="handleCanvasMouseMove"
     >
         <VueFlow
             v-model:nodes="nodes"
             v-model:edges="edges"
             :fit-view-on-init="true"
-            :nodes-draggable="true"
+            :nodes-draggable="!isPipelineMode"
+            :nodes-connectable="isPipelineMode"
             :zoom-on-scroll="true"
             :pan-on-drag="activeTool === 'pan'"
             :selection-on-drag="activeTool === 'box-select'"
@@ -111,17 +99,11 @@ function handleCanvasDrop(event: DragEvent) {
             class="factory-flow"
             @selection-change="handleSelectionChange"
             @pane-click="handlePaneClick"
+            @connect="handleConnect"
         >
             <Background :size="1.2" pattern-color="#3f3f46" />
             <Controls />
             <MiniMap />
         </VueFlow>
-
-        <!--
-            PipelineRenderer 放在 VueFlow 外部（同層 sibling），
-            使用 absolute inset-0 覆蓋畫布，
-            並且不依賴 useVueFlow() context（已改用螢幕座標直接渲染）
-        -->
-        <PipelineRenderer />
     </div>
 </template>

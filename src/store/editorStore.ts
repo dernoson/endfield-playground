@@ -1,3 +1,4 @@
+// src/store/editorStore.ts
 import { computed, ref, shallowRef } from 'vue';
 import { defineStore } from 'pinia';
 import type { FactoryEdge, FactoryNode } from '@/types/graph';
@@ -75,6 +76,32 @@ export const useEditorStore = defineStore('editor', () => {
         edges.value = structuredClone(mockEdges);
     }
 
+    // ── Pipeline edge 管理 ────────────────────────────────
+    // pipeline edges 的 id 統一以 'pipeline-' 開頭方便識別
+
+    function upsertPipelineEdge(edge: FactoryEdge) {
+        const others = edges.value.filter((e) => e.id !== edge.id);
+        edges.value = [...others, edge];
+    }
+
+    function removePipelineEdge(edgeId: string) {
+        edges.value = edges.value.filter((e) => e.id !== edgeId);
+    }
+
+    function updateAllPipelineEdgeStyles(highlighted: boolean) {
+        edges.value = edges.value.map((e) => {
+            if (!e.id.startsWith('pipeline-')) return e;
+            const isConveyor = e.data?.pipelineType === 'conveyor';
+            return {
+                ...e,
+                style: {
+                    stroke: isConveyor ? '#fb923c' : '#3b82f6',
+                    strokeWidth: highlighted ? 4 : 3,
+                },
+            };
+        });
+    }
+
     return {
         nodes,
         edges,
@@ -94,5 +121,8 @@ export const useEditorStore = defineStore('editor', () => {
         armPlacement,
         disarmPlacement,
         resetCanvas,
+        upsertPipelineEdge,
+        removePipelineEdge,
+        updateAllPipelineEdgeStyles,
     };
 });
