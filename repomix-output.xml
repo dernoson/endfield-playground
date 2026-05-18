@@ -1,0 +1,4775 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.github/CODEOWNERS
+.github/workflows/discord-notify.yml
+.github/workflows/static-check.yml
+.gitignore
+.nvmrc
+.prettierignore
+.prettierrc.json
+eslint.config.ts
+index.html
+package.json
+postcss.config.js
+public/favicon.svg
+public/icons.svg
+README.md
+spec/00_top_spec.md
+spec/01_canvas_and_devices.md
+spec/02_pipeline.md
+spec/03_validation.md
+spec/04_flow_simulation.md
+spec/05_recipe_flow.md
+spec/06_export_import.md
+spec/07_optimization.md
+spec/08_history.md
+src/app/App.vue
+src/app/layouts/MainLayout.vue
+src/assets/hero.png
+src/composables/useShortcuts.ts
+src/editor/canvas/FactoryCanvas.vue
+src/editor/inspector/InspectorPanel.vue
+src/editor/inspector/InspectorSidebar.vue
+src/editor/navbar/Navbar.vue
+src/editor/sidebar/ProjectSidebar.vue
+src/editor/stats/ProductionStats.vue
+src/editor/toolbar/ToolbarPanel.vue
+src/main.ts
+src/router/index.ts
+src/store/editorStore.ts
+src/store/selectionStore.ts
+src/store/shortcutStore.ts
+src/style.css
+src/types/editor.ts
+src/types/graph.ts
+SYSTEM_PROMPT.md
+tailwind.config.ts
+tsconfig.app.json
+tsconfig.json
+tsconfig.node.json
+tutorial/github/1.jpg
+tutorial/github/10.png
+tutorial/github/11.png
+tutorial/github/2.jpg
+tutorial/github/3.png
+tutorial/github/4.png
+tutorial/github/5.png
+tutorial/github/6.png
+tutorial/github/7.png
+tutorial/github/8.png
+tutorial/github/9.png
+tutorial/github/cowork.md
+tutorial/github/ssh.md
+tutorial/github/usage.md
+vite.config.ts
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path=".github/CODEOWNERS">
+dernoson
+</file>
+
+<file path=".github/workflows/static-check.yml">
+name: Static Check
+
+on:
+    push:
+        branches: ['**']
+
+jobs:
+    static-check:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version-file: '.nvmrc'
+                  cache: 'pnpm'
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Type check
+              run: pnpm type-check
+
+            - name: Lint check
+              run: pnpm lint-check
+
+            - name: Format check
+              run: pnpm format-check
+</file>
+
+<file path=".nvmrc">
+24
+</file>
+
+<file path=".prettierignore">
+node_modules/**/*
+public/**/*
+src/components/ui/**/*
+*.svg
+components.json
+src/assets/**/*
+</file>
+
+<file path=".prettierrc.json">
+{
+    "$schema": "https://json.schemastore.org/prettierrc",
+    "singleQuote": true,
+    "printWidth": 100,
+    "tabWidth": 4,
+    "tailwindConfig": "./tailwind.config.js",
+    "plugins": ["prettier-plugin-tailwindcss"]
+}
+</file>
+
+<file path="eslint.config.ts">
+import pluginVue from 'eslint-plugin-vue';
+import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript';
+import pluginVitest from '@vitest/eslint-plugin';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import pluginCypress from 'eslint-plugin-cypress';
+import skipFormatting from '@vue/eslint-config-prettier/skip-formatting';
+
+// To allow more languages other than `ts` in `.vue` files, uncomment the following lines:
+// import { configureVueProject } from '@vue/eslint-config-typescript'
+// configureVueProject({ scriptLangs: ['ts', 'tsx'] })
+// More info at https://github.com/vuejs/eslint-config-typescript/#advanced-setup
+
+export default defineConfigWithVueTs(
+    {
+        name: 'app/files-to-lint',
+        files: ['**/*.{ts,mts,tsx,vue}'],
+    },
+
+    {
+        name: 'app/files-to-ignore',
+        ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**', '**/*.test.ts'],
+    },
+
+    pluginVue.configs['flat/essential'],
+    vueTsConfigs.recommended,
+
+    {
+        ...pluginVitest.configs.recommended,
+        files: ['src/**/__tests__/*'],
+    },
+
+    {
+        ...pluginCypress.configs.recommended,
+        files: [
+            'cypress/e2e/**/*.{cy,spec}.{js,ts,jsx,tsx}',
+            'cypress/support/**/*.{js,ts,jsx,tsx}',
+        ],
+    },
+    skipFormatting,
+
+    {
+        name: 'app/custom-rules',
+        rules: {
+            'vue/multi-word-component-names': 'off',
+            '@typescript-eslint/no-empty-object-type': 'off',
+            '@typescript-eslint/no-unused-vars': 'off',
+        },
+    },
+);
+</file>
+
+<file path="index.html">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>endfield-playground</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
+</file>
+
+<file path="postcss.config.js">
+export default {
+  plugins: {
+    '@tailwindcss/postcss': {},
+    autoprefixer: {},
+  },
+}
+</file>
+
+<file path="public/favicon.svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="46" fill="none" viewBox="0 0 48 46"><path fill="#863bff" d="M25.946 44.938c-.664.845-2.021.375-2.021-.698V33.937a2.26 2.26 0 0 0-2.262-2.262H10.287c-.92 0-1.456-1.04-.92-1.788l7.48-10.471c1.07-1.497 0-3.578-1.842-3.578H1.237c-.92 0-1.456-1.04-.92-1.788L10.013.474c.214-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.471c-1.07 1.498 0 3.579 1.842 3.579h11.377c.943 0 1.473 1.088.89 1.83L25.947 44.94z" style="fill:#863bff;fill:color(display-p3 .5252 .23 1);fill-opacity:1"/><mask id="a" width="48" height="46" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:alpha"><path fill="#000" d="M25.842 44.938c-.664.844-2.021.375-2.021-.698V33.937a2.26 2.26 0 0 0-2.262-2.262H10.183c-.92 0-1.456-1.04-.92-1.788l7.48-10.471c1.07-1.498 0-3.579-1.842-3.579H1.133c-.92 0-1.456-1.04-.92-1.787L9.91.473c.214-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.471c-1.07 1.498 0 3.578 1.842 3.578h11.377c.943 0 1.473 1.088.89 1.832L25.843 44.94z" style="fill:#000;fill-opacity:1"/></mask><g mask="url(#a)"><g filter="url(#b)"><ellipse cx="5.508" cy="14.704" fill="#ede6ff" rx="5.508" ry="14.704" style="fill:#ede6ff;fill:color(display-p3 .9275 .9033 1);fill-opacity:1" transform="matrix(.00324 1 1 -.00324 -4.47 31.516)"/></g><g filter="url(#c)"><ellipse cx="10.399" cy="29.851" fill="#ede6ff" rx="10.399" ry="29.851" style="fill:#ede6ff;fill:color(display-p3 .9275 .9033 1);fill-opacity:1" transform="matrix(.00324 1 1 -.00324 -39.328 7.883)"/></g><g filter="url(#d)"><ellipse cx="5.508" cy="30.487" fill="#7e14ff" rx="5.508" ry="30.487" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.814 -25.913 -14.639)scale(1 -1)"/></g><g filter="url(#e)"><ellipse cx="5.508" cy="30.599" fill="#7e14ff" rx="5.508" ry="30.599" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.814 -32.644 -3.334)scale(1 -1)"/></g><g filter="url(#f)"><ellipse cx="5.508" cy="30.599" fill="#7e14ff" rx="5.508" ry="30.599" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="matrix(.00324 1 1 -.00324 -34.34 30.47)"/></g><g filter="url(#g)"><ellipse cx="14.072" cy="22.078" fill="#ede6ff" rx="14.072" ry="22.078" style="fill:#ede6ff;fill:color(display-p3 .9275 .9033 1);fill-opacity:1" transform="rotate(93.35 24.506 48.493)scale(-1 1)"/></g><g filter="url(#h)"><ellipse cx="3.47" cy="21.501" fill="#7e14ff" rx="3.47" ry="21.501" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.009 28.708 47.59)scale(-1 1)"/></g><g filter="url(#i)"><ellipse cx="3.47" cy="21.501" fill="#7e14ff" rx="3.47" ry="21.501" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.009 28.708 47.59)scale(-1 1)"/></g><g filter="url(#j)"><ellipse cx=".387" cy="8.972" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(39.51 .387 8.972)"/></g><g filter="url(#k)"><ellipse cx="47.523" cy="-6.092" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 47.523 -6.092)"/></g><g filter="url(#l)"><ellipse cx="41.412" cy="6.333" fill="#47bfff" rx="5.971" ry="9.665" style="fill:#47bfff;fill:color(display-p3 .2799 .748 1);fill-opacity:1" transform="rotate(37.892 41.412 6.333)"/></g><g filter="url(#m)"><ellipse cx="-1.879" cy="38.332" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 -1.88 38.332)"/></g><g filter="url(#n)"><ellipse cx="-1.879" cy="38.332" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 -1.88 38.332)"/></g><g filter="url(#o)"><ellipse cx="35.651" cy="29.907" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 35.651 29.907)"/></g><g filter="url(#p)"><ellipse cx="38.418" cy="32.4" fill="#47bfff" rx="5.971" ry="15.297" style="fill:#47bfff;fill:color(display-p3 .2799 .748 1);fill-opacity:1" transform="rotate(37.892 38.418 32.4)"/></g></g><defs><filter id="b" width="60.045" height="41.654" x="-19.77" y="16.149" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="7.659"/></filter><filter id="c" width="90.34" height="51.437" x="-54.613" y="-7.533" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="7.659"/></filter><filter id="d" width="79.355" height="29.4" x="-49.64" y="2.03" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="e" width="79.579" height="29.4" x="-45.045" y="20.029" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="f" width="79.579" height="29.4" x="-43.513" y="21.178" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="g" width="74.749" height="58.852" x="15.756" y="-17.901" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="7.659"/></filter><filter id="h" width="61.377" height="25.362" x="23.548" y="2.284" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="i" width="61.377" height="25.362" x="23.548" y="2.284" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="j" width="56.045" height="63.649" x="-27.636" y="-22.853" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="k" width="54.814" height="64.646" x="20.116" y="-38.415" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="l" width="33.541" height="35.313" x="24.641" y="-11.323" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="m" width="54.814" height="64.646" x="-29.286" y="6.009" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="n" width="54.814" height="64.646" x="-29.286" y="6.009" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="o" width="54.814" height="64.646" x="8.244" y="-2.416" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="p" width="39.409" height="43.623" x="18.713" y="10.588" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter></defs></svg>
+</file>
+
+<file path="public/icons.svg">
+<svg xmlns="http://www.w3.org/2000/svg">
+  <symbol id="bluesky-icon" viewBox="0 0 16 17">
+    <g clip-path="url(#bluesky-clip)"><path fill="#08060d" d="M7.75 7.735c-.693-1.348-2.58-3.86-4.334-5.097-1.68-1.187-2.32-.981-2.74-.79C.188 2.065.1 2.812.1 3.251s.241 3.602.398 4.13c.52 1.744 2.367 2.333 4.07 2.145-2.495.37-4.71 1.278-1.805 4.512 3.196 3.309 4.38-.71 4.987-2.746.608 2.036 1.307 5.91 4.93 2.746 2.72-2.746.747-4.143-1.747-4.512 1.702.189 3.55-.4 4.07-2.145.156-.528.397-3.691.397-4.13s-.088-1.186-.575-1.406c-.42-.19-1.06-.395-2.741.79-1.755 1.24-3.64 3.752-4.334 5.099"/></g>
+    <defs><clipPath id="bluesky-clip"><path fill="#fff" d="M.1.85h15.3v15.3H.1z"/></clipPath></defs>
+  </symbol>
+  <symbol id="discord-icon" viewBox="0 0 20 19">
+    <path fill="#08060d" d="M16.224 3.768a14.5 14.5 0 0 0-3.67-1.153c-.158.286-.343.67-.47.976a13.5 13.5 0 0 0-4.067 0c-.128-.306-.317-.69-.476-.976A14.4 14.4 0 0 0 3.868 3.77C1.546 7.28.916 10.703 1.231 14.077a14.7 14.7 0 0 0 4.5 2.306q.545-.748.965-1.587a9.5 9.5 0 0 1-1.518-.74q.191-.14.372-.293c2.927 1.369 6.107 1.369 8.999 0q.183.152.372.294-.723.437-1.52.74.418.838.963 1.588a14.6 14.6 0 0 0 4.504-2.308c.37-3.911-.63-7.302-2.644-10.309m-9.13 8.234c-.878 0-1.599-.82-1.599-1.82 0-.998.705-1.82 1.6-1.82.894 0 1.614.82 1.599 1.82.001 1-.705 1.82-1.6 1.82m5.91 0c-.878 0-1.599-.82-1.599-1.82 0-.998.705-1.82 1.6-1.82.893 0 1.614.82 1.599 1.82 0 1-.706 1.82-1.6 1.82"/>
+  </symbol>
+  <symbol id="documentation-icon" viewBox="0 0 21 20">
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="m15.5 13.333 1.533 1.322c.645.555.967.833.967 1.178s-.322.623-.967 1.179L15.5 18.333m-3.333-5-1.534 1.322c-.644.555-.966.833-.966 1.178s.322.623.966 1.179l1.534 1.321"/>
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M17.167 10.836v-4.32c0-1.41 0-2.117-.224-2.68-.359-.906-1.118-1.621-2.08-1.96-.599-.21-1.349-.21-2.848-.21-2.623 0-3.935 0-4.983.369-1.684.591-3.013 1.842-3.641 3.428C3 6.449 3 7.684 3 10.154v2.122c0 2.558 0 3.838.706 4.726q.306.383.713.671c.76.536 1.79.64 3.581.66"/>
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M3 10a2.78 2.78 0 0 1 2.778-2.778c.555 0 1.209.097 1.748-.047.48-.129.854-.503.982-.982.145-.54.048-1.194.048-1.749a2.78 2.78 0 0 1 2.777-2.777"/>
+  </symbol>
+  <symbol id="github-icon" viewBox="0 0 19 19">
+    <path fill="#08060d" fill-rule="evenodd" d="M9.356 1.85C5.05 1.85 1.57 5.356 1.57 9.694a7.84 7.84 0 0 0 5.324 7.44c.387.079.528-.168.528-.376 0-.182-.013-.805-.013-1.454-2.165.467-2.616-.935-2.616-.935-.349-.91-.864-1.143-.864-1.143-.71-.48.051-.48.051-.48.787.051 1.2.805 1.2.805.695 1.194 1.817.857 2.268.649.064-.507.27-.857.49-1.052-1.728-.182-3.545-.857-3.545-3.87 0-.857.31-1.558.8-2.104-.078-.195-.349-1 .077-2.078 0 0 .657-.208 2.14.805a7.5 7.5 0 0 1 1.946-.26c.657 0 1.328.092 1.946.26 1.483-1.013 2.14-.805 2.14-.805.426 1.078.155 1.883.078 2.078.502.546.799 1.247.799 2.104 0 3.013-1.818 3.675-3.558 3.87.284.247.528.714.528 1.454 0 1.052-.012 1.896-.012 2.156 0 .208.142.455.528.377a7.84 7.84 0 0 0 5.324-7.441c.013-4.338-3.48-7.844-7.773-7.844" clip-rule="evenodd"/>
+  </symbol>
+  <symbol id="social-icon" viewBox="0 0 20 20">
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M12.5 6.667a4.167 4.167 0 1 0-8.334 0 4.167 4.167 0 0 0 8.334 0"/>
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M2.5 16.667a5.833 5.833 0 0 1 8.75-5.053m3.837.474.513 1.035c.07.144.257.282.414.309l.93.155c.596.1.736.536.307.965l-.723.73a.64.64 0 0 0-.152.531l.207.903c.164.715-.213.991-.84.618l-.872-.52a.63.63 0 0 0-.577 0l-.872.52c-.624.373-1.003.094-.84-.618l.207-.903a.64.64 0 0 0-.152-.532l-.723-.729c-.426-.43-.289-.864.306-.964l.93-.156a.64.64 0 0 0 .412-.31l.513-1.034c.28-.562.735-.562 1.012 0"/>
+  </symbol>
+  <symbol id="x-icon" viewBox="0 0 19 19">
+    <path fill="#08060d" fill-rule="evenodd" d="M1.893 1.98c.052.072 1.245 1.769 2.653 3.77l2.892 4.114c.183.261.333.48.333.486s-.068.089-.152.183l-.522.593-.765.867-3.597 4.087c-.375.426-.734.834-.798.905a1 1 0 0 0-.118.148c0 .01.236.017.664.017h.663l.729-.83c.4-.457.796-.906.879-.999a692 692 0 0 0 1.794-2.038c.034-.037.301-.34.594-.675l.551-.624.345-.392a7 7 0 0 1 .34-.374c.006 0 .93 1.306 2.052 2.903l2.084 2.965.045.063h2.275c1.87 0 2.273-.003 2.266-.021-.008-.02-1.098-1.572-3.894-5.547-2.013-2.862-2.28-3.246-2.273-3.266.008-.019.282-.332 2.085-2.38l2-2.274 1.567-1.782c.022-.028-.016-.03-.65-.03h-.674l-.3.342a871 871 0 0 1-1.782 2.025c-.067.075-.405.458-.75.852a100 100 0 0 1-.803.91c-.148.172-.299.344-.99 1.127-.304.343-.32.358-.345.327-.015-.019-.904-1.282-1.976-2.808L6.365 1.85H1.8zm1.782.91 8.078 11.294c.772 1.08 1.413 1.973 1.425 1.984.016.017.241.02 1.05.017l1.03-.004-2.694-3.766L7.796 5.75 5.722 2.852l-1.039-.004-1.039-.004z" clip-rule="evenodd"/>
+  </symbol>
+</svg>
+</file>
+
+<file path="spec/00_top_spec.md">
+# 明日方舟：終末地｜集成工業模擬器
+# Top Spec
+
+**版本：** v0.3
+**平台：** 純前端網頁（Vue 3 + Vite，無後端）
+**目標受眾：** 一般玩家 ＋ 進階玩家（兩者兼顧）；本文件同時供開發同仁與 AI 輔助開發使用
+
+---
+
+## 1. 專案概述
+
+提供一個忠實還原《明日方舟：終末地》集成工業系統的網頁模擬器，讓玩家可以在遊戲外預先規劃產線配置、即時估算產量與效率，並將結果匯出為可分享的記錄檔。
+
+**核心價值：**
+- **先試後蓋**：不用在遊戲內反覆拆裝，直接在網頁沙盒規劃
+- **即時回饋**：每次擺放或連線後立即看到流量與效率估算
+- **社群共享**：匯出記錄檔既可瀏覽分享，也可匯回繼續編輯
+
+---
+
+## 2. 技術選型
+
+| 層次 | 技術 | 說明 |
+|------|------|------|
+| 框架 | **Vue 3 + Vite** | 團隊熟悉；Nuxt UI v3 支援純 Vue + Vite |
+| UI 元件 | **Nuxt UI v3** | 125+ 元件，Sidebar、Table、Modal、Tooltip 等直接套用 |
+| 狀態管理 | **Pinia** | Vue 官方推薦，與 vueUse 整合無縫 |
+| 工具函式 | **vueUse** | `useMagicKeys` 管理快捷鍵、`useLocalStorage` 自動存檔 |
+| 樣式 | **Tailwind CSS v4** | Nuxt UI v3 內建 |
+| 畫布渲染 | **待 PoC 驗證** | 候選 A：Vue Flow（節點連線原生支援，需驗證格子制）；候選 B：Konva.js + vue-konva（完全掌控，開發量較大）|
+| 資料格式 | **JSON**（設備庫）＋ **HTML**（記錄檔） | 見核心需求 6 |
+
+> **畫布渲染 PoC 驗證目標：** snap-to-grid、多格設備佔位（3×3 精煉爐）、Port 連線，確認 Vue Flow 是否適用後再定案。
+
+---
+
+## 3. 核心需求概述
+
+### CR-01　2D 格子制畫布與設備擺放
+精確還原遊戲格線，設備依佔格數擺放。支援拖拉擺放、旋轉、移動，設備重疊時僅高亮警示不硬性阻擋。移動設備時，已連接管線維持連接但若產生衝突則顯示 Error；設備正對現有管線時，自動連接。點選工具列設備或畫布中已部署設備，左側面板顯示該設備的詳細資訊、配方表與設備大小。
+
+支援選擇當前使用的基地（武陵 / 四號谷地，optional）；選擇後自動對應畫布大小。選擇武陵時，額外於畫布邊緣標示液體原物料的輸入方位。基地畫布不允許擺放中繼器。
+
+框選設備與管線後按 Ctrl+C，滑鼠立即拖曳複製預覽組，點選確認擺放；框選範圍內的管線一併複製。
+
+操作歷史由 CR-08 統一管理，Ctrl+Z / Ctrl+Y 可無限制復原 / 取消復原。
+
+→ 詳見 `01_canvas_and_devices.md`
+
+---
+
+### CR-02　管線連接
+切換至管線模式後，所有管線與連接點自動高亮。依連接點的 type 定義自動判斷拉的是水管或傳送帶，並自動吸附至連接點。以下情境自動處理：
+
+- 從管線中途拉出新管線 → 自動生成分流器
+- 將管線拉至已有管線中途 → 自動生成匯流器
+- 路徑規劃時跨越現有管線 → 自動插入物流橋
+
+**Phase 1：** 彎折點由使用者手動點選決定，確認兩端後可微調再放置。
+**Phase 3：** 升級為自動路徑規劃，彎折點依當前空間自動生成。
+
+→ 詳見 `02_pipeline.md`
+
+---
+
+### CR-03　產線設備與佈線警示
+系統持續偵測配置狀態，分兩級警示：
+
+- **Error**：設備重疊、佈線違法、配方不符、設備未在供電範圍內
+- **Warning**：堵塞、輸入缺失、整區總耗電量超過總供電量上限
+
+供電範圍以所有供電樁的 n×n 覆蓋格子取聯集計算，設備任一格在聯集內即視為供電成功。基地畫布不允許擺放中繼器。
+
+警示列表顯示於右側統計面板，點選可導覽至畫布相應區域；相應設備或管線本身也顯示視覺警訊。有 Error 的設備與管線略過流量估算。
+
+→ 詳見 `03_validation.md`
+
+---
+
+### CR-04　流量模擬與產能估算
+每當設備擺放、管線變動、產物設定變更後，即時重新計算並在設備、管線、產線起點／終點顯示估算數值。右側統計面板顯示：
+
+- 當前藍圖總耗電量與供電量比較
+- 當前總產能估算（依品項列出生產 / 消耗 / 淨產量）
+- 產能換算調度券兌換效率（兌換率由使用者自訂）
+
+→ 詳見 `04_flow_simulation.md`
+
+---
+
+### CR-05　配方流程設計（Flow Chart 視角）
+主畫面提供視角切換控項，位於編輯區左下角，Tab 鍵輪替，支援三種視角模式：
+
+- **藍圖視角**：完整畫布，設備擺放與管線操作
+- **流程視角**：Flow Chart 呈現產物流向、設備、效率與配比
+- **並列視角**：藍圖與流程並排顯示，支援左右或上下並排（可切換）；點選任意一方另一方自動導覽至相應位置；任意一方編輯時另一方即時聯動變動
+
+三種視角共用同一份產線資料，僅呈現方式不同。
+
+流程視角功能：使用者可選擇中間產物的生成流程或直接從倉庫取用。新增流程配方後，系統顯示「切換視角以導入」提示；切回藍圖視角時，滑鼠自動拖曳一組對應設備，由使用者選擇擺放位置。
+
+**Phase 1：** 三種視角切換上線（Tab 鍵 / 左下角圖示），可瀏覽現有產線的 Flow Chart 呈現；並列視角點選導覽聯動、支援上下 / 左右並排切換。
+**Phase 2：** 新增流程配方、選擇中間產物流程、一鍵導入設備至藍圖視角；並列視角編輯聯動。
+
+→ 詳見 `05_recipe_flow.md`
+
+---
+
+### CR-06　藍圖匯入 / 匯出
+**匯出記錄檔（.html）** 內容包含：完整產線設備藍圖、流程 Flow Chart、產能估算、警示列舉。檔案分兩層：人類可讀層（靜態呈現 + 輕量互動）、機器可讀層（內嵌完整 JSON 供匯回）。
+
+**匯入**支援 `.html` 與 `.json`，含跨版本 migrate 邏輯（以 Zod 實作，靜默執行）；僅在 parse error 時顯示錯誤訊息。
+
+→ 詳見 `06_export_import.md`
+
+---
+
+### CR-07　多目標優化產能推導
+獨立頁面。使用者設定調度券目標產能、部分產物的硬性產量需求、當前可用原料產能（以傳送帶條數／流量為單位），系統以連續線性規劃（LP）推導最佳配方流量分配，結果以「各配方分配幾條流量、對應幾台設備、運行效率」呈現。
+
+使用者可微調台數或流量（兩者聯動：調台數反推流量、調流量換算建議台數並標示效率），完成後走「切換視角以導入」流程，進入擺放視角。
+
+→ 詳見 `07_optimization.md`
+
+---
+
+### CR-08　操作歷史（History）
+CR-01、CR-02、CR-05 的所有藍圖狀態變更統一由操作歷史 store 管理，採 Command Pattern 實作。支援無限制復原 / 取消復原（Ctrl+Z / Ctrl+Y），在藍圖視角、流程視角、並列視角任一處操作均進入同一歷史佇列。Session 結束後歷史清空，不持久化。
+
+→ 詳見 `08_history.md`
+
+---
+
+## 4. 階段性目標
+
+### Phase 1 — MVP（可用的產線規劃器 + 流程視角初體驗）
+目標：能擺設備、拉管線、看到即時估算，並初步體驗流程視角。
+
+- CR-01 基礎畫布與設備擺放（格子制、拖拉、旋轉、左側資訊面板、基地選擇、複製擺放）
+- CR-02 管線連接（管線模式、自動吸附、分流器 / 匯流器 / 物流橋自動生成、手動彎折點）
+- CR-03 Error 層級警示（含供電範圍偵測）
+- CR-04 基礎流量估算（即時重算、右側統計面板、總耗電量顯示）
+- CR-05 流程視角基礎（藍圖 / 流程 / 並列三種視角切換；並列視角點選導覽聯動）
+- CR-08 操作歷史（無限制復原 / 取消復原）
+
+### Phase 2 — 完整模擬體驗
+目標：警示系統、流程規劃與分享功能完整上線。
+
+- CR-03 Warning 層級警示
+- CR-04 調度券兌換效率計算
+- CR-05 新增流程配方、中間產物選擇、一鍵導入設備；並列視角編輯聯動
+- CR-06 藍圖匯出（完整 HTML 記錄檔）、匯入與跨版本 migrate
+
+### Phase 3 — 進階自動化
+目標：自動佈線與產能優化。
+
+- CR-02 自動路徑規劃（彎折點自動運算）
+- CR-07 多目標優化產能推導（LP 求解、台數 / 流量微調、導入擺放視角）
+
+---
+
+## 5. 跨功能設計原則
+
+- **資料單一來源**：畫布狀態、連線狀態、警示狀態統一存於 Pinia store，設備擺放視角與流程視角共用同一份資料
+- **即時重算**：任何狀態變更後，FlowEngine 自動觸發重新計算（debounce 處理高頻操作）；有 Error 的節點略過估算
+- **設備資料庫**：完整照搬遊戲所有設備與配方，以 `/data/devices.ts` 維護（TypeScript 定義，受型別系統保護）；每個接口含明確 type 定義（傳送帶 / 水管），供管線模式自動判斷
+- **流量單位**：以傳送帶滿載流量（30/min）為基礎物流單位，設備台數為向上取整的結果
+- **操作歷史單一佇列**：CR-01、CR-02、CR-05 的所有藍圖操作統一進入 `useHistoryStore`，任何視角的 Ctrl+Z / Ctrl+Y 均作用於同一歷史，Session 結束清空
+- **自動存檔**：透過 vueUse `useLocalStorage` debounce 500ms 寫入，避免資料遺失
+- **記錄檔自包含**：匯出 HTML 無外部依賴，離線可瀏覽；JSON 層完整，可無損匯回
+
+---
+
+## 6. 待確認事項
+
+1. **設備圖示來源**：自繪 SVG 或遊戲截圖（需考量版權）
+2. **設備資料庫維護責任**：由誰負責同步遊戲更新後的新設備 / 配方
+3. **各協議核心區域的格子尺寸**：是否已有完整清點
+4. **流量計算精度**：基準單位確認（個/秒 or 個/分鐘）、是否有浮點數精度問題
+5. **畫布渲染 PoC**：Vue Flow 或 Konva.js，需實作驗證後定案
+6. **調度券兌換率**：使用者自訂，是否需要支援多組預設值（不同商店 / 不同時期）
+7. **LP 求解套件**：CR-07 建議使用 `glpk.js`，需確認授權與 bundle size 是否可接受
+
+---
+
+*本文件為 Top Spec，各核心需求詳細規格見對應 Feature Spec 檔案。*
+*文件由 Claude 協助整理，依討論結果持續更新。*
+</file>
+
+<file path="spec/01_canvas_and_devices.md">
+# Feature Spec：2D 格子制畫布與設備擺放
+# CR-01
+
+**所屬階段：** Phase 1
+**依賴：** 無（本模組為其他所有 CR 的基礎）
+**文件版本：** v0.2
+
+---
+
+## 1. 功能定位
+
+本模組是模擬器的核心操作介面。使用者在此以精確格子制畫布擺放、旋轉、移動設備，建立產線的空間配置基礎。畫布狀態是所有其他模組（管線連接、流量估算、視角切換）的資料來源。
+
+---
+
+## 2. 功能詳細描述
+
+### 2.1 畫布規格
+
+- 格子單位對應遊戲原生格線，1 格 = 1 cell
+- 設備依遊戲佔格數擺放（如精煉爐 3×3、配件機 3×3）
+- 支援縮放（滾輪）與平移（空白鍵＋拖拉）
+- 格線顯示可開關
+
+**基地選擇（optional）：**
+使用者可選擇當前規劃的基地（武陵 / 四號谷地），選擇後：
+- 畫布自動對應該基地的實際格子尺寸
+- 選擇武陵時，畫布邊緣額外標示液體原物料的輸入方位（標示於對應側邊）
+- 未選擇基地時，畫布為自由大小，無方位標示
+
+### 2.2 左側資訊面板
+
+以下兩種情境觸發左側面板顯示設備資訊：
+
+**情境 A：從工具列點選設備**
+- 顯示該設備的詳細資訊：名稱、設備大小（格數）、耗電量、所有可用配方表
+- 配方表列出每個配方的輸入 / 輸出品項與速率
+- 此時滑鼠進入「準備擺放」狀態（見 2.3）
+
+**情境 B：點選畫布中已部署的設備**
+- 顯示同上資訊，並額外顯示當前選用的配方與運行狀態
+
+### 2.3 設備擺放互動
+
+#### 拿起設備
+
+**從工具列拿起：**
+1. 左鍵單擊工具列中的設備
+2. 左側資訊面板更新顯示該設備資訊
+3. 滑鼠進入「拿起設備」狀態，游標跟隨設備半透明預覽
+
+**從畫布拿起（移動）：**
+- 對單一設備或框選的一組設備左鍵長按，進入「拿起設備」狀態
+- 同上述方式進行移動
+
+#### 拿起狀態下的互動
+
+| 操作 | 行為 |
+|------|------|
+| 滑鼠移動 | 設備預覽跟隨游標，snap 至格線 |
+| 移至畫布邊緣 | 自動捲動視角（Edge Scrolling） |
+| R 鍵 | 旋轉設備預覽（切換朝向） |
+| Esc | 取消拿起，設備回到原位（或消失，若從工具列拿起） |
+
+#### 放下設備
+
+**左鍵單擊：** 以當前預覽位置與朝向放下設備
+
+**左鍵長按 + 拖動（朝向選擇模式）：**
+1. 長按畫布觸發：在設備周圍顯示菱形方向選擇框
+2. 按住拖動滑鼠至四個方向之一，決定設備朝向
+3. 鬆開滑鼠，以選定朝向放下設備
+
+#### 連續擺放與複製
+
+- **從工具列拿起後放置：** 放置後自動繼續拿起下一個相同設備，直到按 Esc 結束
+- **從畫布拿起後放置（移動）：** 放置後結束操作
+- **從畫布拿起後按住 Ctrl 放置：** 視為複製，原位設備保留，放下一份新複製
+
+#### 擺放視覺回饋
+
+- **綠色半透明預覽：** 可放置
+- **紅色半透明預覽：** 與其他設備重疊（不阻擋放置，放置後顯示 Error 警示，見 CR-03）
+
+#### 設備正對現有管線時自動連接
+
+擺放設備後，若設備的接口正對已存在的管線端點，自動建立連接。
+
+### 2.4 設備移動
+
+- 對單一或已框選的一組設備左鍵長按，進入「拿起設備」狀態（見 2.3）
+- 移動時，已連接的管線維持連接關係，但路徑不自動重新規劃（Phase 1）
+- 放下後若產生衝突（設備重疊、管線違法），顯示對應 Error 警示，不阻擋放置
+
+> **Phase 3 升級：** 移動設備時，已連接管線自動重新規劃路徑。
+
+### 2.5 複製擺放
+
+**框選後複製：**
+1. 框選目標設備與管線（框選範圍內的管線一併納入）
+2. 按 Ctrl+C，滑鼠立即進入「拿起設備」狀態，拖曳整組複製預覽（半透明顯示）
+3. 以單擊或長按拖動選朝向的方式放置（見 2.3）
+4. 放置時自動為所有複製物件產生新 uid；框選範圍外的管線端點不複製
+
+**從畫布拿起時 Ctrl 複製：**
+- 從畫布拿起設備（長按）後，按住 Ctrl 放置，原位設備保留，放下一份複製
+
+複製貼上視為單一複合操作，一次 Ctrl+Z 整組復原（見 CR-08）。
+
+### 2.6 基地限制
+
+- 基地畫布（武陵 / 四號谷地）不允許擺放中繼器；中繼器從基地模式的設備面板中隱藏
+- 未選擇基地時（自由畫布），中繼器可正常擺放
+
+### 2.7 多選與批次操作
+
+- Shift＋點選：多選設備
+- 框選：拖拉空白區域框選範圍內所有設備與管線
+- 批次移動：多選後拖拉
+- 批次刪除：多選後按 Delete
+
+### 2.8 操作歷史
+
+所有藍圖狀態變更（擺放、移動、旋轉、刪除、複製、配方變更）均透過 `useHistoryStore.execute()` 提交。
+
+- **Ctrl+Z**：無限制復原
+- **Ctrl+Y**：取消復原
+- 詳細實作見 CR-08 `08_history.md`
+
+---
+
+## 3. 設備資料庫
+
+### 3.1 資料來源與維護
+
+- 完整照搬遊戲內所有設備與配方
+- 以 **TypeScript** 定義維護於 `/data/devices.ts`，受型別系統保護，並可為特殊設備保留自訂邏輯彈性
+- 遊戲更新後由指定人員手動同步
+
+### 3.2 型別定義與資料格式
+
+```typescript
+// /data/types.ts
+
+export type PortType = 'conveyor' | 'pipe'
+export type Direction = 'up' | 'down' | 'left' | 'right'
+export type DeviceCategory = '採集' | '加工' | '種植' | '電力' | '物流' | '儲存' | '武器'
+
+export interface PortDef {
+  id: string
+  x: number           // 相對於設備左上角的格子偏移
+  y: number
+  direction: Direction
+  type: PortType
+}
+
+export interface RecipeDef {
+  id: string
+  name: string
+  inputs: { item: string; rate_per_min: number }[]
+  outputs: { item: string; rate_per_min: number }[]
+  cycle_time_sec: number
+}
+
+export interface ItemDef {
+  id: string
+  name: string
+  category: string
+}
+
+export interface DeviceDef {
+  id: string
+  name: string
+  size: { w: number; h: number }
+  category: DeviceCategory
+  power_cost: number          // 耗電量（kW）
+  power_output?: number       // 供電量（kW），供電類設備專用
+  power_range?: number        // 供電覆蓋半徑 n（n×n 格），供電樁專用
+  ports: PortDef[]
+  recipes: string[]           // 對應 RecipeDef.id
+  allowInBase?: boolean       // 預設 true；false 表示基地模式下隱藏（如中繼器）
+  // 特殊邏輯可在此擴充，例如：
+  // onPlace?: (device: PlacedDevice) => void
+}
+```
+
+```typescript
+// /data/devices.ts（資料範例）
+
+import type { DeviceDef, RecipeDef, ItemDef } from './types'
+
+export const devices: DeviceDef[] = [
+  {
+    id: 'refinery',
+    name: '精煉爐',
+    size: { w: 3, h: 3 },
+    category: '加工',
+    power_cost: 10,
+    ports: [
+      { id: 'input_0', x: 0, y: 1, direction: 'left', type: 'conveyor' },
+      { id: 'output_0', x: 2, y: 0, direction: 'up', type: 'conveyor' }
+    ],
+    recipes: ['recipe_purple_crystal_fiber', 'recipe_stable_carbon']
+  },
+  {
+    id: 'relay',
+    name: '中繼器',
+    size: { w: 1, h: 1 },
+    category: '電力',
+    power_cost: 0,
+    ports: [],
+    recipes: [],
+    allowInBase: false   // 基地模式下隱藏
+  }
+]
+
+export const recipes: RecipeDef[] = [
+  {
+    id: 'recipe_purple_crystal_fiber',
+    name: '紫晶纖維',
+    inputs: [{ item: 'purple_ore', rate_per_min: 4 }],
+    outputs: [{ item: 'purple_fiber', rate_per_min: 2 }],
+    cycle_time_sec: 15
+  }
+]
+
+export const items: ItemDef[] = [
+  {
+    id: 'purple_ore',
+    name: '紫晶礦',
+    category: '原礦'
+  }
+]
+```
+
+**Port type 定義：**
+- `conveyor`：傳送帶接口
+- `pipe`：水管接口
+
+### 3.3 設備分類
+
+| 分類 | 代表設備 |
+|------|----------|
+| 採集 | 電驅礦機、採種機 |
+| 加工 | 精煉爐、配件機、混合機 |
+| 種植 | 種植機 |
+| 電力 | 供電樁、中繼器、熱能池 |
+| 物流 | 傳送帶、分流器、匯流器、物流橋、取貨口 |
+| 儲存 | 協議核心、協議儲存箱 |
+| 武器 | 武器機器 |
+
+---
+
+## 4. 狀態管理（Pinia Store）
+
+### `useCanvasStore`
+```typescript
+{
+  gridSize: number,          // 單格像素大小（隨縮放變化）
+  offset: { x, y },         // 畫布平移偏移
+  zoom: number,              // 縮放倍率
+  baseRegion: 'wuling' | 'valley4' | null,  // 基地選擇
+  canvasSize: { w, h } | null  // 基地對應格子尺寸，null 為自由大小
+}
+```
+
+### `usePlacedDeviceStore`
+```typescript
+{
+  devices: PlacedDevice[],   // 已擺放設備清單
+  selectedIds: string[],     // 當前選取的設備 uid 清單
+  hoveredId: string | null,  // 滑鼠懸停的設備 uid
+  heldDevice: HeldDevice | null  // 當前「拿起」狀態
+}
+
+// PlacedDevice
+{
+  uid: string,               // 實例唯一 ID
+  deviceId: string,          // 對應 devices.ts 的 DeviceDef.id
+  x: number,                 // 格子座標 X
+  y: number,                 // 格子座標 Y
+  rotation: 0 | 90 | 180 | 270,
+  activeRecipe: string | null
+}
+
+// HeldDevice（拿起狀態）
+{
+  deviceId: string,
+  sourceUids: string[] | null,  // null 表示從工具列拿起，否則為原始設備 uid
+  previewX: number,
+  previewY: number,
+  rotation: 0 | 90 | 180 | 270,
+  isCopy: boolean               // Ctrl 複製模式
+}
+```
+
+---
+
+## 5. UI 規格
+
+### 5.1 整體版型（本模組相關區域）
+
+```
+┌──────────────┬──────────────────────────┬─────────────┐
+│              │                          │             │
+│  左側面板    │      2D 格子畫布          │  右側統計   │
+│  （設備資訊）│                          │  面板       │
+│              │  拿起 / 放置 / 旋轉       │  （見 CR-04）│
+│  Tab 切換：  │  框選 / 移動              │             │
+│  ・配方表    │  縮放 / 平移              │             │
+│  ・設備形狀  │  基地邊界（若有選擇）     │             │
+│  ・耗電資訊  │  液體方位標示（武陵）     │             │
+│              │                          │             │
+├──────────────┴──────────────────────────┴─────────────┤
+│  下方設備工具列                                         │
+│  [ 採集 ] [ 加工 ] [ 種植 ] [ 電力 ] [ 物流 ] [ 儲存 ] │
+│  各 Tab 顯示該分類所有設備圖示與名稱                    │
+└────────────────────────────────────────────────────────┘
+```
+
+### 5.2 左側資訊面板
+
+點選工具列設備或畫布中已部署設備時顯示，包含三個 Tab：
+
+| Tab | 內容 |
+|-----|------|
+| **配方表** | 所有可用配方列表，每個配方顯示輸入 / 輸出品項、速率、週期時間；已部署設備可在此切換當前使用的配方 |
+| **設備形狀** | 設備佔格示意圖，標示所有輸入 / 輸出接口的位置與 type（傳送帶 / 水管） |
+| **耗電與資訊** | 耗電量（kW）、設備大小（格數）、分類、其他額外說明 |
+
+### 5.3 下方設備工具列
+
+- 依 3.3 分類以 Tab 橫向切換顯示
+- 基地模式下，`allowInBase: false` 的設備（如中繼器）自動從工具列隱藏
+- 每個設備顯示：圖示、名稱
+- 搜尋框可跨分類即時過濾
+
+> **右側統計面板**：顯示流量估算、警示列表、電力統計等，由 CR-04 定義，不在本文件範疇。
+
+### 5.4 快捷鍵彙整
+
+| 快捷鍵 | 情境 | 功能 |
+|--------|------|------|
+| 左鍵單擊（工具列） | 任何時候 | 拿起設備 |
+| 左鍵單擊（畫布） | 拿起狀態 | 放下設備 |
+| 左鍵長按（畫布） | 拿起狀態 | 進入朝向選擇模式 |
+| 左鍵長按（已部署設備） | 一般狀態 | 拿起設備（移動） |
+| R | 拿起狀態 | 旋轉設備預覽 |
+| Ctrl＋放置 | 拿起狀態（從畫布） | 複製放置，原設備保留 |
+| Esc | 拿起狀態 | 取消，設備回原位或消失 |
+| Delete | 已選取設備 | 刪除選取設備 / 管線 |
+| Ctrl+Z | 任何時候 | 復原（無限制） |
+| Ctrl+Y | 任何時候 | 取消復原 |
+| Ctrl+C | 已框選 | 複製選取組，立即進入拿起狀態 |
+| 空白鍵＋拖拉 | 任何時候 | 平移畫布 |
+| 滾輪 | 任何時候 | 縮放畫布 |
+| Shift＋點選 | 一般狀態 | 多選設備 |
+
+---
+
+## 6. 實作範例
+
+### 6.1 Snap-to-Grid 擺放邏輯
+
+```typescript
+// 將滑鼠座標換算為格子座標
+function screenToGrid(screenX: number, screenY: number, store: CanvasStore) {
+  const gridX = Math.floor((screenX - store.offset.x) / store.gridSize)
+  const gridY = Math.floor((screenY - store.offset.y) / store.gridSize)
+  return { x: gridX, y: gridY }
+}
+
+// 檢查目標位置是否與現有設備重疊
+function hasCollision(
+  candidate: PlacedDevice,
+  existing: PlacedDevice[],
+  deviceDefs: DeviceMap
+): boolean {
+  const def = deviceDefs[candidate.deviceId]
+  const candidateCells = getOccupiedCells(candidate, def)
+  return existing
+    .filter(d => d.uid !== candidate.uid)
+    .some(d => {
+      const cells = getOccupiedCells(d, deviceDefs[d.deviceId])
+      return candidateCells.some(c =>
+        cells.some(e => e.x === c.x && e.y === c.y)
+      )
+    })
+}
+```
+
+### 6.2 朝向選擇模式（長按拖動）
+
+```typescript
+// 長按畫布後，依拖動方向決定設備朝向
+function calcRotationFromDragDirection(
+  longPressPos: { x: number, y: number },
+  currentPos: { x: number, y: number }
+): 0 | 90 | 180 | 270 {
+  const dx = currentPos.x - longPressPos.x
+  const dy = currentPos.y - longPressPos.y
+  if (Math.abs(dx) < 8 && Math.abs(dy) < 8) {
+    return heldDevice.rotation  // 拖動距離不足，保持當前朝向
+  }
+  if (Math.abs(dx) >= Math.abs(dy)) {
+    return dx >= 0 ? 0 : 180
+  } else {
+    return dy >= 0 ? 90 : 270
+  }
+}
+
+// 長按計時與模式切換
+let longPressTimer: ReturnType<typeof setTimeout> | null = null
+const LONG_PRESS_MS = 300
+
+const onPointerDown = (e: PointerEvent) => {
+  longPressTimer = setTimeout(() => {
+    enterDirectionSelectMode(e)  // 顯示菱形方向框
+  }, LONG_PRESS_MS)
+}
+
+const onPointerUp = (e: PointerEvent) => {
+  if (longPressTimer) {
+    clearTimeout(longPressTimer)
+    longPressTimer = null
+    placeDevice()  // 未達長按閾值 → 單擊放置
+  } else {
+    placeDeviceWithDirection()  // 長按鬆開 → 以選定朝向放置
+  }
+}
+```
+
+### 6.3 設備正對管線自動連接
+
+```typescript
+// 擺放設備後，檢查每個 port 是否正對現有管線端點
+function autoConnect(
+  placed: PlacedDevice,
+  connections: Connection[],
+  deviceDefs: DeviceMap
+) {
+  const ports = getAbsolutePorts(placed, deviceDefs[placed.deviceId])
+  for (const port of ports) {
+    const match = connections.find(conn =>
+      isPortFacing(port, conn.dangling) // dangling：尚未連接的管線端點
+    )
+    if (match) {
+      connectPortToLine(port, match)
+    }
+  }
+}
+```
+
+---
+
+## 7. 驗證方式
+
+| 驗證項目 | 方法 |
+|----------|------|
+| 工具列單擊拿起設備 | 點選工具列設備，確認左側面板更新、游標顯示設備預覽 |
+| 拿起狀態 Edge Scrolling | 拿起設備後移至畫布邊緣，確認視角自動捲動 |
+| R 鍵旋轉預覽 | 拿起狀態下按 R，確認設備預覽旋轉，接口方向對應更新 |
+| Esc 取消拿起 | 拿起後按 Esc，確認預覽消失，設備不被放置 |
+| 單擊放置 snap 到正確格子 | 單擊畫布各位置放置，確認落點對應格線 |
+| 長按朝向選擇 | 長按畫布後拖動至四個方向，確認菱形框顯示、鬆開後朝向正確 |
+| 多格設備正確佔位 | 擺放 3×3 精煉爐，確認 9 格均被佔用 |
+| 重疊時僅高亮不阻擋 | 強制重疊兩台設備，確認可放置但顯示紅色高亮與 Error |
+| 工具列拿起連續放置 | 放置後確認自動繼續拿起下一個相同設備 |
+| 從畫布長按拿起移動 | 長按已部署設備，確認進入拿起狀態可移動 |
+| Ctrl 複製放置 | 從畫布長按拿起後按 Ctrl 放置，確認原位設備保留 |
+| 左側面板三個 Tab | 確認配方表、設備形狀、耗電資訊各 Tab 內容正確 |
+| 設備形狀 Tab 接口標示 | 確認接口位置與方向與 devices.ts 定義一致 |
+| 工具列 Tab 分類切換 | 點選各分類 Tab，確認只顯示該分類設備 |
+| 搜尋跨分類過濾 | 輸入關鍵字，確認跨 Tab 即時過濾設備 |
+| 基地選擇影響畫布大小 | 選擇武陵 / 四號谷地，確認畫布邊界對應正確格子尺寸 |
+| 武陵液體方位標示 | 選擇武陵後，確認畫布正確側邊顯示液體輸入方位標示 |
+| 移動設備後管線維持連接 | 長按拿起已接管線的設備移動，確認管線仍連接 |
+| 複製擺放 | 框選設備與管線後 Ctrl+C，確認立即進入拿起狀態，放置後正確擺放 |
+| 複製包含管線 | 框選含管線的設備組，確認管線一併複製且 uid 為新值 |
+| 複製復原 | 複製放置後 Ctrl+Z，確認整組（設備＋管線）同時消失 |
+| 基地不可擺放中繼器 | 選擇武陵基地後，確認設備工具列中中繼器 Tab 不顯示 |
+| TypeScript 型別保護 | 新增設備資料時，確認缺少必要欄位時 TypeScript 編譯報錯 |
+
+---
+
+*本文件為 CR-01 Feature Spec，系統整體架構見 `00_top_spec.md`。*
+</file>
+
+<file path="spec/02_pipeline.md">
+# Feature Spec：管線連接
+# CR-02
+
+**所屬階段：** Phase 1（基礎）/ Phase 3（自動路徑規劃）
+**依賴：** CR-01（設備擺放，提供接口位置與 type 定義；接口 type 定義於 `devices.ts`）
+**文件版本：** v0.2
+
+---
+
+## 1. 功能定位
+
+管線連接模組負責在設備之間建立傳送帶與水管的連線關係，是產線邏輯成立的必要條件。管線的連接狀態是 CR-03（警示）、CR-04（流量估算）的計算基礎。
+
+---
+
+## 2. 功能詳細描述
+
+### 2.1 管線模式切換
+
+- 透過工具列控項或快捷鍵（預設 `P`）切換進入 / 離開管線模式
+- 進入管線模式後：
+  - 所有設備的接口（Port）自動高亮顯示
+  - 所有現有管線自動高亮顯示
+  - 游標樣式切換為管線工具樣式
+
+### 2.2 管線 Type 自動判斷
+
+每個設備接口在 `devices.ts` 中定義 `type`（`conveyor` 或 `pipe`）。拉管線時，系統依**起點接口的 type** 決定本次拉的是傳送帶或水管，視覺樣式與連接規則對應切換。不同 type 的接口無法互連（觸發 Error，見 CR-03）。
+
+### 2.3 管線繪製流程（Phase 1：手動彎折點）
+
+**新部署管線：**
+1. 在管線模式下，點選設備接口作為起點
+2. 移動滑鼠，畫布顯示管線預覽路徑
+3. 點選中途空格可新增彎折點（手動決定路徑走向）
+4. 移動至目標接口，自動吸附
+5. 點選目標接口確認放置；或按 Escape 取消
+
+**已放置管線的微調（管線編輯狀態）：**
+- 點選已放置的管線，進入管線編輯狀態
+- 可拖移既有彎折點調整路徑
+- 可點選管線線段中途新增彎折點，再拖移
+- 確認完成：點選管線以外區域或按 Enter 退出
+
+**彎折點 90 度限制（新部署與微調均適用）：**
+- 所有相鄰節點（起點、彎折點、終點）之間的線段必須為純水平或純垂直
+- 若當前彎折點位置導致任一線段出現斜線，該彎折點顯示紅色警示，且**無法確認放置 / 無法退出編輯狀態**，直到所有線段均為 90 度轉角為止
+- 系統在預覽時即時偵測並標示違規線段
+
+> **Phase 3 升級：** 步驟 2–3 改為自動路徑規劃，系統依當前空間自動生成合法彎折點，使用者可在自動結果上再微調。
+
+### 2.4 自動吸附
+
+- 管線端點接近接口時，自動吸附至最近的合法接口
+- 吸附範圍：接口中心點周圍 1 格以內
+- 吸附時顯示高亮確認提示
+
+### 2.5 特殊節點生成
+
+以下三種情境在管線繪製時處理，無需使用者手動放置設備：
+
+#### 分流器（Splitter）
+**觸發：** 從現有管線的中途點拉出新管線
+**預設行為：** 自動插入分流器，原管線在該點一分為二，新管線從分流器接出
+**使用者可切換：** 點選預示生成的分流器圖示，切換為「截斷模式」
+- 截斷模式：原管線在該中途點截斷，截斷點之後的路徑繼續保留，新管線從截斷點接出取代原起點
+
+#### 匯流器（Merger）
+**觸發：** 將管線的終點拉至現有管線的中途點
+**預設行為：** 自動插入匯流器，兩條管線在該點合流後繼續
+**使用者可切換：** 點選預示生成的匯流器圖示，切換為「截斷模式」
+- 截斷模式：原管線在該中途點截斷，截斷點之前的起源路徑被捨棄，換由新拉的管線接入後繼續往下
+
+#### 物流橋（Bridge）
+**觸發：** 管線路徑規劃時，判斷路徑必須跨越現有管線
+**行為：** 強制自動插入物流橋，不提供切換選項，兩條管線立體交叉互不干擾
+
+> 所有自動生成的設備均計入設備清單，可被選取、刪除，刪除時管線恢復相應原狀並重新驗證。
+
+### 2.6 管線刪除
+
+- 點選管線後按 Delete 刪除
+- 所有管線操作（新增、刪除、修改彎折點）均透過 `useHistoryStore.execute()` 提交，支援 Ctrl+Z / Ctrl+Y 復原（詳見 CR-08）
+- 刪除後自動觸發 CR-04 流量重新估算
+- 警示重新計算以**設備接口狀態**為準：管線刪除本身不直接產生警示，而是觸發對受影響設備的重新評估（例如某接口因此失去輸入來源，才會產生 W001 輸入缺失）；若管線兩端接口原本就未連接任何有效路徑，則刪除後不產生新警示
+
+---
+
+## 3. 狀態管理（Pinia Store）
+
+### `usePipelineStore`
+
+```typescript
+{
+  connections: Connection[],
+  isPipelineMode: boolean,
+  draftConnection: DraftConnection | null,   // 正在繪製中的管線
+  editingConnectionUid: string | null        // 正在微調的管線 uid
+}
+
+// Connection
+{
+  uid: string,
+  type: 'conveyor' | 'pipe',
+  from: {
+    deviceUid: string,
+    portId: string
+  },
+  to: {
+    deviceUid: string,
+    portId: string
+  },
+  waypoints: { x: number, y: number }[],  // 彎折點格子座標（不含起終點）
+  autoNodes: AutoNode[]                   // 自動生成的分流器 / 匯流器 / 物流橋
+}
+
+// DraftConnection（繪製中狀態）
+{
+  type: 'conveyor' | 'pipe',
+  fromDeviceUid: string,
+  fromPortId: string,
+  waypoints: { x: number, y: number }[],
+  cursorPos: { x: number, y: number },
+  hasInvalidSegment: boolean             // true 表示存在斜線，無法確認放置
+}
+
+// AutoNode
+{
+  kind: 'splitter' | 'merger' | 'bridge',
+  gridPos: { x: number, y: number },
+  deviceUid: string,                     // 對應自動插入的 PlacedDevice uid
+  mode: 'auto' | 'cut'                   // 'cut' 為使用者切換的截斷模式（僅 splitter / merger）
+}
+```
+
+---
+
+## 4. 路徑規劃規則（Phase 1）
+
+Phase 1 路徑由使用者透過點選彎折點決定，系統負責：
+
+- **強制 90 度轉角**：所有線段必須為純水平或純垂直，即時偵測並標示違規線段；存在斜線時封鎖確認 / 退出
+- **物流橋強制插入**：路徑跨越現有管線時自動插入，無法關閉
+- **分流器 / 匯流器預設插入**：可由使用者切換為截斷模式（見 2.5）
+
+---
+
+## 5. UI 規格
+
+### 5.1 管線視覺樣式
+
+| 狀態 | 傳送帶 | 水管 |
+|------|--------|------|
+| 一般 | 橘色實線＋方向箭頭 | 藍色實線＋方向箭頭 |
+| 高亮（管線模式） | 亮橘色加粗 | 亮藍色加粗 |
+| 有 Error | 紅色閃爍邊框 | 紅色閃爍邊框 |
+| 有 Warning | 黃色邊框 | 黃色邊框 |
+| 懸停 | 顯示流量 tooltip | 顯示流量 tooltip |
+
+### 5.2 接口視覺樣式
+
+| 狀態 | 樣式 |
+|------|------|
+| 一般 | 灰色小圓點 |
+| 管線模式高亮 | 白色圓點＋脈衝動畫 |
+| 可吸附（接近中） | 綠色放大圓點 |
+| 已連接 | 對應 type 顏色實心點 |
+
+### 5.3 快捷鍵彙整
+
+| 快捷鍵 | 功能 |
+|--------|------|
+| P | 切換管線模式 |
+| Escape | 取消當前管線繪製 |
+| Enter | 退出管線編輯狀態（需無斜線才可執行） |
+| Delete | 刪除選取管線 |
+| 點選空格（繪製中） | 新增彎折點 |
+| 點選線段中途（編輯中） | 插入新彎折點 |
+
+---
+
+## 6. 實作範例
+
+### 6.1 管線模式切換
+
+```typescript
+// usePipelineStore
+const togglePipelineMode = () => {
+  isPipelineMode.value = !isPipelineMode.value
+  if (!isPipelineMode.value) {
+    draftConnection.value = null  // 取消進行中的繪製
+  }
+}
+
+// vueUse 快捷鍵
+const { p } = useMagicKeys()
+watch(p, () => togglePipelineMode())
+```
+
+### 6.2 起點選取與 type 判斷
+
+```typescript
+const startConnection = (deviceUid: string, portId: string) => {
+  const device = placedDeviceStore.getDevice(deviceUid)
+  const portDef = deviceStore.getPort(device.deviceId, portId)
+
+  draftConnection.value = {
+    type: portDef.type,  // 從接口定義取得 'conveyor' | 'pipe'
+    fromDeviceUid: deviceUid,
+    fromPortId: portId,
+    waypoints: [],
+    cursorPos: getPortAbsolutePos(device, portDef)
+  }
+}
+```
+
+### 6.3 90 度轉角驗證
+
+```typescript
+// 驗證所有線段是否為純水平或垂直
+const validateAllSegments = (
+  points: { x: number, y: number }[]  // 含起終點的完整節點列表
+): { valid: boolean, invalidIndices: number[] } => {
+  const invalidIndices: number[] = []
+  for (let i = 0; i < points.length - 1; i++) {
+    const dx = points[i + 1].x - points[i].x
+    const dy = points[i + 1].y - points[i].y
+    if (dx !== 0 && dy !== 0) {
+      invalidIndices.push(i)  // 斜線：dx 與 dy 同時非零
+    }
+  }
+  return { valid: invalidIndices.length === 0, invalidIndices }
+}
+
+// 繪製中即時更新 hasInvalidSegment
+watch(() => draftConnection.value?.waypoints, () => {
+  if (!draftConnection.value) return
+  const allPoints = [startPoint, ...draftConnection.value.waypoints, cursorPoint]
+  const { valid } = validateAllSegments(allPoints)
+  draftConnection.value.hasInvalidSegment = !valid
+}, { deep: true })
+```
+
+### 6.4 分流器截斷模式切換
+
+```typescript
+// 使用者點選預示生成的分流器圖示，切換 mode
+const toggleSplitterMode = (connectionUid: string, autoNodeIndex: number) => {
+  const conn = pipelineStore.connections.find(c => c.uid === connectionUid)
+  if (!conn) return
+  const node = conn.autoNodes[autoNodeIndex]
+  if (node.kind === 'bridge') return  // 物流橋不可切換
+
+  const newMode = node.mode === 'auto' ? 'cut' : 'auto'
+
+  historyStore.execute({
+    label: `切換${node.kind === 'splitter' ? '分流器' : '匯流器'}模式`,
+    execute: () => { node.mode = newMode },
+    undo: () => { node.mode = node.mode === 'auto' ? 'cut' : 'auto' }
+  })
+
+  // 依新模式重新計算管線結構
+  rebuildConnectionsAroundNode(connectionUid, autoNodeIndex)
+}
+```
+
+### 6.5 分流器生成偵測
+
+```typescript
+const checkMidpointTarget = (
+  targetPos: { x: number, y: number },
+  connections: Connection[]
+): { connection: Connection, segmentIndex: number } | null => {
+  for (const conn of connections) {
+    const segments = getSegments(conn)
+    for (let i = 0; i < segments.length; i++) {
+      if (isPointOnSegment(targetPos, segments[i])) {
+        return { connection: conn, segmentIndex: i }
+      }
+    }
+  }
+  return null
+}
+
+// 確認放置時，若起點為管線中途，插入分流器
+const finalizeConnection = (draft: DraftConnection, targetPort: Port) => {
+  const midSource = checkMidpointTarget(draft.startPos, pipelineStore.connections)
+  if (midSource) {
+    insertSplitter(midSource.connection, midSource.segmentIndex, draft)
+  } else {
+    addConnection(draft, targetPort)
+  }
+}
+```
+
+### 6.6 物流橋自動插入
+
+```typescript
+// 路徑確認時，掃描每個線段是否與現有管線交叉
+const insertBridgesAlongPath = (
+  waypoints: { x: number, y: number }[],
+  existing: Connection[]
+) => {
+  const segments = waypointsToSegments(waypoints)
+  for (const segment of segments) {
+    for (const conn of existing) {
+      const crossing = findCrossing(segment, conn)
+      if (crossing) {
+        insertBridge(crossing.pos, segment, conn)
+      }
+    }
+  }
+}
+```
+
+---
+
+## 7. 驗證方式
+
+| 驗證項目 | 方法 |
+|----------|------|
+| 管線模式切換 | 按 P 鍵確認接口與管線高亮出現 / 消失 |
+| Type 自動判斷 | 從 conveyor 接口拉線，確認為傳送帶樣式；從 pipe 接口拉線，確認為水管樣式 |
+| 不同 type 無法互連 | 嘗試將傳送帶接至水管接口，確認出現 Error |
+| 吸附至接口 | 拖曳管線終點接近接口，確認自動吸附 |
+| 手動彎折點 | 繪製時點選中途空格，確認彎折點產生，路徑正確轉折 |
+| 斜線鎖定確認 | 放置彎折點使線段出現斜線，確認彎折點變紅且無法確認放置 |
+| 斜線修正後解鎖 | 修正彎折點至合法位置，確認可正常確認放置 |
+| 管線編輯新增彎折點 | 點選已放置管線，點選線段中途新增彎折點，確認可拖動 |
+| 管線編輯斜線鎖定 | 微調時製造斜線，確認無法退出編輯狀態 |
+| 分流器預設自動生成 | 從管線中途拉出新管線，確認預設插入分流器，原管線一分為二 |
+| 分流器切換截斷模式 | 點選預示分流器圖示切換，確認改為截斷，原管線起源段保留，新管線接出 |
+| 匯流器預設自動生成 | 將管線終點拉至現有管線中途，確認預設插入匯流器 |
+| 匯流器切換截斷模式 | 點選預示匯流器圖示切換，確認改為截斷，原管線起源被新管線取代 |
+| 物流橋強制插入 | 規劃跨越現有管線的路徑，確認自動插入物流橋且無切換選項 |
+| 管線刪除觸發流量重算 | 刪除管線後確認流量估算即時更新 |
+| 管線刪除警示以設備為主 | 刪除原本兩端均未接有效設備的管線，確認不新增警示 |
+| 管線刪除產生設備警示 | 刪除後某設備失去輸入來源，確認對應設備出現 W001 |
+
+---
+
+*本文件為 CR-02 Feature Spec，系統整體架構見 `00_top_spec.md`。*
+</file>
+
+<file path="spec/03_validation.md">
+# Feature Spec：產線設備與佈線警示
+# CR-03
+
+**所屬階段：** Phase 1（Error）/ Phase 2（Warning）
+**依賴：** CR-01（設備狀態）、CR-02（管線連接狀態）
+**文件版本：** v0.1
+
+---
+
+## 1. 功能定位
+
+警示模組持續監聽畫布狀態，偵測設備擺放與管線佈線的合法性問題，分 Error 與 Warning 兩級回饋給使用者。警示狀態同時影響 CR-04 流量估算的計算範圍（有 Error 的節點略過）。
+
+---
+
+## 2. 功能詳細描述
+
+### 2.1 警示觸發時機
+
+以下任一狀態變更後，自動重新執行全局驗證：
+- 設備擺放、移動、刪除、旋轉
+- 管線新增、刪除、修改
+- 設備配方變更
+
+驗證採同步計算，結果即時更新至 store，不需使用者手動觸發。
+
+### 2.2 警示等級定義
+
+#### Error（阻斷估算）
+有 Error 的設備或管線會被 CR-04 流量估算略過，不參與計算。
+
+| 代碼 | 名稱 | 觸發條件 |
+|------|------|----------|
+| E001 | 設備重疊 | 兩台（含）以上設備佔用相同格子 |
+| E002 | 接口 Type 不符 | 傳送帶接口與水管接口互連 |
+| E003 | 配方不符 | 接口輸入的品項與設備當前配方所需品項不符 |
+| E004 | 佈線違法 | 管線路徑穿越設備佔用的格子（非物流橋） |
+| E005 | 接口重複連接 | 單一輸出接口連接超過一條管線（未經分流器） |
+| E006 | 未在供電範圍內 | 設備所有佔用格子均不在任何供電樁的覆蓋範圍內 |
+
+**供電範圍計算方式：** 取所有已擺放供電樁的 n×n 覆蓋格子聯集（n 由 `devices.json` 定義），設備任一格在聯集內即視為供電成功。基地模式下不允許擺放中繼器，供電覆蓋僅由供電樁決定。
+
+#### Warning（不阻斷估算）
+Warning 不影響流量估算，僅提醒使用者注意潛在問題。
+
+| 代碼 | 名稱 | 觸發條件 |
+|------|------|----------|
+| W001 | 輸入缺失 | 設備有輸入接口但無任何管線連入 |
+| W002 | 輸出未接 | 設備有輸出接口但無任何管線接出 |
+| W003 | 堵塞風險 | 某管線的輸入速率持續超過輸出速率上限 |
+| W004 | 效率不足 | 設備因上游供料不足，估算效率低於 50% |
+| W005 | 總耗電超載 | 整區所有設備總耗電量超過總供電量上限 |
+
+### 2.3 畫布視覺警示
+
+#### 設備層級
+- **Error**：設備邊框顯示紅色，並在角落顯示 ⚠️ 圖示
+- **Warning**：設備邊框顯示黃色，並在角落顯示 ⚠️ 圖示
+- 同時有 Error 與 Warning 時，以 Error 樣式優先顯示
+
+#### 管線層級
+- **Error**：管線顯示紅色閃爍邊框
+- **Warning**：管線顯示黃色邊框
+- 懸停管線時 tooltip 顯示警示代碼與說明
+
+### 2.4 右側警示列表
+
+右側統計面板包含獨立的警示列表區塊，依 Error → Warning 排序：
+
+```
+⛔ Errors (3)
+  [E001] 設備重疊：精煉爐 #3 與配件機 #1
+  [E003] 配方不符：混合機 #2 輸入接口 (input_0) 品項不符
+  [E004] 佈線違法：管線 #7 穿越精煉爐 #1
+
+⚠️ Warnings (2)
+  [W001] 輸入缺失：電驅礦機 #2 無輸出管線
+  [W003] 堵塞風險：管線 #4 輸入速率超載
+```
+
+**點選任一警示項目：**
+- 畫布自動導覽（Pan + Zoom）至相應設備或管線
+- 相應元素閃爍高亮 1.5 秒
+
+---
+
+## 3. 狀態管理（Pinia Store）
+
+### `useValidationStore`
+
+```typescript
+{
+  alerts: Alert[]
+}
+
+// Alert
+{
+  uid: string,
+  level: 'error' | 'warning',
+  code: string,              // E001, W003 等
+  message: string,           // 人類可讀說明
+  relatedDeviceUids: string[],
+  relatedConnectionUids: string[]
+}
+```
+
+**Getter：**
+```typescript
+errorsByDevice: (deviceUid: string) => Alert[]
+warningsByDevice: (deviceUid: string) => Alert[]
+hasBlockingError: (deviceUid: string) => boolean  // 供 CR-04 查詢
+```
+
+---
+
+## 4. 實作範例
+
+### 4.1 驗證主流程
+
+```typescript
+// 監聽相關 store 變動，觸發重新驗證
+watch(
+  [() => placedDeviceStore.devices, () => pipelineStore.connections],
+  () => runValidation(),
+  { deep: true }
+)
+
+const runValidation = () => {
+  const alerts: Alert[] = []
+  alerts.push(...checkDeviceOverlap())    // E001
+  alerts.push(...checkPortTypeMismatch()) // E002
+  alerts.push(...checkRecipeMismatch())   // E003
+  alerts.push(...checkIllegalRouting())   // E004
+  alerts.push(...checkDuplicateOutput())  // E005
+  alerts.push(...checkPowerCoverage())    // E006
+  // Phase 2:
+  // alerts.push(...checkMissingInput())       // W001
+  // alerts.push(...checkUnconnectedOutput())  // W002
+  // alerts.push(...checkBackpressure())       // W003
+  // alerts.push(...checkLowEfficiency())      // W004
+  // alerts.push(...checkTotalPowerExceeded()) // W005
+  validationStore.alerts = alerts
+}
+```
+
+### 4.2 設備重疊偵測（E001）
+
+```typescript
+const checkDeviceOverlap = (): Alert[] => {
+  const alerts: Alert[] = []
+  const allCells = new Map<string, string>()  // "x,y" -> deviceUid
+
+  for (const device of placedDeviceStore.devices) {
+    const cells = getOccupiedCells(device)
+    for (const cell of cells) {
+      const key = `${cell.x},${cell.y}`
+      if (allCells.has(key)) {
+        alerts.push({
+          uid: generateUid(),
+          level: 'error',
+          code: 'E001',
+          message: `設備重疊：${getDeviceName(device.uid)} 與 ${getDeviceName(allCells.get(key)!)}`,
+          relatedDeviceUids: [device.uid, allCells.get(key)!],
+          relatedConnectionUids: []
+        })
+      } else {
+        allCells.set(key, device.uid)
+      }
+    }
+  }
+  return alerts
+}
+```
+
+### 4.2 供電範圍偵測（E006）
+
+```typescript
+const checkPowerCoverage = (): Alert[] => {
+  const alerts: Alert[] = []
+
+  // 計算所有供電樁的覆蓋格子聯集
+  const coveredCells = new Set<string>()
+  const powerSupplies = placedDeviceStore.devices.filter(
+    d => getDeviceDef(d.deviceId).category === '電力' &&
+         getDeviceDef(d.deviceId).id !== 'relay'  // 基地模式排除中繼器
+  )
+
+  for (const supply of powerSupplies) {
+    const def = getDeviceDef(supply.deviceId)
+    const range = def.power_range  // n，從 devices.json 取得
+    const cx = supply.x + Math.floor(def.size.w / 2)
+    const cy = supply.y + Math.floor(def.size.h / 2)
+
+    for (let dx = -Math.floor(range / 2); dx <= Math.floor(range / 2); dx++) {
+      for (let dy = -Math.floor(range / 2); dy <= Math.floor(range / 2); dy++) {
+        coveredCells.add(`${cx + dx},${cy + dy}`)
+      }
+    }
+  }
+
+  // 檢查每台設備是否至少有一格在覆蓋範圍內
+  for (const device of placedDeviceStore.devices) {
+    if (getDeviceDef(device.deviceId).category === '電力') continue  // 供電設備本身不需供電
+    const cells = getOccupiedCells(device)
+    const isPowered = cells.some(c => coveredCells.has(`${c.x},${c.y}`))
+
+    if (!isPowered) {
+      alerts.push({
+        uid: generateUid(),
+        level: 'error',
+        code: 'E006',
+        message: `未在供電範圍內：${getDeviceName(device.uid)}`,
+        relatedDeviceUids: [device.uid],
+        relatedConnectionUids: []
+      })
+    }
+  }
+
+  return alerts
+}
+```
+
+### 4.3 總耗電超載偵測（W005，Phase 2）
+
+```typescript
+const checkTotalPowerExceeded = (): Alert[] => {
+  const totalDemand = placedDeviceStore.devices.reduce(
+    (sum, d) => sum + getDeviceDef(d.deviceId).power_cost, 0
+  )
+  const totalSupply = placedDeviceStore.devices
+    .filter(d => getDeviceDef(d.deviceId).category === '電力')
+    .reduce((sum, d) => sum + (getDeviceDef(d.deviceId).power_output ?? 0), 0)
+
+  if (totalDemand > totalSupply) {
+    return [{
+      uid: generateUid(),
+      level: 'warning',
+      code: 'W005',
+      message: `總耗電量超載：需求 ${totalDemand} kW，供給 ${totalSupply} kW`,
+      relatedDeviceUids: [],
+      relatedConnectionUids: []
+    }]
+  }
+  return []
+}
+```
+
+### 4.4 點選警示導覽至相應元素
+
+```typescript
+const navigateToAlert = (alert: Alert) => {
+  // 計算目標中心位置
+  const targetPos = getAlertCenter(alert)
+
+  // 平移並縮放畫布至目標位置
+  canvasStore.panToPosition(targetPos, { animate: true })
+
+  // 觸發閃爍高亮
+  highlightStore.flashElements({
+    deviceUids: alert.relatedDeviceUids,
+    connectionUids: alert.relatedConnectionUids,
+    duration: 1500
+  })
+}
+```
+
+---
+
+## 5. 驗證方式
+
+| 驗證項目 | 方法 |
+|----------|------|
+| E001 設備重疊 | 移動設備至與另一台重疊，確認兩台均顯示紅框，警示列表出現 E001 |
+| E002 Type 不符 | 連接傳送帶接口至水管接口，確認管線顯示紅色，警示列表出現 E002 |
+| E003 配方不符 | 將輸出品項 A 的設備接入需要品項 B 的設備，確認出現 E003 |
+| E004 佈線違法 | 手動繪製穿越設備的路徑，確認出現 E004 |
+| E006 未在供電範圍 | 擺放設備但不在任何供電樁覆蓋範圍內，確認出現 E006 紅框 |
+| E006 供電覆蓋聯集 | 擺放兩個供電樁覆蓋不同區域，確認兩區域的設備均不出現 E006 |
+| W005 總耗電超載（Phase 2）| 耗電量超過總供電量，確認出現 W005 黃色警示 |
+| Error 略過估算 | 製造 E001，確認重疊設備不出現在流量估算結果中 |
+| W001 輸入缺失（Phase 2）| 擺放設備但不接任何管線，確認出現 W001 黃色邊框 |
+| 點選警示導覽 | 點選警示列表項目，確認畫布平移至相應設備並閃爍 |
+| 警示即時更新 | 修正重疊問題後，確認 E001 即時從列表消失 |
+
+---
+
+*本文件為 CR-03 Feature Spec，系統整體架構見 `00_top_spec.md`。*
+</file>
+
+<file path="spec/04_flow_simulation.md">
+# Feature Spec：流量模擬與產能估算
+# CR-04
+
+**所屬階段：** Phase 1（基礎估算）/ Phase 2（調度券效率）
+**依賴：** CR-01（設備與配方定義）、CR-02（管線連接狀態）、CR-03（警示狀態，決定哪些節點略過）
+**文件版本：** v0.1
+
+---
+
+## 1. 功能定位
+
+FlowEngine 是模擬器的核心計算模組。每當畫布狀態變動，即時以靜態流量分析計算整條產線的穩態產能，並在畫布上與右側統計面板即時呈現結果。有 Error 的設備與管線略過計算，不影響其餘正常節點的估算。
+
+---
+
+## 2. 功能詳細描述
+
+### 2.1 觸發時機
+
+以下任一事件後，FlowEngine 自動重新計算（debounce 150ms 避免高頻觸發）：
+- 設備擺放、移動、刪除、旋轉
+- 管線新增、刪除、修改
+- 設備配方變更
+- 設備啟用 / 停用
+
+### 2.2 計算範圍
+
+- 所有在 `useValidationStore` 中標記為 `hasBlockingError = true` 的設備與管線**略過**計算
+- 略過的節點在畫布上顯示為灰色（無流量標示）
+- 其餘連通的子圖各自獨立計算
+
+### 2.3 計算方式：靜態流量分析
+
+採**有向圖拓撲排序**後正向傳播計算，假設穩態滿產情況：
+
+1. 建立有向圖：節點為設備，邊為管線（含方向）
+2. 拓撲排序（若偵測到環路則標記為異常，略過該子圖）
+3. 從 source 節點（礦機、種植機等無輸入接口的設備）開始，依拓撲順序正向計算各邊流量
+4. 限流規則：若輸入速率 < 配方需求速率，以輸入速率為上限等比縮放輸出
+5. 分流器：輸入流量平均分配至各輸出（或依使用者設定的分流比例）
+6. 匯流器：各輸入流量加總後輸出
+
+**流量單位：** 個 / 分鐘（`rate_per_min`）
+
+### 2.4 畫布即時顯示
+
+計算完成後，在以下位置顯示流量數值：
+
+- **管線上**：顯示當前傳輸速率（個/min），懸停時顯示詳細 tooltip
+- **設備上**：顯示當前運行效率（%）
+- **產線起點（source）**：顯示總輸出速率
+- **產線終點（sink，取貨口）**：顯示總收入速率
+
+**效率顏色編碼：**
+- 100%：綠色
+- 50%–99%：黃色
+- 0%–49%：橘色
+- 0%（完全無輸入）：灰色
+
+### 2.5 右側統計面板
+
+#### 整體統計區塊
+```
+總耗電量：    XXX kW
+總供電量：    YYY kW
+電力狀態：    ✅ 盈餘 ZZZ kW  /  ⚠️ 不足 ZZZ kW（對應 W005）
+
+設備數量：  XX 台（含 X 台有 Error）
+管線數量：  XX 條
+```
+
+#### 產出摘要表
+依品項列出生產 / 消耗 / 淨產量與效率：
+
+| 品項 | 生產（/min） | 消耗（/min） | 淨產量（/min） | 效率 |
+|------|-------------|-------------|---------------|------|
+| 紫晶纖維 | 4.0 | 4.0 | 0.0 | 100% |
+| 工業爆炸品 | 2.0 | — | +2.0 | 100% |
+| 穩定碳塊 | 1.5 | 2.0 | -0.5 | ⚠️ 75% |
+
+- 淨產量為正：綠色（盈餘）
+- 淨產量為負：紅色（不足，上游供料不足以滿足下游需求）
+
+#### 調度券兌換效率（Phase 2）
+
+使用者在設定區自訂各品項的調度券兌換率（個/min → 券/hr），面板顯示：
+
+```
+調度券預估產出：XXX 券/hr
+  └ 工業爆炸品 × 2.0/min → YY 券/hr
+  └ 穩定碳塊 × 1.5/min   → ZZ 券/hr
+```
+
+#### 倉庫填滿預估
+使用者輸入協議核心倉庫容量（格數），面板顯示各淨產出品項的填滿時間：
+```
+倉庫預估（容量：1000 格）
+  工業爆炸品：約 8.3 小時填滿
+```
+
+---
+
+## 3. 狀態管理（Pinia Store）
+
+### `useFlowStore`
+
+```typescript
+{
+  edgeFlows: Map<string, EdgeFlow>,      // connectionUid -> 流量
+  nodeEfficiencies: Map<string, number>, // deviceUid -> 效率 0~1
+  itemSummary: ItemSummary[],
+  totalPowerDemand: number,              // 所有設備耗電量加總（kW）
+  totalPowerSupply: number,              // 所有供電樁供電量加總（kW）
+  ticketRate: number | null,             // 調度券/hr，Phase 2
+  lastCalculatedAt: number               // timestamp
+}
+
+// EdgeFlow
+{
+  connectionUid: string,
+  itemId: string,
+  rate: number  // 個/min
+}
+
+// ItemSummary
+{
+  itemId: string,
+  name: string,
+  produced: number,    // 個/min
+  consumed: number,    // 個/min
+  net: number,         // produced - consumed
+  efficiency: number   // 0~1
+}
+```
+
+---
+
+## 4. 實作範例
+
+### 4.1 FlowEngine 主流程
+
+```typescript
+const runFlowEngine = () => {
+  const devices = placedDeviceStore.devices
+  const connections = pipelineStore.connections
+  const validation = validationStore
+
+  // 1. 過濾掉有 Error 的節點
+  const validDevices = devices.filter(d => !validation.hasBlockingError(d.uid))
+  const validConnections = connections.filter(c => !validation.hasBlockingError(c.uid))
+
+  // 2. 建立有向圖
+  const graph = buildGraph(validDevices, validConnections)
+
+  // 3. 拓撲排序（偵測環路）
+  const { sorted, hasCycle } = topologicalSort(graph)
+  if (hasCycle) {
+    console.warn('偵測到環路，略過該子圖')
+  }
+
+  // 4. 正向傳播計算流量
+  const edgeFlows = new Map<string, EdgeFlow>()
+  const nodeEfficiencies = new Map<string, number>()
+
+  for (const nodeId of sorted) {
+    const device = validDevices.find(d => d.uid === nodeId)!
+    const inputFlows = getIncomingFlows(nodeId, edgeFlows, validConnections)
+    const { outputFlows, efficiency } = calcDeviceOutput(device, inputFlows)
+
+    nodeEfficiencies.set(nodeId, efficiency)
+    for (const [connUid, flow] of outputFlows) {
+      edgeFlows.set(connUid, flow)
+    }
+  }
+
+  // 5. 統計品項摘要
+  flowStore.edgeFlows = edgeFlows
+  flowStore.nodeEfficiencies = nodeEfficiencies
+  flowStore.itemSummary = calcItemSummary(edgeFlows, validDevices)
+  flowStore.totalPowerDemand = validDevices.reduce(
+    (sum, d) => sum + getDeviceDef(d.deviceId).power_cost, 0
+  )
+  flowStore.totalPowerSupply = placedDeviceStore.devices
+    .filter(d => getDeviceDef(d.deviceId).category === '電力')
+    .reduce((sum, d) => sum + (getDeviceDef(d.deviceId).power_output ?? 0), 0)
+}
+```
+
+### 4.2 單設備輸出計算
+
+```typescript
+const calcDeviceOutput = (
+  device: PlacedDevice,
+  inputFlows: Map<string, number>  // itemId -> rate
+): { outputFlows: Map<string, EdgeFlow>, efficiency: number } => {
+  const recipe = getRecipe(device.activeRecipe)
+  if (!recipe) return { outputFlows: new Map(), efficiency: 0 }
+
+  // 計算各輸入品項的供給比例
+  const ratios = recipe.inputs.map(input => {
+    const supplied = inputFlows.get(input.item) ?? 0
+    return supplied / input.rate_per_min
+  })
+
+  // 效率取最小比例（瓶頸輸入決定整體效率）
+  const efficiency = Math.min(1, ...ratios)
+
+  // 依效率縮放輸出
+  const outputFlows = new Map<string, EdgeFlow>()
+  for (const output of recipe.outputs) {
+    outputFlows.set(output.item, {
+      connectionUid: '',  // 由呼叫端填入
+      itemId: output.item,
+      rate: output.rate_per_min * efficiency
+    })
+  }
+
+  return { outputFlows, efficiency }
+}
+```
+
+### 4.3 debounce 觸發
+
+```typescript
+// 監聽相關 store 變動
+watch(
+  [() => placedDeviceStore.devices, () => pipelineStore.connections],
+  useDebounceFn(runFlowEngine, 150),
+  { deep: true }
+)
+```
+
+---
+
+## 5. 驗證方式
+
+| 驗證項目 | 方法 |
+|----------|------|
+| 即時重算觸發 | 擺放設備後確認管線與面板數值即時更新（< 200ms） |
+| Source 到 Sink 正確傳播 | 建立簡單單條產線，確認各節點流量與配方速率一致 |
+| 限流縮比 | 礦機供料不足配方需求，確認效率顯示對應比例而非 100% |
+| Error 節點略過 | 製造 E001 重疊，確認重疊設備不顯示流量，其下游也顯示灰色 |
+| 分流器均分 | 接入分流器後確認兩側輸出各為輸入的一半 |
+| 電力統計 | 擺放供電樁與耗電設備，確認右側總耗電量與總供電量數值正確，盈餘 / 不足狀態正確顯示 |
+| 產出摘要表 | 確認生產 / 消耗 / 淨產量計算正確，負值顯示紅色 |
+| 調度券計算（Phase 2） | 設定兌換率後確認預估券數即時更新 |
+
+---
+
+*本文件為 CR-04 Feature Spec，系統整體架構見 `00_top_spec.md`。*
+</file>
+
+<file path="spec/05_recipe_flow.md">
+# Feature Spec：配方流程設計（Flow Chart 視角）
+# CR-05
+
+**所屬階段：** Phase 1（視角切換 + 基礎 Flow Chart）/ Phase 2（新增流程、中間產物選擇、一鍵導入）
+**依賴：** CR-01（設備與配方資料）、CR-04（流量估算結果）
+**文件版本：** v0.2
+
+---
+
+## 1. 功能定位
+
+流程視角是模擬器的核心賣點之一，讓使用者可以在抽象的「產物流向圖」與具體的「設備擺放藍圖」之間自由切換，兩者共用同一份產線資料。使用者可在流程視角進行高層次的配方規劃，再一鍵轉換為藍圖中的具體設備配置。
+
+---
+
+## 2. 視角模式
+
+主畫面提供視角切換控項（工具列按鈕或快捷鍵），支援三種模式：
+
+| 模式 | 說明 |
+|------|------|
+| **藍圖視角** | 完整格子畫布，設備擺放與管線操作（CR-01、CR-02 的主操作介面） |
+| **流程視角** | Flow Chart 呈現產物節點、設備節點、連線效率與配比 |
+| **並列視角** | 藍圖與流程並排顯示，支援左右並排或上下並排，兩側同步聯動 |
+
+三種視角共用同一份 Pinia store 資料，切換時不需重新載入。
+
+---
+
+## 3. 功能詳細描述
+
+### 3.1 流程視角 — Flow Chart 呈現
+
+Flow Chart 的節點與邊定義：
+
+**節點類型：**
+- **原料節點**：產線的輸入來源（礦機採集的原物料、倉庫直取的品項），顯示供給速率
+- **設備節點**：執行配方的設備，顯示設備名稱、當前配方、效率（%）
+- **產物節點**：中間產物或最終產物，顯示當前產出速率
+- **倉庫節點**：標示該品項從倉庫直接取用，不經過產線生產
+
+**邊：**
+- 從原料節點 / 產物節點指向設備節點（輸入）
+- 從設備節點指向產物節點（輸出）
+- 邊上顯示品項名稱與流量（個/min）
+
+**視覺佈局：**
+- 自左向右排列（原料 → 設備 → 產物），可自動佈局
+- 最終產物（無下游）顯示於最右側，底部標示對應調度券兌換量
+- 節點顏色對應效率（同 CR-04 的顏色編碼：綠 / 黃 / 橘 / 灰）
+
+### 3.2 並列視角 — 聯動行為
+
+#### Phase 1：點選導覽聯動
+- 點選任一側的設備或產物節點，另一側自動導覽（Pan + Zoom）至相應位置並高亮
+- 點選藍圖側設備 → 流程側對應設備節點高亮
+- 點選流程側設備節點 → 藍圖側對應設備高亮並居中
+
+#### Phase 2：編輯聯動
+- 在藍圖側新增 / 刪除設備或管線，流程側即時更新 Flow Chart
+- 在流程側新增配方（見 3.3），藍圖側即時顯示「待導入」提示
+- 兩側的配方選擇、中間產物設定保持同步
+
+### 3.3 流程視角編輯功能（Phase 2）
+
+#### 新增流程配方
+使用者可在流程視角直接新增一個尚未在藍圖中存在的配方節點：
+1. 點選「+ 新增配方」，選擇目標產物
+2. 系統列出可生產該產物的所有配方供選擇
+3. 確認後在 Flow Chart 中插入對應的設備節點與連線
+4. 右上角出現「**切換視角以導入**」按鈕提示
+
+#### 切換視角以導入
+1. 使用者點選「切換視角以導入」，畫面切換至藍圖視角
+2. 滑鼠自動拖曳一組對應設備（預設配置），跟隨游標移動
+3. 使用者移動至目標位置後點選確認擺放
+4. 擺放完成後，管線接口的預設連接建議以虛線高亮顯示，使用者確認或忽略
+
+#### 中間產物選擇
+在流程視角中，每個中間產物節點右鍵可選擇：
+- **使用產線生產**：保留現有配方節點
+- **從倉庫直取**：將該節點替換為倉庫節點，上游配方節點從 Flow Chart 移除（但藍圖中的設備不自動刪除，僅解除連線關係並顯示 Warning）
+
+---
+
+## 4. 狀態管理（Pinia Store）
+
+### `useViewStore`
+```typescript
+{
+  currentView: 'blueprint' | 'flow' | 'split',
+  splitDirection: 'horizontal' | 'vertical',  // horizontal = 左右並排，vertical = 上下並排
+  splitRatio: number  // 並列比例，預設 0.5
+}
+```
+
+### `useFlowChartStore`
+```typescript
+{
+  nodes: FlowChartNode[],
+  edges: FlowChartEdge[],
+  pendingImports: PendingImport[]  // 待導入至藍圖的配方組
+}
+
+// FlowChartNode
+{
+  uid: string,
+  type: 'source' | 'device' | 'product' | 'warehouse',
+  label: string,
+  deviceUid: string | null,      // 對應 PlacedDevice uid（若已在藍圖中）
+  itemId: string | null,
+  rate: number | null,           // 個/min，來自 CR-04 估算
+  efficiency: number | null,     // 0~1，來自 CR-04 估算
+  position: { x: number, y: number }  // Flow Chart 中的座標
+}
+
+// FlowChartEdge
+{
+  uid: string,
+  fromNodeUid: string,
+  toNodeUid: string,
+  itemId: string,
+  rate: number  // 個/min
+}
+
+// PendingImport
+{
+  recipeId: string,
+  deviceCount: number,
+  suggestedDevices: PlacedDevice[]  // 預設擺放位置（未確認）
+}
+```
+
+### Flow Chart 自動同步
+
+`useFlowChartStore` 的 nodes / edges 由 getter 從 `usePlacedDeviceStore` + `usePipelineStore` + `useFlowStore` 衍生計算，不獨立維護——藍圖狀態是單一來源，Flow Chart 是其衍生視圖。
+
+```typescript
+// 衍生計算：從藍圖狀態生成 Flow Chart 節點
+const derivedNodes = computed(() => {
+  return buildFlowChartNodes(
+    placedDeviceStore.devices,
+    pipelineStore.connections,
+    flowStore.nodeEfficiencies,
+    flowStore.edgeFlows
+  )
+})
+```
+
+---
+
+## 5. UI 規格
+
+### 5.1 視角切換控項
+
+切換控項位於**編輯區左下角**，以三個圖示按鈕呈現三種視角狀態，按 **Tab 鍵輪替**切換：
+
+```
+╔══════════╗
+║          ║
+║  編輯區  ║
+║          ║
+║ [🗺][📊][⊞] ║  ← 左下角視角切換圖示
+╚══════════╝
+```
+
+| 圖示 | 視角 |
+|------|------|
+| 🗺（藍圖圖示） | 藍圖視角 |
+| 📊（流程圖示） | 流程視角 |
+| ⊞（並列圖示） | 並列視角 |
+
+- 目前所在視角的圖示顯示為選取狀態（高亮）
+- 按 Tab 鍵依序輪替：藍圖 → 流程 → 並列 → 藍圖…
+- 直接點選圖示可跳至對應視角
+
+### 5.2 並列視角版型
+
+並列視角支援**左右並排**與**上下並排**兩種排列方向，使用者可在並列視角中切換：
+
+**左右並排（預設）：**
+```
+┌────────────────────┬────────────────────┐
+│                    │                    │
+│   藍圖視角         │   流程視角          │
+│   （格子畫布）      │   （Flow Chart）    │
+│                    │                    │
+│  點選設備          │  對應節點高亮       │
+│  ←──────────────── │ ─────────────────→ │
+│                    │                    │
+└────────────────────┴────────────────────┘
+          ↔ 可拖移垂直分隔線調整比例
+```
+
+**上下並排：**
+```
+┌────────────────────────────────────────┐
+│   藍圖視角（格子畫布）                  │
+│                                        │
+│  點選設備 ↕ 對應節點高亮               │
+├────────────────────────────────────────┤
+│   流程視角（Flow Chart）               │
+│                                        │
+└────────────────────────────────────────┘
+          ↕ 可拖移水平分隔線調整比例
+```
+
+排列方向切換按鈕顯示於並列視角的分隔線旁。
+
+### 5.3 Flow Chart 節點樣式
+
+| 節點類型 | 樣式 |
+|----------|------|
+| 原料節點 | 圓角矩形，深灰背景，白字 |
+| 設備節點 | 矩形，顏色依效率（綠 / 黃 / 橘 / 灰），顯示設備圖示 |
+| 產物節點 | 橢圓，品項圖示 + 名稱 + 速率 |
+| 倉庫節點 | 橢圓，倉庫圖示，虛線邊框 |
+| 待導入節點 | 矩形，虛線邊框，半透明 |
+
+---
+
+## 6. 實作範例
+
+### 6.1 視角切換
+
+```typescript
+// useViewStore
+const VIEW_ORDER = ['blueprint', 'flow', 'split'] as const
+
+const setView = (view: typeof VIEW_ORDER[number]) => {
+  currentView.value = view
+}
+
+const cycleView = () => {
+  const currentIndex = VIEW_ORDER.indexOf(currentView.value)
+  const nextIndex = (currentIndex + 1) % VIEW_ORDER.length
+  currentView.value = VIEW_ORDER[nextIndex]
+}
+
+const toggleSplitDirection = () => {
+  splitDirection.value = splitDirection.value === 'horizontal' ? 'vertical' : 'horizontal'
+}
+
+// vueUse Tab 鍵輪替
+const { tab } = useMagicKeys()
+watch(tab, (pressed) => { if (pressed) viewStore.cycleView() })
+```
+
+### 6.2 Flow Chart 從藍圖衍生
+
+```typescript
+const buildFlowChartNodes = (
+  devices: PlacedDevice[],
+  connections: Connection[],
+  efficiencies: Map<string, number>,
+  edgeFlows: Map<string, EdgeFlow>
+): FlowChartNode[] => {
+  const nodes: FlowChartNode[] = []
+
+  for (const device of devices) {
+    const recipe = getRecipe(device.activeRecipe)
+    nodes.push({
+      uid: `node_${device.uid}`,
+      type: 'device',
+      label: getDeviceName(device.deviceId),
+      deviceUid: device.uid,
+      itemId: null,
+      rate: null,
+      efficiency: efficiencies.get(device.uid) ?? null,
+      position: autoLayoutPosition(device.uid)
+    })
+
+    // 為每個輸入 / 輸出品項建立產物節點
+    if (recipe) {
+      for (const output of recipe.outputs) {
+        if (!nodes.find(n => n.itemId === output.item)) {
+          nodes.push(buildProductNode(output.item, edgeFlows))
+        }
+      }
+    }
+  }
+
+  return nodes
+}
+```
+
+### 6.3 並列視角點選導覽
+
+```typescript
+// 點選藍圖側設備，流程側對應節點高亮
+const onBlueprintDeviceClick = (deviceUid: string) => {
+  const flowNode = flowChartStore.nodes.find(n => n.deviceUid === deviceUid)
+  if (flowNode) {
+    flowChartStore.highlightNode(flowNode.uid)
+    flowChartStore.panToNode(flowNode.uid)
+  }
+}
+
+// 點選流程側節點，藍圖側對應設備高亮
+const onFlowNodeClick = (nodeUid: string) => {
+  const node = flowChartStore.nodes.find(n => n.uid === nodeUid)
+  if (node?.deviceUid) {
+    placedDeviceStore.selectDevice(node.deviceUid)
+    canvasStore.panToDevice(node.deviceUid)
+  }
+}
+```
+
+---
+
+## 7. 驗證方式
+
+| 驗證項目 | 方法 |
+|----------|------|
+| Tab 鍵輪替視角 | 連按 Tab 三次，確認依序切換藍圖 → 流程 → 並列 → 藍圖 |
+| 左下角圖示顯示 | 確認三個視角圖示顯示於編輯區左下角，當前視角圖示高亮 |
+| 點選圖示直接切換 | 點選非當前視角的圖示，確認直接跳至對應視角 |
+| 切換時資料不遺失 | 在藍圖側新增設備後切換至流程視角，確認節點出現 |
+| 並列左右並排 | 進入並列視角，確認預設為左右排列，可拖移垂直分隔線 |
+| 並列上下並排切換 | 點選排列方向切換按鈕，確認切換為上下排列，分隔線變水平 |
+| 並列比例調整 | 拖移分隔線，確認兩側比例即時更新 |
+| Flow Chart 正確呈現 | 建立簡單兩台設備產線，切至流程視角，確認節點與邊正確對應 |
+| 效率顏色正確 | 製造輸入不足情況，確認設備節點顏色對應效率等級 |
+| 並列視角點選導覽（Phase 1）| 點選藍圖側設備，確認流程側對應節點高亮；反向同樣測試 |
+| 並列視角編輯聯動（Phase 2）| 在藍圖側新增設備，確認流程側即時更新 |
+| 新增配方出現待導入按鈕（Phase 2）| 在流程視角新增配方，確認出現「切換視角以導入」提示 |
+| 一鍵導入流程（Phase 2）| 點選導入，確認切換至藍圖視角且滑鼠拖曳對應設備組 |
+| 中間產物倉庫直取（Phase 2）| 右鍵中間產物節點選「從倉庫直取」，確認上游節點移除，藍圖設備顯示 Warning |
+
+---
+
+*本文件為 CR-05 Feature Spec，系統整體架構見 `00_top_spec.md`。*
+</file>
+
+<file path="spec/06_export_import.md">
+# Feature Spec：藍圖匯入 / 匯出
+# CR-06
+
+**所屬階段：** Phase 2
+**依賴：** CR-01（設備狀態）、CR-02（管線狀態）、CR-03（警示狀態）、CR-04（產能估算）、CR-05（Flow Chart 狀態）
+**文件版本：** v0.2
+
+---
+
+## 1. 功能定位
+
+匯出模組將目前產線的完整狀態序列化為自包含的 `.html` 記錄檔，供使用者分享與瀏覽。匯入模組從記錄檔或 `.json` 還原產線狀態，支援跨版本 migrate 邏輯。
+
+---
+
+## 2. 功能詳細描述
+
+### 2.1 匯出記錄檔（.html）
+
+#### 觸發
+工具列「匯出」按鈕 → 輸入藍圖名稱、作者（選填）→ 確認後觸發瀏覽器下載
+
+#### 記錄檔設計原則
+- **視覺從簡**：靜態呈現產線狀態，不重新實作拖拉、連線等重度互動
+- **資料求完整**：內嵌完整 JSON，可無損匯回模擬器繼續編輯
+- **自包含**：所有資源 inline，無外部依賴，離線可瀏覽
+
+#### 記錄檔內容（人類可讀層）
+
+分四個 Tab 呈現：
+
+| Tab | 內容 |
+|-----|------|
+| 設備藍圖 | 靜態格子圖，顯示設備位置、接口、管線走向 |
+| 流程圖 | 靜態 Flow Chart（SVG 渲染），節點與連線關係 |
+| 產能估算 | 產出摘要表、電力統計、調度券效率 |
+| 警示列舉 | Error 與 Warning 完整清單 |
+
+基本互動（純 JS，無框架）：
+- Tab 切換
+- 設備 / 節點懸停顯示詳細資訊 tooltip
+- 警示項目點選時，設備藍圖 Tab 高亮對應設備
+
+#### 記錄檔 HTML 結構
+
+```html
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>【AIC 藍圖】{名稱}</title>
+  <style>/* 全部 inline，無外部 CSS */</style>
+</head>
+<body>
+  <header>
+    <h1>{藍圖名稱}</h1>
+    <p>作者：{作者} ｜ 匯出時間：{datetime} ｜ 模擬器版本：{version}</p>
+  </header>
+
+  <!-- Tab 導覽 -->
+  <nav id="tabs">
+    <button data-tab="layout">設備藍圖</button>
+    <button data-tab="flow">流程圖</button>
+    <button data-tab="summary">產能估算</button>
+    <button data-tab="alerts">警示列舉</button>
+  </nav>
+
+  <!-- Tab 內容 -->
+  <section id="tab-layout"><!-- SVG 格子圖 --></section>
+  <section id="tab-flow"><!-- SVG Flow Chart --></section>
+  <section id="tab-summary"><!-- 產出摘要表 HTML --></section>
+  <section id="tab-alerts"><!-- 警示列表 HTML --></section>
+
+  <!-- 機器可讀層（供匯入使用，不影響視覺） -->
+  <script type="application/json" id="blueprint-data">
+    { ...完整藍圖 JSON... }
+  </script>
+
+  <!-- 輕量互動腳本（無框架依賴） -->
+  <script>/* Tab 切換、tooltip、高亮邏輯 */</script>
+</body>
+</html>
+```
+
+---
+
+### 2.2 藍圖 JSON Schema（v1.0）
+
+```json
+{
+  "schema_version": "1.0",
+  "simulator_version": "0.1.0",
+  "metadata": {
+    "name": "武陵息壤自動化產線",
+    "author": "玩家名稱",
+    "created_at": "2026-05-13T00:00:00Z",
+    "updated_at": "2026-05-17T12:00:00Z",
+    "base_region": "wuling",
+    "description": "備註說明"
+  },
+  "canvas": {
+    "width": 40,
+    "height": 30
+  },
+  "placed_devices": [
+    {
+      "uid": "d_001",
+      "device_id": "refinery",
+      "x": 5,
+      "y": 3,
+      "rotation": 0,
+      "active_recipe": "recipe_purple_crystal_fiber"
+    }
+  ],
+  "connections": [
+    {
+      "uid": "c_001",
+      "type": "conveyor",
+      "from": { "device_uid": "d_001", "port_id": "output_0" },
+      "to": { "device_uid": "d_002", "port_id": "input_0" },
+      "waypoints": [{ "x": 7, "y": 3 }, { "x": 7, "y": 6 }]
+    }
+  ],
+  "flow_chart": {
+    "node_positions": [
+      { "node_uid": "node_d_001", "x": 200, "y": 150 }
+    ]
+  },
+  "user_settings": {
+    "ticket_exchange_rates": [
+      { "item_id": "industrial_explosive", "rate_per_unit": 2.5 }
+    ],
+    "warehouse_capacity": 1000
+  }
+}
+```
+
+---
+
+### 2.3 跨版本 Migrate 邏輯
+
+使用 **Zod** 實作 schema 定義與 migrate。每個版本的 schema 以 `z.object()` 定義，透過 `.transform()` 在 parse 同時完成欄位補全或轉換，鏈式升至最新版本。
+
+**設計原則：**
+- Migrate 靜默執行，不警示使用者——版本差異屬於系統內部處理，使用者無需感知
+- 僅在 `safeParse` 失敗（parse error）時才顯示錯誤訊息，告知使用者檔案損毀或格式不合法
+- 每次系統有欄位變動，新增一個版本的 Zod schema 與對應的 transform
+
+```typescript
+import { z } from 'zod'
+
+// ── v1.0 Schema ──────────────────────────────────────────
+const BlueprintV1_0 = z.object({
+  schema_version: z.literal('1.0'),
+  metadata: z.object({
+    name: z.string(),
+    author: z.string().optional(),
+    created_at: z.string(),
+    updated_at: z.string(),
+    base_region: z.enum(['wuling', 'valley4']).nullable(),
+    description: z.string().optional()
+  }),
+  canvas: z.object({ width: z.number(), height: z.number() }),
+  placed_devices: z.array(z.object({
+    uid: z.string(),
+    device_id: z.string(),
+    x: z.number(),
+    y: z.number(),
+    rotation: z.union([z.literal(0), z.literal(90), z.literal(180), z.literal(270)]),
+    active_recipe: z.string().nullable()
+  })),
+  connections: z.array(z.object({
+    uid: z.string(),
+    type: z.enum(['conveyor', 'pipe']),
+    from: z.object({ device_uid: z.string(), port_id: z.string() }),
+    to: z.object({ device_uid: z.string(), port_id: z.string() }),
+    waypoints: z.array(z.object({ x: z.number(), y: z.number() }))
+  })),
+  flow_chart: z.object({
+    node_positions: z.array(z.object({
+      node_uid: z.string(),
+      x: z.number(),
+      y: z.number()
+    }))
+  }).optional(),
+  user_settings: z.object({
+    ticket_exchange_rates: z.array(z.object({
+      item_id: z.string(),
+      rate_per_unit: z.number()
+    })),
+    warehouse_capacity: z.number().optional()
+  }).optional()
+})
+
+// ── v1.0 → v1.1 migrate（範例：connections 新增 auto_nodes 欄位）──
+const BlueprintV1_1 = BlueprintV1_0
+  .omit({ schema_version: true })
+  .extend({
+    schema_version: z.literal('1.1'),
+    connections: z.array(z.object({
+      uid: z.string(),
+      type: z.enum(['conveyor', 'pipe']),
+      from: z.object({ device_uid: z.string(), port_id: z.string() }),
+      to: z.object({ device_uid: z.string(), port_id: z.string() }),
+      waypoints: z.array(z.object({ x: z.number(), y: z.number() })),
+      auto_nodes: z.array(z.object({   // 新增欄位
+        kind: z.enum(['splitter', 'merger', 'bridge']),
+        grid_pos: z.object({ x: z.number(), y: z.number() }),
+        device_uid: z.string(),
+        mode: z.enum(['auto', 'cut'])
+      }))
+    }))
+  })
+
+// ── 從 v1.0 原始資料 migrate 至 v1.1 ──
+const migrateV1_0toV1_1 = BlueprintV1_0.transform((data) => ({
+  ...data,
+  schema_version: '1.1' as const,
+  connections: data.connections.map(c => ({
+    ...c,
+    auto_nodes: []  // 舊版無此欄位，補空陣列
+  }))
+}))
+
+// ── 主入口：依 schema_version 選擇 migrate 路徑 ──
+export const parseBlueprint = (raw: unknown) => {
+  // 先取得版本號
+  const versionResult = z.object({ schema_version: z.string() }).safeParse(raw)
+  if (!versionResult.success) {
+    throw new Error('檔案格式錯誤：無法讀取藍圖版本資訊')
+  }
+
+  const version = versionResult.data.schema_version
+
+  // 依版本鏈式 migrate 至最新
+  if (version === '1.0') {
+    const result = migrateV1_0toV1_1.safeParse(raw)
+    if (!result.success) {
+      throw new Error(`藍圖解析失敗：${z.prettifyError(result.error)}`)
+    }
+    return result.data  // 已是 v1.1 格式
+  }
+
+  if (version === '1.1') {
+    const result = BlueprintV1_1.safeParse(raw)
+    if (!result.success) {
+      throw new Error(`藍圖解析失敗：${z.prettifyError(result.error)}`)
+    }
+    return result.data
+  }
+
+  throw new Error(`不支援的藍圖版本：${version}`)
+}
+```
+
+> **新增版本時的維護步驟：**
+> 1. 定義新版本的 Zod schema（`BlueprintV_X_Y`）
+> 2. 撰寫前一版本至新版本的 `.transform()` migrate 函式
+> 3. 在 `parseBlueprint` 的版本判斷中新增對應分支
+> 4. 更新 `CURRENT_SCHEMA_VERSION` 常數
+
+---
+
+### 2.4 匯入流程
+
+**支援格式：** `.html`（含 `#blueprint-data`）、`.json`（直接為藍圖 JSON）
+
+**流程：**
+1. 使用者點選工具列「匯入」按鈕，選擇檔案
+2. 系統讀取檔案，偵測格式（HTML or JSON）
+3. 解析 `#blueprint-data` 或直接解析 JSON 取得原始資料
+4. 呼叫 `parseBlueprint(raw)` 進行版本偵測、migrate、Zod 驗證
+5. 若 `parseBlueprint` 拋出錯誤（parse error），顯示錯誤訊息給使用者
+6. 成功後顯示確認對話框：「匯入將覆蓋當前畫布，確定繼續？」
+7. 確認後，將解析結果還原至 Pinia store，觸發流量重算與驗證
+
+---
+
+## 3. 狀態管理（Pinia Store）
+
+匯出時從以下 store 序列化：
+
+| Store | 對應 JSON 欄位 |
+|-------|---------------|
+| `usePlacedDeviceStore` | `placed_devices` |
+| `usePipelineStore` | `connections` |
+| `useFlowChartStore`（節點位置） | `flow_chart.node_positions` |
+| 使用者設定（票券率、倉庫容量） | `user_settings` |
+| `useCanvasStore`（基地、畫布大小） | `canvas`、`metadata.base_region` |
+
+匯入時，反向還原各 store，順序：
+1. `usePlacedDeviceStore`
+2. `usePipelineStore`
+3. `useCanvasStore`
+4. `useFlowChartStore`（節點位置）
+5. 使用者設定
+6. 觸發 `runValidation()` + `runFlowEngine()`
+
+---
+
+## 4. 實作範例
+
+### 4.1 匯出觸發
+
+```typescript
+const exportBlueprint = (name: string, author: string) => {
+  const json = serializeToBlueprint(name, author)
+  const html = renderBlueprintHtml(json)
+
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `${name.replace(/\s+/g, '_')}_blueprint.html`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+```
+
+### 4.2 匯入解析
+
+```typescript
+const importBlueprint = async (file: File) => {
+  const text = await file.text()
+  let raw: unknown
+
+  if (file.name.endsWith('.html')) {
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(text, 'text/html')
+    const scriptEl = doc.querySelector('#blueprint-data')
+    if (!scriptEl?.textContent) throw new Error('找不到藍圖資料，檔案可能已損毀')
+    raw = JSON.parse(scriptEl.textContent)
+  } else {
+    raw = JSON.parse(text)
+  }
+
+  // parseBlueprint 內部處理版本偵測、migrate、Zod 驗證
+  // 任何 parse error 會 throw，由呼叫端顯示錯誤訊息給使用者
+  const blueprint = parseBlueprint(raw)
+  return blueprint
+}
+```
+
+### 4.3 靜態 Flow Chart SVG 渲染（匯出用）
+
+```typescript
+const renderFlowChartSvg = (nodes: FlowChartNode[], edges: FlowChartEdge[]): string => {
+  // 產生靜態 SVG 字串，嵌入 HTML 記錄檔
+  const svgNodes = nodes.map(n => `
+    <g transform="translate(${n.position.x}, ${n.position.y})">
+      <rect width="120" height="40" rx="6" fill="${efficiencyColor(n.efficiency)}" />
+      <text x="60" y="24" text-anchor="middle">${escapeHtml(n.label)}</text>
+    </g>
+  `).join('')
+
+  const svgEdges = edges.map(e => {
+    const from = nodes.find(n => n.uid === e.fromNodeUid)!
+    const to = nodes.find(n => n.uid === e.toNodeUid)!
+    return `<line x1="${from.position.x + 120}" y1="${from.position.y + 20}"
+                  x2="${to.position.x}" y2="${to.position.y + 20}"
+                  stroke="#888" stroke-width="2" marker-end="url(#arrow)" />`
+  }).join('')
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+    <defs><marker id="arrow" ...></marker></defs>
+    ${svgEdges}${svgNodes}
+  </svg>`
+}
+```
+
+---
+
+## 5. 驗證方式
+
+| 驗證項目 | 方法 |
+|----------|------|
+| 匯出觸發下載 | 點選匯出按鈕，確認瀏覽器下載 `.html` 檔案 |
+| 記錄檔可瀏覽 | 開啟匯出的 `.html`，確認四個 Tab 內容正確渲染 |
+| Tab 切換互動 | 點選各 Tab，確認內容正確切換 |
+| 機器可讀層存在 | 以文字編輯器開啟 `.html`，確認 `#blueprint-data` 存在且為合法 JSON |
+| 匯回還原完整 | 匯出後匯入，確認設備位置、管線、配方、使用者設定完全還原 |
+| 跨版本 migrate 靜默執行 | 使用舊版 schema JSON 匯入，確認自動升級成功、無任何警示訊息 |
+| Parse error 顯示錯誤 | 匯入損毀或格式錯誤的檔案，確認顯示明確錯誤訊息 |
+| Zod 型別保護 | 匯入缺少必要欄位的 JSON，確認 `parseBlueprint` 拋出 Zod 錯誤並顯示給使用者 |
+| 匯入覆蓋確認 | 在有現有配置的情況下匯入，確認出現確認對話框 |
+| 離線瀏覽 | 斷網情況下開啟匯出的 `.html`，確認正常顯示 |
+
+---
+
+*本文件為 CR-06 Feature Spec，系統整體架構見 `00_top_spec.md`。*
+</file>
+
+<file path="spec/07_optimization.md">
+# Feature Spec：多目標優化產能推導
+# CR-07
+
+**所屬階段：** Phase 3
+**依賴：** CR-01（設備與配方定義）、CR-05（導入擺放視角流程）
+**文件版本：** v0.1
+
+---
+
+## 1. 功能定位
+
+多目標優化頁面讓使用者在不考慮具體設備擺放位置的情況下，先設定產能目標與原料限制，由系統以線性規劃（LP）推導最佳配方流量分配，再透過「切換視角以導入」將結果轉入藍圖。
+
+---
+
+## 2. 核心概念
+
+### 2.1 流量單位
+
+以**傳送帶滿載流量（30 個/min）**為基礎物流單位，簡稱「1 條」。設備台數是流量分配的衍生結果（向上取整），而非決策變數本身。
+
+範例：赤銅礦產能 60/min = 2 條，可分配給配方 A 1.5 條 + 配方 B 0.5 條。
+
+### 2.2 決策空間
+
+- **決策變數**：分配給每個配方的流量（連續值，單位：個/min）
+- **衍生計算**：各配方所需設備台數 = ⌈ 分配流量 / 單台設備產出速率 ⌉
+- **目標函式**：最大化調度券產出（或依使用者設定的多目標權重）
+- **約束條件**：原料供給上限、部分產物的硬性最低需求
+
+---
+
+## 3. 功能詳細描述
+
+### 3.1 輸入設定
+
+使用者在優化頁面設定以下三類參數：
+
+#### 原料供給（約束上限）
+列出所有可用原物料，使用者輸入每種原料的可用產能（個/min 或條數）：
+
+```
+原料設定
+┌──────────────┬──────────────┬──────────────┐
+│ 原料名稱     │ 可用產能      │ 單位          │
+├──────────────┼──────────────┼──────────────┤
+│ 赤銅礦       │ 60           │ /min（= 2 條）│
+│ 源石         │ 30           │ /min（= 1 條）│
+│ 純水         │ 90           │ /min（= 3 條）│
+└──────────────┴──────────────┴──────────────┘
+```
+
+#### 產物硬性需求（約束下限，選填）
+使用者可指定某些最終產物的最低產出速率：
+
+```
+硬性需求（選填）
+┌──────────────┬──────────────┐
+│ 產物名稱     │ 最低產能      │
+├──────────────┼──────────────┤
+│ 工業爆炸品   │ ≥ 1.0 /min   │
+└──────────────┴──────────────┘
+```
+
+#### 優化目標
+- 調度券產出最大化（主目標，使用者可設定各最終產物的調度券兌換率）
+- 選填：設定次要目標的權重（例如同等調度券產出下，優先最小化設備總數）
+
+### 3.2 LP 求解
+
+**求解器：** `glpk.js`（WebAssembly 版，無後端需求）
+
+**模型建立：**
+
+```
+最大化：Σ (recipe_i 的調度券產出率 × x_i)
+約束：
+  對每種原料 j：Σ (recipe_i 消耗原料 j 的速率 × x_i) ≤ 供給上限 j
+  對每種硬性需求產物 k：Σ (recipe_i 生產產物 k 的速率 × x_i) ≥ 下限 k
+  x_i ≥ 0（流量非負）
+```
+
+求解結果：每個配方的最佳分配流量 `x_i`（個/min）。
+
+### 3.3 結果呈現
+
+求解完成後，顯示以下結果：
+
+```
+優化結果
+┌──────────┬──────────┬──────────┬──────────┬──────────┐
+│ 配方     │ 設備     │ 分配流量  │ 設備台數  │ 效率     │
+├──────────┼──────────┼──────────┼──────────┼──────────┤
+│ 紫晶纖維 │ 精煉爐   │ 4.0/min  │ 2 台     │ 100%     │
+│ 赤合金   │ 粉碎機   │ 1.5/min  │ 1 台     │ 75%      │
+│          │ 研磨機   │ 0.75/min │ 1 台     │ 75%      │
+└──────────┴──────────┴──────────┴──────────┴──────────┘
+
+預估調度券產出：XXX 券/hr
+原料使用率：
+  赤銅礦  ████████░░ 80%（48/60 /min）
+  源石    ██████████ 100%（30/30 /min）⚠️ 瓶頸
+```
+
+### 3.4 使用者微調
+
+結果可進行微調，台數與流量雙向聯動：
+
+**調整台數 → 反推流量：**
+```
+精煉爐：2 台 → 3 台
+⟹ 分配流量自動更新為 6.0/min
+⟹ 重新計算調度券產出與原料使用率
+```
+
+**調整流量 → 換算建議台數：**
+```
+紫晶纖維分配流量：4.0 → 5.0 /min
+⟹ 建議台數：⌈5.0 / 2.0⌉ = 3 台（效率 83.3%）
+⟹ 若原料不足，顯示紅色超出警示
+```
+
+微調後若違反原料上限約束，對應原料列顯示紅色超出提示（不阻擋使用者操作）。
+
+### 3.5 導入藍圖
+
+使用者確認結果後，點選「**切換視角以導入**」：
+1. 切換至藍圖視角（或並列視角）
+2. 系統依優化結果的設備清單，滑鼠拖曳一組預設設備配置
+3. 使用者選擇擺放位置後確認
+4. 後續管線連接由使用者在藍圖視角手動完成（或 Phase 3 自動路徑規劃輔助）
+
+---
+
+## 4. 狀態管理（Pinia Store）
+
+### `useOptimizationStore`
+
+```typescript
+{
+  // 輸入設定
+  materialConstraints: MaterialConstraint[],
+  productRequirements: ProductRequirement[],
+  ticketRates: TicketRate[],
+
+  // 求解狀態
+  solveStatus: 'idle' | 'solving' | 'optimal' | 'infeasible' | 'error',
+  solveResult: SolveResult | null,
+
+  // 微調狀態
+  adjustments: Map<string, { flow: number, deviceCount: number }>
+}
+
+// MaterialConstraint
+{
+  itemId: string,
+  maxRate: number  // 個/min
+}
+
+// ProductRequirement
+{
+  itemId: string,
+  minRate: number  // 個/min
+}
+
+// SolveResult
+{
+  recipeAllocations: {
+    recipeId: string,
+    deviceId: string,
+    allocatedFlow: number,   // 個/min
+    deviceCount: number,     // 向上取整
+    efficiency: number       // 0~1
+  }[],
+  totalTicketRate: number,   // 券/hr
+  materialUsage: {
+    itemId: string,
+    used: number,
+    available: number
+  }[]
+}
+```
+
+---
+
+## 5. 實作範例
+
+### 5.1 GLPK.js 求解
+
+```typescript
+import GLPK from 'glpk.js'
+
+const solve = async (
+  recipes: Recipe[],
+  materials: MaterialConstraint[],
+  requirements: ProductRequirement[],
+  ticketRates: TicketRate[]
+): Promise<SolveResult> => {
+  const glpk = await GLPK()
+
+  const lp = {
+    name: 'AIC_Optimization',
+    objective: {
+      direction: glpk.GLP_MAX,
+      name: 'ticket_output',
+      vars: recipes.map(r => ({
+        name: r.id,
+        coef: calcTicketCoef(r, ticketRates)  // 每單位流量對應的券/hr
+      }))
+    },
+    subjectTo: [
+      // 原料上限約束
+      ...materials.map(m => ({
+        name: `material_${m.itemId}`,
+        vars: recipes
+          .filter(r => r.inputs.some(i => i.item === m.itemId))
+          .map(r => ({
+            name: r.id,
+            coef: r.inputs.find(i => i.item === m.itemId)!.rate_per_min
+          })),
+        bnds: { type: glpk.GLP_UP, ub: m.maxRate, lb: 0 }
+      })),
+      // 產物下限約束
+      ...requirements.map(req => ({
+        name: `requirement_${req.itemId}`,
+        vars: recipes
+          .filter(r => r.outputs.some(o => o.item === req.itemId))
+          .map(r => ({
+            name: r.id,
+            coef: r.outputs.find(o => o.item === req.itemId)!.rate_per_min
+          })),
+        bnds: { type: glpk.GLP_LO, lb: req.minRate, ub: Infinity }
+      }))
+    ],
+    bounds: recipes.map(r => ({
+      name: r.id,
+      type: glpk.GLP_LO,
+      lb: 0
+    }))
+  }
+
+  const result = glpk.solve(lp)
+  return parseGlpkResult(result, recipes)
+}
+```
+
+### 5.2 台數與流量聯動微調
+
+```typescript
+// 使用者調整台數
+const adjustDeviceCount = (recipeId: string, newCount: number) => {
+  const recipe = getRecipe(recipeId)
+  const singleDeviceOutput = recipe.outputs[0].rate_per_min  // 單台產出
+  const newFlow = singleDeviceOutput * newCount
+
+  optimizationStore.adjustments.set(recipeId, {
+    flow: newFlow,
+    deviceCount: newCount
+  })
+  recalcTotals()
+}
+
+// 使用者調整流量
+const adjustFlow = (recipeId: string, newFlow: number) => {
+  const recipe = getRecipe(recipeId)
+  const singleDeviceOutput = recipe.outputs[0].rate_per_min
+  const suggestedCount = Math.ceil(newFlow / singleDeviceOutput)
+  const efficiency = newFlow / (singleDeviceOutput * suggestedCount)
+
+  optimizationStore.adjustments.set(recipeId, {
+    flow: newFlow,
+    deviceCount: suggestedCount
+  })
+  recalcTotals()
+}
+```
+
+---
+
+## 6. 驗證方式
+
+| 驗證項目 | 方法 |
+|----------|------|
+| 單一原料單一配方 | 設定赤銅礦 60/min，僅啟用赤銅晶配方，確認求解結果為 2 條滿效率 |
+| 多配方競爭原料 | 設定一種原料，兩種消耗它的配方有不同調度券產出，確認求解優先分配高效配方 |
+| 硬性需求約束 | 設定最低需求，確認求解結果滿足下限 |
+| 無解情況 | 設定原料嚴重不足以滿足硬性需求，確認顯示「無法達成目標」提示 |
+| 台數調整聯動 | 增加設備台數，確認流量自動更新，總票券估算即時重算 |
+| 流量調整聯動 | 輸入新流量，確認建議台數更新、效率標示正確 |
+| 超出原料上限警示 | 微調至超出原料限制，確認紅色警示出現但不阻擋操作 |
+| 導入藍圖流程 | 確認結果後點選導入，確認切換至藍圖視角且滑鼠拖曳對應設備 |
+
+---
+
+*本文件為 CR-07 Feature Spec，系統整體架構見 `00_top_spec.md`。*
+*本功能屬 Phase 3，實作細節可依 Phase 2 完成後的使用回饋進一步調整。*
+</file>
+
+<file path="spec/08_history.md">
+# Feature Spec：操作歷史
+# CR-08
+
+**所屬階段：** Phase 1
+**依賴：** CR-01（設備擺放操作）、CR-02（管線操作）、CR-05（流程視角操作）
+**文件版本：** v0.1
+
+---
+
+## 1. 功能定位
+
+操作歷史模組以 Command Pattern 統一管理所有藍圖狀態變更，提供無限制的復原 / 取消復原功能。CR-01、CR-02、CR-05 的所有操作均透過本模組提交，任何視角下的 Ctrl+Z / Ctrl+Y 均作用於同一歷史佇列。Session 結束後歷史清空，不持久化至 localStorage。
+
+---
+
+## 2. 功能詳細描述
+
+### 2.1 復原 / 取消復原
+
+- **Ctrl+Z**：復原上一步操作，還原 Pinia store 至操作前狀態
+- **Ctrl+Y**：取消復原，重新套用已復原的操作
+- 無步驟數限制
+- 在任何視角（藍圖 / 流程 / 並列）均可觸發，作用於同一歷史佇列
+- 執行新操作後，取消復原佇列清空（標準行為）
+
+### 2.2 納入歷史的操作範圍
+
+以下操作均須透過 `useHistoryStore.execute()` 提交：
+
+**CR-01 設備擺放：**
+- 擺放設備
+- 移動設備
+- 旋轉設備
+- 刪除設備
+- 複製貼上（整組設備＋管線視為單一操作）
+- 設備配方變更
+
+**CR-02 管線連接：**
+- 新增管線（含自動生成的分流器 / 匯流器 / 物流橋）
+- 刪除管線
+- 修改管線彎折點
+
+**CR-05 流程視角：**
+- 新增流程配方節點
+- 刪除流程配方節點
+- 中間產物設定變更（生產 / 倉庫直取）
+
+### 2.3 不納入歷史的操作
+
+以下操作不進入歷史佇列（屬於視圖操作，非資料操作）：
+- 畫布縮放 / 平移
+- 視角切換（藍圖 / 流程 / 並列）
+- 選取 / 框選
+- 左側面板展開 / 收合
+- Flow Chart 節點位置調整（純視覺排版）
+
+### 2.4 複合操作（Macro Command）
+
+部分操作由多個子操作組成，應視為單一歷史項目，一次 Ctrl+Z 全部復原：
+
+| 複合操作 | 包含的子操作 |
+|----------|-------------|
+| 複製貼上 | 擺放多台設備 + 新增多條管線 |
+| 新增管線（含自動節點）| 新增管線 + 插入分流器 / 匯流器 / 物流橋 |
+| 從流程視角導入設備 | 擺放多台設備 + 新增預設管線建議 |
+
+---
+
+## 3. 狀態管理（Pinia Store）
+
+### `useHistoryStore`
+
+```typescript
+{
+  undoStack: Command[],   // 已執行的操作，最新的在最後
+  redoStack: Command[],   // 已復原的操作，最新的在最後
+}
+
+// Command 介面
+interface Command {
+  label: string           // 操作描述，供 debug 使用（如 "擺放精煉爐"）
+  execute: () => void     // 執行操作（套用至 store）
+  undo: () => void        // 復原操作（還原 store）
+}
+```
+
+**Actions：**
+```typescript
+// 提交並執行一個操作
+execute(command: Command): void
+
+// 復原上一步
+undo(): void
+
+// 取消復原
+redo(): void
+
+// 清空所有歷史（Session 結束或手動清除）
+clear(): void
+```
+
+**Getters：**
+```typescript
+canUndo: boolean   // undoStack.length > 0
+canRedo: boolean   // redoStack.length > 0
+```
+
+---
+
+## 4. 實作範例
+
+### 4.1 Command Pattern 基礎結構
+
+```typescript
+// useHistoryStore.ts
+export const useHistoryStore = defineStore('history', () => {
+  const undoStack = ref<Command[]>([])
+  const redoStack = ref<Command[]>([])
+
+  const execute = (command: Command) => {
+    command.execute()
+    undoStack.value.push(command)
+    redoStack.value = []  // 執行新操作後清空 redo 佇列
+  }
+
+  const undo = () => {
+    const command = undoStack.value.pop()
+    if (!command) return
+    command.undo()
+    redoStack.value.push(command)
+  }
+
+  const redo = () => {
+    const command = redoStack.value.pop()
+    if (!command) return
+    command.execute()
+    undoStack.value.push(command)
+  }
+
+  const clear = () => {
+    undoStack.value = []
+    redoStack.value = []
+  }
+
+  return {
+    undoStack, redoStack,
+    canUndo: computed(() => undoStack.value.length > 0),
+    canRedo: computed(() => redoStack.value.length > 0),
+    execute, undo, redo, clear
+  }
+})
+```
+
+### 4.2 單一操作範例：擺放設備
+
+```typescript
+// 在 usePlacedDeviceStore 中
+const placeDevice = (device: PlacedDevice) => {
+  const historyStore = useHistoryStore()
+
+  historyStore.execute({
+    label: `擺放 ${getDeviceName(device.deviceId)}`,
+    execute: () => {
+      devices.value.push(device)
+    },
+    undo: () => {
+      devices.value = devices.value.filter(d => d.uid !== device.uid)
+    }
+  })
+}
+```
+
+### 4.3 複合操作範例：新增管線（含自動插入分流器）
+
+```typescript
+// MacroCommand：將多個 Command 組合為單一歷史項目
+const createMacroCommand = (label: string, commands: Command[]): Command => ({
+  label,
+  execute: () => commands.forEach(c => c.execute()),
+  undo: () => [...commands].reverse().forEach(c => c.undo())
+})
+
+// 新增管線時，若需插入分流器
+const addConnectionWithSplitter = (
+  connection: Connection,
+  splitter: PlacedDevice,
+  modifiedConnection: Connection
+) => {
+  const historyStore = useHistoryStore()
+
+  historyStore.execute(createMacroCommand('新增管線（含分流器）', [
+    {
+      label: '插入分流器',
+      execute: () => placedDeviceStore.devices.push(splitter),
+      undo: () => placedDeviceStore.devices = placedDeviceStore.devices
+        .filter(d => d.uid !== splitter.uid)
+    },
+    {
+      label: '修改原管線',
+      execute: () => pipelineStore.updateConnection(modifiedConnection),
+      undo: () => pipelineStore.updateConnection(connection)
+    },
+    {
+      label: '新增新管線',
+      execute: () => pipelineStore.connections.push(connection),
+      undo: () => pipelineStore.connections = pipelineStore.connections
+        .filter(c => c.uid !== connection.uid)
+    }
+  ]))
+}
+```
+
+### 4.4 快捷鍵綁定
+
+```typescript
+// 在 App.vue 或全局 composable 中
+const { ctrl_z, ctrl_y } = useMagicKeys()
+const historyStore = useHistoryStore()
+
+watch(ctrl_z, (pressed) => { if (pressed) historyStore.undo() })
+watch(ctrl_y, (pressed) => { if (pressed) historyStore.redo() })
+```
+
+### 4.5 複製貼上作為單一複合操作
+
+```typescript
+const pasteSelection = (
+  copiedDevices: PlacedDevice[],
+  copiedConnections: Connection[],
+  offset: { x: number, y: number }
+) => {
+  const historyStore = useHistoryStore()
+
+  // 為複製的物件產生新 uid
+  const newDevices = copiedDevices.map(d => ({ ...d, uid: generateUid(), x: d.x + offset.x, y: d.y + offset.y }))
+  const uidMap = new Map(copiedDevices.map((d, i) => [d.uid, newDevices[i].uid]))
+  const newConnections = copiedConnections.map(c => ({
+    ...c,
+    uid: generateUid(),
+    from: { ...c.from, device_uid: uidMap.get(c.from.device_uid)! },
+    to: { ...c.to, device_uid: uidMap.get(c.to.device_uid)! }
+  }))
+
+  historyStore.execute(createMacroCommand('複製貼上', [
+    ...newDevices.map(d => ({
+      label: `擺放 ${getDeviceName(d.deviceId)}`,
+      execute: () => placedDeviceStore.devices.push(d),
+      undo: () => { placedDeviceStore.devices = placedDeviceStore.devices.filter(x => x.uid !== d.uid) }
+    })),
+    ...newConnections.map(c => ({
+      label: '新增管線',
+      execute: () => pipelineStore.connections.push(c),
+      undo: () => { pipelineStore.connections = pipelineStore.connections.filter(x => x.uid !== c.uid) }
+    }))
+  ]))
+}
+```
+
+---
+
+## 5. 驗證方式
+
+| 驗證項目 | 方法 |
+|----------|------|
+| 基本復原 | 擺放設備後 Ctrl+Z，確認設備消失 |
+| 基本取消復原 | 復原後 Ctrl+Y，確認設備重新出現 |
+| 多步復原 | 連續擺放 5 台設備，連續 Ctrl+Z 5 次，確認逐一消失 |
+| 新操作清空 redo | 復原後執行新操作，確認 Ctrl+Y 無效 |
+| 跨視角復原 | 在流程視角新增配方節點，切換至藍圖視角後 Ctrl+Z，確認節點被復原 |
+| 複合操作單次復原 | 新增含分流器的管線，一次 Ctrl+Z 確認管線與分流器同時消失 |
+| 複製貼上復原 | 複製貼上一組設備，Ctrl+Z 確認整組同時消失 |
+| 視圖操作不進歷史 | 縮放畫布後 Ctrl+Z，確認縮放不被復原（而是復原上一個資料操作）|
+| Session 清空 | 執行操作後重新整理頁面，確認 Ctrl+Z 無法復原（歷史已清空）|
+
+---
+
+*本文件為 CR-08 Feature Spec，系統整體架構見 `00_top_spec.md`。*
+</file>
+
+<file path="src/router/index.ts">
+import { createRouter, createWebHistory } from 'vue-router';
+import MainLayout from '@/app/layouts/MainLayout.vue';
+
+const router = createRouter({
+    history: createWebHistory(),
+    routes: [
+        {
+            path: '/',
+            name: 'editor',
+            component: MainLayout,
+        },
+        {
+            path: '/:pathMatch(.*)*',
+            redirect: '/',
+        },
+    ],
+});
+
+export default router;
+</file>
+
+<file path="SYSTEM_PROMPT.md">
+# 開發守則
+
+關於專案使用 tech stack 與資料夾架構，請參考 README.md 文件。
+
+此外，有一些守則需要特別注意：
+
+## 程式碼註解規則
+
+- 一律使用繁體中文 (除非是專有名詞)
+- 嚴格禁止表情符號
+- 使用 JSDoc 格式註解
+- 註解目標包含：
+    - 函數
+    - 類別
+        - 物件型態/介面型態，需要將成員各別註解說明
+    - 全域變數
+    - store
+        - 內部使用 ref、computed、reactive 宣告的變數
+        - 函數
+        - return 輸出的各個成員，也需要註解，並且需要宣告的地方的註解一致
+    - 大型頁面區段
+    - .vue 中宣告的變數與函數
+    - .vue 中宣告的 defineProps 與 defineEmits
+    - .vue 中使用的副作用函數意義 (e.g. onMounted, watch, etc.)
+
+## 程式碼設計規則
+
+- 盡量使用 NuxtUI 的元件，而不是自己寫
+- 盡量使用 VueUse 的函數，而不是自己寫
+- 盡量使用 TailwindCSS 的內建 class，而不是自己寫
+- 盡量遵照 SOLID 原則
+
+## 注意事項
+
+- 當開發者提出的需求會導致過於大量的程式碼變更，你必須提出與使用者討論的請求，規劃適當的步驟分割，一次僅執行一個步驟
+- 你被嚴格禁止讀取 .env、.secrets 等敏感資料檔案
+</file>
+
+<file path="tailwind.config.ts">
+import type { Config } from 'tailwindcss'
+
+export default {
+  content: ['./index.html', './src/**/*.{vue,ts,tsx,js,jsx}'],
+  darkMode: 'class',
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+} satisfies Config
+</file>
+
+<file path="tsconfig.json">
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
+</file>
+
+<file path="tsconfig.node.json">
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "target": "es2023",
+    "lib": ["ES2023"],
+    "module": "esnext",
+    "types": ["node"],
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+
+    /* Linting */
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["vite.config.ts"]
+}
+</file>
+
+<file path="tutorial/github/cowork.md">
+# 在 github 上與人共同協作的注意事項
+
+## 不要一個 commit 一堆變更
+
+你一次改很多地方，然後就提交一次，你自己都搞不清楚自己改了啥。
+解法：改了一點點東西，就提交一次，提交的資訊寫清楚你改了啥。
+
+## 不要 commit 了才發現有東西沒下載
+
+你會很痛苦，因為衝突沒人想處理
+解法：請先下載最新的東西，再進行後續操作。
+
+## commit 資訊寫法
+
+範例：
+
+```
+feat: 在XX頁面新增了一個按鈕
+fix: OO功能在XXX情況下會出現錯誤
+issue #406: 我改動了什麼，解決掉了 #406 的問題
+```
+
+冒號前面的是這次 commit 是什麼性質，後面是這次 commit 的描述。
+
+- feat: 新增功能
+- fix: 修復 bug
+- chore: 雜項
+- refactor: 重構
+- test: 測試
+- docs: 文件
+- style: 樣式
+- perf: 效能
+- revert: 回退
+
+## 如何避免衝突
+
+- 不要跟人共用 branch
+- 一個功能、一個問題，一個人搞就好
+- 不要在 master / main branch 上開發
+- 不要在 master / main branch 上開發
+- 不要在 master / main branch 上開發
+
+## branch 命名規則
+
+通常是 dev/ 開頭，你可以：
+
+- 用自己的名字 `dev/dernoson`
+- 目前開發目標 `dev/flow-algorithm`
+
+請千萬不要只用 `dev` 做為 branch name，會讓其他人不能取 dev/ 開頭的 branch name。
+</file>
+
+<file path="tutorial/github/ssh.md">
+# 怎麼設 github 的 ssh key
+
+1. 打開終端機，輸入：
+
+```bash
+ssh-keygen -t ed25519 -C "your_email@example.com"
+```
+
+(上面那個 email 記得換成你自己的)
+
+2. 按下 Enter 按鈕，直到完成。
+3. 在終端機中輸入：
+
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
+
+4. 複製輸出結果
+5. 打開 github，切換到 settings 頁面。
+
+![](./9.png)
+
+6. 選擇 "SSH and GPG keys"，按下 "New SSH key" 按鈕。
+
+![](./10.png)
+
+7. 自己取個名字，把你剛剛複製的貼在下面那框，按下 "Add SSH key" 按鈕，搞定。
+
+![](./11.png)
+</file>
+
+<file path=".github/workflows/discord-notify.yml">
+name: Discord Notifications
+
+on:
+    push:
+        branches: ['**'] # 所有 branch
+    pull_request:
+        types: [opened, synchronize, reopened, closed]
+    issues:
+        types: [opened, reopened, closed]
+    issue_comment:
+        types: [created]
+    workflow_run:
+        workflows: ['*']
+        types: [completed]
+
+jobs:
+    notify:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Prepare message
+              id: prep
+              run: |
+                  EVENT="${{ github.event_name }}"
+                  COLOR=3447003  # blue default
+                  TITLE=""
+                  DESC=""
+                  URL="https://github.com/${{ github.repository }}"
+
+                  # ---------------- PUSH ----------------
+                  if [ "$EVENT" = "push" ]; then
+                    TITLE="📌 New Push"
+                    DESC="**${{ github.actor }}** pushed to **${{ github.ref_name }}**"
+                    URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+                    COLOR=3066993  # green
+                  fi
+
+                  # ---------------- PR EVENTS ----------------
+                  if [ "$EVENT" = "pull_request" ]; then
+                    ACTION="${{ github.event.action }}"
+                    MERGED="${{ github.event.pull_request.merged }}"
+                    PR_URL="${{ github.event.pull_request.html_url }}"
+                    PR_TITLE="${{ github.event.pull_request.title }}"
+
+                    if [ "$ACTION" = "closed" ] && [ "$MERGED" = "true" ]; then
+                      TITLE="🚀 PR Merged"
+                      COLOR=10181046  # purple
+                    else
+                      TITLE="🔧 Pull Request Updated"
+                      COLOR=15844367  # orange
+                    fi
+
+                    DESC="**${{ github.actor }}** → ${PR_TITLE}"
+                    URL="$PR_URL"
+                  fi
+
+                  # ---------------- WORKFLOW RESULT ----------------
+                  if [ "$EVENT" = "workflow_run" ]; then
+                    STATUS="${{ github.event.workflow_run.conclusion }}"
+                    WF_NAME="${{ github.event.workflow_run.name }}"
+                    URL="${{ github.event.workflow_run.html_url }}"
+
+                    if [ "$STATUS" = "success" ]; then
+                      TITLE="✅ Build Succeeded"
+                      COLOR=3066993
+                    else
+                      TITLE="❌ Build Failed"
+                      COLOR=15158332
+                    fi
+
+                    DESC="Workflow **$WF_NAME** finished with **$STATUS**"
+                  fi
+
+                  # ---------------- ISSUE EVENTS ----------------
+                  if [ "$EVENT" = "issues" ]; then
+                    ACTION="${{ github.event.action }}"
+                    ISSUE_TITLE="${{ github.event.issue.title }}"
+                    ISSUE_URL="${{ github.event.issue.html_url }}"
+
+                    if [ "$ACTION" = "opened" ]; then
+                      TITLE="🆕 Issue Opened"
+                      COLOR=3447003
+                    elif [ "$ACTION" = "reopened" ]; then
+                      TITLE="♻️ Issue Reopened"
+                      COLOR=10181046
+                    elif [ "$ACTION" = "closed" ]; then
+                      TITLE="✅ Issue Closed"
+                      COLOR=3066993
+                    fi
+
+                    DESC="**${{ github.actor }}** → ${ISSUE_TITLE}"
+                    URL="$ISSUE_URL"
+                  fi
+
+                  # ---------------- ISSUE COMMENT ----------------
+                  if [ "$EVENT" = "issue_comment" ]; then
+                    ISSUE_TITLE="${{ github.event.issue.title }}"
+                    COMMENT_URL="${{ github.event.comment.html_url }}"
+
+                    TITLE="💬 New Issue Comment"
+                    COLOR=15844367
+                    DESC="**${{ github.actor }}** commented on: ${ISSUE_TITLE}"
+                    URL="$COMMENT_URL"
+                  fi
+
+                  echo "title=$TITLE" >> $GITHUB_OUTPUT
+                  echo "desc=$DESC" >> $GITHUB_OUTPUT
+                  echo "color=$COLOR" >> $GITHUB_OUTPUT
+                  echo "url=$URL" >> $GITHUB_OUTPUT
+
+            - name: Send Discord Embed
+              run: |
+                  curl -H "Content-Type: application/json" \
+                  -X POST \
+                  -d "{
+                    \"embeds\": [{
+                      \"title\": \"${{ steps.prep.outputs.title }}\",
+                      \"description\": \"${{ steps.prep.outputs.desc }}\",
+                      \"color\": ${{ steps.prep.outputs.color }},
+                      \"url\": \"${{ steps.prep.outputs.url }}\",
+                      \"footer\": {
+                        \"text\": \"${{ github.repository }}\"
+                      },
+                      \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
+                    }]
+                  }" \
+                  ${{ secrets.DISCORD_WEBHOOK }}
+</file>
+
+<file path="src/composables/useShortcuts.ts">
+import { computed, watch } from 'vue';
+import { useEventListener, useMagicKeys } from '@vueuse/core';
+import { useEditorStore } from '@/store/editorStore';
+import { useSelectionStore } from '@/store/selectionStore';
+import { useShortcutStore } from '@/store/shortcutStore';
+
+export function useShortcuts() {
+    const editorStore = useEditorStore();
+    const selectionStore = useSelectionStore();
+    const shortcutStore = useShortcutStore();
+    const keys = useMagicKeys();
+
+    const isCopy = computed(() => keys['Ctrl+C'].value || keys['Meta+C'].value);
+    const isPaste = computed(() => keys['Ctrl+V'].value || keys['Meta+V'].value);
+    const isUndo = computed(() => keys['Ctrl+Z'].value || keys['Meta+Z'].value);
+    const isRedo = computed(() => keys['Ctrl+Y'].value || keys['Meta+Y'].value);
+
+    watch(
+        () => keys.Delete.value,
+        (pressed) => {
+            if (!pressed) return;
+            selectionStore.clearSelection();
+            shortcutStore.triggerAction('delete');
+        },
+    );
+
+    watch(isCopy, (pressed) => pressed && shortcutStore.triggerAction('copy'));
+    watch(isPaste, (pressed) => pressed && shortcutStore.triggerAction('paste'));
+    watch(isUndo, (pressed) => pressed && shortcutStore.undo());
+    watch(isRedo, (pressed) => pressed && shortcutStore.redo());
+
+    useEventListener(window, 'keydown', (event) => {
+        if (event.code === 'Space') {
+            editorStore.setActiveTool('pan');
+        }
+    });
+
+    useEventListener(window, 'keyup', (event) => {
+        if (event.code === 'Space') {
+            editorStore.setActiveTool('select');
+        }
+    });
+}
+</file>
+
+<file path="src/editor/inspector/InspectorSidebar.vue">
+<script setup lang="ts">
+import InspectorPanel from '@/editor/inspector/InspectorPanel.vue';
+
+const open = defineModel<boolean>('open', { required: true });
+</script>
+
+<template>
+    <USidebar
+        v-model:open="open"
+        side="right"
+        collapsible="icon"
+        :style="{ '--sidebar-width': '20rem' }"
+        :ui="{
+            gap: 'h-[calc(100%-var(--ui-header-height))]',
+            container:
+                'absolute top-(--ui-header-height) bottom-0 h-[calc(100%-var(--ui-header-height))] bg-black',
+            header: 'px-2',
+            body: 'p-0',
+        }"
+    >
+        <template #header="{ state }">
+            <div
+                class="flex w-full items-center"
+                :class="state === 'collapsed' ? 'justify-center' : 'justify-between gap-2'"
+            >
+                <div v-if="state === 'expanded'" class="min-w-0">
+                    <p class="text-highlighted truncate text-sm font-semibold">Inspector</p>
+                    <p class="text-muted truncate text-xs">地圖與模擬參數</p>
+                </div>
+
+                <UButton
+                    size="sm"
+                    variant="ghost"
+                    color="neutral"
+                    :icon="
+                        state === 'expanded'
+                            ? 'i-lucide-panel-right-close'
+                            : 'i-lucide-panel-right-open'
+                    "
+                    :aria-label="state === 'expanded' ? '收合右側面板' : '展開右側面板'"
+                    @click="open = !open"
+                />
+            </div>
+        </template>
+
+        <template #default="{ state }">
+            <InspectorPanel v-if="state === 'expanded'" />
+        </template>
+    </USidebar>
+</template>
+</file>
+
+<file path="src/editor/sidebar/ProjectSidebar.vue">
+<script setup lang="ts">
+import type { NavigationMenuItem } from '@nuxt/ui';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
+
+const open = defineModel<boolean>('open', { required: true });
+const canHoverExpand = ref(false);
+
+let mediaQuery: MediaQueryList | null = null;
+
+function updateHoverCapability() {
+    if (!mediaQuery) {
+        return;
+    }
+
+    canHoverExpand.value = mediaQuery.matches;
+}
+
+function handleMouseEnter() {
+    if (!canHoverExpand.value) {
+        return;
+    }
+
+    open.value = true;
+}
+
+function handleMouseLeave() {
+    if (!canHoverExpand.value) {
+        return;
+    }
+
+    open.value = false;
+}
+
+onMounted(() => {
+    mediaQuery = window.matchMedia('(min-width: 1024px) and (hover: hover) and (pointer: fine)');
+    updateHoverCapability();
+    mediaQuery.addEventListener('change', updateHoverCapability);
+});
+
+onBeforeUnmount(() => {
+    if (!mediaQuery) {
+        return;
+    }
+
+    mediaQuery.removeEventListener('change', updateHoverCapability);
+});
+
+const projectMenuItems: NavigationMenuItem[] = [
+    {
+        label: '新建專案',
+        icon: 'i-lucide-file-plus-2',
+        onSelect: () => {
+            // TODO: 之後接實際新建流程
+        },
+    },
+    {
+        label: '匯入設計檔',
+        icon: 'i-lucide-folder-open',
+        onSelect: () => {
+            // TODO: 之後接實際匯入流程
+        },
+    },
+    {
+        label: '匯出設計檔',
+        icon: 'i-lucide-download',
+        onSelect: () => {
+            // TODO: 之後接實際匯出流程
+        },
+    },
+];
+</script>
+
+<template>
+    <USidebar
+        v-model:open="open"
+        collapsible="icon"
+        rail
+        @mouseenter="handleMouseEnter"
+        @mouseleave="handleMouseLeave"
+        :ui="{
+            gap: 'h-[calc(100%-var(--ui-header-height))] w-16!',
+            container:
+                'absolute top-(--ui-header-height) bottom-0 h-[calc(100%-var(--ui-header-height))] bg-black',
+        }"
+    >
+        <template #default="{ state }">
+            <UNavigationMenu
+                :items="projectMenuItems"
+                orientation="vertical"
+                :collapsed="state === 'collapsed'"
+                :ui="{
+                    link: 'p-1.5 overflow-hidden',
+                }"
+            />
+        </template>
+    </USidebar>
+</template>
+</file>
+
+<file path="src/store/selectionStore.ts">
+import { computed, ref } from 'vue';
+import { defineStore } from 'pinia';
+
+export const useSelectionStore = defineStore('selection', () => {
+    const selectedNodeIds = ref<string[]>([]);
+
+    const hasSelection = computed(() => selectedNodeIds.value.length > 0);
+    const isMultiSelect = computed(() => selectedNodeIds.value.length > 1);
+
+    function setSelection(ids: string[]) {
+        selectedNodeIds.value = ids;
+    }
+
+    function clearSelection() {
+        selectedNodeIds.value = [];
+    }
+
+    return {
+        selectedNodeIds,
+        hasSelection,
+        isMultiSelect,
+        setSelection,
+        clearSelection,
+    };
+});
+</file>
+
+<file path="src/store/shortcutStore.ts">
+import { ref } from 'vue';
+import { defineStore } from 'pinia';
+import type { ShortcutAction } from '@/types/editor';
+
+export const useShortcutStore = defineStore('shortcut', () => {
+    const registeredActions = ref<Record<string, ShortcutAction>>({});
+    const undoStack = ref<string[]>([]);
+    const redoStack = ref<string[]>([]);
+
+    function registerAction(action: ShortcutAction) {
+        registeredActions.value[action.id] = action;
+    }
+
+    function triggerAction(id: string) {
+        registeredActions.value[id]?.run();
+    }
+
+    function pushUndoSnapshot(snapshot: string) {
+        undoStack.value.push(snapshot);
+        redoStack.value = [];
+    }
+
+    function undo() {
+        const snapshot = undoStack.value.pop();
+        if (!snapshot) return;
+        redoStack.value.push(snapshot);
+    }
+
+    function redo() {
+        const snapshot = redoStack.value.pop();
+        if (!snapshot) return;
+        undoStack.value.push(snapshot);
+    }
+
+    return {
+        registeredActions,
+        undoStack,
+        redoStack,
+        registerAction,
+        triggerAction,
+        pushUndoSnapshot,
+        undo,
+        redo,
+    };
+});
+</file>
+
+<file path="src/types/graph.ts">
+import type { Edge, Node } from '@vue-flow/core';
+
+export type FactoryNodeData = {
+    label: string;
+    machineType?: string;
+};
+
+export type FactoryNode = Node<FactoryNodeData>;
+export type FactoryEdge = Edge;
+</file>
+
+<file path="tsconfig.app.json">
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "types": ["vite/client"],
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+
+    /* Linting */
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
+}
+</file>
+
+<file path="vite.config.ts">
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import ui from '@nuxt/ui/vite'
+import path from 'node:path'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [vue(), ui()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+    },
+  },
+})
+</file>
+
+<file path=".gitignore">
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Nuxt UI
+auto-imports.d.ts
+components.d.ts
+</file>
+
+<file path="src/editor/stats/ProductionStats.vue">
+<script setup lang="ts">
+import { storeToRefs } from 'pinia';
+import { useEditorStore } from '@/store/editorStore';
+
+const editorStore = useEditorStore();
+const { machineCount, nodeCount, edgeCount } = storeToRefs(editorStore);
+</script>
+
+<template>
+    <div class="stats-board">
+        <div class="stat-item">
+            <span class="stat-label">總機器數量</span>
+            <strong class="stat-value">{{ machineCount }}</strong>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">總功耗（placeholder）</span>
+            <strong class="stat-value">-- kW</strong>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">節點數量</span>
+            <strong class="stat-value">{{ nodeCount }}</strong>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">連線數量</span>
+            <strong class="stat-value">{{ edgeCount }}</strong>
+        </div>
+    </div>
+</template>
+</file>
+
+<file path="tutorial/github/usage.md">
+# Github 怎麼用
+
+## 怎麼把 repo 從 github 載下來到電腦裡
+
+1. 前往 https://github.com/dernoson/endfield-playground
+2. 點擊 `Code` 按鈕，複製 SSH 連結
+   ![](./1.jpg)
+3. 找一個你喜歡的資料夾，按右鍵，選擇在終端機中開啟
+4. 在終端機中輸入 `git clone <SSH 連結>`
+    - 沒下載 git 記得去下載
+5. 跑完就會看到一個新的資料夾，你就完成了！
+
+## add？commit？push？
+
+(我假設你都在 vscode 上開發)
+
+### add (暫存)
+
+當你新增或是修改檔案，存檔後，左邊 git 圖示會跳出數字，表示有變更東西了。  
+點選圖示就會顯示如下：
+![](./2.jpg)
+
+這兩個檔案目前的狀態是尚未 add 過的，可以理解為尚未暫存起來。  
+暫存有很多種方式：
+
+- 打開終端機下指令 `git add .` (我相信你跟我一樣懶不會想用這個)
+- 按 "變更" 旁的 "+" 按鈕 (藍色圈圈)，就會把所有變更都暫存起來
+    - 按紅色圈起來的還原符號，就會把你所有暫存的東西，還原為你沒改過時的狀態
+      ![](./3.png)
+- 每個檔案也有自己的 "+" 與還原按紐，可以各自操作
+- 點選這些變更檔案，會顯示成這樣：
+  ![](./4.png)
+  這個會實際顯示你的檔案的變更內容比對，你可以點中間 (紅色圈圈) 的按鈕分段選擇要暫存還是還原
+- 當暫存了後，就會顯示為 "暫存的變更"，你可以隨時把暫存的東西設回未暫存，再做還原
+
+### commit (提交)
+
+有被暫存的東西，才可以被提交 (commit)。  
+提交時你必須輸入上面的提交訊息，說明這次你改了哪些東西。
+
+按下提交後，暫存的紀錄就會消失，恭喜你已經在你 "本地" 完成了一次提交！
+
+### push (上傳)
+
+沒錯，提交其實只是上傳的前一步，你可以提交很多次之後，再一次上傳。
+
+你的 github 左下角會顯示成這樣：
+
+![](./5.png)
+
+- 你當前處在的 branch 的名稱
+- \* 代表有東西還沒暫存
+- \+ 代表有東西沒提交
+- 雲朵符號代表整個 branch 是新的還沒上傳過
+- 向上箭頭可以點，點了就上傳出去了 (通常右邊帶數字，代表有多少提交沒有上傳)
+- 可能會出現向下箭頭，代表 github 上有變更你沒下載，點了就會下載下來
+
+**當你發現你有沒下載的東西，請務必先下載下來，再進行後續操作，否則就會發生衝突。**
+
+為何要分提交與上傳呢？有以下原因：
+
+- 上傳之後你就收不回來了
+- 你可能提交完之後想反悔了，其實是可以把提交取消掉的  
+  (使用終端機或是 git graph)
+- 你上傳後，會觸發我設的 CI/CD 流程，會自動檢測你的程式碼型別、語法、格式是否合格，然後 discord 就會通知你結果
+
+### 你在做上傳時，通常會遇到以下問題
+
+#### 衝突
+
+當你沒有先下載最新的東西，自己就改得很開心，一堆提交在本地要上傳，就會這樣。
+
+解法：恭喜你，請把你的所有提交還原乾淨，下載最新的東西，再重新改 code 提交。
+
+**阿不是阿，我看我左下角沒有向下的箭頭阿，怎麼還會衝突**
+
+那是因為，那個箭頭是你有跟 github 同步過，才會顯示的狀態。  
+而同步跟下載是兩碼事，怎麼同步呢？
+打開終端機，輸入：
+
+```bash
+git pull --prune
+```
+
+這樣會下載 github 上的最新東西，並且把你的本地跟 github 同步。  
+並且，這個指令會把 github 上已經刪除的 branch 也刪除掉。
+
+這個狀況尤其會在你剛被我 merge pull request 後發生，因為我會殺掉你的 branch。
+
+#### 沒權限
+
+當你沒有權限上傳，通常是因為你沒有被我邀請成為 collaborator。  
+解法：請跟我說，我會邀請你成為 collaborator。
+
+#### 還是沒權限
+
+因為你沒有設置 ssh key，所以 github 不知道你是誰。  
+解法：請看 [ssh 設定教學](./ssh.md)
+
+#### 因為你打算上傳到 master / main branch 導致失敗
+
+對，因為這個 repo 的 master / main branch 被我鎖起來了。  
+你必須建自己的 branch，上傳上來後，發 pull request 給我，由我進行核可。
+
+## PR (Pull Request) 是什麼鬼？？？
+
+你開發到一個進度了之後，把這個功能開發完了，要合到主幹分支 (master / main) 時，就會需要發 PR。
+
+打開你的 github，切換到 pull request 頁面，會看到如下：
+![](./6.png)
+
+按下去，會看到：
+
+![](./7.png)
+
+按完會看到：
+![](./8.png)
+
+寫一寫你做了啥，然後按下 "Create pull request" 按鈕。  
+然後就等我品嘗完你端出來的東西，就這樣。
+
+**注意！當我核可後，我會把你這個 branch 刪掉，所以你就別繼續在同一個 branch 上開發了，快點切到另一個 branch 上開發**
+
+**除非你被我退回去了啦呵呵**
+
+## 怎麼新建 branch
+
+一樣在左下角，點 branch name，就會跳出選項，選擇 "建立新分支"，然後輸入 branch name 就可以了。
+
+## 你好貓毛貓
+</file>
+
+<file path="README.md">
+# Endfield Playground
+
+## 如何安裝
+
+### 1) 環境需求
+
+- Node.js `24`（參考 `.nvmrc`）
+- pnpm `10+`
+
+### 2) 安裝步驟
+
+```bash
+pnpm install
+```
+
+## 開發者如何執行
+
+### 1) 建議安裝 VS Code Extension
+
+- Git Graph
+- Prettier
+- Tailwind CSS IntelliSense
+- Todo Tree
+- Vue (Official)
+
+### 2) 啟動本地開發
+
+```bash
+pnpm dev
+```
+
+然後你在瀏覽器中打開 http://localhost:5173 就可以看到開發中的網站。
+
+### 3) 常用指令
+
+```bash
+# 型別檢查
+pnpm type-check
+
+# Lint 檢查
+pnpm lint-check
+
+# 格式檢查
+pnpm format-check
+
+# 格式修正
+pnpm format
+
+# 建置
+pnpm build
+```
+
+## 專案資料夾架構
+
+```text
+.
+├─ .github/            # GitHub 設定與 CI workflow
+│  └─ workflows/
+├─ spec/               # 規格與設計文件（演算法 / UI 等）
+├─ src/                # 前端主要程式碼
+│  ├─ app/             # App 殼層與 layout
+│  ├─ editor/          # 編輯器相關 UI 模組
+│  ├─ router/          # 路由設定
+│  ├─ store/           # Pinia 狀態管理
+│  ├─ types/           # 型別定義
+│  ├─ tutorial/        # 教學文件
+|  ├─ components/      # 可重用元件
+│  └─ composables/     # 可重用邏輯
+└─ README.md
+```
+
+## 開發者守則
+
+1. 開發前先執行 `git pull --prune` 更新現況。
+2. 切出新的 branch 給自己開發。
+    - 命名範例：`dev/dernoson`（自己的名字）
+    - 命名範例：`dev/flow-algorithm`（該次開發目標）
+3. 確認功能開發完後，push 前務必確認執行：
+    - `pnpm type-check`
+    - `pnpm lint-check`
+    - `pnpm format-check`
+4. push 後，到 GitHub 建立 Pull Request。
+5. 由 admin 確認並合回 `master` branch，並刪除已合併 branch，完成一次開發流程。
+</file>
+
+<file path="src/app/App.vue">
+<script setup lang="ts">
+import { useShortcuts } from '@/composables/useShortcuts';
+
+useShortcuts();
+</script>
+
+<template>
+    <UApp>
+        <RouterView />
+    </UApp>
+</template>
+</file>
+
+<file path="src/editor/canvas/FactoryCanvas.vue">
+<script setup lang="ts">
+import { storeToRefs } from 'pinia';
+import { Background } from '@vue-flow/background';
+import { Controls } from '@vue-flow/controls';
+import { MiniMap } from '@vue-flow/minimap';
+import { VueFlow, useVueFlow } from '@vue-flow/core';
+import type { EquipmentType } from '@/types/editor';
+import type { FactoryNode } from '@/types/graph';
+import { useEditorStore } from '@/store/editorStore';
+import { useSelectionStore } from '@/store/selectionStore';
+
+const editorStore = useEditorStore();
+const selectionStore = useSelectionStore();
+const { nodes, edges, snapToGrid, activeTool, selectedEquipment, placementArmed } =
+    storeToRefs(editorStore);
+const { screenToFlowCoordinate, addNodes } = useVueFlow();
+
+const equipmentLabelMap: Record<EquipmentType, string> = {
+    smelter: '精煉爐',
+    crusher: '粉碎機',
+    assembler: '組裝台',
+    'conveyor-node': '輸送帶節點',
+    'power-node': '電力節點',
+};
+const equipmentTypes = Object.keys(equipmentLabelMap) as EquipmentType[];
+
+function handleSelectionChange(selection: { nodes?: Array<{ id: string }> }) {
+    selectionStore.setSelection((selection.nodes ?? []).map((node) => node.id));
+}
+
+function buildFactoryNode(equipment: EquipmentType, clientX: number, clientY: number): FactoryNode {
+    const position = screenToFlowCoordinate({ x: clientX, y: clientY });
+
+    return {
+        id: `node-${equipment}-${Date.now()}-${Math.round(Math.random() * 10000)}`,
+        type: 'default',
+        position,
+        data: {
+            label: equipmentLabelMap[equipment],
+            machineType: equipment,
+        },
+    };
+}
+
+function placeNodeAtPointer(equipment: EquipmentType, clientX: number, clientY: number) {
+    addNodes([buildFactoryNode(equipment, clientX, clientY)]);
+}
+
+function isEquipmentType(value: string): value is EquipmentType {
+    return equipmentTypes.includes(value as EquipmentType);
+}
+
+function handlePaneClick(event: MouseEvent) {
+    if (!placementArmed.value || activeTool.value !== 'select') {
+        return;
+    }
+
+    placeNodeAtPointer(selectedEquipment.value, event.clientX, event.clientY);
+    editorStore.disarmPlacement();
+}
+
+function handleCanvasDrop(event: DragEvent) {
+    const droppedEquipment = event.dataTransfer?.getData('application/x-endfield-equipment') ?? '';
+    if (!isEquipmentType(droppedEquipment)) {
+        return;
+    }
+
+    event.preventDefault();
+    placeNodeAtPointer(droppedEquipment, event.clientX, event.clientY);
+    editorStore.disarmPlacement();
+}
+</script>
+
+<template>
+    <div class="panel h-full overflow-hidden" @dragover.prevent @drop="handleCanvasDrop">
+        <VueFlow
+            v-model:nodes="nodes"
+            v-model:edges="edges"
+            :fit-view-on-init="true"
+            :nodes-draggable="true"
+            :zoom-on-scroll="true"
+            :pan-on-drag="activeTool === 'pan'"
+            :selection-on-drag="activeTool === 'box-select'"
+            :snap-to-grid="snapToGrid"
+            class="factory-flow"
+            @selection-change="handleSelectionChange"
+            @pane-click="handlePaneClick"
+        >
+            <Background :size="1.2" pattern-color="#3f3f46" />
+            <Controls />
+            <MiniMap />
+        </VueFlow>
+    </div>
+</template>
+</file>
+
+<file path="src/main.ts">
+import { createApp } from 'vue';
+import './style.css';
+import { createPinia } from 'pinia';
+import ui from '@nuxt/ui/vue-plugin';
+import App from './app/App.vue';
+import router from './router';
+import '@vue-flow/core/dist/style.css';
+import '@vue-flow/core/dist/theme-default.css';
+
+const app = createApp(App);
+app.use(createPinia());
+app.use(router);
+app.use(ui);
+app.mount('#app');
+</file>
+
+<file path="src/types/editor.ts">
+export type ToolMode = 'select' | 'pan' | 'connect' | 'box-select';
+export type EquipmentType = 'smelter' | 'crusher' | 'assembler' | 'conveyor-node' | 'power-node';
+
+export interface MapSettings {
+    mapWidth: number;
+    mapHeight: number;
+    snapToGrid: boolean;
+}
+
+export interface ShortcutAction {
+    id: string;
+    description: string;
+    run: () => void;
+}
+</file>
+
+<file path="package.json">
+{
+  "name": "endfield-playground",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview",
+    "type-check": "vue-tsc --build",
+    "lint": "eslint . --fix",
+    "lint-check": "eslint .",
+    "format": "prettier --write src/",
+    "format-check": "prettier --check src/"
+  },
+  "dependencies": {
+    "@nuxt/ui": "^4.6.1",
+    "@vue-flow/background": "^1.3.2",
+    "@vue-flow/controls": "^1.1.3",
+    "@vue-flow/core": "^1.48.2",
+    "@vue-flow/minimap": "^1.5.4",
+    "@vueuse/core": "^14.2.1",
+    "pinia": "^3.0.4",
+    "vue": "^3.5.32",
+    "vue-router": "^5.0.6"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.4",
+    "@types/node": "^24.12.2",
+    "@vitejs/plugin-vue": "^6.0.6",
+    "@vitest/eslint-plugin": "^1.6.16",
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "@vue/eslint-config-typescript": "^14.7.0",
+    "@vue/tsconfig": "^0.9.1",
+    "autoprefixer": "^10.5.0",
+    "eslint": "^10.2.1",
+    "eslint-plugin-cypress": "^6.3.1",
+    "eslint-plugin-vue": "^10.9.0",
+    "postcss": "^8.5.10",
+    "prettier": "^3.8.3",
+    "prettier-plugin-tailwindcss": "^0.6.12",
+    "tailwindcss": "^4.2.4",
+    "typescript": "~6.0.2",
+    "vite": "^8.0.10",
+    "vue-tsc": "^3.2.7"
+  },
+  "packageManager": "pnpm@10.7.0"
+}
+</file>
+
+<file path="src/editor/inspector/InspectorPanel.vue">
+<script setup lang="ts">
+import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useEditorStore } from '@/store/editorStore';
+import ProductionStats from '@/editor/stats/ProductionStats.vue';
+
+const editorStore = useEditorStore();
+const { mapWidth, mapHeight, snapToGrid } = storeToRefs(editorStore);
+
+const mapWidthInput = computed({
+    get: () => mapWidth.value,
+    set: (value: number) => editorStore.setMapSize(Number(value), mapHeight.value),
+});
+
+const mapHeightInput = computed({
+    get: () => mapHeight.value,
+    set: (value: number) => editorStore.setMapSize(mapWidth.value, Number(value)),
+});
+</script>
+
+<template>
+    <div class="panel flex h-full flex-col gap-3 p-3">
+        <h2 class="panel-title">Inspector</h2>
+        <div class="space-y-3">
+            <UFormField label="工廠寬度">
+                <UInputNumber v-model="mapWidthInput" :min="64" :step="16" />
+            </UFormField>
+
+            <UFormField label="工廠高度">
+                <UInputNumber v-model="mapHeightInput" :min="64" :step="16" />
+            </UFormField>
+
+            <UCheckbox
+                :model-value="snapToGrid"
+                label="Snap to grid"
+                @update:model-value="editorStore.setSnapToGrid(Boolean($event))"
+            />
+        </div>
+
+        <div class="mt-2 border-t border-zinc-700 pt-3">
+            <h3 class="text-xs tracking-wide text-zinc-400 uppercase">未來預留</h3>
+            <ul class="mt-2 space-y-1 text-sm text-zinc-300">
+                <li>電力模式</li>
+                <li>模擬速度</li>
+                <li>生產目標</li>
+            </ul>
+        </div>
+
+        <div class="mt-2 border-t border-zinc-700 pt-3">
+            <h3 class="text-xs tracking-wide text-zinc-400 uppercase">產能資訊</h3>
+            <div class="mt-2">
+                <ProductionStats />
+            </div>
+        </div>
+    </div>
+</template>
+</file>
+
+<file path="src/store/editorStore.ts">
+import { computed, ref, shallowRef } from 'vue';
+import { defineStore } from 'pinia';
+import type { FactoryEdge, FactoryNode } from '@/types/graph';
+import type { EquipmentType, ToolMode } from '@/types/editor';
+
+const mockNodes: FactoryNode[] = [
+    {
+        id: 'node-iron',
+        type: 'default',
+        position: { x: 160, y: 120 },
+        data: { label: 'Iron Miner' },
+    },
+    {
+        id: 'node-smelter',
+        type: 'default',
+        position: { x: 420, y: 240 },
+        data: { label: 'Smelter' },
+    },
+];
+
+const mockEdges: FactoryEdge[] = [
+    {
+        id: 'edge-1',
+        source: 'node-iron',
+        target: 'node-smelter',
+        animated: true,
+    },
+];
+
+export const useEditorStore = defineStore('editor', () => {
+    const nodes = shallowRef<FactoryNode[]>(mockNodes);
+    const edges = shallowRef<FactoryEdge[]>(mockEdges);
+    const mapWidth = ref(256);
+    const mapHeight = ref(256);
+    const snapToGrid = ref(true);
+    const activeTool = ref<ToolMode>('select');
+    const selectedEquipment = ref<EquipmentType>('smelter');
+    const placementArmed = ref(false);
+
+    const machineCount = computed(() => nodes.value.length);
+    const nodeCount = computed(() => nodes.value.length);
+    const edgeCount = computed(() => edges.value.length);
+
+    function setMapSize(width: number, height: number) {
+        mapWidth.value = Math.max(64, width);
+        mapHeight.value = Math.max(64, height);
+    }
+
+    function setSnapToGrid(enabled: boolean) {
+        snapToGrid.value = enabled;
+    }
+
+    function setActiveTool(tool: ToolMode) {
+        activeTool.value = tool;
+        if (tool !== 'select') {
+            placementArmed.value = false;
+        }
+    }
+
+    function setSelectedEquipment(equipment: EquipmentType) {
+        selectedEquipment.value = equipment;
+    }
+
+    function armPlacement(equipment: EquipmentType) {
+        selectedEquipment.value = equipment;
+        placementArmed.value = true;
+    }
+
+    function disarmPlacement() {
+        placementArmed.value = false;
+    }
+
+    function resetCanvas() {
+        nodes.value = structuredClone(mockNodes);
+        edges.value = structuredClone(mockEdges);
+    }
+
+    return {
+        nodes,
+        edges,
+        mapWidth,
+        mapHeight,
+        snapToGrid,
+        activeTool,
+        selectedEquipment,
+        placementArmed,
+        machineCount,
+        nodeCount,
+        edgeCount,
+        setMapSize,
+        setSnapToGrid,
+        setActiveTool,
+        setSelectedEquipment,
+        armPlacement,
+        disarmPlacement,
+        resetCanvas,
+    };
+});
+</file>
+
+<file path="src/style.css">
+@import 'tailwindcss';
+@import '@nuxt/ui';
+
+:root {
+    font-family: Inter, 'Segoe UI', system-ui, sans-serif;
+    color: #e4e4e7;
+    background-color: #09090b;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.editor-layout {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background: #09090b;
+}
+
+.area-navbar {
+    height: 56px;
+    flex-shrink: 0;
+    border-bottom: 1px solid #27272a;
+}
+
+.area-workspace {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+}
+
+.workspace-main {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) 108px;
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+}
+
+.area-toolbar {
+    border-top: 1px solid #27272a;
+}
+
+.area-canvas {
+    min-height: 0;
+    min-width: 0;
+}
+
+.panel {
+    background: #111113;
+}
+
+.panel-title {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #f4f4f5;
+}
+
+.btn {
+    border: 1px solid #3f3f46;
+    border-radius: 0.5rem;
+    background: #18181b;
+    color: #e4e4e7;
+    font-size: 0.85rem;
+    line-height: 1.1rem;
+    padding: 0.42rem 0.7rem;
+    cursor: pointer;
+}
+
+.btn:hover {
+    border-color: #52525b;
+}
+
+.btn-warning {
+    border-color: #fb7185;
+    color: #fecdd3;
+}
+
+.btn-active {
+    border-color: #a78bfa;
+    background: #312e81;
+    color: #ede9fe;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    color: #d4d4d8;
+    font-size: 0.85rem;
+}
+
+.input {
+    border: 1px solid #3f3f46;
+    border-radius: 0.45rem;
+    background: #18181b;
+    color: #e4e4e7;
+    padding: 0.4rem 0.6rem;
+}
+
+.factory-flow {
+    width: 100%;
+    height: 100%;
+    background: #0c0c0f;
+}
+
+.toolbar-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.toolbar-section {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    min-width: 0;
+}
+
+.toolbar-label {
+    color: #a1a1aa;
+    font-size: 0.75rem;
+    min-width: 76px;
+}
+
+.toolbar-row {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.2rem;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 150px;
+}
+
+.stats-board {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+}
+
+.stat-label {
+    color: #a1a1aa;
+    font-size: 0.75rem;
+}
+
+.stat-value {
+    color: #fafafa;
+    font-size: 1rem;
+}
+</file>
+
+<file path="src/editor/navbar/Navbar.vue">
+<script setup lang="ts">
+import type { ToolMode } from '@/types/editor';
+import { ref } from 'vue';
+import { useEditorStore } from '@/store/editorStore';
+
+defineProps<{
+    sidebarOpen: boolean;
+}>();
+
+defineEmits<{
+    (event: 'toggle-sidebar'): void;
+}>();
+
+const editorStore = useEditorStore();
+const fileName = ref('factory-layout-001.json');
+
+const tools: Array<{ id: ToolMode; label: string }> = [
+    { id: 'select', label: '選取' },
+    { id: 'pan', label: '移動畫布' },
+];
+</script>
+
+<template>
+    <UHeader>
+        <template #left>
+            <UButton
+                size="sm"
+                variant="ghost"
+                color="neutral"
+                icon="i-lucide-panel-left"
+                :aria-label="sidebarOpen ? '收合左側選單' : '展開左側選單'"
+                @click="$emit('toggle-sidebar')"
+            />
+            <span class="text-toned text-sm font-semibold"> 終末地集成工業系統模擬器 </span>
+        </template>
+
+        <template #right>
+            <UFieldGroup size="sm">
+                <UButton
+                    v-for="tool in tools"
+                    :key="tool.id"
+                    color="neutral"
+                    :variant="editorStore.activeTool === tool.id ? 'solid' : 'soft'"
+                    :label="tool.label"
+                    @click="editorStore.setActiveTool(tool.id)"
+                />
+            </UFieldGroup>
+            <UBadge color="neutral" variant="outline" size="md" :label="`目前檔名：${fileName}`" />
+        </template>
+    </UHeader>
+</template>
+</file>
+
+<file path="src/editor/toolbar/ToolbarPanel.vue">
+<script setup lang="ts">
+import type { EquipmentType } from '@/types/editor';
+import { useEditorStore } from '@/store/editorStore';
+
+const editorStore = useEditorStore();
+
+const equipments: Array<{ id: EquipmentType; label: string }> = [
+    { id: 'smelter', label: '精煉爐' },
+    { id: 'crusher', label: '粉碎機' },
+    { id: 'assembler', label: '組裝台' },
+    { id: 'conveyor-node', label: '輸送帶節點' },
+    { id: 'power-node', label: '電力節點' },
+];
+
+function handleEquipClick(equipment: EquipmentType) {
+    editorStore.armPlacement(equipment);
+}
+
+function handleEquipDragStart(event: DragEvent, equipment: EquipmentType) {
+    editorStore.setSelectedEquipment(equipment);
+
+    if (!event.dataTransfer) {
+        return;
+    }
+
+    event.dataTransfer.effectAllowed = 'copy';
+    event.dataTransfer.setData('application/x-endfield-equipment', equipment);
+}
+</script>
+
+<template>
+    <div class="panel toolbar-bottom toolbar-panel">
+        <div class="toolbar-row">
+            <UButton
+                v-for="equipment in equipments"
+                :key="equipment.id"
+                color="neutral"
+                :variant="editorStore.selectedEquipment === equipment.id ? 'solid' : 'soft'"
+                :label="equipment.label"
+                class="toolbar-button"
+                draggable="true"
+                @click="handleEquipClick(equipment.id)"
+                @dragstart="handleEquipDragStart($event, equipment.id)"
+            />
+        </div>
+    </div>
+</template>
+
+<style scoped>
+.toolbar-panel {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+}
+
+.toolbar-row {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    width: 100%;
+    height: 100%;
+    gap: 0;
+}
+
+.toolbar-button {
+    height: 100%;
+    border-radius: 0;
+}
+</style>
+</file>
+
+<file path="src/app/layouts/MainLayout.vue">
+<script setup lang="ts">
+import { ref } from 'vue';
+import Navbar from '@/editor/navbar/Navbar.vue';
+import ProjectSidebar from '@/editor/sidebar/ProjectSidebar.vue';
+import ToolbarPanel from '@/editor/toolbar/ToolbarPanel.vue';
+import FactoryCanvas from '@/editor/canvas/FactoryCanvas.vue';
+import InspectorSidebar from '@/editor/inspector/InspectorSidebar.vue';
+
+const sidebarOpen = ref(false);
+const inspectorOpen = ref(true);
+</script>
+
+<template>
+    <div class="editor-layout">
+        <header class="area-navbar">
+            <Navbar :sidebar-open="sidebarOpen" @toggle-sidebar="sidebarOpen = !sidebarOpen" />
+        </header>
+
+        <div class="area-workspace">
+            <ProjectSidebar v-model:open="sidebarOpen" />
+
+            <div class="workspace-main">
+                <main class="area-canvas">
+                    <FactoryCanvas />
+                </main>
+                <section class="area-toolbar">
+                    <ToolbarPanel />
+                </section>
+            </div>
+
+            <InspectorSidebar v-model:open="inspectorOpen" />
+        </div>
+    </div>
+</template>
+</file>
+
+</files>
