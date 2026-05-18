@@ -35,9 +35,7 @@ export function gridToScreen(
 /**
  * 將 waypoints 轉換為線段列表
  */
-export function waypointsToSegments(
-    waypoints: { x: number; y: number }[],
-): Segment[] {
+export function waypointsToSegments(waypoints: { x: number; y: number }[]): Segment[] {
     if (waypoints.length < 2) {
         return [];
     }
@@ -68,9 +66,7 @@ export function getConnectionSegments(
 /**
  * 驗證所有線段是否為純水平或垂直（90 度轉角）
  */
-export function validateAllSegments(
-    points: { x: number; y: number }[],
-): PathValidation {
+export function validateAllSegments(points: { x: number; y: number }[]): PathValidation {
     const invalidIndices: number[] = [];
 
     for (let i = 0; i < points.length - 1; i++) {
@@ -107,8 +103,7 @@ export function isPointOnSegment(
     if (lengthSquared === 0) {
         // 線段退化為點
         const distSquared =
-            (point.x - start.x) * (point.x - start.x) +
-            (point.y - start.y) * (point.y - start.y);
+            (point.x - start.x) * (point.x - start.x) + (point.y - start.y) * (point.y - start.y);
         return distSquared <= tolerance * tolerance;
     }
 
@@ -139,20 +134,15 @@ export function doSegmentsIntersect(seg1: Segment, seg2: Segment): boolean {
     const { start: p1, end: p2 } = seg1;
     const { start: p3, end: p4 } = seg2;
 
-    const denominator =
-        (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);
+    const denominator = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);
 
     // 平行或重合
     if (denominator === 0) {
         return false;
     }
 
-    const ua =
-        ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) /
-        denominator;
-    const ub =
-        ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) /
-        denominator;
+    const ua = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / denominator;
+    const ub = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / denominator;
 
     // 相交點在兩條線段範圍內
     return ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1;
@@ -168,19 +158,14 @@ export function getSegmentIntersection(
     const { start: p1, end: p2 } = seg1;
     const { start: p3, end: p4 } = seg2;
 
-    const denominator =
-        (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);
+    const denominator = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);
 
     if (denominator === 0) {
         return null;
     }
 
-    const ua =
-        ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) /
-        denominator;
-    const ub =
-        ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) /
-        denominator;
+    const ua = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / denominator;
+    const ub = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / denominator;
 
     if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
         return {
@@ -195,10 +180,7 @@ export function getSegmentIntersection(
 /**
  * 計算兩點之間的距離
  */
-export function distance(
-    p1: { x: number; y: number },
-    p2: { x: number; y: number },
-): number {
+export function distance(p1: { x: number; y: number }, p2: { x: number; y: number }): number {
     const dx = p2.x - p1.x;
     const dy = p2.y - p1.y;
     return Math.sqrt(dx * dx + dy * dy);
@@ -242,9 +224,7 @@ export function isVertical(segment: Segment): boolean {
 /**
  * 簡化路徑（移除共線的中間點）
  */
-export function simplifyPath(
-    points: { x: number; y: number }[],
-): { x: number; y: number }[] {
+export function simplifyPath(points: { x: number; y: number }[]): { x: number; y: number }[] {
     if (points.length <= 2) {
         return [...points];
     }

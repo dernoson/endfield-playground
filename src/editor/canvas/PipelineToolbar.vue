@@ -21,27 +21,9 @@ const { isPipelineMode, hasActiveConnection, isEditing } = storeToRefs(pipelineS
 
     <!-- 管線模式啟用時顯示的狀態提示 -->
     <template v-if="isPipelineMode">
-        <UBadge
-            v-if="hasActiveConnection"
-            color="amber"
-            variant="soft"
-            size="sm"
-            label="繪製中"
-        />
-        <UBadge
-            v-else-if="isEditing"
-            color="violet"
-            variant="soft"
-            size="sm"
-            label="編輯中"
-        />
-        <UBadge
-            v-else
-            color="primary"
-            variant="subtle"
-            size="sm"
-            label="管線模式"
-        />
+        <UBadge v-if="hasActiveConnection" color="amber" variant="soft" size="sm" label="繪製中" />
+        <UBadge v-else-if="isEditing" color="violet" variant="soft" size="sm" label="編輯中" />
+        <UBadge v-else color="primary" variant="subtle" size="sm" label="管線模式" />
 
         <UButton
             v-if="hasActiveConnection"

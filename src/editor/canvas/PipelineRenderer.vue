@@ -53,10 +53,7 @@ function handleConnectionClick(conn: Connection) {
         absolute inset-0：完整覆蓋父容器（FactoryCanvas 的 relative div）
         pointer-events-none：預設不攔截，子元素視需要加回 pointer-events-auto
     -->
-    <svg
-        class="pipeline-layer pointer-events-none"
-        xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg class="pipeline-layer pointer-events-none" xmlns="http://www.w3.org/2000/svg">
         <!-- ── 已確認的管線 ── -->
         <g v-for="conn in connections" :key="conn.uid">
             <polyline
@@ -178,15 +175,26 @@ function handleConnectionClick(conn: Connection) {
 }
 
 @keyframes blink {
-    0%, 100% { opacity: 0.9; }
-    50% { opacity: 0.3; }
+    0%,
+    100% {
+        opacity: 0.9;
+    }
+    50% {
+        opacity: 0.3;
+    }
 }
 
 .waypoint {
     transition: r 0.15s;
 }
-.waypoint:hover { r: 9; }
+.waypoint:hover {
+    r: 9;
+}
 
-.auto-node { transition: r 0.15s; }
-.auto-node:hover { r: 11; }
+.auto-node {
+    transition: r 0.15s;
+}
+.auto-node:hover {
+    r: 11;
+}
 </style>
