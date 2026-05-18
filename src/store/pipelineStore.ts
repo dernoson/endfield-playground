@@ -31,7 +31,7 @@ export const usePipelineStore = defineStore('pipeline', () => {
             target: conn.to.deviceUid,
             sourceHandle: null,
             targetHandle: null,
-            type: 'default',
+            type: 'smoothstep',
             animated: false,
             deletable: true,
             focusable: true,
