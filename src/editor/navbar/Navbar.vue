@@ -1,8 +1,9 @@
 <script setup lang="ts">
+// src/editor/navbar/Navbar.vue
 import type { ToolMode } from '@/types/editor';
 import { ref } from 'vue';
 import { useEditorStore } from '@/store/editorStore';
-import { usePipelineStore } from '@/store/pipelineStore';
+import PipelineToolbar from '@/editor/canvas/PipelineToolbar.vue';
 
 defineProps<{
     sidebarOpen: boolean;
@@ -14,13 +15,13 @@ defineEmits<{
 
 const editorStore = useEditorStore();
 const fileName = ref('factory-layout-001.json');
-const pipelineStore = usePipelineStore();
 
 const tools: Array<{ id: ToolMode; label: string }> = [
     { id: 'select', label: '選取' },
     { id: 'pan', label: '移動畫布' },
 ];
 </script>
+
 <template>
     <UHeader>
         <template #left>
@@ -36,6 +37,7 @@ const tools: Array<{ id: ToolMode; label: string }> = [
         </template>
 
         <template #right>
+            <!-- 既有的畫布工具按鈕 -->
             <UFieldGroup size="sm">
                 <UButton
                     v-for="tool in tools"
@@ -46,13 +48,16 @@ const tools: Array<{ id: ToolMode; label: string }> = [
                     @click="editorStore.setActiveTool(tool.id)"
                 />
             </UFieldGroup>
+
+            <!-- 分隔線 -->
+            <USeparator orientation="vertical" class="h-5" />
+
+            <!-- 管線模式工具 -->
+            <PipelineToolbar />
+
+            <USeparator orientation="vertical" class="h-5" />
+
             <UBadge color="neutral" variant="outline" size="md" :label="`目前檔名：${fileName}`" />
-                  <!-- 管線模式按鈕 -->
-                <UButton
-                    :variant="pipelineStore.isPipelineMode ? 'solid' : 'soft'"
-                    label="管線 (P)"
-                    @click="pipelineStore.togglePipelineMode()"
-                />
         </template>
     </UHeader>
 </template>
