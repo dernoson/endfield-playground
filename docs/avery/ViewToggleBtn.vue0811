@@ -1,0 +1,20 @@
+<script setup>
+import { ref, computed } from 'vue'
+
+const icons = ['view_3d', 'view_2d', 'view_top']
+const currentIndex = ref(0)
+const currentIcon = computed(() => icons[currentIndex.value])
+
+const toggleView = () => {
+  currentIndex.value = (currentIndex.value + 1) % icons.length
+}
+</script>
+
+<template>
+  <button 
+    class="fixed bottom-6 right-6 z-[999] w-14 h-14 rounded-full border-none cursor-pointer" 
+    @click="toggleView"
+  >
+    <span>{{ currentIcon }}</span>
+  </button>
+</template>
