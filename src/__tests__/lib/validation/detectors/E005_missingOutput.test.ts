@@ -23,8 +23,7 @@ describe('E005_missingOutput', () => {
         name: '測試設備',
         width: 1,
         height: 1,
-        input_ports: [],
-        output_ports: [],
+        modes: [{ id: 'default', label: 'Default', input_ports: [], output_ports: [], loss: null }],
         power: 10,
         tags: [],
         is_source: false,
@@ -89,7 +88,7 @@ describe('E005_missingOutput', () => {
             target: 'other_dev',
             sourceHandle: null,
             targetHandle: null,
-            data: { portType: 'item' },
+            data: { portType: 'belt' },
         };
         const ctx = createContext([device], [edge]);
         const alerts = E005_missingOutput.run(ctx);

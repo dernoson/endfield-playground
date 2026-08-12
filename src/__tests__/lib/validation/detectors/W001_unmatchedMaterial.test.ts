@@ -41,12 +41,19 @@ vi.mock('@/data/machines', () => ({
                 name: '分流器',
                 width: 1,
                 height: 1,
-                input_ports: [{ side: 'top', offset: 0, type: 'item' }],
-                output_ports: [{ side: 'bottom', offset: 0, type: 'item' }],
                 power: 0,
                 tags: [],
                 is_source: false,
                 is_sink: false,
+                modes: [
+                    {
+                        id: 'default',
+                        label: 'Default',
+                        input_ports: [{ side: 'top', offset: 0, media: 'belt' }],
+                        output_ports: [{ side: 'bottom', offset: 0, media: 'belt' }],
+                        loss: null,
+                    },
+                ],
                 onTick: null,
                 onInput: null,
                 onOutput: null,
@@ -58,12 +65,19 @@ vi.mock('@/data/machines', () => ({
             name: machineType,
             width: 1,
             height: 1,
-            input_ports: [{ side: 'top', offset: 0, type: 'item' }],
-            output_ports: [{ side: 'bottom', offset: 0, type: 'item' }],
             power: 10,
             tags: [],
             is_source: false,
             is_sink: false,
+            modes: [
+                {
+                    id: 'default',
+                    label: 'Default',
+                    input_ports: [{ side: 'top', offset: 0, media: 'belt' }],
+                    output_ports: [{ side: 'bottom', offset: 0, media: 'belt' }],
+                    loss: null,
+                },
+            ],
             onTick: null,
             onInput: null,
             onOutput: null,
@@ -110,7 +124,7 @@ describe('W001_unmatchedMaterial', () => {
             target: 'machA',
             sourceHandle: null,
             targetHandle: null,
-            data: { portType: 'item' },
+            data: { portType: 'belt' },
         };
         const ctx = createContext([prodA, machA], [edge]);
         const alerts = W001_unmatchedMaterial.run(ctx);
@@ -126,7 +140,7 @@ describe('W001_unmatchedMaterial', () => {
             target: 'machA',
             sourceHandle: null,
             targetHandle: null,
-            data: { portType: 'item' },
+            data: { portType: 'belt' },
         };
         const ctx = createContext([prodB, machA], [edge]);
         const alerts = W001_unmatchedMaterial.run(ctx);
@@ -146,7 +160,7 @@ describe('W001_unmatchedMaterial', () => {
             target: 'split1',
             sourceHandle: null,
             targetHandle: null,
-            data: { portType: 'item' },
+            data: { portType: 'belt' },
         };
         const edge2: FactoryEdge = {
             id: 'e2',
@@ -154,7 +168,7 @@ describe('W001_unmatchedMaterial', () => {
             target: 'machA',
             sourceHandle: null,
             targetHandle: null,
-            data: { portType: 'item' },
+            data: { portType: 'belt' },
         };
 
         const ctx = createContext([prodA, splitter, machA], [edge1, edge2]);
@@ -172,7 +186,7 @@ describe('W001_unmatchedMaterial', () => {
             target: 'split1',
             sourceHandle: null,
             targetHandle: null,
-            data: { portType: 'item' },
+            data: { portType: 'belt' },
         };
         const edge2: FactoryEdge = {
             id: 'e2',
@@ -180,7 +194,7 @@ describe('W001_unmatchedMaterial', () => {
             target: 'machA',
             sourceHandle: null,
             targetHandle: null,
-            data: { portType: 'item' },
+            data: { portType: 'belt' },
         };
 
         const ctx = createContext([prodB, splitter, machA], [edge1, edge2]);

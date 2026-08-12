@@ -25,8 +25,7 @@ describe('W002_insufficientInput', () => {
         name: '測試設備',
         width: 1,
         height: 1,
-        input_ports: [],
-        output_ports: [],
+        modes: [{ id: 'default', label: 'Default', input_ports: [], output_ports: [], loss: null }],
         power: 10,
         tags: [],
         is_source: false,
@@ -92,7 +91,7 @@ describe('W002_insufficientInput', () => {
             target: 'dev1',
             sourceHandle: null,
             targetHandle: null,
-            data: { portType: 'item' },
+            data: { portType: 'belt' },
         };
         const edgeFlows = new Map<string, EdgeFlow>([
             ['edge1', { connectionUid: 'edge1', itemId: 'itemA', rate: 1, isCongested: false }],
@@ -112,7 +111,7 @@ describe('W002_insufficientInput', () => {
             target: 'dev1',
             sourceHandle: null,
             targetHandle: null,
-            data: { portType: 'item' },
+            data: { portType: 'belt' },
         };
         const edgeFlows = new Map<string, EdgeFlow>([
             ['edge1', { connectionUid: 'edge1', itemId: 'itemA', rate: 0.5, isCongested: false }],

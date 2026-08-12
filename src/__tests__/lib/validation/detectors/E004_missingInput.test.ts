@@ -23,10 +23,9 @@ describe('E004_missingInput', () => {
         name: '測試設備',
         width: 1,
         height: 1,
-        input_ports: [],
-        output_ports: [],
         power: 10,
         tags: [],
+        modes: [{ id: 'default', label: 'Default', input_ports: [], output_ports: [], loss: null }],
         is_source: false,
         is_sink: false,
         onTick: null,
@@ -89,7 +88,7 @@ describe('E004_missingInput', () => {
             target: 'dev1',
             sourceHandle: null,
             targetHandle: null,
-            data: { portType: 'item' },
+            data: { portType: 'belt' },
         };
         const ctx = createContext([device], [edge]);
         const alerts = E004_missingInput.run(ctx);

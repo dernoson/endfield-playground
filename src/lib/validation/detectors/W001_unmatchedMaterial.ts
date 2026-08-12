@@ -1,6 +1,7 @@
 import type { Alert, Detector, ValidationContext } from '@/types/validation';
 import { getMachine } from '@/data/machines';
 import { getRecipesForMachine } from '@/data/products';
+import { getMachineMode } from '@/types/machine';
 
 function getIncomingItems(
     targetId: string,
@@ -48,7 +49,11 @@ export const W001_unmatchedMaterial: Detector = {
             const machineDef = getMachine(machineType);
 
             // 如果沒有設備定義，或是資源產出端 (沒有輸入口)，跳過
-            if (!machineDef || machineDef.is_source || machineDef.input_ports.length === 0) {
+            if (
+                !machineDef ||
+                machineDef.is_source ||
+                getMachineMode(machineDef).input_ports.length === 0
+            ) {
                 continue;
             }
 

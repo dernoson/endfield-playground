@@ -30,7 +30,7 @@ describe('W003_outputCongested', () => {
             target: 'dev2',
             sourceHandle: null,
             targetHandle: null,
-            data: { portType: 'item' },
+            data: { portType: 'belt' },
         };
         const ctx = createContext([edge], new Set());
         const alerts = W003_outputCongested.run(ctx);
@@ -44,7 +44,7 @@ describe('W003_outputCongested', () => {
             target: 'dev2',
             sourceHandle: null,
             targetHandle: null,
-            data: { portType: 'item' },
+            data: { portType: 'belt' },
         };
         const edge2: FactoryEdge = {
             id: 'edge2',
@@ -52,7 +52,7 @@ describe('W003_outputCongested', () => {
             target: 'dev4',
             sourceHandle: null,
             targetHandle: null,
-            data: { portType: 'item' },
+            data: { portType: 'belt' },
         };
         const ctx = createContext([edge1, edge2], new Set(['edge1']));
         const alerts = W003_outputCongested.run(ctx);
