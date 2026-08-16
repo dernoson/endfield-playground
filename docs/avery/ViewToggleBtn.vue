@@ -1,43 +1,20 @@
-<template>
-    <button class="view-toggle-btn">
-        <span>Icon圖標</span>
-    </button>
-</template>
-
-<style scoped>
-.view-toggle-btn {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    z-index: 999;
-}
-</style>
-
-<script setup lang="ts">
+<script setup>
 import { ref, computed } from 'vue';
-const icons = ['圖標A', '圖標B', '圖標C'];
+
+const icons = ['view_3d', 'view_2d', 'view_top'];
 const currentIndex = ref(0);
-const currentIcon = computed(() => {
-    return icons[currentIndex.value];
-});
+const currentIcon = computed(() => icons[currentIndex.value]);
+
 const toggleView = () => {
     currentIndex.value = (currentIndex.value + 1) % icons.length;
 };
 </script>
 
 <template>
-    <button class="view-toggle-btn" @click="toggleView">
+    <button
+        class="fixed right-6 bottom-6 z-999 h-14 w-14 cursor-pointer rounded-full border-none"
+        @click="toggleView"
+    >
         <span>{{ currentIcon }}</span>
     </button>
-</template>
-
-<script setup lang="ts">
-import ViewToggleBtn from '@/components/ViewToggleBtn.vue';
-</script>
-
-<template>
-    <div class="canvas-container">
-        <div class="my-canvas"></div>
-        <ViewToggleBtn />
-    </div>
 </template>

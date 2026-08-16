@@ -5,10 +5,13 @@ import ProjectSidebar from '@/editor/sidebar/ProjectSidebar.vue';
 import ToolbarPanel from '@/editor/toolbar/ToolbarPanel.vue';
 import FactoryCanvas from '@/editor/canvas/FactoryCanvas.vue';
 import InspectorSidebar from '@/editor/inspector/InspectorSidebar.vue';
+import StatsPanel from '@/components/StatsPanel/Index.vue';
 import { useFlowEngine } from '@/composables/useFlowEngine';
 import { useValidation } from '@/composables/useValidation';
 
+/** 左側專案選單目前是否展開，預設收合 */
 const sidebarOpen = ref(false);
+/** 右側 Inspector 面板目前是否展開，預設展開 */
 const inspectorOpen = ref(true);
 
 /**
@@ -31,12 +34,15 @@ useFlowEngine();
             <ProjectSidebar v-model:open="sidebarOpen" />
 
             <div class="workspace-main">
-                <main class="area-canvas">
+                <div class="area-canvas">
                     <FactoryCanvas />
-                </main>
+                </div>
                 <section class="area-toolbar">
                     <ToolbarPanel />
                 </section>
+                <aside class="area-stats">
+                    <StatsPanel />
+                </aside>
             </div>
 
             <InspectorSidebar v-model:open="inspectorOpen" />

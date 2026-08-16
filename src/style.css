@@ -42,17 +42,30 @@ body,
 
 .workspace-main {
     display: grid;
+    grid-template-columns: 1fr 320px;
     grid-template-rows: minmax(0, 1fr) 108px;
+    grid-template-areas:
+        'canvas stats'
+        'toolbar stats';
     flex: 1;
     min-height: 0;
     min-width: 0;
+    gap: 1rem;
 }
 
 .area-toolbar {
+    grid-area: toolbar;
     border-top: 1px solid #27272a;
 }
 
 .area-canvas {
+    grid-area: canvas;
+    min-height: 0;
+    min-width: 0;
+}
+
+.area-stats {
+    grid-area: stats;
     min-height: 0;
     min-width: 0;
 }
@@ -114,6 +127,15 @@ body,
     width: 100%;
     height: 100%;
     background: #0c0c0f;
+}
+
+/*
+ * Vue Flow 預設佈景（theme-default.css）會給 .vue-flow__node-default 外層加上白色背景，
+ * 但節點的實際背景已由 FlowNodeOverlay.vue 內層自繪；旋轉時內外層footprint 不再重疊，
+ * 若不清掉外層白色，旋轉後會露出外層未旋轉的白色背景。
+ */
+.vue-flow__node.vue-flow__node-default {
+    background-color: transparent;
 }
 
 .toolbar-bottom {
