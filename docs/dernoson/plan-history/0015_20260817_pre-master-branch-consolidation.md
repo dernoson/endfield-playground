@@ -1,4 +1,4 @@
-# 0003_20260817_pre-master-branch-consolidation
+# 0015_20260817_pre-master-branch-consolidation
 
 - **prev:** `./0001_20260810_merge-verification-sweep.md`
 - **skill:** plan-history v3
@@ -25,11 +25,11 @@
 匯入順序依「衝突風險由低到高」排：純新增檔案的先進，會動到既有共用檔案的後進。
 
 1. 先把 `dev/dernoson` 對齊 `origin/dev/dernoson`（已完成，本地已在 `8838faf`）。
-2. `dev/Avery`、`dev/paper` —— 兩條都只新增檔案，不動任何既有檔案，先合（0003#1、0003#2）。
+2. `dev/Avery`、`dev/paper` —— 兩條都只新增檔案，不動任何既有檔案，先合（0015#1、0015#2）。
 3. 合完跑 `validate-changes` 全套，確認 format / lint / type-check / test 沒被新檔案弄壞
-   （0003#3）。
+   （0015#3）。
 4. 剩下四條（`dev/azure9572`、`dev/toby`、`dev/cake`、`dev/GoodMorning`）逐條與使用者確認
-   去留與順序（0003#4）。這四條全都動到既有檔案，且彼此之間有重疊（O4），順序會影響工作量。
+   去留與順序（0015#4）。這四條全都動到既有檔案，且彼此之間有重疊（O4），順序會影響工作量。
 
 merge 一律用 `--no-ff` 保留合併點，讓之後要退某一條時可以整包 revert。
 
@@ -101,7 +101,7 @@ strategy 直接完成，零 conflict，變更檔案數與 O3 記錄的一致。
   縮排 2 空格改 4 空格）。純格式，無邏輯變更；不套的話 CI 的 `format-check` 會紅。
 - `pnpm lint` —— **失敗，exit 1**。唯一一個 error：
   `src/components/ViewTiggleBtn.vue:1:1 The 'lang' attribute of '<script>' is missing
-  vue/block-lang`。`--fix` 修不掉，需要人工加 `lang="ts"`。
+vue/block-lang`。`--fix` 修不掉，需要人工加 `lang="ts"`。
 - `pnpm type-check` —— 通過，無 TS error。
 - `pnpm test` —— 通過，28 個測試檔、301 個案例全過。
 
@@ -234,8 +234,8 @@ type-check 無 error、test 28 檔 301 案例全過。
 
 ```yaml
 onlyBuiltDependencies:
-  - esbuild
-  - vue-demi
+    - esbuild
+    - vue-demi
 ```
 
 這是 pnpm 10 的「允許執行 build script 的白名單」。pnpm v10 起預設封鎖所有相依套件的
@@ -308,12 +308,12 @@ azure 五個都實作了 `Detector` 介面（`{ code, level, run(ctx) }`），�
 **沿革**
 
 - H1 · 2026-08-17 決斷 —— 使用者裁定可直接合入（使用者）
-- H2 · 2026-08-17 落地 —— `--no-ff` 合入，零 conflict；因 0003#1 退回而重合一次 → O6
+- H2 · 2026-08-17 落地 —— `--no-ff` 合入，零 conflict；因 0015#1 退回而重合一次 → O6
 
 ### 3 合併後跑全套驗證
 
 - **state:** 完成
-- **needs:** 0003#1、0003#2
+- **needs:** 0015#1、0015#2
 - **basis:** → O7
 
 在移除 Avery、只留 `dev/paper` 的樹上重跑完 `validate-changes` 全套，四步全綠（O7）。
@@ -329,7 +329,7 @@ azure 五個都實作了 `Detector` 介面（`{ code, level, run(ctx) }`），�
 - **needs:** 0001#8
 - **basis:** → O13、O14
 
-原本四條，`dev/toby`、`dev/GoodMorning`、`dev/cake` 已分別在 0003#6、0003#7、0003#8 裁決
+原本四條，`dev/toby`、`dev/GoodMorning`、`dev/cake` 已分別在 0015#6、0015#7、0015#8 裁決
 完畢，本格只剩 `dev/azure9572`。使用者已裁定**等 `0001#8` 定案 detector 註冊方式之後再合**，
 不在此之前草率接線（O14）。
 
@@ -348,8 +348,8 @@ azure 五個都實作了 `Detector` 介面（`{ code, level, run(ctx) }`），�
 
 **沿革**
 
-- H1 · 2026-08-17 拆格 —— toby 與 GoodMorning 裁決完畢，分別移到 0003#6、0003#7，本格範圍縮為兩條
-- H2 · 2026-08-17 拆格 —— cake 裁決完畢移到 0003#8，本格只剩 azure9572
+- H1 · 2026-08-17 拆格 —— toby 與 GoodMorning 裁決完畢，分別移到 0015#6、0015#7，本格範圍縮為兩條
+- H2 · 2026-08-17 拆格 —— cake 裁決完畢移到 0015#8，本格只剩 azure9572
 - H3 · 2026-08-17 決斷 —— 使用者裁定等 0001#8 定案後再合，並確立三段分開處理 → O13、O14（使用者）
 
 ### 5 dev/cake_test 與 dev/mbd 不合入
@@ -358,7 +358,7 @@ azure 五個都實作了 `Detector` 介面（`{ code, level, run(ctx) }`），�
 - **basis:** → O1
 
 `dev/cake_test` 與 `dev/cake` 共用同樣三個程式 commit，只是同一份工作的另一個快照，合它
-等於重複計算（O1）；程式碼要不要進來由 0003#4 對 `dev/cake` 的裁決決定。
+等於重複計算（O1）；程式碼要不要進來由 0015#4 對 `dev/cake` 的裁決決定。
 
 `dev/mbd` 落後 master 172 個 commit、最後 commit 在 2026-05-22，內容是塞在 `docs/` 下的
 獨立 html/js prototype 外加會動到 `src/router/index.ts` 的 `MBDFlow.vue`。
@@ -377,13 +377,13 @@ azure 五個都實作了 `Detector` 介面（`{ code, level, run(ctx) }`），�
 實測過（O9）。合併後四步驗證全綠（O10）。
 
 未修的遺留瑕疵：`BaseRegionSelector/Index.vue:10` 的 trigger 標籤寫死「基地選擇」，選完不
-顯示已選項（O9）。不擋合併，收尾由 0003#11 承載。
+顯示已選項（O9）。不擋合併，收尾由 0015#11 承載。
 
 **沿革**
 
 - H1 · 2026-08-17 決斷 —— 實測畫面後使用者裁定合入（使用者）
 - H2 · 2026-08-17 落地 —— `--no-ff` 合入，零 conflict，驗證全綠 → O10
-- H3 · 2026-08-17 拆格 —— trigger 標籤瑕疵開為 0003#11 承載（使用者）
+- H3 · 2026-08-17 拆格 —— trigger 標籤瑕疵開為 0015#11 承載（使用者）
 
 ### 7 dev/GoodMorning 不合入
 
@@ -410,13 +410,13 @@ azure 五個都實作了 `Detector` 介面（`{ code, level, run(ctx) }`），�
 並確認與 toby 的基地框線在同一棵樹上並存無誤（O12）。
 
 使用者已知悉並接受兩項設計取捨：Ctrl+R 攔截瀏覽器重新整理、`resetCanvas` 不可 undo（O11）。
-兩者作者都標明為暫時性，收尾分別由 0003#9、0003#10 承載。
+兩者作者都標明為暫時性，收尾分別由 0015#9、0015#10 承載。
 
 **沿革**
 
 - H1 · 2026-08-17 決斷 —— 實測三個功能後使用者裁定合入，接受 Ctrl+R 與 resetCanvas 的取捨（使用者）
 - H2 · 2026-08-17 落地 —— `--no-ff` 合入，`FactoryCanvas.vue` auto-merge 無 conflict，驗證全綠 → O12
-- H3 · 2026-08-17 拆格 —— 兩項暫時性設計的收尾分別開為 0003#9、0003#10 承載（使用者）
+- H3 · 2026-08-17 拆格 —— 兩項暫時性設計的收尾分別開為 0015#9、0015#10 承載（使用者）
 
 ### 9 用 L3 按鈕取代 Ctrl+R 作為重置畫布入口
 
@@ -430,7 +430,7 @@ azure 五個都實作了 `Detector` 介面（`{ code, level, run(ctx) }`），�
 本格要做的：向 L3 要一顆重置畫布按鈕，接上後把 `useShortcuts` 裡那段 Ctrl+R 的 `keydown`
 監聽移除。`triggerResetCanvas` 的匯出要保留 —— 它本來就是為了讓按鈕的 L2 wiring 直接 import
 而存在。按鈕接上後 `triggerResetCanvas` 內的 `window.confirm()` 也應移除，改由 `UModal` 流程
-負責確認（這部分與 0003#10 相關但可獨立進行）。
+負責確認（這部分與 0015#10 相關但可獨立進行）。
 
 **沿革**
 
@@ -447,7 +447,7 @@ azure 五個都實作了 `Detector` 介面（`{ code, level, run(ctx) }`），�
 
 依 CLAUDE.md 第 5 節，這是 L1 要補的 high-level action，不能在 L2 自己組 mutation ——
 cake 沒有假裝它可以 undo 而是誠實留下防呆與註解，處理方式是對的。本格要做的是回報 L1 維護者
-補上會產生 Command 的 `resetCanvas`，補上之後 0003#9 的 `window.confirm()` 就能一併拿掉。
+補上會產生 Command 的 `resetCanvas`，補上之後 0015#9 的 `window.confirm()` 就能一併拿掉。
 
 **沿革**
 
