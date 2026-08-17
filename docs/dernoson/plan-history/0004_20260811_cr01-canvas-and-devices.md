@@ -65,6 +65,41 @@ spec 4.2 節的三 Tab 與 4.3 節的 16 組快捷鍵目前是零落地與六分
 
 所以「從工具列擺一台設備到畫布」這條路目前放出來的是 FlowEngine 認不得的節點。0004#13 要收的不只是把 spec 的檔案路徑改指程式碼，而是這兩套概念要合成一套。
 
+### O6 · 2026-08-17 09:51:21+08:00 — 基地選擇的 L2 / L3 缺口已補齊，但補的是一個繞過 Nuxt UI 的自繪元件
+
+- **更新:** O3
+
+本計畫寫於 `8838faf`；之後 `dev/paper`、`dev/toby`、`dev/cake` 三條合入 `dev/dernoson`（HEAD `c8c1cb3`）。`git diff 8838faf c8c1cb3 -- src/` 只動到六個檔案、+505 行，全部落在 CR-01 / CR-02 的互動層。
+
+O3 記的「基地選擇沒有 UI、畫布也沒有畫框線」已經不成立：
+
+- `components/BaseRegionSelector/Index.vue`（188 行，新檔）是純 props / emits 的 L3 下拉，三個選項武陵 / 四號谷地 / 自由畫布，自己處理外部點擊與 Esc 收合，零 store 依賴，符合 L3 邊界。
+- `Navbar.vue:65` 接線：`:model-value="baseRegion"`、`@update:model-value` → `canvasStore.setBaseRegion()`，L2 只做事件路由，符合分層。
+- `FactoryCanvas.vue:49` 的 `baseRegionBoundary` 把 `canvasSize.w/h × gridSize` 換成像素，:423 在 `EdgeLabelRenderer` 內畫出 `pointer-events-none` 的綠框，不阻擋擺放 —— 與 spec「允許在框線外擺放」一致。
+
+三點要記下來：框線左上角固定對齊 flow 座標原點 `(0,0)`，沒有「基地在畫布何處」的概念；trigger 文字恆為「基地選擇」，選了哪個看不出來（0015#11 已認領）；以及這個元件是手寫 `<button>` + `<ul>` + scoped CSS，沒有用 `USelectMenu` / `UDropdownMenu`，跟 `CLAUDE.md` 第 4 節「優先使用 Nuxt UI v3 元件」相牴觸 —— 它是從 `dev/GoodMorning` 原樣接手的，屬 0003#10 要檢核的實例。
+
+### O7 · 2026-08-17 09:52:00+08:00 — 埠 Handle 改為依機型動態產生，於是 O5 的兩套設備概念變成擋路的 bug
+
+- **更新:** O5
+
+`FlowNodeOverlay.vue:53` 的 `layoutHandles()` 把原本寫死的「左邊一個 target、右邊一個 source」換成依 `getMachine(data.machineType)` → `getMachineMode()` → `input_ports` / `output_ports` 動態產生的 Handle。查不到機型時 `machine` 為 `undefined`，`inputHandles` / `outputHandles` 都是空陣列，**該節點一顆 Handle 都不渲染**。
+
+而 `getMachine()` 以中文 `name` 為 key（`machines.ts:1564` → `machineMap`），`EquipmentType` 五個值裡只有 `'crusher'` 剛好撞上某台機器的英文 `id`（`machines.ts:195`），而 `id` 走的是另一張 `machineByIdMap`、`getMachine` 根本不查它。所以工具列放出來的五種設備，`getMachine()` 全部回 `undefined`。
+
+後果從「放得下去但不參與計算」升級為「放得下去、但畫面上沒有任何接口可以拉線」—— 使用者連不上它，`handleConnect` 也就永遠不會被觸發。O5 講的兩套概念不合一，現在是一個當場看得見的功能缺陷，不再只是計算層的隱患。畫面上拉得動線的節點仍然只有 `mockNodes` 那批（用中文名）。
+
+### O8 · 2026-08-17 09:54:00+08:00 — 選取與快捷鍵各自往前一步，但快捷鍵那步是在沒有鍵位表的情況下加的
+
+- **更新:** O3、O4
+
+同一輪合併（見 O6 的 diff 範圍）另外動到選取與快捷鍵兩處：
+
+- `selectionStore` 新增 `selectedEdgeIds` / `setEdgeSelection()` / `hasEdgeSelection`；`FactoryCanvas.handleSelectionChange` 現在同時寫入節點與管線選取；`useShortcuts` 的 `Delete` 除了 `removeDevices()` 之外，會對每個選取的管線逐條呼叫 `removeConnection()`。spec 的「框選設備與管線」因此成立。
+- `useShortcuts.ts:42` 新增 `triggerResetCanvas()`，:113 用原生 `keydown` 綁 Ctrl+R / Cmd+R，`preventDefault()` 攔掉瀏覽器重新整理，跳 `window.confirm()` 後呼叫 `editorStore.resetCanvas()`。檔內註解自述這是暫時性鍵位，正式入口應為 L3 按鈕 + `UModal`。
+
+第二項使 O4 記的「六組鍵散在兩個檔案」變成七組。值得記的不是數字，而是這一組鍵不在 spec 4.3 的 16 組裡、還攔截了瀏覽器原生行為，卻只需要往 `useShortcuts` 加一個 listener 就進來了 —— 0004#15 那份鍵位表要防的正是這個，而它還沒存在，所以防不到。移除與 Command Pattern 化分別由 0015#9、0015#10 認領。
+
 ## 待辦
 
 ### 1 畫布規格：格線、縮放、平移、畫布旋轉、格線開關
@@ -87,21 +122,22 @@ spec 4.2 節的三 Tab 與 4.3 節的 16 組快捷鍵目前是零落地與六分
 
 - **state:** 實作中
 - **needs:** 0003#3
-- **basis:** → O3
+- **basis:** → O6
 
 使用者可選擇當前規劃的基地（武陵 / 四號谷地）。選擇後畫布疊加該基地實際格子尺寸的框線作為擺放參考；允許在框線外擺放，超出者由 CR-03 的 E003 標示但不阻擋。未選擇基地時畫布無框線。
 
-L1 側已有：`canvasStore.baseRegion`（`'wuling' | 'valley4' | null`）、`canvasSize` computed，以及 `useValidation` 已把 `baseRegion` 放進 `ValidationContext`。缺的是 L2 / L3：沒有選基地的 UI，畫布也沒有畫框線。
+三層都到齊了：L1 的 `canvasStore.baseRegion` / `canvasSize` / `setBaseRegion()`、L3 的 `BaseRegionSelector`、L2 的 `Navbar` 接線與 `FactoryCanvas` 框線 overlay（O6）。spec 那兩項判準的行為本身已經可以驗收。
 
-尺寸目前是 `canvasStore.ts:8` 的硬寫值（武陵 256×256、四號谷地 192×192），來源不明，仍等 0003#3 清點。`src/data/environments.ts` 已確認**不是**基地資料，它是環境標籤（穩定 / 酸性 / 濕潤 / 息壤），與基地尺寸無關。
+剩下的都不在「畫得出框線」這件事上：尺寸仍是 `canvasStore.ts:8` 的硬寫值（武陵 256×256、四號谷地 192×192），來源不明，等 0003#3 清點；框線固定貼在 flow 原點，沒有「基地位在畫布何處」的概念；trigger 不顯示已選基地（0015#11）。`src/data/environments.ts` 已確認**不是**基地資料，它是環境標籤（穩定 / 酸性 / 濕潤 / 息壤），與基地尺寸無關。
 
-判準：spec 第 5 節「基地選擇顯示框線」「框線外擺放不阻擋」兩項通過。
+判準：spec 第 5 節「基地選擇顯示框線」「框線外擺放不阻擋」兩項通過（行為已達成，等 0003#3 確認尺寸數值才算收）。
 
 **沿革**
 
 - H1 · 2026-08-11 決斷 —— 自 `spec/01_canvas_and_devices.md` 2.1 節基地選擇段轉入（來源：spec）
 - H2 · 2026-08-11 落地 —— L1 的 `canvasStore.baseRegion` / `canvasSize` 已就位，UI 與框線未動 → O3
 - H3 · 2026-08-11 修正 —— `environments.ts` 確認非基地資料，正文改寫 → O3
+- H4 · 2026-08-17 落地 —— L3 選擇器與 L2 框線 overlay 補齊，剩下的都是尺寸來源與定位問題 → O6（取代 H2）
 
 ### 3 物件資訊面板的兩種觸發情境
 
@@ -251,11 +287,13 @@ L1 的 `editorStore.pasteSelection(nodes, edges, offset)` 已實作並自帶歷�
 ### 12 多選與批次操作
 
 - **state:** 實作中
-- **basis:** → O3
+- **basis:** → O3、O8
 
 `Shift`＋點選多選設備；拖拉空白區域框選範圍內所有設備與管線；多選後拖拉為批次移動；多選後按 `Delete` 為批次刪除。
 
-已落地：框選（`selection-on-drag`，但只在 `activeTool === 'box-select'` 時開啟）、`selection-change` 寫入 `selectionStore`、批次拖曳（`selection-drag-*` → `commitDeviceMove`）、`Delete` 批次刪除（`useShortcuts` → `removeDevices`）。缺的是進入框選模式的入口 —— Navbar 只提供「選取」與「移動畫布」兩個工具，`box-select` 沒有任何 UI 或鍵位可切換到；另 Vue Flow 單擊節點不發 `selection-change`，`Shift` 多選是否確實寫進 store 需實測。
+已落地：框選（`selection-on-drag`，但只在 `activeTool === 'box-select'` 時開啟）、`selection-change` 同時寫入節點與**管線**選取（`setSelection` / `setEdgeSelection`）、批次拖曳（`selection-drag-*` → `commitDeviceMove`）、`Delete` 批次刪除設備與管線（`useShortcuts` → `removeDevices` + 逐條 `removeConnection`）。管線那一半是後補的（O6 那一輪），對應 spec 的「框選設備與管線」。
+
+缺的仍是進入框選模式的入口 —— Navbar 只提供「選取」與「移動畫布」兩個工具，`box-select` 沒有任何 UI 或鍵位可切換到，所以框選這條路使用者實際上摸不到；另 Vue Flow 單擊節點不發 `selection-change`，`Shift` 多選是否確實寫進 store 需實測。
 
 判準：spec 第 5 節「Shift 多選」「框選設備與管線」「批次移動」「批次刪除」四項通過。
 
@@ -263,26 +301,30 @@ L1 的 `editorStore.pasteSelection(nodes, edges, offset)` 已實作並自帶歷�
 
 - H1 · 2026-08-11 決斷 —— 自 `spec/01_canvas_and_devices.md` 2.7 節轉入（來源：spec）
 - H2 · 2026-08-11 落地 —— 框選 / 批次移動 / 批次刪除已接上，`box-select` 模式無切換入口 → O3
+- H3 · 2026-08-17 落地 —— 框選與 `Delete` 擴及管線，spec 的「框選設備與管線」達成 → O8
 
 ### 13 設備資料庫：來源、型別保護與分類
 
 - **state:** 實作中
 - **needs:** 0003#2
-- **basis:** → O5
+- **basis:** → O5、O7
 
 完整照搬遊戲內所有設備與配方，以 TypeScript 維護（spec 寫 `/data/devices.ts`，tree 中實為 `src/data/machines.ts`），受型別系統保護並保留特殊設備的自訂邏輯彈性。
 
 資料側已成熟：100 台機器、`Machine` 介面全 readonly、埠與損耗收在 `modes[]`、行為函式（`onTick` / `onInput` / `onOutput` / `calcEfficiency`）留了自訂邏輯的位置，且資料由 `docs/aaaaa/scripts/generate-src-data.mjs` 從 JSON 生成。型別定義的出處即 `src/types/machine.ts`，不再指向已不存在的 `tmp_01_impl_notes.md`（O1）。
 
-還沒收的兩件事（都在 O5）：一是分類不一致 —— 程式碼的 `MachineCategory` 是五個標籤（物流設備 / 倉庫存取 / 基礎生產 / 合成製造 / 電力），spec 要的是六類（採集 / 加工 / 種植 / 電力 / 物流 / 儲存），要決定以哪一套為準；二是 `EquipmentType` 這套平行的五個英文代號還存在於工具列與畫布擺放路徑上，必須併回 `machineList`，否則從工具列放出來的設備 FlowEngine 認不得。維護責任歸屬見 0003#2。
+還沒收的兩件事（都在 O5）：一是分類不一致 —— 程式碼的 `MachineCategory` 是五個標籤（物流設備 / 倉庫存取 / 基礎生產 / 合成製造 / 電力），spec 要的是六類（採集 / 加工 / 種植 / 電力 / 物流 / 儲存），要決定以哪一套為準；二是 `EquipmentType` 這套平行的五個英文代號還存在於工具列與畫布擺放路徑上，必須併回 `machineList`。維護責任歸屬見 0003#2。
 
-判準：spec 第 5 節「TypeScript 型別保護」通過（缺必要欄位時編譯報錯）、分類與遊戲一致，且畫布上的設備節點與 `machineList` 是同一套識別。
+第二件事的急迫度變了：埠 Handle 改為依機型動態產生之後，`getMachine()` 查不到就一顆 Handle 都不畫，工具列放出來的五種設備因此**完全沒有接口可以拉線**（O7）。原本是「放得下去但不參與計算」的隱患，現在是使用者當場撞得到的死路。這一格是 0005 整條連線流程與 0014 工具列的共同前提。
+
+判準：spec 第 5 節「TypeScript 型別保護」通過（缺必要欄位時編譯報錯）、分類與遊戲一致，且畫布上的設備節點與 `machineList` 是同一套識別（可用「從工具列放一台設備後拉得出線」直接驗）。
 
 **沿革**
 
 - H1 · 2026-08-11 決斷 —— 自 `spec/01_canvas_and_devices.md` 第 3 節轉入（來源：spec）
 - H2 · 2026-08-11 落地 —— 資料與型別已在 `machines.ts` / `types/machine.ts` 就位 → O5
 - H3 · 2026-08-11 修正 —— 發現 `EquipmentType` 與 `machineList` 兩套並存、分類數不一致，正文改寫 → O5
+- H4 · 2026-08-17 修正 —— 兩套識別不合一的後果升級為「工具列設備沒有接口」，正文改寫並補驗收方式 → O7
 
 ### 14 物件資訊面板三 Tab 版面
 
@@ -302,20 +344,25 @@ L1 的 `editorStore.pasteSelection(nodes, edges, offset)` 已實作並自帶歷�
 ### 15 快捷鍵彙整表落地
 
 - **state:** 實作中
-- **basis:** → O4
+- **basis:** → O4、O8
 
 spec 4.3 節列出 16 組快捷鍵，涵蓋放置、拿起、旋轉、複製、刪除、undo / redo、平移、縮放、畫布旋轉、格線、多選、框選。需要一份唯一的鍵位表作為實作依據（`src/composables/useShortcuts.ts` 已存在），避免各元件自行綁鍵導致衝突。
 
 同一鍵在不同情境（一般狀態 / 拿起狀態）有不同行為，因此鍵位表必須帶情境維度而非扁平映射。
 
-現況正是這一格要防的：六組已綁的鍵散在兩個檔案 —— `useShortcuts` 有 Ctrl+Z / Ctrl+Y / Delete / Space，`FactoryCanvas` 自己 watch 了 `R` 與 `Esc`。`R` 已經有情境分歧（拿起中轉預覽、否則轉已放置設備）卻是寫死的 if，沒有表。所以本格要做的是把散落的綁定收進一份帶情境維度的表，而不是從零加鍵。
+現況正是這一格要防的，而且還在惡化：七組已綁的鍵散在兩個檔案 —— `useShortcuts` 有 Ctrl+Z / Ctrl+Y / Delete / Space / **Ctrl+R**，`FactoryCanvas` 自己 watch 了 `R` 與 `Esc`。`R` 已經有情境分歧（拿起中轉預覽、否則轉已放置設備）卻是寫死的 if，沒有表。
 
-判準：16 組全部可觸發且情境切換正確；與 CR-02（`P`、`Escape`）、CR-05（`Tab`）的鍵位無衝突。
+Ctrl+R 是後加的，而且自述為暫時性：它攔掉瀏覽器原生的重新整理去跳 `window.confirm()` 呼叫 `resetCanvas()`，正式入口應該是 L3 按鈕 + `UModal`（0015#9 認領移除、0015#10 認領讓 `resetCanvas` 走 Command Pattern）。這正好說明沒有鍵位表的代價：一個不在 spec 16 組裡、又攔截瀏覽器行為的鍵，是直接加進 `useShortcuts` 的，沒有任何地方擋得住。
+
+所以本格要做的是把散落的綁定收進一份帶情境維度的表，而不是從零加鍵；表裡也要能標示「暫時性鍵位」這種狀態。
+
+判準：16 組全部可觸發且情境切換正確；與 CR-02（`P`、`Escape`）、CR-05（`Tab`）的鍵位無衝突；表外沒有漏綁的鍵。
 
 **沿革**
 
 - H1 · 2026-08-11 決斷 —— 自 `spec/01_canvas_and_devices.md` 4.3 節轉入（來源：spec）
 - H2 · 2026-08-11 落地 —— 六組鍵已綁但分散兩處且無鍵位表 → O4
+- H3 · 2026-08-17 修正 —— 第七組（暫時性 Ctrl+R）在沒有表的情況下被加進來，正文改寫並要求表能標示暫時性鍵位 → O8
 
 ### 16 CR-01 驗證項目全數通過
 

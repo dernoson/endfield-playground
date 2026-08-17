@@ -68,6 +68,30 @@ O1 由檔名推測它「疑似對應分匯流器 / 截斷的結構改寫」不�
 
 所以 `CLAUDE.md` 第 4 節「自訂顏色統一寫在 `tokens.css`」目前沒有落點。0005#12 的八種管線 / 接口狀態、0007#8 的效率四級色都指向同一個尚不存在的檔案 —— 誰先動這兩格，誰就要順手把它建出來。
 
+### O7 · 2026-08-17 09:51:21+08:00 — 建立管線的路徑已經打通，但是用 Vue Flow 的預設拉線，不是 spec 的繪製狀態機
+
+- **更新:** O3
+
+本計畫寫於 `8838faf`；之後 `dev/paper`、`dev/toby`、`dev/cake` 三條合入 `dev/dernoson`（HEAD `c8c1cb3`）。`git diff 8838faf c8c1cb3 -- src/` 只動到六個檔案、+505 行，其中四個與 CR-02 有關。
+
+O3 說的「`src/` 內沒有任何地方產生 `type: 'pipeline'` 的邊」已經不成立：
+
+- `FactoryCanvas.vue:375` 的 `handleConnect(connection)` 接住 Vue Flow 的 `connect` 事件，組出 `type: 'pipeline'`、帶 `data.portType` 的 `FactoryEdge`，走 `editorStore.addConnection()` 進歷史。`PipelineEdge.vue` 從此真的會被渲染（`bendPoints` 為 undefined 時退化成起點到終點的單一直線段）。
+- `FactoryCanvas.vue:355` 的 `resolveConnectionPortType()` 依**起點** handle 查 `mode.output_ports[idx].media` 決定 `portType`，查不到機型 / 型態 / 埠時 fallback `'belt'`。
+- `FlowNodeOverlay.vue:53` 的 `layoutHandles()` 把原本寫死的「左邊一個 target、右邊一個 source」換成依 `machine.modes[].input_ports` / `output_ports` 動態產生的 Handle，依 `port.side` 貼到四邊、同側多埠沿邊均分，id 為 `in-{索引}` / `out-{索引}`，與 `parsePortIndex()` 的解析格式對齊。Handle 隨父層的 `rotate()` 一起轉。
+- `FactoryCanvas.vue:130` 的 `handleEdgeContextMenu()` 在管線上右鍵開 `UDropdownMenu`，唯一項目是刪除，走 `removeConnection()`。
+- `selectionStore` 新增 `selectedEdgeIds` / `setEdgeSelection()` / `hasEdgeSelection`；`handleSelectionChange` 同時寫入節點與管線選取；`useShortcuts` 的 `Delete` 現在也逐條刪掉選取的管線。
+
+所以 CR-02 的形狀變了：不再是「整段空白」，而是「有一條能用的捷徑，但那條捷徑不是 spec 描述的東西」。缺的仍是管線模式（`P` 鍵）、接口高亮、彎折點繪製狀態機、90 度限制、吸附、物流橋、以及管線的移動與複製。
+
+### O8 · 2026-08-17 09:53:00+08:00 — 互連限制在畫布端仍然完全不存在，而且現在更容易踩到
+
+- **更新:** O5
+
+`handleConnect()` 只讀起點的埠媒質來標記 `portType`，**沒有任何一行檢查終點埠的媒質是否相符**，Vue Flow 那側也沒有掛 `isValidConnection`。所以使用者可以把 `pipe` 埠直接拉到 `belt` 埠上，連線會成立、會進歷史、會被畫出來，只是 FlowEngine 事後把它判為 mismatch 而算不出流量 —— 也就是 O5 描述的那個落差，現在有了實際可觸發的入口。
+
+另外重新確認過 O6：`src/` 下唯一的樣式檔仍是 `src/style.css`，`src/assets/` 仍然只有 `hero.png`，`tokens.css` 到現在都還沒有落點。
+
 ## 待辦
 
 ### 1 管線模式切換
@@ -86,28 +110,33 @@ O1 由檔名推測它「疑似對應分匯流器 / 截斷的結構改寫」不�
 ### 2 管線 type 自動判斷與互連限制
 
 - **state:** 實作中
-- **basis:** → O5
+- **basis:** → O5、O8
 
 每個接口在設備資料中定義媒質（程式碼中為 `PortMedia`：`belt` / `pipe`，非 spec 寫的 `conveyor`）。拉管線時依**起點接口的媒質**決定本次拉的是傳送帶或水管，視覺樣式與連接規則對應切換。不同媒質的接口無法互連，嘗試互連觸發 Error（由 CR-03 呈現）。
 
-判定規則已有一份實作，但在 FlowEngine（`isPortMediaMismatch` / `isItemFormMediaMismatch`，有測試覆蓋）：它讓跨媒質的邊算不出流量，不阻止使用者連、也不產生 Alert。本格要補的是畫布端的即時判定與 Error 產出，且必須復用 FlowEngine 那份規則而非另寫（O5）。
+兩半已經分開：「type 自動判斷」這半落地了（`resolveConnectionPortType()` 依起點 `output_ports[idx].media` 標記 `data.portType`）；「不同 type 無法互連」這半在畫布端一行都沒有，使用者現在拉得出 pipe → belt 的線（O8）。
 
-判準：spec 第 5 節「Type 自動判斷」「不同 type 無法互連」兩項通過，且畫布端與 FlowEngine 用同一份媒質判定。
+本格剩下的就是互連限制。判定必須復用 FlowEngine 的 `isPortMediaMismatch`（O5）而非另寫一份，掛點是 Vue Flow 的 `isValidConnection`，或 `handleConnect()` 內的前置檢查加 CR-03 Alert。
+
+判準：spec 第 5 節「Type 自動判斷」（已達成）「不同 type 無法互連」兩項通過，且畫布端與 FlowEngine 用同一份媒質判定。
 
 **沿革**
 
 - H1 · 2026-08-11 決斷 —— 自 `spec/02_pipeline.md` 2.2 節轉入（來源：spec）
 - H2 · 2026-08-11 落地 —— 媒質判定已存在於 FlowEngine，畫布端未接 → O5
 - H3 · 2026-08-11 修正 —— 接口型別名稱以程式碼的 `PortMedia`（belt / pipe）為準，正文改寫 → O5
+- H4 · 2026-08-17 落地 —— type 自動判斷已進畫布端（`resolveConnectionPortType`），互連限制仍缺 → O7、O8（取代 H2）
 
 ### 3 管線繪製流程（Phase 1 手動彎折點）
 
 - **state:** 待實作
-- **basis:** → O3
+- **basis:** → O7
 
 在管線模式下：點選設備接口作為起點 → 移動滑鼠顯示預覽路徑 → 點選中途空格新增彎折點 → 移至目標接口自動吸附 → 點選確認放置，或按 `Escape` 取消。
 
-繪製的產物形狀已備妥：`FactoryEdgeData.bendPoints` 與 `PipelineEdge.vue` 能把彎折點畫成直角折線，`editorStore.addConnection` 能把邊寫進歷史。缺的是整條產生路徑（O3）。
+產物形狀與寫入路徑都已備妥，而且現在有一條能跑的捷徑：Vue Flow 的原生拉線經 `handleConnect()` 建出 `type: 'pipeline'` 的邊並進歷史，`PipelineEdge.vue` 也真的開始被渲染（O7）。但那條捷徑是「從 Handle 拖到 Handle，一步成線」，沒有起點 / 預覽 / 彎折點 / 確認這個狀態機，`bendPoints` 永遠是 undefined，畫出來永遠是一條直線。
+
+所以本格要決的是：新的繪製流程是**取代** `handleConnect()`，還是與它並存（原生拉線當快速通道、管線模式當精細通道）。並存的話兩條路徑必須共用同一個建邊函式，否則 `portType` 與未來的互連檢查會養出兩份。
 
 Phase 1 不支援編輯已放置管線的彎折點；需調整路徑須刪除後重建。
 
@@ -116,6 +145,7 @@ Phase 1 不支援編輯已放置管線的彎折點；需調整路徑須刪除後
 **沿革**
 
 - H1 · 2026-08-11 決斷 —— 自 `spec/02_pipeline.md` 2.3 節轉入（來源：spec）
+- H2 · 2026-08-17 修正 —— 出現一條繞過本格的原生拉線路徑，正文改寫並帶出「取代或並存」的待決點 → O7
 
 ### 4 彎折點 90 度限制與斜線封鎖
 
@@ -197,33 +227,41 @@ Phase 1 不支援編輯已放置管線的彎折點；需調整路徑須刪除後
 
 ### 9 管線選取、框選與物件資訊面板
 
-- **state:** 待實作
-- **basis:** → O3
+- **state:** 實作中
+- **basis:** → O7
 
 點選單一管線顯示物件資訊面板，內容含管線 type、連接的兩端設備與接口、當前流量估算（CR-04）與警示狀態（CR-03 / CR-09）。管線可跟隨設備一起被框選，框選範圍內的管線與設備一併進行後續編輯行為。
 
-判準：spec 第 5 節「點選管線顯示資訊面板」「管線隨設備框選」兩項通過。
+選取這一半已落地：`selectionStore.selectedEdgeIds` / `setEdgeSelection()` / `hasEdgeSelection` 就位，`FactoryCanvas.handleSelectionChange` 把 Vue Flow 框選到的管線與設備一併寫進 store（O7）。
+
+缺的是資訊面板：`InspectorPanel.vue` 目前只有畫布尺寸與 snap 開關，沒有讀 `selectedEdgeIds`，也沒有任何顯示單條管線細節的版面。這一半與 0004#14（物件資訊面板三 Tab 版面）是同一塊畫面，兩格要一起收才不會做出兩套。
+
+判準：spec 第 5 節「點選管線顯示資訊面板」「管線隨設備框選」（已達成）兩項通過。
 
 **沿革**
 
 - H1 · 2026-08-11 決斷 —— 自 `spec/02_pipeline.md` 2.7 節轉入（來源：spec）
+- H2 · 2026-08-17 落地 —— 管線選取與框選已就位，資訊面板未動 → O7
 
 ### 10 管線的移動、複製、刪除
 
-- **state:** 待實作
-- **basis:** → O3
+- **state:** 實作中
+- **basis:** → O7
 
 移動：整條管線與其彎折點一併平移，僅平移本體，允許脫離原本連接的兩端設備；仍須維持 90 度轉角限制；移動後端點不再對齊原接口則兩端視為未連接，需重新吸附才恢復連接。
 
 複製：彎折點與自動生成節點（分流器 / 匯流器 / 物流橋）一併複製，複製後預設不連接至任何接口，需手動吸附。
 
-刪除：點選後按 `Delete`。三者均可無限復原 / 取消復原（CR-08），且均觸發 CR-04 流量重算。
+刪除已落地，而且有兩個入口：管線上右鍵開 `UDropdownMenu` 選刪除，以及選取後按 `Delete`；兩者都走 `editorStore.removeConnection()`，自帶歷史（O7）。移動與複製一行都沒有。
+
+三者均須可無限復原 / 取消復原（CR-08），且均觸發 CR-04 流量重算。
 
 判準：spec 第 5 節「管線移動」「管線移動脫離接口」「管線複製」「管線刪除觸發流量重算」四項通過。
 
 **沿革**
 
 - H1 · 2026-08-11 決斷 —— 自 `spec/02_pipeline.md` 2.8 節轉入（來源：spec）
+- H2 · 2026-08-17 落地 —— 刪除的兩個入口（右鍵選單 / `Delete`）都已就位，移動與複製未動 → O7
 
 ### 11 管線異動後的警示重算以設備接口為準
 
@@ -242,7 +280,7 @@ Phase 1 不支援編輯已放置管線的彎折點；需調整路徑須刪除後
 ### 12 管線與接口的視覺樣式規格
 
 - **state:** 待實作
-- **basis:** → O3、O6
+- **basis:** → O3、O6、O7
 
 管線五種狀態：一般（傳送帶橘色實線＋方向箭頭 / 水管藍色實線＋方向箭頭）、管線模式高亮（加粗亮色）、Error（紅色閃爍邊框）、Warning（黃色邊框）、懸停（流量 tooltip）。
 
@@ -250,13 +288,14 @@ Phase 1 不支援編輯已放置管線的彎折點；需調整路徑須刪除後
 
 顏色統一寫在 `src/assets/styles/tokens.css`，不散落 inline（`CLAUDE.md` 第 4 節）—— 該檔目前不存在，需一併建立（O6）。
 
-現況：`PipelineEdge.vue` 只畫一條 `BaseEdge`，沒有顏色、箭頭或狀態樣式；接口是 `FlowNodeOverlay` 裡 Vue Flow 的預設 `Handle`，四種狀態都沒有。管線唯一有的視覺變化是流量標籤的堵塞配色（`FactoryCanvas.edgeLabelClass`），屬 CR-04。
+現況：`PipelineEdge.vue` 只畫一條 `BaseEdge`，沒有顏色、箭頭或狀態樣式，五種管線狀態都沒有。接口側則已經不是原本的「左右各一顆預設 Handle」了 —— `layoutHandles()` 依 `port.side` 把每顆埠貼到正確的邊、同側均分、隨節點一起旋轉（O7），但它決定的是**位置**，四種接口狀態（一般 / 管線模式高亮 / 可吸附 / 已連接）的配色仍全部沒有。管線唯一有的視覺變化是流量標籤的堵塞配色（`FactoryCanvas.edgeLabelClass`），屬 CR-04。
 
 判準：八種狀態各自可視覺確認，且與 CR-03 / CR-09 的警示樣式規格一致。
 
 **沿革**
 
 - H1 · 2026-08-11 決斷 —— 自 `spec/02_pipeline.md` 第 4 節轉入（來源：spec）
+- H2 · 2026-08-17 修正 —— 接口位置已依 `port.side` 落地，但八種狀態配色一種都沒有，正文區分位置與狀態 → O7
 
 ### 13 CR-02 驗證項目全數通過
 
