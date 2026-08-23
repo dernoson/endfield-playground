@@ -1,2 +1,6 @@
-123
-456
+字體：HarmonyOS_Sans_TC 文件中點開ttf下載即可使用喵
+
+檔案中的assets可察看單一物件排版與動態變化
+使用的icons皆會貼在icons中，右鍵進行複製後copy as CSS即可使用
+點選左上的prototype模式即可檢視現有的所有動態及其動態屬性
+點選main frame後左上的播放鍵即可預覽目前頁面效果
