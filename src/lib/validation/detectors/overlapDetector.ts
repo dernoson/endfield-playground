@@ -10,14 +10,14 @@ import { getPipelineOccupiedGrids } from '@/utils/shirone/getPipelineOccupiedGri
  *
  * @param machineList 要檢查的設備清單
  * @param pipelineList 要檢查的管線清單
- * @returns 所有發生重疊的物件 ID（設備與管線混合，無重複）
+ * @returns 所有發生重疊的物件 ID 配對清單（每對 [idA, idB] 不重複）
  * @example
- * detectOverlaps(machines, pipelines) // ['m_air', 'p_air']
+ * detectOverlaps(machines, pipelines) // [['m_air', 'p_air']]
  */
 export function detectOverlaps(
     machineList: shironesMachine[],
     pipelineList: shironesPipeline[],
-): string[] {
+): [string, string][] {
     /**
      * 稀疏格點表：key 為座標串接字串，value 為佔用該格子的物件 ID 清單。  \
      * 用字串 key 而非巢狀多維陣列，是因為維度在執行期才由第一個點決定，  \
@@ -25,14 +25,16 @@ export function detectOverlaps(
      */
     const gridCells = new Map<string, string[]>();
 
-    /** 收集所有發生重疊的物件 ID */
-    const overlappedIds = new Set<string>();
+    /** 收集所有發生重疊的物件配對 */
+    const overlappedPairs: [string, string][] = [];
+    /** 用於配對去重的 Set */
+    const seenPairKeys = new Set<string>();
 
     /** 以第一個點的維度為基準，後續所有點都必須一致；-1 表示尚未取得基準 */
     let expectedDimension = -1;
 
     /**
-     * 將單一物件佔用的格點寫入 gridCells，撞到既有 ID 時把雙方都記為重疊。
+     * 將單一物件佔用的格點寫入 gridCells，撞到既有 ID 時把雙方記為重疊配對。
      *
      * @param points 該物件佔用的所有格點座標
      * @param id 該物件的 ID
@@ -56,10 +58,19 @@ export function detectOverlaps(
                 continue;
             }
 
-            /** 格子已被佔用，將重疊的雙方 ID 都記錄下來 */
+            /** 格子已被佔用，記錄重疊的雙方配對（去重） */
             for (const existingId of cell) {
-                overlappedIds.add(existingId);
-                overlappedIds.add(id);
+                const pairKey =
+                    existingId < id
+                        ? `${existingId}:::${id}`
+                        : existingId > id
+                          ? `${id}:::${existingId}`
+                          : `${id}:::${id}`;
+
+                if (!seenPairKeys.has(pairKey)) {
+                    seenPairKeys.add(pairKey);
+                    overlappedPairs.push([existingId, id]);
+                }
             }
             cell.push(id);
         }
@@ -77,5 +88,5 @@ export function detectOverlaps(
         processPoints(points, pipelineItem.id);
     }
 
-    return Array.from(overlappedIds);
+    return overlappedPairs;
 }
