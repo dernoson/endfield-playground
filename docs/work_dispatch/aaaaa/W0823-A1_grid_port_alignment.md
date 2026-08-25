@@ -62,7 +62,9 @@
 
 參考既有測試風格：`src/__tests__/data/machines.test.ts`。
 
-**本週複查發現的既有落差（請在錯機清單多開一列記錄，不必本週修）：** `useValidation.buildContext()` 傳給 detector 的 `FactoryNode.position` 是 Vue Flow **像素**座標（吸附 `gridSize`＝20），但 `geometryUtils.getOccupiedCells()` 註解寫「假設 position 已經是格子座標」。兩者對不上時，畫面上重疊的設備在 E001 眼中不會重疊。shirone 本週的 E001 會照官方函式寫並在 PR 註明此落差；換算歸屬（改 `getOccupiedCells` 簽名、或在 `FactoryNodeData` 增 `gridX`／`gridY`）由你在幾何域裁決，可排 9 月。
+**本週複查發現的既有落差（請在錯機清單多開一列記錄，不必本週修）：** `useValidation.buildContext()` 傳給 detector 的 `FactoryNode.position` 是 Vue Flow **像素**座標（吸附 `gridSize`＝20），但 `geometryUtils.getOccupiedCells()` 註解寫「假設 position 已經是格子座標」。兩者對不上時，畫面上重疊的設備在 E001 眼中不會重疊。shirone 本週的 E001 會照官方函式寫並在 PR 註明此落差。
+
+**2026-08-25 更新：此落差已由佈局視角自建的決議解決，不必再排 9 月裁決。** 新方案將 `Position` 統一為格子座標 `{x, y, z}`，全專案單一座標型別，像素／格子兩套並存的情況消失。錯機清單仍請保留該列作為紀錄，`owner` 改記「已由渲染層決議解決」。
 
 ---
 
@@ -112,7 +114,11 @@
 渲染側 fault=render 列 → 轉單 L2／L3，不在本 PR 改 canvas
 ```
 
-**合入後誰在畫布驗收：** 本週是 **toby（W0823-T1）**——他要讓節點外框吃 `width`×`height`，你的 codegen 結果一改，他當天就能在畫布上看出對不對。清單初稿一產出就丟 Discord，讓他先看渲染列。
+**合入後誰在畫布驗收（8/25 更新）：** toby 的 W0823-T1 已改指向 `InspectorPanel`，不再改畫布外框，因此**畫布側驗收改由你自己執行**——用 `/dev` 拓樸頁（`DevTopologySvg.vue`）抽查即可，那頁本來就在畫格子制設備與埠，不依賴即將廢除的 `FlowNodeOverlay`。
+
+toby 的新標的仍是你的下游：他會在 Inspector 顯示選取設備的 `width`×`height`，**那是全隊最快看出你資料修對沒有的地方**。清單初稿一產出仍請丟 Discord。
+
+**錯機清單的 `fault=render` 列（8/25 更新）：** 渲染歸屬對象已不再是 `FlowNodeOverlay`（該檔排 9 月廢除），`owner` 欄請改記「待佈局層落地後轉單」，不要指名本週的 L2 人力。
 
 ---
 
@@ -140,3 +146,10 @@
 - 依 R-A2 正式派工
 - 註明文檔 `size`／`ports` 與程式碼 `width`/`height`／`input_ports`/`output_ports` 對照
 - 執行以本檔為準（先前的 TICKETS 草稿不採用）
+
+### 2026-08-25
+
+- 佈局視角改自建渲染層：**本單交付物完全不變**（資料、測試、錯機清單皆不觸渲染層），仍為 8/30 門檻唯一技術項
+- §3 像素／格子座標落差標為**已由渲染層決議解決**，取消原訂 9 月幾何域裁決
+- §6 畫布驗收人由 toby 改為自行以 `DevTopologySvg.vue` 抽查；`fault=render` 列的 `owner` 填法同步調整
+- 已知連帶（本週不處理）：本單新建的 `src/__tests__/data/machineGeometry.test.ts` 會 import 即將廢除的 `geometryUtils`，9 月動工時須跟改，已回寫決策層規劃檔的連帶清單
