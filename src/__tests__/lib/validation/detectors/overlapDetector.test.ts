@@ -30,7 +30,7 @@ describe('overlapDetector', () => {
         ];
 
         const result = detectOverlaps(machines, []);
-        expect(result.sort()).toEqual(['m1', 'm2'].sort());
+        expect(result).toEqual([['m1', 'm2']]);
     });
 
     it('should consider rotation when detecting overlaps', () => {
@@ -43,7 +43,7 @@ describe('overlapDetector', () => {
         ];
 
         const result = detectOverlaps(m_test, []);
-        expect(result.sort()).toEqual(['m_block', 'm_rot'].sort());
+        expect(result).toEqual([['m_rot', 'm_block']]);
 
         // 確保如果不旋轉的話，不會發生重疊
         const m_test_no_rot: shironesMachine[] = [
@@ -69,7 +69,7 @@ describe('overlapDetector', () => {
         ];
 
         const result = detectOverlaps(machines, pipelines);
-        expect(result.sort()).toEqual(['m1', 'p1'].sort());
+        expect(result).toEqual([['m1', 'p1']]);
     });
 
     it('should detect overlap between multiple pipelines', () => {
@@ -91,7 +91,7 @@ describe('overlapDetector', () => {
         ];
 
         const result = detectOverlaps([], pipelines);
-        expect(result.sort()).toEqual(['p1', 'p2'].sort());
+        expect(result).toEqual([['p1', 'p2']]);
     });
 
     it('should handle 3D intersections correctly', () => {
@@ -116,7 +116,7 @@ describe('overlapDetector', () => {
             },
         ];
 
-        expect(detectOverlaps(machines, pipelines).sort()).toEqual(['m_air', 'p_air'].sort());
+        expect(detectOverlaps(machines, pipelines)).toEqual([['m_air', 'p_air']]);
     });
 
     it('should NOT detect overlap for objects exactly touching edges (boundary test)', () => {
@@ -159,9 +159,9 @@ describe('overlapDetector', () => {
             },
         ];
 
-        // 在 [0,0,0] 時會發現自己已經佔用該格子，因此回傳包含自己的 ID
+        // 在 [0,0,0] 時會發現自己已經佔用該格子，因此回傳包含自己的 ID 配對
         const result = detectOverlaps([], pipelines);
-        expect(result).toEqual(['snake_pipe']);
+        expect(result).toEqual([['snake_pipe', 'snake_pipe']]);
     });
 
     it('should handle complex multi-layer (3D) factory setups correctly', () => {
@@ -202,7 +202,7 @@ describe('overlapDetector', () => {
         ];
 
         const result = detectOverlaps(machines, pipelines);
-        expect(result.sort()).toEqual(['p_collide', 'tall_machine'].sort());
+        expect(result).toEqual([['tall_machine', 'p_collide']]);
     });
 
     it('should gracefully handle zero-size machines or empty pipelines without crashing', () => {
@@ -240,7 +240,7 @@ describe('overlapDetector', () => {
             { id: '4d_safe', waypoints: [[1, 2, 3, 5]] },
         ];
         const result4D = detectOverlaps([], pipelines4D);
-        expect(result4D.sort()).toEqual(['4d_pipe1', '4d_pipe2'].sort());
+        expect(result4D).toEqual([['4d_pipe1', '4d_pipe2']]);
 
         // 1D 測試 (分開執行，避免觸發維度不一致錯誤)
         const pipelines1D: shironesPipeline[] = [
@@ -248,7 +248,7 @@ describe('overlapDetector', () => {
             { id: '1d_pipe2', waypoints: [[99]] },
         ];
         const result1D = detectOverlaps([], pipelines1D);
-        expect(result1D.sort()).toEqual(['1d_pipe1', '1d_pipe2'].sort());
+        expect(result1D).toEqual([['1d_pipe1', '1d_pipe2']]);
     });
 
     it('should handle large amount of objects efficiently (stress test)', () => {
@@ -285,7 +285,7 @@ describe('overlapDetector', () => {
         const duration = Date.now() - start;
 
         // 必須能正確在 2 萬個物件中找出唯一的重疊對
-        expect(result.sort()).toEqual(['collide1', 'collide2'].sort());
+        expect(result).toEqual([['collide1', 'collide2']]);
 
         // 確保效能合乎標準，2 萬個設備 (等於 8 萬個座標點) 建立陣列的耗時不應超過 1000ms
         expect(duration).toBeLessThan(1000);
