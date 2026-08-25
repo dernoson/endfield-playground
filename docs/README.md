@@ -18,7 +18,7 @@
 | dernoson | [W0823-D0 公告基準＋合入守門](./work_dispatch/dernoson/W0823-D0_announce_and_merge_gate.md) |
 | shirone | [W0823-S1 E001 設備重疊純函式](./work_dispatch/shirone/W0823-S1_e001_device_overlap.md) |
 | paper | [W0823-P1 三塊畫面視覺基準](./work_dispatch/paper/W0823-P1_visual_three_panels.md) |
-| toby | [W0823-T1 節點佔格吃真實尺寸](./work_dispatch/toby/W0823-T1_placement_footprint_size.md) |
+| toby | [W0823-T1 選取設備資訊上 Inspector](./work_dispatch/toby/W0823-T1_placement_footprint_size.md)（**8/25 改指向**） |
 | harry | [W0823-H1 P 鍵切換管線工具](./work_dispatch/harry/W0823-H1_connect_tool_shortcut.md) |
 | goodmorning | [W0823-G1 機器卡片 mock](./work_dispatch/goodmorning/W0823-G1_machine_card_mock.md) |
 | avery | [W0823-V1 環境跑通＋ViewSwitcher](./work_dispatch/avery/W0823-V1_env_and_viewswitcher.md) |
