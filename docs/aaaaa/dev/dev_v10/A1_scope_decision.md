@@ -1,7 +1,7 @@
 # V10-A1 — 範圍與定案
 
 **對應工項：** V10-A1  
-**狀態：** `[ ]` 規劃完成、待勾選定案確認  
+**狀態：** `[x]` 定案完成（2026-08-26）  
 **日期：** 2026-08-26  
 **開發分支：** `dev/aaaaa0826`（base＝`docs/public-roadmap-dispatch-0825`）  
 **正式依據：** [W0823-A1](../../../work_dispatch/aaaaa/W0823-A1_grid_port_alignment.md)、[R-A2](../../../roadmap/detail/A2_grid_and_port_alignment.md)
@@ -112,10 +112,20 @@ V9 已完成 modes-only：外層 ports 已移除；埠只在 `modes[].input_port
 
 ## 5. DoD（本細項）
 
-- [ ] 本檔決策表已對齊 W0823-A1（含 8/25 更新）與 8/26 六項決策
-- [ ] todolist_v10 概述與本檔一致
-- [ ] B1／C1／D1／E1／F1／G1／H1 可依本檔開工，無待裁決欄位名
-- [ ] §2.3 stub 處置與 §2.4 性質鎖界線已寫明
+- [x] 本檔決策表已對齊 W0823-A1（含 8/25 更新）與 8/26 六項決策
+- [x] todolist_v10 概述與本檔一致
+- [x] B1／C1／D1／E1／F1／G1／H1 可依本檔開工，無待裁決欄位名
+- [x] §2.3 stub 處置與 §2.4 性質鎖界線已寫明
+
+### 5.1 定案核對紀錄（2026-08-26）
+
+| 核對項 | 結果 |
+|--------|------|
+| JSON 權威欄位 | 無 `size`；頂層 `width`／`height`；埠在 `modes[].input_ports`／`output_ports` |
+| 台數 | JSON 44；`machineList` 46（`SOURCE_SINK_STUBS` 兩筆） |
+| 查詢／幾何 API | `getMachine`／`getMachineById`、`getOccupiedCells`、`rotatePortSide`／`rotatePortOffset` 皆存在 |
+| 與 W0823-A1 | 欄位對照、不改 canvas、codegen 紀律一致；本版加嚴「全綠」與三證據口徑 |
+| 下游細項 | B–H 皆存在且指向本檔決策，無待裁決欄位名 |
 
 ---
 
@@ -127,3 +137,4 @@ V9 已完成 modes-only：外層 ports 已移除；埠只在 `modes[].input_port
 - 凍結欄位對照與驗收改自驗拓樸頁
 - 分支改自 `docs/public-roadmap-dispatch-0825` 重建（勿用 master 直切）
 - 落版 8/26 六項決策；補 §2.3 codegen stub 處置、§2.4 `/dev` 頁性質界線
+- **定案核對完成：** 對照 JSON／`machines.ts`／幾何 API／W0823-A1／下游 B–H；DoD 全勾；解鎖 V10-B1
