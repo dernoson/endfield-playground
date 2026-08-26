@@ -1,7 +1,7 @@
 # V10-B1 — 幾何／埠測試＋資料一致性測試
 
 **對應工項：** V10-B1  
-**狀態：** `[x]` 測試骨架完成（首跑已匯出失敗；綠化屬 D1）  
+**狀態：** `[x]` 完成；首跑 25 紅後由 [I1](./I1_rotate_port_offset_fix.md) 綠化（388 全綠）  
 **依賴：** A1  
 **最後更新：** 2026-08-26  
 **正式依據：** [W0823-A1](../../../work_dispatch/aaaaa/W0823-A1_grid_port_alignment.md) §4.1、[R-E1](../../../roadmap/detail/E1_data_codegen_ops.md) §4.3（**8/30 檢查點併入本項**）

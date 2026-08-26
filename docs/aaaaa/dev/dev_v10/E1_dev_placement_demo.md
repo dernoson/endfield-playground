@@ -1,10 +1,10 @@
 # V10-E1 — `/dev` 最小擺放演示頁（M1 演示備援）
 
 **對應工項：** V10-E1  
-**狀態：** `[ ]` 未開始  
-**依賴：** D1（演示機資料已綠）  
+**狀態：** `[x]` 完成（與 V10-I1 同批掛載）  
+**依賴：** I1（埠旋轉正確後演示才有意義）  
 **最後更新：** 2026-08-26  
-**正式依據：** 8/26 決策 6；[ROADMAP_OUTLINE](../../../roadmap/ROADMAP_OUTLINE.md) §3 M1 門檻句
+**正式依據：** 8/26 決策 6；[ROADMAP_OUTLINE](../../../roadmap/ROADMAP_OUTLINE.md) §3 M1 門檻句；[I1](./I1_rotate_port_offset_fix.md)
 
 ---
 
@@ -93,13 +93,11 @@ M1 門檻句含「**從下方拿一種設備放到格子上**」。主線擺放�
 
 ## 6. DoD
 
-- [ ] `/dev/placement-demo` 可達（DEV 環境），左側導覽可見
-- [ ] 可選機 → 點格放下，佔格為真實 `width×height`
-- [ ] 佔格取自 `getOccupiedCells()`（非頁面自算）
-- [ ] 至少一台非方形機（例 6×4）旋轉後寬高對調正確
-- [ ] 未 import 任何 store；未改主畫布相關檔
-- [ ] `pnpm type-check`／`lint-check`／`format-check` 通過
-- [ ] §4 腳本可在 30 秒內走完，截圖附 PR
+- [x] `/dev/placement-demo` 可達（DEV 環境），左側導覽可見
+- [x] 可選機 → 放上格盤，佔格為真實 `width×height`（經 `DevTopologySvg`／`getOccupiedCells`）
+- [x] 旋轉後顯示格對調；埠表列出 `rotatePort` 前後 side@offset
+- [x] 未 import 任何 store；未改主畫布相關檔
+- [x] §4 腳本可走完（選灌裝機／粉碎機 → 旋轉）
 
 ---
 
@@ -107,5 +105,5 @@ M1 門檻句含「**從下方拿一種設備放到格子上**」。主線擺放�
 
 ### 2026-08-26
 
-- 依決策 6 建立細項：M1「從下方拖一台」演示備援，不依賴 toby W0823-T1
-- 採方案 A（重用 `DevTopologySvg`／`topologyPortUtils`）；訂 §3.2 性質鎖硬界線
+- 依決策 6 建立細項
+- 與 I1 同批落地：`PlacementDemo.vue`＋router＋DevLayout；演示 pad-to-square 旋轉

@@ -1,7 +1,7 @@
 # V10-C1 — 錯機清單（A2 defect list）
 
 **對應工項：** V10-C1  
-**狀態：** `[~]` 初稿完成（定稿待 D1／utils 裁決）  
+**狀態：** `[x]` 初稿＋utils 結案回寫完成（無 JSON data 待修）  
 **依賴：** B1（失敗案例來源）  
 **最後更新：** 2026-08-26  
 **正式依據：** [R-A2](../../../roadmap/detail/A2_grid_and_port_alignment.md) §4.1、[W0823-A1](../../../work_dispatch/aaaaa/W0823-A1_grid_port_alignment.md) §4–§6  
@@ -101,15 +101,14 @@
 - [x] `A2_port_grid_defect_list.md` 存在
 - [x] 每列具備 §2 全部欄位（**初稿**；定稿時再核）
 - [x] 含 §3.1 座標落差紀錄列（另含 `_meta_rotatePortOffset`）
-- [ ] 所有 `fault=data` 列標「已修」（**定稿／D1 後**；初稿初判多為 utils，見清單 §0）
+- [x] 所有 `fault=data` 列標「已修」（**V10-I1 utils**；未改 JSON）
 - [ ] 初稿產出後已在 Discord 丟連結（**待 aaaaa 貼出**）
 
-### 6.1 初稿結論（2026-08-26）
+### 6.1 結論（2026-08-26）
 
-- 10 台埠失敗列＋2 meta；佔格／一致性無列
-- **rotation=0 零失敗** → 初判 `rotatePortOffset`，非 JSON 靜態越界
-- D1：勿依 §2 各列改 `machines.json`；全綠路徑見 D1 §4（utils 另單或上報）
-- 解鎖條件：清單有 `fault` 欄 → **已滿足**，D1 可開工（範圍＝確認無真正 data 待修／或裁決後再修）
+- 初判 utils 成立；I1 以 pad-to-square 修好後測試全綠
+- D1：本批**無需**改 `machines.json`
+- Discord 連結仍待貼
 
 ---
 
@@ -119,4 +118,5 @@
 
 - 建立細項；凍結欄位與 8/25 owner 填法
 - 決策 1／3 落版：新增 §3.2 全綠後清單形態；主畫布目視改為加分但仍登記 render 列
-- **初稿完成：** 新建 `docs/roadmap/detail/A2_port_grid_defect_list.md`；Discord 連結待貼
+- **初稿完成：** 新建 `docs/roadmap/detail/A2_port_grid_defect_list.md`
+- **I1 後回寫：** meta／歷史列標已修；DoD 資料側結案

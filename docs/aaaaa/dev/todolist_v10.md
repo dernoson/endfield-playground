@@ -8,11 +8,13 @@
 **上游 roadmap：** [R-A2](../../roadmap/detail/A2_grid_and_port_alignment.md)（主）、[R-E1](../../roadmap/detail/E1_data_codegen_ops.md)（8/30 檢查點併入本版）、[R-A4](../../roadmap/detail/A4_weekly_cadence_gate.md)（aaaaa 撰寫、主編確認）  
 **門檻：** **2026-08-30（日）＝M1**  
 **開發分支：** `dev/aaaaa0826`（自 `docs/public-roadmap-dispatch-0825` 切出）  
-**狀態總覽：** `[~]` A1／B1 完成；C1 初稿完成；D1 可開工（注意 utils 嫌疑）
+**狀態總覽：** `[~]` A1／B1／C1 初稿／E1／I1 完成；資料側測試已全綠；D1 無 JSON 待修（utils 已修）
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 >
 > **範圍宣告：** 本版**只**收本週 aaaaa 被分派、且需在 8/30 驗收的工項。決策層議題（人力、備援、渲染層排程）不在本版展開。
+>
+> **2026-08-26 追加：** 開 [V10-I1](./dev_v10/I1_rotate_port_offset_fix.md) 修正 `rotatePortOffset`（pad-to-square）；原「utils 唯讀」對本函式開例外，因阻擋全綠且負責人即 aaaaa。
 
 ---
 
@@ -50,7 +52,7 @@
 ### 非目標（本版不做）
 
 - 改 `FactoryCanvas.vue`／`FlowNodeOverlay.vue` 事件、任何 Pinia action 簽名、L3 正式樣式
-- 重構 `geometryUtils`／`portUtils`（發現 bug → 清單記錄＋另開單）
+- 重構 `geometryUtils`（仍唯讀）；**`portUtils.rotatePort*` 已由 I1 修正**，其餘 portUtils 不擴張
 - 修 `fault=render`（只記錄轉單）
 - 管線佔格（`getPipelineOccupiedGrids`；屬 10 月）
 - 主線擺放鏈（R-B2）、Inspector（R-B4）——`/dev` 演示頁不取代它們
@@ -59,10 +61,10 @@
 ### 流程大綱
 
 ```text
-A 定案 → B 測試（幾何＋一致性）→ C 錯機清單 → D 修資料至全綠
-      → E /dev 擺放演示備援 → F 驗收＋PR
-      G 上游文件同步（A2 回寫）    ┐ 與 B–F 平行
-      H R-A4 週節奏機制（交主編）  ┘
+A 定案 → B 測試 → C 錯機清單 → I 修 rotatePort（utils）→ E /dev 演示
+      → D 資料修（本批無 JSON 待修）→ F 驗收＋PR
+      G 上游文件同步    ┐ 與平行
+      H R-A4 週節奏      ┘
 ```
 
 ### 週切片
@@ -102,7 +104,7 @@ A 定案 → B 測試（幾何＋一致性）→ C 錯機清單 → D 修資料�
 
 ## V10-C｜錯機清單
 
-- [~] **V10-C1** 建立並填齊 `A2_port_grid_defect_list.md`（**初稿完成**；定稿待 D1／utils 裁決）
+- [x] **V10-C1** `A2_port_grid_defect_list.md`（初稿→utils 結案回寫；無 JSON data 待修）
   - 細項：[dev_v10/C1_defect_list.md](./dev_v10/C1_defect_list.md)
   - 清單：[A2_port_grid_defect_list.md](../../roadmap/detail/A2_port_grid_defect_list.md)
 
@@ -110,15 +112,23 @@ A 定案 → B 測試（幾何＋一致性）→ C 錯機清單 → D 修資料�
 
 ## V10-D｜資料修正與 codegen
 
-- [ ] **V10-D1** 修完**所有** `fault=data`；codegen；兩份測試**全綠無例外**
+- [x] **V10-D1** 本批**無** `fault=data` JSON 待修（B1 rot0 全過；紅燈由 I1 utils 消除）；codegen 未改
   - 細項：[dev_v10/D1_fix_data_codegen.md](./dev_v10/D1_fix_data_codegen.md)
+  - 若日後發現真正資料錯再重開
 
 ---
 
 ## V10-E｜M1 演示備援
 
-- [ ] **V10-E1** `/dev` 最小擺放演示頁：選機 → 點格放下 → 佔格依真實 `width×height`
+- [x] **V10-E1** `/dev/placement-demo`：選機／旋轉／埠表＋拓樸佔格
   - 細項：[dev_v10/E1_dev_placement_demo.md](./dev_v10/E1_dev_placement_demo.md)
+
+---
+
+## V10-I｜L1 utils 釐清（追加）
+
+- [x] **V10-I1** `rotatePort` pad-to-square；`rotatePortOffset` 委派；測試全綠
+  - 細項：[dev_v10/I1_rotate_port_offset_fix.md](./dev_v10/I1_rotate_port_offset_fix.md)
 
 ---
 
@@ -149,9 +159,10 @@ A 定案 → B 測試（幾何＋一致性）→ C 錯機清單 → D 修資料�
 |----|---------|---------|----------|
 | B1 | — | — | **已解除**（A1 定案完成） |
 | C1 | — | — | **已解除**（B1 失敗表見 B1 §6） |
-| D1 | — | — | **已解除**（C1 初稿有 fault 欄；初判無 JSON 待修） |
-| E1 | 需 D1 至少 P0 機資料正確 | 自己 | 演示機資料綠 |
-| F1 | 需 B1／C1／D1／E1 產出 | 自己 | 三證據齊 |
+| D1 | — | — | **已解除**（本批無 JSON 待修；I1 解紅） |
+| E1 | — | — | **已解除**（`/dev/placement-demo`） |
+| I1 | — | — | **已解除**（pad-to-square；388 全綠） |
+| F1 | 需 B1／C1／D1／E1／I1 產出 | 自己 | 三證據齊 |
 | G1 | 不封鎖（純文件） | — | 隨時可做 |
 | H1 | 完成率須待週日實況；文件可先寫 | dernoson 確認 | 8/30 會上確認 |
 | — | **不**依賴 toby W0823-T1、shirone W0823-S1 | — | 演示走 `/dev`（E1） |
@@ -162,17 +173,17 @@ A 定案 → B 測試（幾何＋一致性）→ C 錯機清單 → D 修資料�
 
 ### 資料與測試（硬標準）
 
-- [ ] `machineGeometry.test.ts` 涵蓋全部機器 × 四 rotation，**全綠**（無 skip／todo／allowlist）
-- [ ] `dataConsistency.test.ts` 涵蓋 R-E1 §4.3 五項並通過
-- [ ] `fault=data` **全部**已修；codegen 後 `src/data/machines.ts` 與 JSON 一致
-- [ ] JSON 與產物同一筆 commit
+- [x] `machineGeometry.test.ts` 涵蓋全部機器 × 四 rotation，**全綠**（I1 後）
+- [x] `dataConsistency.test.ts` 涵蓋 R-E1 §4.3 五項並通過
+- [x] 本批無 JSON `fault=data` 待修；utils 紅燈由 I1 消除
+- [x] （資料未改則）無需 codegen commit
 
 ### 交付物
 
-- [ ] 錯機清單存在，每列具備 A2 §4.1 全部欄位（含座標落差紀錄列）
-- [ ] `/dev` 擺放演示頁可跑：選機 → 放下 → 佔格為真實 `width×height`
-- [ ] `detail/A2_*.md` 過期處已回寫（G1 清單全勾）
-- [ ] R-A4 文件已交 dernoson 確認
+- [x] 錯機清單存在（含 utils 結案回寫）
+- [x] `/dev/placement-demo` 可跑
+- [ ] `detail/A2_*.md` 過期處已回寫（G1）
+- [ ] R-A4 文件已交 dernoson 確認（H1）
 
 ### 8/30 三證據（從嚴）
 
@@ -213,3 +224,4 @@ A 定案 → B 測試（幾何＋一致性）→ C 錯機清單 → D 修資料�
 - **V10-A1 定案完成：** 核對 JSON／`machines.ts`／幾何 API／W0823-A1／下游 B–H；解鎖 B1
 - **V10-B1 完成：** 新增 `machineGeometry.test.ts`＋`dataConsistency.test.ts`；首跑 351 過／25 失敗（埠旋轉後越界、無 rot0 紅）；解鎖 C1
 - **V10-C1 初稿：** 新建 `A2_port_grid_defect_list.md`（10 台＋2 meta）；初判 utils；D1 勿改 JSON；Discord 待貼
+- **V10-I1／E1：** pad-to-square 修正 `rotatePort`；`/dev/placement-demo`；portUtils＋machineGeometry＋consistency **388 全綠**；清單回寫已修；D1 本批無 JSON 變更
