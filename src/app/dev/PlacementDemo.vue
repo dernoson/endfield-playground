@@ -13,7 +13,9 @@ import DevTopologySvg from '@/app/dev/DevTopologySvg.vue';
 import { resolveDisplayGrid } from '@/app/dev/topologyPortUtils';
 
 const machines = getAllMachines();
-const selectedId = ref(machines.find((m) => m.id === 'filling_machine')?.id ?? machines[0]?.id ?? '');
+const selectedId = ref(
+    machines.find((m) => m.id === 'filling_machine')?.id ?? machines[0]?.id ?? '',
+);
 const rotation = ref<GridRotation>(0);
 const placeCursor = ref({ x: 2, y: 2 });
 const placed = ref(true);
@@ -109,7 +111,9 @@ function nudge(dx: number, dy: number) {
         </header>
 
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-            <aside class="max-h-[32rem] space-y-2 overflow-y-auto rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800">
+            <aside
+                class="max-h-[32rem] space-y-2 overflow-y-auto rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800"
+            >
                 <h3 class="text-xs font-semibold tracking-wider text-gray-500 uppercase">
                     選機（{{ machines.length }}）
                 </h3>
@@ -152,22 +156,40 @@ function nudge(dx: number, dy: number) {
                         （原 {{ selected?.width }}×{{ selected?.height }}）
                     </span>
                     <div class="flex gap-1">
-                        <button type="button" class="rounded border px-2 text-sm" @click="nudge(0, -1)">
+                        <button
+                            type="button"
+                            class="rounded border px-2 text-sm"
+                            @click="nudge(0, -1)"
+                        >
                             ↑
                         </button>
-                        <button type="button" class="rounded border px-2 text-sm" @click="nudge(-1, 0)">
+                        <button
+                            type="button"
+                            class="rounded border px-2 text-sm"
+                            @click="nudge(-1, 0)"
+                        >
                             ←
                         </button>
-                        <button type="button" class="rounded border px-2 text-sm" @click="nudge(1, 0)">
+                        <button
+                            type="button"
+                            class="rounded border px-2 text-sm"
+                            @click="nudge(1, 0)"
+                        >
                             →
                         </button>
-                        <button type="button" class="rounded border px-2 text-sm" @click="nudge(0, 1)">
+                        <button
+                            type="button"
+                            class="rounded border px-2 text-sm"
+                            @click="nudge(0, 1)"
+                        >
                             ↓
                         </button>
                     </div>
                 </div>
 
-                <div class="overflow-auto rounded-lg border border-gray-200 bg-white p-2 dark:border-gray-700 dark:bg-gray-900">
+                <div
+                    class="overflow-auto rounded-lg border border-gray-200 bg-white p-2 dark:border-gray-700 dark:bg-gray-900"
+                >
                     <DevTopologySvg
                         :nodes="nodes"
                         :edges="edges"
@@ -198,7 +220,9 @@ function nudge(dx: number, dy: number) {
                                     {{ row.kind }} {{ row.key }}
                                 </td>
                                 <td class="px-3 py-1.5 font-mono text-xs">{{ row.from }}</td>
-                                <td class="px-3 py-1.5 font-mono text-xs text-blue-700 dark:text-blue-300">
+                                <td
+                                    class="px-3 py-1.5 font-mono text-xs text-blue-700 dark:text-blue-300"
+                                >
                                     {{ row.to }}
                                 </td>
                             </tr>

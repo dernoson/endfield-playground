@@ -31,7 +31,10 @@ function makeFakeNode(machine: Machine, rotation: Rotation): FactoryNode {
     } as FactoryNode;
 }
 
-function expectedFootprint(machine: Machine, rotation: Rotation): {
+function expectedFootprint(
+    machine: Machine,
+    rotation: Rotation,
+): {
     width: number;
     height: number;
     cellCount: number;

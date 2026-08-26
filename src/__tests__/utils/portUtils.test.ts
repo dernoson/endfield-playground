@@ -80,7 +80,12 @@ describe('rotatePort() / rotatePortOffset()', () => {
         for (const rot of [0, 1, 2, 3] as const) {
             const { side, offset } = rotatePort('right', 1, 1, 3, rot);
             const display = resolveDisplayGrid(1, 3, rot);
-            const { wasClamped } = clampPortOffset(side, offset, display.widthCells, display.heightCells);
+            const { wasClamped } = clampPortOffset(
+                side,
+                offset,
+                display.widthCells,
+                display.heightCells,
+            );
             expect(wasClamped, `rot=${rot} ${side}@${offset}`).toBe(false);
         }
     });

@@ -70,9 +70,10 @@ describe('dataConsistency', () => {
         it('產物不含未對應 JSON 的非 stub 機器', () => {
             const jsonNames = new Set(machinesJson.map((m) => m.name));
             for (const m of fromSrc) {
-                expect(jsonNames.has(m.name), `src has extra machine name=${m.name} id=${m.id}`).toBe(
-                    true,
-                );
+                expect(
+                    jsonNames.has(m.name),
+                    `src has extra machine name=${m.name} id=${m.id}`,
+                ).toBe(true);
             }
         });
 
