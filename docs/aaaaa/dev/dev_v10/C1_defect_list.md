@@ -102,13 +102,14 @@
 - [x] 每列具備 §2 全部欄位（**初稿**；定稿時再核）
 - [x] 含 §3.1 座標落差紀錄列（另含 `_meta_rotatePortOffset`）
 - [x] 所有 `fault=data` 列標「已修」（**V10-I1 utils**；未改 JSON）
-- [ ] 初稿產出後已在 Discord 丟連結（**待 aaaaa 貼出**）
+- [ ] 初稿產出後已在 Discord 丟連結（**2026-08-26 已貼**）
 
 ### 6.1 結論（2026-08-26）
 
 - 初判 utils 成立；I1 以 pad-to-square 修好後測試全綠
 - D1：本批**無需**改 `machines.json`
-- Discord 連結仍待貼
+- Discord 連結已貼
+- 主畫布 render 列已補（§4 port 牽線）
 
 ---
 
@@ -120,3 +121,4 @@
 - 決策 1／3 落版：新增 §3.2 全綠後清單形態；主畫布目視改為加分但仍登記 render 列
 - **初稿完成：** 新建 `docs/roadmap/detail/A2_port_grid_defect_list.md`
 - **I1 後回寫：** meta／歷史列標已修；DoD 資料側結案
+- **F1 檢核：** Discord 已貼；主畫布 port 牽線登記 §4 render

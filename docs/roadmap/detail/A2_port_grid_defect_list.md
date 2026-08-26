@@ -19,7 +19,7 @@
 | 根因 | **非 JSON**；`rotatePortOffset` 舊邊對邊 remap 在非方形機出錯 |
 | 修正 | [V10-I1](../../aaaaa/dev/dev_v10/I1_rotate_port_offset_fix.md)：pad-to-square 中心旋轉；`machineGeometry`＋`portUtils`＋`dataConsistency` **388 全綠** |
 | 資料待修 | **無**（本批無真正 `fault=data` JSON 錯） |
-| render | 初稿尚無；主畫布目視為加分 |
+| render | 初稿尚無；**2026-08-26 補一列**（主畫布旋轉後管線未跟） |
 
 ---
 
@@ -63,7 +63,9 @@
 
 ## 4. `fault=render`
 
-初稿無。E1／F1 主畫布抽查若有差異再補；`owner`＝待佈局層落地後轉單。
+| machine_id | expected_size | observed | port_mismatch | fault | owner | note |
+|------------|---------------|----------|---------------|-------|-------|------|
+| `_render_main_canvas` | — | 主畫布：設備 `rotateDevice` 後方塊有轉 | 已連線之 **Vue Flow edge（管線）** 錨點未隨旋轉更新；牽線仍指向 rot0 Handle 位置 | render | 待佈局層落地後轉單；修復工項 **[R-B3](../B3_rotation_90.md)**（toby／harry，L2） | **2026-08-26 目視確認。** 根因：`FlowNodeOverlay.vue` 以 CSS `transform: rotate()` 轉整塊節點，Handle 仍依 JSON rot0 的 `port.side` 定位；Vue Flow 管線錨點不跟 CSS transform。正確做法應呼叫 `rotatePort` 重算 Handle 方位（B3 §4.3）。**資料／utils 無誤**（`/dev/placement-demo` 埠表正確）。本週 aaaaa 只登記、不改 canvas。 |
 
 ---
 
@@ -73,3 +75,4 @@
 
 - C1 初稿：10 台＋2 meta；初判 utils
 - I1 修 `rotatePort` 後測試全綠；§2 各列標已修（utils）；無 JSON 變更
+- F1 檢核：Discord 已貼；PR #32；主畫布 port 牽線→§4 render 列
