@@ -8,7 +8,7 @@
 **上游 roadmap：** [R-A2](../../roadmap/detail/A2_grid_and_port_alignment.md)（主）、[R-E1](../../roadmap/detail/E1_data_codegen_ops.md)（8/30 檢查點併入本版）、[R-A4](../../roadmap/detail/A4_weekly_cadence_gate.md)（aaaaa 撰寫、主編確認）  
 **門檻：** **2026-08-30（日）＝M1**  
 **開發分支：** `dev/aaaaa0826`（自 `docs/public-roadmap-dispatch-0825` 切出）  
-**狀態總覽：** `[~]` A–E／I／G 完成；F1 品質閘全綠、待 PR＋截圖；H1 待交主編
+**狀態總覽：** `[~]` A–E／I／G／F 個人驗收完成；PR #32 待主編合入；E1 待主編驗收；H1 待交主編
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 >
@@ -134,9 +134,10 @@ A 定案 → B 測試 → C 錯機清單 → I 修 rotatePort（utils）→ E /d
 
 ## V10-F｜驗收與合入
 
-- [~] **V10-F1** 品質閘全綠＋證據 stub＋A2 §11；**待推 PR／附截圖／Discord**
+- [~] **V10-F1** PR #32 已開；Discord 已貼；品質閘全綠；**待主編合入＋`/dev` 主編驗收**
   - 細項：[dev_v10/F1_acceptance_and_pr.md](./dev_v10/F1_acceptance_and_pr.md)
   - 證據：[dev_v10/evidence/](./dev_v10/evidence/)
+  - PR：https://github.com/dernoson/endfield-playground/pull/32
 
 ---
 
@@ -163,7 +164,7 @@ A 定案 → B 測試 → C 錯機清單 → I 修 rotatePort（utils）→ E /d
 | D1 | — | — | **已解除**（本批無 JSON 待修；I1 解紅） |
 | E1 | — | — | **已解除**（`/dev/placement-demo`） |
 | I1 | — | — | **已解除**（pad-to-square；388 全綠） |
-| F1 | 截圖／Discord／PR review | aaaaa／dernoson | 附截圖＋合入 |
+| F1 | PR review／主編 `/dev` 驗收 | dernoson | 合入＋演示確認 |
 | G1 | — | — | **已解除**（A2／E1 已回寫） |
 | H1 | 完成率須待週日實況；文件可先寫 | dernoson 確認 | 8/30 會上確認 |
 | — | **不**依賴 toby W0823-T1、shirone W0823-S1 | — | 演示走 `/dev`（E1） |
@@ -189,14 +190,14 @@ A 定案 → B 測試 → C 錯機清單 → I 修 rotatePort（utils）→ E /d
 ### 8/30 三證據（從嚴）
 
 - [x] 證據一：兩份測試通過輸出（見 `dev_v10/evidence/F1_test_output.md`；全量 677）
-- [x] 證據二：錯機清單連結
-- [ ] 證據三：`/dev` 拓樸／演示頁截圖（至少一台常用加工機）— **待附 PR**
-- [ ] 主畫布目視：**加分**；不足不影響門檻，差異記 `fault=render`
+- [x] 證據二：錯機清單連結（Discord 已貼）
+- [x] 證據三：`/dev/placement-demo` 個人驗收完畢（佔格＋旋轉埠表）；**待主編驗收**
+- [x] 主畫布目視（加分）：旋轉後 **port 牽線未跟著改** → 已登記 `fault=render`（見清單 §4）；不擋門檻
 
 ### 品質閘
 
 - [x] `pnpm type-check`／`lint-check`／`format-check`／`test` 通過
-- [~] PR 描述含下游消費者；回寫 A2 §11 開發日誌（§11 已寫；PR 待開）
+- [x] PR 描述含下游消費者；A2 §11 已回寫（PR #32）
 
 ---
 
@@ -213,6 +214,23 @@ A 定案 → B 測試 → C 錯機清單 → I 修 rotatePort（utils）→ E /d
 
 ---
 
+## 本週工項檢核（對照 W0823-A1／R-A2）
+
+| 工項 | W0823-A1 要求 | V10 狀態 | 備註 |
+|------|---------------|----------|------|
+| A1 定案 | 欄位對照、範圍邊界 | [x] | |
+| B1 測試 | 全機×四 rotation＋consistency | [x] | I1 後全綠 |
+| C1 清單 | 欄位齊、分責 | [x] | Discord 已貼 |
+| D1 資料 | fault=data 全修 | [x] | 本批無 JSON；utils 已修 |
+| E1 演示 | `/dev` 備援 | [x] 個人驗收 | 待主編驗收 |
+| I1 utils | rotatePort | [x] | pad-to-square |
+| F1 驗收 | 三證據＋品質閘＋PR | [~] | PR #32；待 review |
+| G1 回寫 | A2 過期處 | [x] | |
+| H1 A4 | 週節奏交主編 | [ ] | 不擋門檻 |
+| 主畫布 | 加分；render 登記 | [x] 已登記 | port 牽線→§4 render 列 |
+
+---
+
 ## 開發日誌
 
 ### 2026-08-26
@@ -226,4 +244,5 @@ A 定案 → B 測試 → C 錯機清單 → I 修 rotatePort（utils）→ E /d
 - **V10-B1 完成：** 新增 `machineGeometry.test.ts`＋`dataConsistency.test.ts`；首跑 351 過／25 失敗（埠旋轉後越界、無 rot0 紅）；解鎖 C1
 - **V10-C1 初稿：** 新建 `A2_port_grid_defect_list.md`（10 台＋2 meta）；初判 utils；D1 勿改 JSON；Discord 待貼
 - **V10-I1／E1：** pad-to-square 修正 `rotatePort`；`/dev/placement-demo`；portUtils＋machineGeometry＋consistency **388 全綠**；清單回寫已修；D1 本批無 JSON 變更
-- **V10-F1／G1：** 四項品質閘全綠（677 tests）；A2 過期欄位／驗收面＋E1 §4.3 回寫；證據 stub；待推 PR＋演示截圖＋Discord
+- **V10-F1／G1：** 四項品質閘全綠（677 tests）；A2 過期欄位／驗收面＋E1 §4.3 回寫；PR #32 已開
+- **檢核收尾：** Discord 清單＋PR 已貼；`/dev/placement-demo` 個人驗收完；主編 `/dev` 驗收待；主畫布旋轉後 port 牽線未跟→清單 §4 `fault=render`（owner：R-B3／佈局層）
