@@ -1,16 +1,20 @@
 /**
  * Port 旋轉工具函式
  *
- * 由 src/types/machine.ts 遷移而來（V4-B1）。
- * 純數學轉換，無響應式依賴，不需要 composable 包裝。
+ * 純數學轉換，無響應式依賴。
  *
- * 使用方式：
- *   import { rotatePortSide, rotatePortOffset } from '@/utils/portUtils'
+ * 演算法（V10）：以 max(w,h) 將機器 AABB 對稱擴成正方形 tmp，
+ * 繞正方形中心旋轉（螢幕座標 y 向下、順時針），再裁回旋轉後的寬高。
+ * 正方形與長方形共用同一套流程；對稱 padding 下正方形中心＝機器中心。
+ *
+ *   import { rotatePortSide, rotatePortOffset, rotatePort } from '@/utils/portUtils'
  */
 
 import type { PortSide } from '@/types/machine';
 
 const SIDE_ORDER: PortSide[] = ['top', 'right', 'bottom', 'left'];
+
+export type GridRotation = 0 | 1 | 2 | 3;
 
 /**
  * 將方位按順時針步數旋轉
@@ -23,19 +27,114 @@ const SIDE_ORDER: PortSide[] = ['top', 'right', 'bottom', 'left'];
  * rotatePortSide('top', 1)    // → 'right'
  * rotatePortSide('right', 2)  // → 'left'
  */
-export function rotatePortSide(side: PortSide, rotation: 0 | 1 | 2 | 3): PortSide {
+export function rotatePortSide(side: PortSide, rotation: GridRotation): PortSide {
     const idx = SIDE_ORDER.indexOf(side);
     return SIDE_ORDER[(idx + rotation) % 4];
 }
 
+/** 埠在機器局部座標的邊心（原點＝未旋轉機器左上角；單位＝格） */
+function portPointOnMachine(
+    side: PortSide,
+    offset: number,
+    width: number,
+    height: number,
+): { x: number; y: number } {
+    switch (side) {
+        case 'top':
+            return { x: offset + 0.5, y: 0 };
+        case 'bottom':
+            return { x: offset + 0.5, y: height };
+        case 'left':
+            return { x: 0, y: offset + 0.5 };
+        case 'right':
+            return { x: width, y: offset + 0.5 };
+    }
+}
+
 /**
- * 將 offset 按旋轉步數轉換（需搭配機器尺寸，確保非方形機器旋轉後格子正確）
+ * 將點投影回 display 矩形邊上的 side／offset（0-based 格索引）。
+ * 呼叫端應保證點已在邊上（旋轉後數值誤差以最近邊吸附）。
+ */
+function pointToPort(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+): { side: PortSide; offset: number } {
+    const dTop = Math.abs(y - 0);
+    const dBottom = Math.abs(y - height);
+    const dLeft = Math.abs(x - 0);
+    const dRight = Math.abs(x - width);
+    const nearest = Math.min(dTop, dBottom, dLeft, dRight);
+
+    if (nearest === dTop) {
+        return { side: 'top', offset: Math.round(x - 0.5) };
+    }
+    if (nearest === dBottom) {
+        return { side: 'bottom', offset: Math.round(x - 0.5) };
+    }
+    if (nearest === dLeft) {
+        return { side: 'left', offset: Math.round(y - 0.5) };
+    }
+    return { side: 'right', offset: Math.round(y - 0.5) };
+}
+
+/**
+ * 同時換算旋轉後的 side 與 offset（權威實作）。
  *
- * 轉換規則（每步 90°CW）：  \
- *   left  → top    : offset → (machineHeight - 1 - offset)  // 垂直翻轉  \
- *   top   → right  : offset → offset                         // 不變  \
- *   right → bottom : offset → (machineWidth  - 1 - offset)  // 水平翻轉  \
- *   bottom→ left   : offset → offset                         // 不變
+ * 步驟：
+ * 1. S = max(w, h)，對稱 pad 成 S×S（短邊擴增）
+ * 2. 埠點移入 tmp 座標，繞中心 (S/2,S/2) 順時針轉 rotation 步（y 向下）
+ * 3. 依旋轉後寬高裁回機器局部座標，投影為 side／offset
+ *
+ * @example
+ * // 6×4，bottom@4，90°CW → left@4
+ * rotatePort('bottom', 4, 6, 4, 1)  // → { side: 'left', offset: 4 }
+ * // 6×4，bottom@4，180° → top@1（舊演算法會得到 -1）
+ * rotatePort('bottom', 4, 6, 4, 2)  // → { side: 'top', offset: 1 }
+ */
+export function rotatePort(
+    side: PortSide,
+    offset: number,
+    machineWidth: number,
+    machineHeight: number,
+    rotation: GridRotation,
+): { side: PortSide; offset: number } {
+    if (rotation === 0) {
+        return { side, offset };
+    }
+
+    const S = Math.max(machineWidth, machineHeight);
+    const padX = (S - machineWidth) / 2;
+    const padY = (S - machineHeight) / 2;
+
+    const local = portPointOnMachine(side, offset, machineWidth, machineHeight);
+    let x = local.x + padX;
+    let y = local.y + padY;
+    const cx = S / 2;
+    const cy = S / 2;
+
+    for (let i = 0; i < rotation; i++) {
+        const dx = x - cx;
+        const dy = y - cy;
+        // 螢幕座標（y 向下）順時針 90°：(dx, dy) → (−dy, dx)
+        x = cx - dy;
+        y = cy + dx;
+    }
+
+    const displayWidth = rotation % 2 === 1 ? machineHeight : machineWidth;
+    const displayHeight = rotation % 2 === 1 ? machineWidth : machineHeight;
+    const unpadX = (S - displayWidth) / 2;
+    const unpadY = (S - displayHeight) / 2;
+
+    return pointToPort(x - unpadX, y - unpadY, displayWidth, displayHeight);
+}
+
+/**
+ * 將 offset 按旋轉步數轉換（需搭配機器尺寸）。
+ *
+ * 實作委派 {@link rotatePort}（pad-to-square 中心旋轉）。
+ * 若同時需要新 side，請直接呼叫 `rotatePort` 或搭配 `rotatePortSide`。
  *
  * @param side          原始方位
  * @param offset        原始 offset
@@ -50,28 +149,16 @@ export function rotatePortSide(side: PortSide, rotation: 0 | 1 | 2 | 3): PortSid
  *
  * // 2×4 機器，left 邊 offset=0 的 port，順時針旋轉 1 次後 → top 邊 offset=3
  * rotatePortOffset('left', 0, 2, 4, 1) // → 3
+ *
+ * // 6×4，bottom@4，180° → top@1
+ * rotatePortOffset('bottom', 4, 6, 4, 2) // → 1
  */
 export function rotatePortOffset(
     side: PortSide,
     offset: number,
     machineWidth: number,
     machineHeight: number,
-    rotation: 0 | 1 | 2 | 3,
+    rotation: GridRotation,
 ): number {
-    if (rotation === 0) return offset;
-
-    const transforms: Record<PortSide, (o: number) => number> = {
-        left: (o) => machineHeight - 1 - o, // left→top：垂直翻轉
-        top: (o) => o, //  top→right：不變
-        right: (o) => machineWidth - 1 - o, // right→bottom：水平翻轉
-        bottom: (o) => o, // bottom→left：不變
-    };
-
-    let currentSide: PortSide = side;
-    let currentOffset = offset;
-    for (let i = 0; i < rotation; i++) {
-        currentOffset = transforms[currentSide](currentOffset);
-        currentSide = rotatePortSide(currentSide, 1);
-    }
-    return currentOffset;
+    return rotatePort(side, offset, machineWidth, machineHeight, rotation).offset;
 }
