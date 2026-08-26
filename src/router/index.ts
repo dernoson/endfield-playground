@@ -43,6 +43,11 @@ const router = createRouter({
                     name: 'dev-validation-test',
                     component: () => import('@/app/dev/ValidationTest.vue'),
                 },
+                {
+                    path: 'placement-demo',
+                    name: 'dev-placement-demo',
+                    component: () => import('@/app/dev/PlacementDemo.vue'),
+                },
             ],
         },
         // 獨立於 DevLayout 之外：不掛在左側 dev 工具導覽列，只能直接切換網址到達
