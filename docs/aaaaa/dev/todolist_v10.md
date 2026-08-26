@@ -1,0 +1,209 @@
+# V10 TODOLIST — 佔格與 port 對資料（本週 aaaaa 工項）
+
+**版本：** V10  
+**建立日期：** 2026-08-26  
+**負責人：** aaaaa  
+**前置：** V9 完成（modes-only 埠、WxH 拓樸預覽、基礎材料輸出點）  
+**正式工單：** [W0823-A1](../../work_dispatch/aaaaa/W0823-A1_grid_port_alignment.md)  
+**上游 roadmap：** [R-A2](../../roadmap/detail/A2_grid_and_port_alignment.md)（主）、[R-E1](../../roadmap/detail/E1_data_codegen_ops.md)（8/30 檢查點併入本版）、[R-A4](../../roadmap/detail/A4_weekly_cadence_gate.md)（aaaaa 撰寫、主編確認）  
+**門檻：** **2026-08-30（日）＝M1**  
+**開發分支：** `dev/aaaaa0826`（自 `docs/public-roadmap-dispatch-0825` 切出）  
+**狀態總覽：** `[ ]` 未開始（規劃完成）
+
+> 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
+>
+> **範圍宣告：** 本版**只**收本週 aaaaa 被分派、且需在 8/30 驗收的工項。決策層議題（人力、備援、渲染層排程）不在本版展開。
+
+---
+
+## 概述
+
+### 目標
+
+1. **資料側全綠**：全部機器 × `rotation ∈ {0,1,2,3}` 的佔格格數與埠 `side`／`offset` 合法性，測試自動斷言且**本週修到全綠**
+2. **一致性測試上線**：R-E1 的 8/30 檢查點併入本版（`dataConsistency.test.ts`）
+3. **錯機清單**：`fault=data` 本週全修；`fault=render` 只記錄
+4. **8/30 演示不被卡**：`/dev` 新增最小擺放演示頁，確保「從下方拿一台放到格子上」可演示
+5. **上游文件同步**：回寫 `detail/A2_*.md` 的過期欄位名與驗收面
+6. **週節奏機制**：R-A4 文件由 aaaaa 撰寫，交主編確認並共同驗收
+
+### 已定案（2026-08-26）
+
+| 項 | 結論 |
+|----|------|
+| 版本號 | **V10**＝本週 aaaaa 執行切片 |
+| 權威欄位名 | 以**程式碼現況**為準：頂層 `width`／`height`；埠在 `modes[].input_ports`／`output_ports`（A2 文檔的 `size`／`modes[].ports` 為舊稱，本版回寫） |
+| **資料側標準** | **全綠。** 本週修正所有機器參數問題；測試**不得**留 skip／todo／allowlist；不採「剩餘排 9/6」 |
+| **8/30 驗收（從嚴）** | 以**測試＋錯機清單＋`/dev` 拓樸截圖**為準；**主畫布目視為加分**，只用來記 `fault=render` 列 |
+| **R-E1 併入** | `src/__tests__/data/dataConsistency.test.ts` 本週上線（E1 §4.3 五項）；E1 其餘月度檢查點不在本版 |
+| **M1 演示備援** | `/dev` 新增最小擺放演示頁；不依賴 toby W0823-T1 與主線擺放鏈 |
+| **R-A4 分工** | 文件主撰＝aaaaa；驗收＝aaaaa＋dernoson 共同；產出交主編確認後生效 |
+| 清單路徑 | `docs/roadmap/detail/A2_port_grid_defect_list.md`（新建） |
+| 測試路徑 | `machineGeometry.test.ts`＋`dataConsistency.test.ts`（`src/__tests__/data/`） |
+| 修資料流程 | 只改 `docs/aaaaa/data/machines.json` → `pnpm generate:src-data` → 同 commit 含產物 |
+| `fault=render` owner | 記「待佈局層落地後轉單」；本週不指名 L2、不改 canvas |
+| 像素／格子落差 | 已由 8/25 佈局視角自建決議解決；清單保留一列紀錄即可 |
+| 性質鎖 | 資料／純函式為主；`/dev` 演示頁屬 L1 除錯工具（唯讀資料、不接 `editorStore`），不視為 L2／L3 接線 |
+
+詳見 [A1_scope_decision.md](./dev_v10/A1_scope_decision.md)。
+
+### 非目標（本版不做）
+
+- 改 `FactoryCanvas.vue`／`FlowNodeOverlay.vue` 事件、任何 Pinia action 簽名、L3 正式樣式
+- 重構 `geometryUtils`／`portUtils`（發現 bug → 清單記錄＋另開單）
+- 修 `fault=render`（只記錄轉單）
+- 管線佔格（`getPipelineOccupiedGrids`；屬 10 月）
+- 主線擺放鏈（R-B2）、Inspector（R-B4）——`/dev` 演示頁不取代它們
+- 9 月渲染層換址（測試本週仍 import 現有 `geometryUtils`；廢除時再跟改）
+
+### 流程大綱
+
+```text
+A 定案 → B 測試（幾何＋一致性）→ C 錯機清單 → D 修資料至全綠
+      → E /dev 擺放演示備援 → F 驗收＋PR
+      G 上游文件同步（A2 回寫）    ┐ 與 B–F 平行
+      H R-A4 週節奏機制（交主編）  ┘
+```
+
+### 週切片
+
+| 區間 | 切片 | 對應工項 |
+|------|------|----------|
+| → 約 8/27 | 兩份測試骨架＋第一版失敗清單（先不修） | B1、C1 初稿 |
+| → 約 8/28 | 修資料至全綠；演示頁可跑 | D1、E1 |
+| → 8/30 門檻 | 清單定稿、三證據、PR、上游回寫、A4 交主編 | C1、F1、G1、H1 |
+
+### 下游消費者（PR 必寫）
+
+```text
+下游消費者（下週起）：
+- B1 工具列佔格文字、B2 擺放預覽 → 必須讀同一份 getMachine／getOccupiedCells
+- C1 port hit、D2 E001 重疊 → 依賴本週修正後的 width×height／port 合法性
+- 渲染側 fault=render 列 → 佈局層落地後轉單，不在本 PR 改 canvas
+- toby W0823-T1（InspectorPanel）→ 顯示選取設備 width×height，為最快驗資料窗口
+```
+
+---
+
+## V10-A｜範圍與定案
+
+- [ ] **V10-A1** 範圍、欄位對照、8/26 六項決策、與 V9／佈局改寫／W0823 邊界
+  - 細項：[dev_v10/A1_scope_decision.md](./dev_v10/A1_scope_decision.md)
+
+---
+
+## V10-B｜測試（幾何＋資料一致性）
+
+- [ ] **V10-B1** `machineGeometry.test.ts`：全機器 × 四 rotation 佔格＋埠合法性；併 R-E1 `dataConsistency.test.ts`
+  - 細項：[dev_v10/B1_machine_geometry_tests.md](./dev_v10/B1_machine_geometry_tests.md)
+
+---
+
+## V10-C｜錯機清單
+
+- [ ] **V10-C1** 建立並填齊 `A2_port_grid_defect_list.md`（初稿→定稿；含座標落差紀錄列）
+  - 細項：[dev_v10/C1_defect_list.md](./dev_v10/C1_defect_list.md)
+
+---
+
+## V10-D｜資料修正與 codegen
+
+- [ ] **V10-D1** 修完**所有** `fault=data`；codegen；兩份測試**全綠無例外**
+  - 細項：[dev_v10/D1_fix_data_codegen.md](./dev_v10/D1_fix_data_codegen.md)
+
+---
+
+## V10-E｜M1 演示備援
+
+- [ ] **V10-E1** `/dev` 最小擺放演示頁：選機 → 點格放下 → 佔格依真實 `width×height`
+  - 細項：[dev_v10/E1_dev_placement_demo.md](./dev_v10/E1_dev_placement_demo.md)
+
+---
+
+## V10-F｜驗收與合入
+
+- [ ] **V10-F1** 三證據（測試／清單／`/dev` 截圖）＋品質閘＋PR＋回寫 A2 §11
+  - 細項：[dev_v10/F1_acceptance_and_pr.md](./dev_v10/F1_acceptance_and_pr.md)
+
+---
+
+## V10-G｜上游文件同步
+
+- [ ] **V10-G1** 回寫 `detail/A2_grid_and_port_alignment.md` 過期處（欄位名、台數、驗收面、owner、風險條款）
+  - 細項：[dev_v10/G1_upstream_doc_sync.md](./dev_v10/G1_upstream_doc_sync.md)
+
+---
+
+## V10-H｜週節奏與門檻驗收機制（R-A4）
+
+- [ ] **V10-H1** aaaaa 撰寫 A4 交付（30 秒驗收落單、週中 ping 紀錄、8/30 完成率、大綱 §8 週曆更新），交 dernoson 確認並共同驗收
+  - 細項：[dev_v10/H1_weekly_cadence_gate.md](./dev_v10/H1_weekly_cadence_gate.md)
+
+---
+
+## 封鎖項目追蹤
+
+| ID | 封鎖原因 | 等待對象 | 解除條件 |
+|----|---------|---------|----------|
+| B1 | 無前置 | — | A1 定案即可開工 |
+| D1 | 需 C1 初稿分責 | 自己 | 清單有 `fault` 欄 |
+| E1 | 需 D1 至少 P0 機資料正確 | 自己 | 演示機資料綠 |
+| F1 | 需 B1／C1／D1／E1 產出 | 自己 | 三證據齊 |
+| G1 | 不封鎖（純文件） | — | 隨時可做 |
+| H1 | 完成率須待週日實況；文件可先寫 | dernoson 確認 | 8/30 會上確認 |
+| — | **不**依賴 toby W0823-T1、shirone W0823-S1 | — | 演示走 `/dev`（E1） |
+
+---
+
+## 完成定義（Definition of Done）
+
+### 資料與測試（硬標準）
+
+- [ ] `machineGeometry.test.ts` 涵蓋全部機器 × 四 rotation，**全綠**（無 skip／todo／allowlist）
+- [ ] `dataConsistency.test.ts` 涵蓋 R-E1 §4.3 五項並通過
+- [ ] `fault=data` **全部**已修；codegen 後 `src/data/machines.ts` 與 JSON 一致
+- [ ] JSON 與產物同一筆 commit
+
+### 交付物
+
+- [ ] 錯機清單存在，每列具備 A2 §4.1 全部欄位（含座標落差紀錄列）
+- [ ] `/dev` 擺放演示頁可跑：選機 → 放下 → 佔格為真實 `width×height`
+- [ ] `detail/A2_*.md` 過期處已回寫（G1 清單全勾）
+- [ ] R-A4 文件已交 dernoson 確認
+
+### 8/30 三證據（從嚴）
+
+- [ ] 證據一：兩份測試通過輸出
+- [ ] 證據二：錯機清單連結
+- [ ] 證據三：`/dev` 拓樸／演示頁截圖（至少一台常用加工機）
+- [ ] 主畫布目視：**加分**；不足不影響門檻，差異記 `fault=render`
+
+### 品質閘
+
+- [ ] `pnpm type-check`／`lint-check`／`format-check`／`test` 通過
+- [ ] PR 描述含下游消費者；回寫 A2 §11 開發日誌
+
+---
+
+## 未交頂替
+
+**A2 部分無頂替**（8/30 門檻必要條件）。若無法完成，當日會前上報 dernoson＋改期，不得默默延後。
+
+| 工項 | 未交影響 |
+|------|----------|
+| B1／C1／D1／F1 | **擋門檻**，無頂替 |
+| E1 演示頁 | 演示改用 `/dev/flow-engine` 既有拓樸截圖（門檻仍成立，但「拖一台」無法現場演示） |
+| G1 | 不擋門檻；順延 9/6（但欄位名歧義會持續誤導下游） |
+| H1 | 不擋門檻（R-A4 為加分）；未交則 8/30 完成率無紀錄，須會上明記 |
+
+---
+
+## 開發日誌
+
+### 2026-08-26
+
+- 依 W0823-A1／WEEK_20260823（v1.4）／R-A2 開 V10 規劃
+- 納入 8/25 佈局改寫影響：交付物不變；畫布自驗；`fault=render` owner 填法調整
+- 開發分支：`dev/aaaaa0826`（base＝`docs/public-roadmap-dispatch-0825`）
+- **六項決策落版：** ①資料本週全綠、②回寫 A2 過期處、③8/30 三證據從嚴、④R-E1 一致性測試併入 B1、⑤R-A4 由 aaaaa 撰寫並與主編共同驗收、⑥`/dev` 新增擺放演示備援
+- 工項由 A–E 擴為 A–H；範圍收斂為「本週 aaaaa 應進行與驗收」者
