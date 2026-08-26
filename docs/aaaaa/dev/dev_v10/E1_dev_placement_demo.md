@@ -97,6 +97,8 @@ M1 門檻句含「**從下方拿一種設備放到格子上**」。主線擺放�
 - [x] 可選機 → 放上格盤，佔格為真實 `width×height`（經 `DevTopologySvg`／`getOccupiedCells`）
 - [x] 旋轉後顯示格對調；埠表列出 `rotatePort` 前後 side@offset
 - [x] 未 import 任何 store；未改主畫布相關檔
+- [x] 個人驗收完畢（2026-08-26）
+- [~] 主編驗收待（dernoson）
 - [x] §4 腳本可走完（選灌裝機／粉碎機 → 旋轉）
 
 ---
@@ -107,3 +109,4 @@ M1 門檻句含「**從下方拿一種設備放到格子上**」。主線擺放�
 
 - 依決策 6 建立細項
 - 與 I1 同批落地：`PlacementDemo.vue`＋router＋DevLayout；演示 pad-to-square 旋轉
+- 個人驗收完；主編驗收待
