@@ -8,7 +8,7 @@
 **上游 roadmap：** [R-A2](../../roadmap/detail/A2_grid_and_port_alignment.md)（主）、[R-E1](../../roadmap/detail/E1_data_codegen_ops.md)（8/30 檢查點併入本版）、[R-A4](../../roadmap/detail/A4_weekly_cadence_gate.md)（aaaaa 撰寫、主編確認）  
 **門檻：** **2026-08-30（日）＝M1**  
 **開發分支：** `dev/aaaaa0826`（自 `docs/public-roadmap-dispatch-0825` 切出）  
-**狀態總覽：** `[~]` A1／B1／C1 初稿／E1／I1 完成；資料側測試已全綠；D1 無 JSON 待修（utils 已修）
+**狀態總覽：** `[~]` A–E／I／G 完成；F1 品質閘全綠、待 PR＋截圖；H1 待交主編
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 >
@@ -134,14 +134,15 @@ A 定案 → B 測試 → C 錯機清單 → I 修 rotatePort（utils）→ E /d
 
 ## V10-F｜驗收與合入
 
-- [ ] **V10-F1** 三證據（測試／清單／`/dev` 截圖）＋品質閘＋PR＋回寫 A2 §11
+- [~] **V10-F1** 品質閘全綠＋證據 stub＋A2 §11；**待推 PR／附截圖／Discord**
   - 細項：[dev_v10/F1_acceptance_and_pr.md](./dev_v10/F1_acceptance_and_pr.md)
+  - 證據：[dev_v10/evidence/](./dev_v10/evidence/)
 
 ---
 
 ## V10-G｜上游文件同步
 
-- [ ] **V10-G1** 回寫 `detail/A2_grid_and_port_alignment.md` 過期處（欄位名、台數、驗收面、owner、風險條款）
+- [x] **V10-G1** 回寫 `detail/A2_grid_and_port_alignment.md`＋E1 §4.3（與 F1 同批）
   - 細項：[dev_v10/G1_upstream_doc_sync.md](./dev_v10/G1_upstream_doc_sync.md)
 
 ---
@@ -162,8 +163,8 @@ A 定案 → B 測試 → C 錯機清單 → I 修 rotatePort（utils）→ E /d
 | D1 | — | — | **已解除**（本批無 JSON 待修；I1 解紅） |
 | E1 | — | — | **已解除**（`/dev/placement-demo`） |
 | I1 | — | — | **已解除**（pad-to-square；388 全綠） |
-| F1 | 需 B1／C1／D1／E1／I1 產出 | 自己 | 三證據齊 |
-| G1 | 不封鎖（純文件） | — | 隨時可做 |
+| F1 | 截圖／Discord／PR review | aaaaa／dernoson | 附截圖＋合入 |
+| G1 | — | — | **已解除**（A2／E1 已回寫） |
 | H1 | 完成率須待週日實況；文件可先寫 | dernoson 確認 | 8/30 會上確認 |
 | — | **不**依賴 toby W0823-T1、shirone W0823-S1 | — | 演示走 `/dev`（E1） |
 
@@ -182,20 +183,20 @@ A 定案 → B 測試 → C 錯機清單 → I 修 rotatePort（utils）→ E /d
 
 - [x] 錯機清單存在（含 utils 結案回寫）
 - [x] `/dev/placement-demo` 可跑
-- [ ] `detail/A2_*.md` 過期處已回寫（G1）
+- [x] `detail/A2_*.md` 過期處已回寫（G1）
 - [ ] R-A4 文件已交 dernoson 確認（H1）
 
 ### 8/30 三證據（從嚴）
 
-- [ ] 證據一：兩份測試通過輸出
-- [ ] 證據二：錯機清單連結
-- [ ] 證據三：`/dev` 拓樸／演示頁截圖（至少一台常用加工機）
+- [x] 證據一：兩份測試通過輸出（見 `dev_v10/evidence/F1_test_output.md`；全量 677）
+- [x] 證據二：錯機清單連結
+- [ ] 證據三：`/dev` 拓樸／演示頁截圖（至少一台常用加工機）— **待附 PR**
 - [ ] 主畫布目視：**加分**；不足不影響門檻，差異記 `fault=render`
 
 ### 品質閘
 
-- [ ] `pnpm type-check`／`lint-check`／`format-check`／`test` 通過
-- [ ] PR 描述含下游消費者；回寫 A2 §11 開發日誌
+- [x] `pnpm type-check`／`lint-check`／`format-check`／`test` 通過
+- [~] PR 描述含下游消費者；回寫 A2 §11 開發日誌（§11 已寫；PR 待開）
 
 ---
 
@@ -225,3 +226,4 @@ A 定案 → B 測試 → C 錯機清單 → I 修 rotatePort（utils）→ E /d
 - **V10-B1 完成：** 新增 `machineGeometry.test.ts`＋`dataConsistency.test.ts`；首跑 351 過／25 失敗（埠旋轉後越界、無 rot0 紅）；解鎖 C1
 - **V10-C1 初稿：** 新建 `A2_port_grid_defect_list.md`（10 台＋2 meta）；初判 utils；D1 勿改 JSON；Discord 待貼
 - **V10-I1／E1：** pad-to-square 修正 `rotatePort`；`/dev/placement-demo`；portUtils＋machineGeometry＋consistency **388 全綠**；清單回寫已修；D1 本批無 JSON 變更
+- **V10-F1／G1：** 四項品質閘全綠（677 tests）；A2 過期欄位／驗收面＋E1 §4.3 回寫；證據 stub；待推 PR＋演示截圖＋Discord
