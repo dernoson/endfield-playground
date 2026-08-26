@@ -10,7 +10,8 @@
 | 性質 | 資料／純函式（**本週只做這一種**） |
 | 預估時數 | 11–20h 區間內可吃完；建議週末爆發一次收尾 |
 | review_gate | dernoson |
-| 狀態 | `[ ]` 未開始 |
+| 狀態 | `[~]` V10 交付完成、待主編 review（PR #32） |
+| PR | https://github.com/dernoson/endfield-playground/pull/32 |
 
 ---
 
@@ -57,7 +58,7 @@
 | JSON `size` | `width`／`height`（頂層欄位） |
 | `modes[].ports` | `modes[].input_ports`／`modes[].output_ports` |
 | `getOccupiedCells(node, machine)` | `src/utils/geometryUtils.ts`（已吃 `rotation` 0/1/2/3） |
-| 埠旋轉 | `rotatePortSide`／`rotatePortOffset`（`src/utils/portUtils.ts`） |
+| 埠旋轉 | `rotatePort`／`rotatePortSide`／`rotatePortOffset`（`src/utils/portUtils.ts`） |
 | 查詢 | `getMachine`／`getMachineById`（`src/data/machines.ts`，**codegen 產物勿手改**） |
 
 參考既有測試風格：`src/__tests__/data/machines.test.ts`。
@@ -92,14 +93,15 @@
 
 ## 5. DoD（勾完才算本週完成）
 
-對齊 A2 §9：
+對齊 A2 §9（2026-08-26 檢核）：
 
-- [ ] 錯機清單存在，每列具備 A2 §4.1 全部欄位
-- [ ] `machineGeometry.test.ts` 涵蓋全部機器 × 四種 rotation 並通過
-- [ ] 「錯在資料」已修；codegen 後 `src/data/machines.ts` 一致
-- [ ] 至少一台常用加工機佔格正確（證據附 PR）
-- [ ] `pnpm type-check`／`lint-check`／`format-check`／`test` 通過
-- [ ] PR 描述含下游消費者（下節）
+- [x] 錯機清單存在，每列具備 A2 §4.1 全部欄位
+- [x] `machineGeometry.test.ts` 涵蓋全部機器 × 四種 rotation 並通過
+- [x] 「錯在資料」：本批無 JSON 待修；utils 紅燈已由 V10-I1 消除；codegen 未改
+- [x] 至少一台常用加工機佔格正確（證據：`/dev/placement-demo` 個人驗收；待主編確認）
+- [x] `pnpm type-check`／`lint-check`／`format-check`／`test` 通過
+- [x] PR 描述含下游消費者（PR #32）
+- [~] review_gate 合入判定（dernoson）
 
 ---
 
@@ -133,9 +135,9 @@ toby 的新標的仍是你的下游：他會在 Inspector 顯示選取設備的 
 | 時機 | 動作 |
 |------|------|
 | 開工 | 可自行開工；不必每日 ping |
-| 清單初稿產出 | Discord 丟連結即可（方便 L2 預覽渲染列） |
+| 清單初稿產出 | Discord 丟連結（**2026-08-26 已貼**） |
 | 卡住（codegen／合入／門檻判定） | dernoson |
-| 完成 | PR ＋ 回寫 A2 §11 開發日誌；週日會演示「放一台佔格正確」 |
+| 完成 | PR #32 ＋ 回寫 A2 §11；週日會演示 `/dev/placement-demo` |
 
 ---
 
@@ -153,3 +155,10 @@ toby 的新標的仍是你的下游：他會在 Inspector 顯示選取設備的 
 - §3 像素／格子座標落差標為**已由渲染層決議解決**，取消原訂 9 月幾何域裁決
 - §6 畫布驗收人由 toby 改為自行以 `DevTopologySvg.vue` 抽查；`fault=render` 列的 `owner` 填法同步調整
 - 已知連帶（本週不處理）：本單新建的 `src/__tests__/data/machineGeometry.test.ts` 會 import 即將廢除的 `geometryUtils`，9 月動工時須跟改，已回寫決策層規劃檔的連帶清單
+
+### 2026-08-26
+
+- **V10 執行完成（待 review）：** B1 測試＋consistency；C1 清單；I1 `rotatePort` pad-to-square；E1 `/dev/placement-demo`；G1 A2 回寫；F1 品質閘全綠；PR #32
+- 本批無 JSON `fault=data`；B1 首跑 25 埠紅皆 utils，I1 後全綠
+- Discord 清單＋PR 已貼；`/dev` 個人驗收完，待主編驗收
+- 主畫布加分項：設備旋轉正常但 **port 牽線（Vue Flow edge）未跟著改** → `fault=render`，登記清單 §4；**非本單範圍**（見 §1 不要碰 canvas）；修復歸 **R-B3**（toby／harry，L2 接線）或佈局層換址後重做 Handle 定位
