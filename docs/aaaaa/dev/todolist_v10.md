@@ -8,7 +8,7 @@
 **上游 roadmap：** [R-A2](../../roadmap/detail/A2_grid_and_port_alignment.md)（主）、[R-E1](../../roadmap/detail/E1_data_codegen_ops.md)（8/30 檢查點併入本版）、[R-A4](../../roadmap/detail/A4_weekly_cadence_gate.md)（aaaaa 撰寫、主編確認）  
 **門檻：** **2026-08-30（日）＝M1**  
 **開發分支：** `dev/aaaaa0826`（自 `docs/public-roadmap-dispatch-0825` 切出）  
-**狀態總覽：** `[~]` A1／B1 完成；C1 可開工（B1 失敗表已備）
+**狀態總覽：** `[~]` A1／B1 完成；C1 初稿完成；D1 可開工（注意 utils 嫌疑）
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 >
@@ -102,8 +102,9 @@ A 定案 → B 測試（幾何＋一致性）→ C 錯機清單 → D 修資料�
 
 ## V10-C｜錯機清單
 
-- [ ] **V10-C1** 建立並填齊 `A2_port_grid_defect_list.md`（初稿→定稿；含座標落差紀錄列）
+- [~] **V10-C1** 建立並填齊 `A2_port_grid_defect_list.md`（**初稿完成**；定稿待 D1／utils 裁決）
   - 細項：[dev_v10/C1_defect_list.md](./dev_v10/C1_defect_list.md)
+  - 清單：[A2_port_grid_defect_list.md](../../roadmap/detail/A2_port_grid_defect_list.md)
 
 ---
 
@@ -148,7 +149,7 @@ A 定案 → B 測試（幾何＋一致性）→ C 錯機清單 → D 修資料�
 |----|---------|---------|----------|
 | B1 | — | — | **已解除**（A1 定案完成） |
 | C1 | — | — | **已解除**（B1 失敗表見 B1 §6） |
-| D1 | 需 C1 初稿分責 | 自己 | 清單有 `fault` 欄 |
+| D1 | — | — | **已解除**（C1 初稿有 fault 欄；初判無 JSON 待修） |
 | E1 | 需 D1 至少 P0 機資料正確 | 自己 | 演示機資料綠 |
 | F1 | 需 B1／C1／D1／E1 產出 | 自己 | 三證據齊 |
 | G1 | 不封鎖（純文件） | — | 隨時可做 |
@@ -211,3 +212,4 @@ A 定案 → B 測試（幾何＋一致性）→ C 錯機清單 → D 修資料�
 - 工項由 A–E 擴為 A–H；範圍收斂為「本週 aaaaa 應進行與驗收」者
 - **V10-A1 定案完成：** 核對 JSON／`machines.ts`／幾何 API／W0823-A1／下游 B–H；解鎖 B1
 - **V10-B1 完成：** 新增 `machineGeometry.test.ts`＋`dataConsistency.test.ts`；首跑 351 過／25 失敗（埠旋轉後越界、無 rot0 紅）；解鎖 C1
+- **V10-C1 初稿：** 新建 `A2_port_grid_defect_list.md`（10 台＋2 meta）；初判 utils；D1 勿改 JSON；Discord 待貼
