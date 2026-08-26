@@ -8,7 +8,7 @@
 **上游 roadmap：** [R-A2](../../roadmap/detail/A2_grid_and_port_alignment.md)（主）、[R-E1](../../roadmap/detail/E1_data_codegen_ops.md)（8/30 檢查點併入本版）、[R-A4](../../roadmap/detail/A4_weekly_cadence_gate.md)（aaaaa 撰寫、主編確認）  
 **門檻：** **2026-08-30（日）＝M1**  
 **開發分支：** `dev/aaaaa0826`（自 `docs/public-roadmap-dispatch-0825` 切出）  
-**狀態總覽：** `[~]` A1 定案完成；B–H 待實作
+**狀態總覽：** `[~]` A1／B1 完成；C1 可開工（B1 失敗表已備）
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 >
@@ -94,8 +94,9 @@ A 定案 → B 測試（幾何＋一致性）→ C 錯機清單 → D 修資料�
 
 ## V10-B｜測試（幾何＋資料一致性）
 
-- [ ] **V10-B1** `machineGeometry.test.ts`：全機器 × 四 rotation 佔格＋埠合法性；併 R-E1 `dataConsistency.test.ts`
+- [x] **V10-B1** `machineGeometry.test.ts`：全機器 × 四 rotation 佔格＋埠合法性；併 R-E1 `dataConsistency.test.ts`
   - 細項：[dev_v10/B1_machine_geometry_tests.md](./dev_v10/B1_machine_geometry_tests.md)
+  - 首跑：一致性全綠；佔格全綠；埠 25 紅（皆 rotation≠0）→ 見 B1 §6，交 C1
 
 ---
 
@@ -146,6 +147,7 @@ A 定案 → B 測試（幾何＋一致性）→ C 錯機清單 → D 修資料�
 | ID | 封鎖原因 | 等待對象 | 解除條件 |
 |----|---------|---------|----------|
 | B1 | — | — | **已解除**（A1 定案完成） |
+| C1 | — | — | **已解除**（B1 失敗表見 B1 §6） |
 | D1 | 需 C1 初稿分責 | 自己 | 清單有 `fault` 欄 |
 | E1 | 需 D1 至少 P0 機資料正確 | 自己 | 演示機資料綠 |
 | F1 | 需 B1／C1／D1／E1 產出 | 自己 | 三證據齊 |
@@ -208,3 +210,4 @@ A 定案 → B 測試（幾何＋一致性）→ C 錯機清單 → D 修資料�
 - **六項決策落版：** ①資料本週全綠、②回寫 A2 過期處、③8/30 三證據從嚴、④R-E1 一致性測試併入 B1、⑤R-A4 由 aaaaa 撰寫並與主編共同驗收、⑥`/dev` 新增擺放演示備援
 - 工項由 A–E 擴為 A–H；範圍收斂為「本週 aaaaa 應進行與驗收」者
 - **V10-A1 定案完成：** 核對 JSON／`machines.ts`／幾何 API／W0823-A1／下游 B–H；解鎖 B1
+- **V10-B1 完成：** 新增 `machineGeometry.test.ts`＋`dataConsistency.test.ts`；首跑 351 過／25 失敗（埠旋轉後越界、無 rot0 紅）；解鎖 C1

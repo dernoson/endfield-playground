@@ -1,7 +1,7 @@
 # V10-B1 — 幾何／埠測試＋資料一致性測試
 
 **對應工項：** V10-B1  
-**狀態：** `[ ]` 未開始  
+**狀態：** `[x]` 測試骨架完成（首跑已匯出失敗；綠化屬 D1）  
 **依賴：** A1  
 **最後更新：** 2026-08-26  
 **正式依據：** [W0823-A1](../../../work_dispatch/aaaaa/W0823-A1_grid_port_alignment.md) §4.1、[R-E1](../../../roadmap/detail/E1_data_codegen_ops.md) §4.3（**8/30 檢查點併入本項**）
@@ -122,18 +122,57 @@ stub 本身仍須通過第 2–5 項與 `machineGeometry` 全部斷言；若 stu
 
 ## 5. DoD
 
-- [ ] `machineGeometry.test.ts` 存在且涵蓋全機器 × 四 rotation，兩類斷言齊備
-- [ ] `dataConsistency.test.ts` 存在且涵蓋 §3 五項（第 1 項排除 stub）
-- [ ] 失敗訊息含足夠欄位，可直接轉錄成清單列
-- [ ] 本步**不**為了讓測試綠而改資料
-- [ ] 測試檔內**不留** `skip`／`todo`／allowlist（全綠由 D1 達成）
+- [x] `machineGeometry.test.ts` 存在且涵蓋全機器 × 四 rotation，兩類斷言齊備
+- [x] `dataConsistency.test.ts` 存在且涵蓋 §3 五項（第 1 項排除 stub）
+- [x] 失敗訊息含足夠欄位，可直接轉錄成清單列
+- [x] 本步**不**為了讓測試綠而改資料
+- [x] 測試檔內**不留** `skip`／`todo`／allowlist（全綠由 D1 達成）
 
 ---
 
-## 6. 開發日誌
+## 6. 首跑結果（2026-08-26）
+
+```text
+Test Files  1 failed | 1 passed (2)
+Tests       25 failed | 351 passed (376)
+```
+
+| 套件 | 結果 |
+|------|------|
+| `dataConsistency.test.ts` | **全綠**（JSON↔src、modes-only、WxH、materials.form、tags） |
+| `machineGeometry` 佔格格數／四角落 | **全綠**（全機器 × 四 rotation） |
+| `machineGeometry` 埠合法性 | **25 紅**；**無任何 rotation=0 失敗** |
+
+### 6.1 失敗機器（供 C1 初稿）
+
+| machine_id | 失敗 rotation | 典型訊息 |
+|------------|---------------|----------|
+| `filling_machine` | 2、3 | `base_mode out[4] bottom@4 → …@-1` |
+| `packaging_machine` | 2、3 | `default out[4] bottom@4 → …@-1` |
+| `grinder` | 2、3 | `default out[4] bottom@4 → …@-1` |
+| `equipment_parts_machine` | 1、2、3 | `out[4] right@4`／`in[0] left@0 → bottom@-2` |
+| `disassembler` | 1、2、3 | `out[0] right@1 → bottom@4`（display 越界） |
+| `multi_conduit_inlet` | 3 | `in[0] left@1 → bottom@-1` |
+| `multi_conduit_outlet` | 1、2、3 | `out[1] right@3` |
+| `material_source` | 1、2、3 | `solid_belt out[0] right@1` |
+| `item_source` | 1、2、3 | stub；`right@1` |
+| `item_sink` | 1、2、3 | stub；`right@1` |
+
+### 6.2 初步判定（給 C1／D1，本步不修）
+
+- **rotation=0 全過** → 靜態 JSON 埠在未旋轉時皆落在合法邊長內；本批紅燈**不像**單純「offset 寫超出 width／height」的資料錯。
+- 旋轉後出現 `offset=-1`／超出 display 邊 → 高度懷疑 **`rotatePortOffset` 在非方形機的多步旋轉**（A1：utils 本週唯讀 → 清單 `note` 記 utils 嫌疑＋另開單；**不在本步改 utils／不改 JSON**）。
+- stub（`item_source`／`item_sink`）同型失敗；若最終判定為資料／stub 值問題，依 A1 §2.3 最小改 `generate-src-data.mjs`。
+
+完整 assertion 原文見本機測試輸出；C1 建清單時可直接抄 §6.1 表。
+
+---
+
+## 7. 開發日誌
 
 ### 2026-08-26
 
 - 建立細項；對齊 W0823-A1 §4.1 與 V9-C2 埠格規則
 - 決策 4 落版：R-E1 8/30 一致性測試併入本項，新增 §3
 - 補 §3.1 codegen diff 等價驗法、§3.2 stub 排除規則
+- **實作完成：** 新增兩測試檔；首跑 351 過／25 失敗；§6 匯出給 C1；未改 JSON／utils
