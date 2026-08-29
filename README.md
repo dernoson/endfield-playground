@@ -1,21 +1,33 @@
 # Endfield Playground
 
-## 如何安裝
+## 如何開始開發我們專案
 
-### 1) 環境需求
+### 1 環境安裝
 
-- Node.js `24`（參考 `.nvmrc`）
-- pnpm `10+`
+1. 安裝 git https://git-scm.com/install/
+2. 安裝 vscode https://code.visualstudio.com/download?_exp_download=d53503e735
+3. 安裝 Node.js (v24) https://nodejs.org/zh-tw/download
+4. 安裝 pnpm，於 terminal 輸入
+    ```bash
+    npx get-pnpm
+    ```
+5. 下載我們專案，在 terminal 切換到適合的位置，輸入
+    ```bash
+    git clone https://github.com/dernoson/endfield-playground.git
+    cd endfield-playground
+    pnpm i
+    ```
 
-### 2) 安裝步驟
+### 2 執行專案
 
-```bash
-pnpm install
-```
+1. 執行我們專案，在 terminal 輸入 (確認要在 endfield-playground 資料夾中，之後沒特別說就是在這個資料夾下)
+    ```bash
+    pnpm dev
+    ```
+2. 等待一段時間，在任意網頁瀏覽器輸入 http://localhost:5173，即可看到我們當前主要畫面
+3. 想要進入開發用頁面，在瀏覽器輸入 http://localhost:5173/dev
 
-## 開發者如何執行
-
-### 1) 建議安裝 VS Code Extension
+### 3 建議安裝 VS Code Extension
 
 - Git Graph
 - Prettier
@@ -23,32 +35,77 @@ pnpm install
 - Todo Tree
 - Vue (Official)
 
-### 2) 啟動本地開發
+### 4 確認自己本週工作任務
 
-```bash
-pnpm dev
-```
+| 你想知道 | 打開 |
+|----------|------|
+| **我這週要交什麼** | [docs/work_dispatch/](./docs/work_dispatch/) → 找自己的代號資料夾 |
+| 到 11/29 的整體計畫 | [docs/roadmap/ROADMAP_OUTLINE.md](./docs/roadmap/ROADMAP_OUTLINE.md) |
+| 其他文件的入口 | [docs/README.md](./docs/README.md) |
 
-然後你在瀏覽器中打開 http://localhost:5173 就可以看到開發中的網站。
+### 5 開始開發
 
-### 3) 常用指令
+1. 開發前先執行 `git pull --prune` 更新現況。
+2. 切出新的 branch 給自己開發。
+    - 命名範例：`dev/dernoson`（自己的名字）
+    - 命名範例：`dev/flow-algorithm`（該次開發目標）
+3. 確認功能開發完後，push 前務必在 terminal 使用以下指令，沒有報錯才可以 push：
+    ```bash
+    # 格式修正
+    pnpm format
+    
+    # Lint 修正
+    pnpm lint-check
+    
+    # 型別檢查
+    pnpm type-check
 
-```bash
-# 型別檢查
-pnpm type-check
+    # 執行單元測試
+    pnpm test
 
-# Lint 檢查
-pnpm lint-check
+    # 或是你覺得跑上面四個太麻煩，你也可以執行這個一次跑完
+    pnpm validate-all
+    ```
+4. 由 admin 確認並合回 `master` branch，並刪除已合併 branch，完成一次開發流程。
+5. 當自己的 branch 已合併且遠端已刪除，在 terminal 依序執行：
+    ```bash
+    # 切回 master branch
+    git checkout master
 
-# 格式檢查
-pnpm format-check
+    # 拉取遠端最新狀態，並清掉本地已對應到「遠端已刪除」的分支 (這個是 windows powershell 的指令)
+    git pull --prune; git branch -vv | Select-String ': gone\]' | ForEach-Object { git branch -D ($_ -split '\s+')[1] }
 
-# 格式修正
-pnpm format
+    # 從最新的 master branch 開出自己的新 branch 繼續開發
+    git checkout -b dev/<name>
+    ```
 
-# 建置
-pnpm build
-```
+## 團隊分工
+
+### L1 (dernoson / aaaaa)
+
+- 負責策畫與派工
+- 設計專案底層邏輯 (例如設備碰撞、管線彎折計算)，不會寫任何正式畫面的 UI
+- 我們設計的主要邏輯都會放在 http://localhost:5173/dev 各頁面做 debug 與 demo
+- L2 要了解怎麼用我們設計的底層邏輯，都可以直接學 dev 中相應頁面的接法
+
+### L2 (harry / toby)
+
+- 負責將主要畫面的功能接上 L1 的底層邏輯 (例如將 ctrl+c 這個使用者行為實際綁到底層的 "複製" 邏輯)
+- 大畫面的 UI 由你們負責 (例如主畫面整個長相的切版)，你們不用自己刻小 UI (例如按鈕、設備長相)
+- 你們缺底層邏輯，要跟 L1 討論，而不是自己刻一個
+- 你們寫出來的畫面的 vue 通常都會在 `src/app` 中  
+    (dernoson: 考量將 `src/editor` 中屬於大畫面設計的都移過去)
+
+### L3 (goodmorning / mbd / avary / shirone)
+
+- 負責跟 UIUX 確認設計稿後，實作所有畫面呈現的 UI 元件
+- 禁止直接碰觸 L1 提供的 store 與 function，你們必須開出 props 與 events 讓 L2 幫你們接上
+- 你們設計的元件大部分都會在 `src/components` 中
+
+### UIUX (paper)
+
+- 與程式無關，僅設計畫面視覺，以及使用者互動
+- RWD 呈現方式也需要設計
 
 ## 專案資料夾架構
 
@@ -56,7 +113,7 @@ pnpm build
 .
 ├─ .github/            # GitHub 設定與 CI workflow
 │  └─ workflows/
-├─ docs/               # 專案文件（見下方「文件在哪裡」）
+├─ docs/               # 專案文件（見上方「文件在哪裡」）
 │  ├─ roadmap/         # 到 11/29 的工項、里程碑、驗收標準
 │  ├─ work_dispatch/   # 每週派工：每人一份工單
 │  └─ <個人代號>/      # 個人筆記、設計稿
@@ -72,37 +129,3 @@ pnpm build
 │  └─ composables/     # 可重用邏輯
 └─ README.md
 ```
-
-## 文件在哪裡
-
-| 你想知道 | 打開 |
-|----------|------|
-| **我這週要交什麼** | [docs/work_dispatch/](./docs/work_dispatch/) → 找自己的代號資料夾 |
-| 到 11/29 的整體計畫 | [docs/roadmap/ROADMAP_OUTLINE.md](./docs/roadmap/ROADMAP_OUTLINE.md) |
-| 其他文件的入口 | [docs/README.md](./docs/README.md) |
-
-## 開發者守則
-
-1. 開發前先執行 `git pull --prune` 更新現況。
-2. 切出新的 branch 給自己開發。
-    - 命名範例：`dev/dernoson`（自己的名字）
-    - 命名範例：`dev/flow-algorithm`（該次開發目標）
-3. 確認功能開發完後，push 前務必確認執行：
-    - `pnpm type-check`
-    - `pnpm lint-check`
-    - `pnpm format-check`
-4. push 後，到 GitHub 建立 Pull Request。
-5. 由 admin 確認並合回 `master` branch，並刪除已合併 branch，完成一次開發流程。
-6. 當自己的 branch 已合併且遠端已刪除，或發現同仁的 branch 已在 GitHub 上被刪除，依序執行：
-    1. 切回 `master`：
-        ```bash
-        git checkout master
-        ```
-    2. 拉取遠端最新狀態，並清掉本地已對應到「遠端已刪除」的分支 (windows powershell)：
-        ```bash
-        git pull --prune; git branch -vv | Select-String ': gone\]' | ForEach-Object { git branch -D ($_ -split '\s+')[1] }
-        ```
-    3. 從最新的 `master` 開出自己的新 branch 繼續開發：
-        ```bash
-        git checkout -b dev/<name>
-        ```
