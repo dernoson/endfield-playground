@@ -101,7 +101,7 @@ strategy 直接完成，零 conflict，變更檔案數與 O3 記錄的一致。
   縮排 2 空格改 4 空格）。純格式，無邏輯變更；不套的話 CI 的 `format-check` 會紅。
 - `pnpm lint` —— **失敗，exit 1**。唯一一個 error：
   `src/components/ViewTiggleBtn.vue:1:1 The 'lang' attribute of '<script>' is missing
-  vue/block-lang`。`--fix` 修不掉，需要人工加 `lang="ts"`。
+vue/block-lang`。`--fix` 修不掉，需要人工加 `lang="ts"`。
 - `pnpm type-check` —— 通過，無 TS error。
 - `pnpm test` —— 通過，28 個測試檔、301 個案例全過。
 
@@ -234,8 +234,8 @@ type-check 無 error、test 28 檔 301 案例全過。
 
 ```yaml
 onlyBuiltDependencies:
-  - esbuild
-  - vue-demi
+    - esbuild
+    - vue-demi
 ```
 
 這是 pnpm 10 的「允許執行 build script 的白名單」。pnpm v10 起預設封鎖所有相依套件的

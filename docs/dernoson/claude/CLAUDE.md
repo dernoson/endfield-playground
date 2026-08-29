@@ -91,6 +91,10 @@
 
 所有計畫檔放在 `docs/dernoson/plan-history/`，由 `plan-history` skill 維護。完整格式、版本規則與一致性檢查見 `.claude/skills/plan-history/SKILL.md`，此處只列每次工作都會用到的部分。
 
+### 與根目錄 `spec/` 的分工
+
+`spec/` 是**給其他工作人員看的**規格文件。使用者是統籌人，統籌工作一律走 `plan-history/`：規劃、決斷、進度都記在計畫檔裡，不寫回 `spec/`。要動 `spec/` 需使用者明確指示。
+
 ### 開工前先寫計畫
 
 動任何非瑣碎的開發、重構、修 bug、文件重整之前，先呼叫 `plan-history` skill 把計畫寫成檔案，再開始實作。**這是第 8 節「不擅自建立新檔案」的唯一例外** —— 計畫檔本來就該主動建立。
