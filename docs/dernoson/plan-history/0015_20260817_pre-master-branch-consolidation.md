@@ -278,6 +278,34 @@ azure 五個都實作了 `Detector` 介面（`{ code, level, run(ctx) }`），�
 
 `src/types/validation_OLD.ts` 是 `validation.ts` 的舊副本，全專案零 import，是忘了刪的暫存檔。
 
+### O15 · 2026-08-29 14:34:38+08:00 — 四格收尾項複查：兩格前提變了，兩格原樣
+
+- **更新:** O11
+
+`dev/dernoson` 合入後對 0015#9 / #10 / #11 / #12 逐格複查。
+
+**0015#9 的前提變了。** Ctrl+R 不再是 `useShortcuts.ts` 裡一段原生 `keydown` 監聽 —— 它現在
+是 `keybindingStore.ts:36-41` 的一筆 `KEYBINDING_ACTIONS` 條目（`id: 'resetCanvasTemp'`，
+`label: '重置畫布（暫時性）'`，`category: 'system'`，`defaultCombo: 'Ctrl+R'`），由
+`useShortcuts.ts:92` 的 `onComboTriggered(..., { preventDefault: true })` 觸發。攔截瀏覽器
+重新整理的行為沒變，但它現在是使用者可改鍵、也會出現在快捷鍵設定介面上的一個正式條目。
+移除它因此變成兩處編輯而非一處，而且「暫時性」這件事已經被寫進使用者看得到的 label 裡。
+
+**0015#10 原樣。** `useShortcuts.ts:53-59` 的 `triggerResetCanvas()` 仍先跳
+`window.confirm()` 再呼叫 `editorStore.resetCanvas()`，`resetCanvas` 仍未走 Command Pattern。
+
+**0015#11 原樣。** `BaseRegionSelector/Index.vue:11` 的 trigger 仍寫死「基地選擇」，選完不顯示
+已選項。
+
+**0015#12 的範圍比原記載大。** 除了 `useFlowEngine.ts` 的 `validateChains()`（:443 起，7 處
+`console.log`）之外，`useValidation.ts` 有 2 處、`validationStore.ts` 有 6 處，全部是無條件輸出
+的 `[Validation]` / `[ValidationStore]` 前綴除錯訊息。合計 15 處，散在三個檔案。原記載只點名
+`validateChains`，照著做會漏掉三分之二。
+
+另記：本日 `validate-changes` 四步全綠 —— `type-check` 無 error、`lint-check` 無 error、
+`format-check` 全數符合、`test` 28 檔 301 案例全過。lint 這關與 O5 記的狀態不同，Avery 的
+`vue/block-lang` 已不在樹上。
+
 ## 待辦
 
 ### 1 合入 dev/Avery
@@ -421,20 +449,24 @@ azure 五個都實作了 `Detector` 介面（`{ code, level, run(ctx) }`），�
 ### 9 用 L3 按鈕取代 Ctrl+R 作為重置畫布入口
 
 - **state:** 待實作
-- **basis:** → O11
+- **basis:** → O15
 
-`useShortcuts.ts:113-117` 目前用 `preventDefault()` 攔截 Ctrl+R 當作重置畫布的入口，會蓋掉
-瀏覽器的重新整理，影響範圍是全站而非單一頁面。作者標明這是暫時性入口，正式的應該是 L3 交付
-的按鈕搭配 `UModal` 確認框。
+重置畫布目前的入口是 Ctrl+R，`preventDefault()` 攔掉瀏覽器的重新整理，影響範圍是全站而非單一
+頁面。作者標明這是暫時性入口，正式的應該是 L3 交付的按鈕搭配 `UModal` 確認框。
 
-本格要做的：向 L3 要一顆重置畫布按鈕，接上後把 `useShortcuts` 裡那段 Ctrl+R 的 `keydown`
-監聽移除。`triggerResetCanvas` 的匯出要保留 —— 它本來就是為了讓按鈕的 L2 wiring 直接 import
+本格要做的：向 L3 要一顆重置畫布按鈕，接上後移除 Ctrl+R。移除是**兩處**編輯 ——
+`keybindingStore.ts` 的 `resetCanvasTemp` 條目與 `useShortcuts.ts` 的 `onComboTriggered`
+呼叫（O15）。`triggerResetCanvas` 的匯出要保留，它本來就是為了讓按鈕的 L2 wiring 直接 import
 而存在。按鈕接上後 `triggerResetCanvas` 內的 `window.confirm()` 也應移除，改由 `UModal` 流程
 負責確認（這部分與 0015#10 相關但可獨立進行）。
+
+順序上要注意：`resetCanvasTemp` 現在會出現在使用者可見的快捷鍵設定介面裡。移除條目等於從
+介面上拿掉一列，應與按鈕上線同一次進樹，不要先拆鍵位留下沒有入口的功能。
 
 **沿革**
 
 - H1 · 2026-08-17 決斷 —— 使用者裁定開格承載，不隨 cake 合併一起處理（使用者）
+- H2 · 2026-08-29 修正 —— Ctrl+R 改為 `KEYBINDING_ACTIONS` 的可配置條目，移除方式由一處變兩處，正文改寫 → O15
 
 ### 10 讓 resetCanvas 走 Command Pattern
 
@@ -470,19 +502,23 @@ cake 沒有假裝它可以 undo 而是誠實留下防呆與註解，處理方式
 
 - H1 · 2026-08-17 決斷 —— 使用者裁定開格承載，不擋 toby 合併（使用者）
 
-### 12 清掉 validateChains 的 debug console.log
+### 12 清掉 validation 路徑上的 debug console.log
 
 - **state:** 待實作
-- **basis:** → O11
+- **basis:** → O15
 
-`src/composables/useFlowEngine.ts:443` 的 `validateChains()` 每次執行都會噴出大量
-`[validateChains] 處理 xxx, inEdges: {...}` / `加入可達節點: xxx` 的 console.log，實測時整個
-console 被灌滿，真正的錯誤訊息會被埋掉。
+validation 相關程式碼每次執行都會噴出大量無條件的除錯輸出，實測時整個 console 被灌滿，真正的
+錯誤訊息會被埋掉。
 
-這不是本輪任何一條 branch 造成的 —— `git diff master...cake` 對它零命中，來源是 master 上的
-`bc0c3f9`（CR-04 修 `validateChains` 對無配方節點的處理）留下的除錯輸出。本格要做的是把這些
-console.log 清掉；若確實需要保留除錯能力，改成可開關的形式而非無條件輸出。
+範圍是三個檔案共 15 處（O15）：`useFlowEngine.ts` 的 `validateChains()`（:443 起）7 處、
+`useValidation.ts` 2 處、`validationStore.ts` 6 處。只清 `validateChains` 會漏掉三分之二。
+
+這不是任何一條協作者 branch 造成的 —— `git diff master...cake` 對它零命中，`validateChains`
+那批來源是 master 上的 `bc0c3f9`（CR-04 修對無配方節點的處理）留下的除錯輸出。本格要做的是把
+這些 `console.log` 清掉；若確實需要保留除錯能力，改成可開關的形式而非無條件輸出。
 
 **沿革**
 
 - H1 · 2026-08-17 決斷 —— 使用者裁定開格承載（使用者）
+- H2 · 2026-08-29 修正 —— 複查發現範圍是三檔 15 處而非只有 `validateChains`，正文改寫 → O15
+- H3 · 2026-08-29 改題 —— 舊標題「清掉 validateChains 的 debug console.log」蓋不住實際範圍

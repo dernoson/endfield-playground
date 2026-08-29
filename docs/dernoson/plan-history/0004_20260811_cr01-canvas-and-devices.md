@@ -100,23 +100,74 @@ O3 記的「基地選擇沒有 UI、畫布也沒有畫框線」已經不成立�
 
 第二項使 O4 記的「六組鍵散在兩個檔案」變成七組。值得記的不是數字，而是這一組鍵不在 spec 4.3 的 16 組裡、還攔截了瀏覽器原生行為，卻只需要往 `useShortcuts` 加一個 listener 就進來了 —— 0004#15 那份鍵位表要防的正是這個，而它還沒存在，所以防不到。移除與 Command Pattern 化分別由 0015#9、0015#10 認領。
 
+### O9 · 2026-08-29 14:34:38+08:00 — 鍵位表落地了，但是扁平的，而且只蓋到 16 組裡的 12 組
+
+- **更新:** O4、O8
+
+`dev/dernoson` 合入後重掃。新增 `src/store/keybindingStore.ts`：`KEYBINDING_ACTIONS` 是一份
+唯讀常數表，12 筆，每筆帶 `id` / `label` / `category` / `defaultCombo`；使用者覆寫以
+`useLocalStorage('endfield-keybindings')` 持久化，`resolvedCombo(id)` 回答「這個動作現在綁在
+哪個鍵」。`useShortcuts.ts` 全面改用 `onComboTriggered` / `useComboHeld` 讀該表，鍵字串不再
+硬編；`FactoryCanvas.vue:160` 的 `rotateDevice` 也改走同一條路。改鍵介面為
+`src/editor/settings/ShortcutSettingsPanel.vue` 與 `src/components/ShortcutRow/Index.vue`，
+掛在 `App.vue`。
+
+O4 與 O8 記的「鍵散在兩個檔案、沒有集中的表」因此不再成立：表存在，而且兩個消費檔都從它讀。
+
+但 0004#15 要的**情境維度**沒有進表，表是扁平的 `id → combo`。三處情境分歧仍是硬編 if：
+`FactoryCanvas.vue:160-170` 的 `rotateDevice` 依 `placementArmed` 分兩路；
+`FactoryCanvas.vue:179-183` 用原生 `keydown` 固定綁 Escape 取消拿起，刻意不可配置；
+`useShortcuts.ts:101` 用 `placementArmed || isSettingsPanelOpen` 前置判斷讓可配置的
+`openSettings`（預設也是 Escape）不與前者互踩。三者互相知道彼此的存在，靠的是人工協調而非表。
+
+涵蓋率是 12 組對 spec 4.3 的 16 組。表內沒有 Q / E 畫布旋轉、G 格線開關（見 O10），也沒有
+放置、拿起、複製、縮放、多選、框選。「暫時性鍵位」只以 `label` 的中文字樣「（暫時性）」表示，
+沒有結構化欄位 —— 也就是說表擋得住「鍵位散落」，但仍擋不住下一個 Ctrl+R 式的鍵被加進來。
+
+另記一項與本格無關但屬同一批新碼的事實：`keybindingStore` 是 L1 store 且**零測試**。
+`src/__tests__/store/` 下六支 store 各有一份測試，這支沒有；`useKeybinding.ts` 同樣沒有。
+本日 `pnpm test` 為 28 檔 301 案例全過，與 0015 的 O5 在 2026-08-17 記下的數字一字不差 ——
+也就是說這批新碼進來時測試數沒有動過。
+
+### O10 · 2026-08-29 14:34:38+08:00 — 畫面平移多了 WASD 一路，Q / E 與 G 仍然沒有
+
+- **更新:** O3
+
+`FactoryCanvas.vue:189-214` 新增四個 `useComboHeld('panUp' / 'panDown' / 'panLeft' / 'panRight')`
+訊號，任一按住時以 requestAnimationFrame 迴圈位移 Vue Flow viewport。平移因此有兩條路徑：
+原本的 Space 切 `pan` 工具後拖拉，以及新的 WASD 連續位移。
+
+O3 記的另外三項複查後**維持原狀**：`grep` 全 `src/` 找不到 `canvasRotation` / `rotateCanvas`
+或任何 Q / E 綁定，`KEYBINDING_ACTIONS` 內也沒有這兩鍵；`canvasStore.showGrid` 與 `toggleGrid`
+的消費者仍然只有 `canvasStore.ts` 自己（:38、:61、:80、:90），畫面上沒有格線開關；
+`FlowNodeOverlay.vue:100` 仍是 `min-w-25` 的固定寬方框，不依 `Machine.width` / `height` 佔格。
+
+所以 0004#1 判準的五項裡，縮放與平移成立，畫布旋轉、格線開關、多格佔格三項仍未成立。
+
 ## 待辦
 
 ### 1 畫布規格：格線、縮放、平移、畫布旋轉、格線開關
 
 - **state:** 實作中
-- **basis:** → O3
+- **basis:** → O10
 
 格子單位對應遊戲原生格線，1 格 = 1 cell，設備依遊戲佔格數擺放（精煉爐 3×3、配件機 3×3）。滾輪縮放需依游標位置為錨點；空白鍵＋拖拉平移；`Q` / `E` 以 90° 為單位逆 / 順時針旋轉畫布；`G` 開關格線顯示。
 
-已落地：格線繪製、滾輪縮放、平移（Space 切 pan 工具）。未落地：`Q` / `E` 畫布旋轉、`G` 格線開關（`canvasStore.showGrid` 有實作但無消費者）、節點依 `Machine.width` / `height` 佔格（目前是固定寬度的預設方框）。
+已落地：格線繪製、滾輪縮放、平移。平移現在有兩條路徑 —— Space 切 `pan` 工具後拖拉，以及
+WASD 連續位移。未落地：`Q` / `E` 畫布旋轉、`G` 格線開關（`canvasStore.showGrid` 與 `toggleGrid`
+仍然零消費者）、節點依 `Machine.width` / `height` 佔格（仍是固定寬方框）。
+
+WASD 是 spec 4.3 之外新增的平移方式，鍵位已進 `KEYBINDING_ACTIONS`；`Q` / `E` / `G` 則表裡表外
+都沒有，補做時鍵位要一併進表（見 0004#15）。
 
 判準：spec 第 5 節「畫布縮放 / 平移 / 旋轉 / 格線顯示開關 / 多格設備正確佔位」五項驗證通過。
+目前五項中縮放與平移兩項成立。
 
 **沿革**
 
 - H1 · 2026-08-11 決斷 —— 自 `spec/01_canvas_and_devices.md` 2.1 節轉入（來源：spec）
 - H2 · 2026-08-11 落地 —— 格線 / 縮放 / 平移三項已在 `FactoryCanvas.vue` 可跑，旋轉 / 格線開關 / 佔格未動 → O3
+- H3 · 2026-08-29 修正 —— WASD 平移落地，Q / E、G、多格佔格三項複查後維持未落地，正文改寫 → O10
 
 ### 2 基地選擇與可建造框線
 
@@ -344,25 +395,32 @@ L1 的 `editorStore.pasteSelection(nodes, edges, offset)` 已實作並自帶歷�
 ### 15 快捷鍵彙整表落地
 
 - **state:** 實作中
-- **basis:** → O4、O8
+- **basis:** → O9
 
-spec 4.3 節列出 16 組快捷鍵，涵蓋放置、拿起、旋轉、複製、刪除、undo / redo、平移、縮放、畫布旋轉、格線、多選、框選。需要一份唯一的鍵位表作為實作依據（`src/composables/useShortcuts.ts` 已存在），避免各元件自行綁鍵導致衝突。
+spec 4.3 節列出 16 組快捷鍵，涵蓋放置、拿起、旋轉、複製、刪除、undo / redo、平移、縮放、畫布旋轉、格線、多選、框選。需要一份唯一的鍵位表作為實作依據，避免各元件自行綁鍵導致衝突。
 
 同一鍵在不同情境（一般狀態 / 拿起狀態）有不同行為，因此鍵位表必須帶情境維度而非扁平映射。
 
-現況正是這一格要防的，而且還在惡化：七組已綁的鍵散在兩個檔案 —— `useShortcuts` 有 Ctrl+Z / Ctrl+Y / Delete / Space / **Ctrl+R**，`FactoryCanvas` 自己 watch 了 `R` 與 `Esc`。`R` 已經有情境分歧（拿起中轉預覽、否則轉已放置設備）卻是寫死的 if，沒有表。
+表已經存在：`src/store/keybindingStore.ts` 的 `KEYBINDING_ACTIONS` 是單一權威來源，
+`useShortcuts.ts` 與 `FactoryCanvas.vue` 都從它讀鍵位，鍵字串不再硬編（O9）。本格原本要防的
+「鍵位散落在多個檔案」已經解決，且附帶做出使用者可改鍵的持久化設定介面。
 
-Ctrl+R 是後加的，而且自述為暫時性：它攔掉瀏覽器原生的重新整理去跳 `window.confirm()` 呼叫 `resetCanvas()`，正式入口應該是 L3 按鈕 + `UModal`（0015#9 認領移除、0015#10 認領讓 `resetCanvas` 走 Command Pattern）。這正好說明沒有鍵位表的代價：一個不在 spec 16 組裡、又攔截瀏覽器行為的鍵，是直接加進 `useShortcuts` 的，沒有任何地方擋得住。
+剩下三件事。一、表是扁平的 `id → combo`，情境維度沒進去 —— `rotateDevice` 的兩路分歧、
+Escape 同時是「取消拿起」（不可配置）與「開設定」（可配置）的雙重身分，仍是三處互相知道彼此
+存在的硬編 if。二、涵蓋 12 組，缺 spec 的放置、拿起、複製、縮放、畫布旋轉、格線、多選、框選
+（畫布旋轉與格線見 0004#1）。三、「暫時性鍵位」只寫在 `label` 的中文字樣裡，沒有結構化欄位，
+擋不住下一個 Ctrl+R 式的鍵。
 
-所以本格要做的是把散落的綁定收進一份帶情境維度的表，而不是從零加鍵；表裡也要能標示「暫時性鍵位」這種狀態。
-
-判準：16 組全部可觸發且情境切換正確；與 CR-02（`P`、`Escape`）、CR-05（`Tab`）的鍵位無衝突；表外沒有漏綁的鍵。
+判準：16 組全部可觸發且情境切換正確；與 CR-02（`P`、`Escape`）、CR-05（`Tab`）的鍵位無衝突；
+表外沒有漏綁的鍵。
 
 **沿革**
 
 - H1 · 2026-08-11 決斷 —— 自 `spec/01_canvas_and_devices.md` 4.3 節轉入（來源：spec）
 - H2 · 2026-08-11 落地 —— 六組鍵已綁但分散兩處且無鍵位表 → O4
 - H3 · 2026-08-17 修正 —— 第七組（暫時性 Ctrl+R）在沒有表的情況下被加進來，正文改寫並要求表能標示暫時性鍵位 → O8
+- H4 · 2026-08-29 落地 —— `KEYBINDING_ACTIONS` 進樹，`useShortcuts` 與 `FactoryCanvas` 都改讀它 → O9
+- H5 · 2026-08-29 修正 —— 散落問題已解，正文改寫為剩情境維度、涵蓋率、暫時性標示三項 → O9
 
 ### 16 CR-01 驗證項目全數通過
 

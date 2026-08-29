@@ -92,20 +92,48 @@ O3 說的「`src/` 內沒有任何地方產生 `type: 'pipeline'` 的邊」已�
 
 另外重新確認過 O6：`src/` 下唯一的樣式檔仍是 `src/style.css`，`src/assets/` 仍然只有 `hero.png`，`tokens.css` 到現在都還沒有落點。
 
+### O9 · 2026-08-29 14:34:38+08:00 — 管線模式的「切進去」有了，「切進去之後看得出來」還沒有
+
+- **更新:** O3
+
+`dev/dernoson` 合入後重掃。管線模式的入口落地兩路：`useShortcuts.ts:121-123` 以
+`onComboTriggered('toggleConnectTool')` 在 `connect` 與 `select` 之間來回切
+（預設鍵 `P`，定義在 `keybindingStore.ts` 的 `KEYBINDING_ACTIONS`，可由使用者改鍵）；
+`Navbar.vue:31` 的工具清單新增 `{ id: 'connect', label: '管線' }`，點擊呼叫
+`editorStore.setActiveTool(tool.id)`，:60 依 `activeTool` 切 `solid` / `soft` variant 顯示選中態。
+
+O3 記的「沒有管線模式與 `P` 鍵」因此不再成立。但 spec 要求的另外三項在 `src/` 內 `grep`
+不到任何實作：設備接口自動高亮、現有管線自動高亮、游標樣式切換為管線工具樣式。
+`FactoryCanvas.vue` 只在 :440-441 依 `activeTool` 決定 `pan-on-drag` 與 `selection-on-drag`，
+對 `connect` 沒有任何分支。
+
+所以現況是：工具態切得過去，畫面上除了 Navbar 按鈕變色之外沒有任何回饋，使用者無從得知自己
+已經在管線模式。O3 記的其餘缺口（繪製狀態機、90 度限制、吸附、物流橋、管線選取與資訊面板、
+管線移動 / 複製、`tokens.css` 的管線與接口樣式）複查後全部維持不存在。
+
 ## 待辦
 
 ### 1 管線模式切換
 
-- **state:** 待實作
-- **basis:** → O3
+- **state:** 實作中
+- **basis:** → O9
 
-透過工具列控項或快捷鍵 `P` 切換進入 / 離開管線模式。進入後：所有設備接口自動高亮、所有現有管線自動高亮、游標樣式切換為管線工具樣式。
+透過工具列控項或快捷鍵 `P` 切換進入 / 離開管線模式。進入後：所有設備接口自動高亮、所有現有
+管線自動高亮、游標樣式切換為管線工具樣式。
+
+切換本身已落地，兩個入口都有：`P` 鍵（可改鍵）與 Navbar 的「管線」按鈕，兩者都寫
+`editorStore.activeTool`，按鈕並依 `activeTool` 顯示選中態（O9）。
+
+未落地的是進入模式後的三項視覺回饋 —— 接口高亮、現有管線高亮、游標樣式。`FactoryCanvas.vue`
+目前對 `activeTool === 'connect'` 沒有任何分支，畫面上除了 Navbar 按鈕變色之外看不出模式已切換。
+接口與管線的高亮樣式屬 L3，需與 0005#12 的視覺樣式規格一起定，不要各畫各的。
 
 判準：spec 第 5 節「管線模式切換」通過。
 
 **沿革**
 
 - H1 · 2026-08-11 決斷 —— 自 `spec/02_pipeline.md` 2.1 節轉入（來源：spec）
+- H2 · 2026-08-29 落地 —— `P` 鍵與 Navbar 控項兩個入口進樹，三項視覺回饋仍缺，正文改寫 → O9
 
 ### 2 管線 type 自動判斷與互連限制
 
