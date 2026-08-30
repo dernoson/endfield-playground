@@ -8,8 +8,8 @@
 | 建議主責／備援 | aaaaa（資料側）＋goodmorning／MBD（卡片視覺）／aaaaa 全包 |
 | 性質 | 資料 → 畫面 |
 | 依賴 | [A2](./A2_grid_and_port_alignment.md)、[E1](./E1_data_codegen_ops.md) |
-| 狀態 | `[ ]` 未開始 |
-| 最後更新 | 2026-08-22 |
+| 狀態 | `[ ]` 未開始（09/06 切片已派工：[W0831-A1](../../work_dispatch/aaaaa/0831/W0831-A1_toolbar_real_machines.md)） |
+| 最後更新 | 2026-08-30 |
 
 ---
 
@@ -62,8 +62,10 @@
 |------|------|----------|
 | 名稱 | `machine.name` | 必有 |
 | id | `machine.id` | 必有；卡片上可不顯示但需帶在 emit |
-| 佔格 | `machine.size` → `"3×2"` | 必有；來源正確性由 [A2](./A2_grid_and_port_alignment.md) 保證 |
-| 分類 | `machine.tag` | 無 tag 者歸 `untagged`，不顯示於 Tab |
+| 佔格 | `machine.width`×`machine.height` → 例 `"3×3"` | 必有；來源正確性由 [A2](./A2_grid_and_port_alignment.md) 保證 |
+| 分類 | `machine.tags: string[]` | 無 tag 者歸 `untagged`，不顯示於 Tab |
+
+**欄位名以程式為準：** codegen 產物是頂層 `width`／`height` 與複數 `tags`，本檔早期寫的 `size`／`tag` 為舊稱。
 | 圖 | placeholder | **本項不做正式圖**；缺圖顯示機器名首字方塊 |
 
 ### 4.4 emit 契約
@@ -113,7 +115,7 @@
 ## 9. DoD
 
 - [ ] 工具列至少一個分類列出真實機器（名稱＋佔格文字）
-- [ ] 佔格文字與 `machine.size` 一致（抽查 3 台）
+- [ ] 佔格文字與 `machine.width`×`machine.height` 一致（抽查 3 台）
 - [ ] L3 卡片不 import `src/data/*` 與任何 store（code review 確認）
 - [ ] 點卡片會 emit `pick(machineId)`，容器收得到（可先只 console 驗證）
 - [ ] `pnpm type-check`／`lint-check`／`format-check`／`test` 通過
@@ -133,3 +135,10 @@
 
 ### 2026-08-22
 - 建檔。tag 分頁作法確認可沿用 V9 `MachineCatalogPanel.vue`，不重新設計
+
+### 2026-08-30（09/06 切片派工前檢修）
+
+- **欄位名勘誤：** §4.3／§9 的 `machine.size`／`machine.tag` 改為 `width`／`height` 與 `tags`（codegen 現況）。原文會導致工單抄到不存在的欄位。
+- **09/06 切片範圍收斂（[W0831-A1](../../work_dispatch/aaaaa/0831/W0831-A1_toolbar_real_machines.md)）：** §4.1 原設「L2 容器接卡片 emit 後呼叫 `armPlacement`」在本週**不可行**——`ToolbarPanel` 現況綁封閉聯集 `EquipmentType`，落子鏈為 `armPlacement` ＋ `dataTransfer` key `application/x-endfield-equipment`，畫布 drop 端按同型別解讀。真實機器 id 不在該聯集內，要打通須同時改型別、store 簽名與畫布守衛，屬 09/13 起與 [B2](./B2_placement_chain.md) 對接的範圍。
+  **09/06 因此只做「新增真實機器分類列表，與現有五顆按鈕並存」**：讀資料、渲染名稱與佔格、點選為本地選取態或 console；**不動落子鏈**。§6 的 09/13「emit `pick` 打通到容器」維持不變。
+- **人力前提：** 本週 L2 側僅 toby 3–5h（在 B4），故 09/06 切片的容器改動由 aaaaa 執行，範圍限「讀資料→渲染」，不接事件到 store，以維持其 `must_not`。
