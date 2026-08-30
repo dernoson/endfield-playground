@@ -5,11 +5,11 @@
 | 對應大綱 | [ROADMAP_OUTLINE.md](../ROADMAP_OUTLINE.md) §4 |
 | 里程碑 | M2（2026-09-27）；首次可演示 9/6 |
 | 擋門檻 | **是** |
-| 建議主責／備援 | aaaaa（資料側）＋goodmorning／MBD（卡片視覺）／aaaaa 全包 |
+| 建議主責／備援 | aaaaa（資料側）＋**shirone**（MachineCard）／goodmorning（工具列視覺，dev）／aaaaa 列表頂替 |
 | 性質 | 資料 → 畫面 |
 | 依賴 | [A2](./A2_grid_and_port_alignment.md)、[E1](./E1_data_codegen_ops.md) |
-| 狀態 | `[ ]` 未開始（09/06 切片已派工：[W0831-A1](../../work_dispatch/aaaaa/0831/W0831-A1_toolbar_real_machines.md)） |
-| 最後更新 | 2026-08-30 |
+| 狀態 | `[ ]` 未開始（09/06 切片已派工：[W0831-A1](../../work_dispatch/aaaaa/0831/W0831-A1_toolbar_real_machines.md)；L3＝[W0831-S1](../../work_dispatch/shirone/0831/W0831-S1_machine_card.md)） |
+| 最後更新 | 2026-08-30 晚 |
 
 ---
 
@@ -141,4 +141,5 @@
 - **欄位名勘誤：** §4.3／§9 的 `machine.size`／`machine.tag` 改為 `width`／`height` 與 `tags`（codegen 現況）。原文會導致工單抄到不存在的欄位。
 - **09/06 切片範圍收斂（[W0831-A1](../../work_dispatch/aaaaa/0831/W0831-A1_toolbar_real_machines.md)）：** §4.1 原設「L2 容器接卡片 emit 後呼叫 `armPlacement`」在本週**不可行**——`ToolbarPanel` 現況綁封閉聯集 `EquipmentType`，落子鏈為 `armPlacement` ＋ `dataTransfer` key `application/x-endfield-equipment`，畫布 drop 端按同型別解讀。真實機器 id 不在該聯集內，要打通須同時改型別、store 簽名與畫布守衛，屬 09/13 起與 [B2](./B2_placement_chain.md) 對接的範圍。
   **09/06 因此只做「新增真實機器分類列表，與現有五顆按鈕並存」**：讀資料、渲染名稱與佔格、點選為本地選取態或 console；**不動落子鏈**。§6 的 09/13「emit `pick` 打通到容器」維持不變。
-- **人力前提：** 本週 L2 側僅 toby 3–5h（在 B4），故 09/06 切片的容器改動由 aaaaa 執行，範圍限「讀資料→渲染」，不接事件到 store，以維持其 `must_not`。
+- **人力前提：** 本週 L2 側僅 toby（且 8/30 晚起不加深 Vue Flow）；容器渲染由 aaaaa 執行。
+- **8/30 晚改派：** L3 MachineCard → **shirone**（[W0831-S1](../../work_dispatch/shirone/0831/W0831-S1_machine_card.md)）；goodmorning 改做工具列視覺（`PaperFigBottomBar`），不擋 B1 資料側。
