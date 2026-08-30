@@ -53,10 +53,10 @@ export interface Alert {
 }
 
 export interface ValidationContext {
-  devices: FactoryNode[]
-  connections: FactoryEdge[]
+  devices: FactoryNode[]          // position 為格子座標
+  connections: FactoryEdge[]      // data.bendPoints 為格子座標
   getDef: (machineType: string) => Machine | undefined
-  // 幾何 helper 視 detector 需求由 aaaaa 補上（如 getOccupiedCells）
+  baseRegion: BaseRegion          // 目前選定的基地類型，null = 自由畫布
 }
 
 export interface Detector {
@@ -68,7 +68,7 @@ export interface Detector {
 
 > 原計劃 `ValidationContext` 含 `graph: DirectedGraph` 欄位，但實際評估 E001~E005、W001~W005 detector 均不需要 graph topology（見 `aaaaa.md` §3.2）。若未來新 detector 真的需要 graph 結構，再由 aaaaa 從 `useFlowEngine.ts` 暴露對應 helper 加入 context。
 
-**注意**：原規劃的 `PlacedDevice` / `Connection` 型別實際命名為 `FactoryNode` / `FactoryEdge`（對齊 Vue Flow 慣例），detector 內存取 device 屬性時請走 `node.data.machineType` / `node.data.recipeIndex` / `node.data.rotation` / `node.position.x` / `node.position.y`。
+**注意**：device 型別命名為 `FactoryNode`、connection 為 `FactoryEdge`（對齊 Vue Flow 慣例），detector 內存取 device 屬性時請走 `node.data.machineType` / `node.data.recipeIndex` / `node.data.rotation` / `node.position.x` / `node.position.y`。`node.position` 是 `useValidation.buildContext()` 換算後的**格子座標**，detector 內不再做任何單位換算。
 
 每個 detector 一個檔案，路徑與命名規則：
 
@@ -97,7 +97,7 @@ export const E001_deviceOverlap: Detector = {
   level: 'error',
   run: (ctx) => {
     const alerts: Alert[] = []
-    // ... 純函式邏輯（目前為 stub，等 shirone 補）
+    // ... 純函式邏輯
     return alerts
   }
 }
@@ -107,7 +107,7 @@ export const E001_deviceOverlap: Detector = {
 
 ## 3. 工作流程
 
-> **目前進度**：E001 已從 `origin/shirone/0522` 遷移為 `src/lib/validation/detectors/E001_deviceOverlap.ts` 的骨架（介面對齊新版 `ValidationContext`），但 `run()` 內邏輯仍為 stub，等 shirone 補上實際碰撞偵測。E002~E005、W001~W005 皆未開始。
+> **目前進度**：E001 已完成，涵蓋設備與管線的空間重疊，並在 `/dev/validation-test` 註冊後可實際觀察警示。E002~E005、W001~W005 皆未開始。
 >
 > 上手前建議先讀 `docs/shirone/README.md` 的引導，再回來看本檔。
 
@@ -131,11 +131,13 @@ shirone **完全不需要**改下面這些（要改就找 Architect）：
 
 ### 3.3 如果發現 ValidationContext 不夠用
 
-例如某個 detector 需要 `getOccupiedCells(device, def)` 之類的 helper，但 `ValidationContext` 沒提供：
+例如某個 detector 需要供電範圍聯集之類的 helper，但 `ValidationContext` 沒提供：
 
 1. **不要**在 detector 裡自己 reimplement
-2. 在 PR / issue 提出：「W004 需要 X helper，建議放在 `@/utils/geometry`」
+2. 在 PR / issue 提出：「W004 需要 X helper，建議放在 `@/utils/layout`」
 3. 由 aaaaa 補完 helper，再 merge 你的 detector
+
+佔格與路徑展開已有單一來源：`@/utils/layout/deviceOccupancy`、`@/utils/layout/pipelineGeometry`、`@/utils/layout/overlapDetection`。
 
 這個流程確保 utility 是共用的、單一來源的。
 
@@ -147,13 +149,13 @@ shirone **完全不需要**改下面這些（要改就找 Architect）：
 
 | 代碼 | 所屬 CR | 名稱 | 主要邏輯 | 估計難度 | 狀態 |
 |---|---|---|---|---|---|
-| **E001** | CR-03 | 設備重疊 | 依每個 device 的 (z, h) 算佔用層與 occupied cells，用 Map<"x,y", Set<layer>> 偵測交集 | 低 | 骨架已建立（stub），邏輯待補 |
-| **E002** | CR-03 | 佈線違法 | 對每條 connection 的線段，檢查是否與任何 device 佔用格子的佔用層有交集（排除物流橋情境） | 中 | 未開始 |
+| **E001** | CR-03 | 設備重疊 | 依每個物件的 (z, d) 展開佔格（含層），打進同一張 `Map<"x,y,z", id[]>` 稀疏格點表，同格即重疊 | 低 | 已完成 |
+| **E002** | CR-03 | 佈線違法 | 管線路徑展開後與設備佔格共用同一張格點表，同格即衝突（排除物流橋情境） | 中 | 未開始 |
 | **E003** | CR-03 | 超出基地框線 | 檢查設備或管線佔用格子是否超出當前基地可建造框線範圍 | 低 | 未開始 |
 | **E004** | CR-09 | 輸入缺失 | 對每個 device，檢查配方明確要求的輸入是否有任一完全未接入管線 | 中 | 未開始 |
 | **E005** | CR-09 | 輸出缺失 | 對每個 device，檢查配方明確要求的輸出是否有任一完全未接出管線 | 中 | 未開始 |
 
-實作前務必看清楚 `spec/03_validation.md` 2.2.1 節的 (z, h) 立體碰撞判定公式（E001、E002 都需要）。
+實作前務必看清楚 `spec/03_validation.md` 2.2.1 節的 (z, d) 立體碰撞判定公式與 2.2.2 節的偵測實作（E001、E002 都需要）。
 
 ---
 
@@ -182,24 +184,30 @@ W002 / W003 需要 FlowEngine 跑完才能算，因此這兩個 detector 的執�
 3. **負向情境**：構造看似會觸發但不該觸發的場景 → 確認回傳 `[]`
 4. **邊界**：例如 E001 對齊但不重疊、W004 設備剛好擦邊覆蓋一格
 
-測試檔位置：`src/__tests__/validation/detectors/E001_deviceOverlap.test.ts`
+測試檔位置：`src/__tests__/lib/validation/detectors/E001_deviceOverlap.test.ts`
 
 範例骨架：
 
 ```typescript
 // E001_deviceOverlap.test.ts
 import { describe, it, expect } from 'vitest'
+import type { FactoryNode } from '@/types/graph'
+import type { ValidationContext } from '@/types/validation'
 import { E001_deviceOverlap } from '@/lib/validation/detectors/E001_deviceOverlap'
-import { makeCtx } from '@/__tests__/helpers/makeValidationCtx'
+
+/** 以格子座標造一個最小節點 */
+function makeNode(id: string, machineType: string, x: number, y: number): FactoryNode {
+  return { id, position: { x, y }, data: { label: machineType, machineType, rotation: 0 } } as FactoryNode
+}
+
+/** 造一個最小驗證上下文；getDef 用假表，不啟動 Vue */
+function makeCtx(devices: FactoryNode[]): ValidationContext {
+  return { devices, connections: [], getDef: (t) => defs[t], baseRegion: null }
+}
 
 describe('E001 設備重疊', () => {
   it('完全不重疊時回傳空陣列', () => {
-    const ctx = makeCtx({
-      devices: [
-        { uid: 'a', deviceId: 'refinery', x: 0, y: 0, rotation: 0, activeRecipe: null },
-        { uid: 'b', deviceId: 'refinery', x: 5, y: 0, rotation: 0, activeRecipe: null }
-      ]
-    })
+    const ctx = makeCtx([makeNode('a', '精煉爐', 0, 0), makeNode('b', '精煉爐', 5, 0)])
     expect(E001_deviceOverlap.run(ctx)).toEqual([])
   })
 
@@ -209,7 +217,7 @@ describe('E001 設備重疊', () => {
 })
 ```
 
-`makeValidationCtx` helper 由 Architect 預先放好，shirone 直接 import 就能用。
+`makeCtx` 在測試檔內就地組即可，不需要共用 helper。可直接抄 `GUIDE_e001_context_pitfalls.md` §3 的骨架。
 
 ---
 
@@ -218,10 +226,10 @@ describe('E001 設備重疊', () => {
 | 順序 | 工項 | 依賴 | 狀態 |
 |---|---|---|---|
 | 1 | 等 dernoson 凍結 `Detector` / `ValidationContext` 介面 | dernoson | ✅ 已完成 |
-| 2 | 等 aaaaa 完成 `buildGraph` 與幾何 helper | aaaaa | `buildGraph` ✅；幾何 helper 視 detector 需求補 |
-| 3 | 先做 E001（最簡單，當作介面熟悉） | — | 進行中（骨架已建立，待補邏輯） |
+| 2 | 等 aaaaa 完成 `buildGraph` 與幾何 helper | aaaaa | `buildGraph` ✅；佔格與路徑展開 ✅（`@/utils/layout`） |
+| 3 | 先做 E001（最簡單，當作介面熟悉） | — | ✅ 已完成 |
 | 4 | E003（純位置範圍比對） | — | 未開始 |
-| 5 | E002（需要 occupied cells helper） | 第 2 項完成 | 未開始 |
+| 5 | E002（沿用 E001 的格點表與佔格模組） | 第 2 項完成 | 未開始 |
 | 6 | E004 / E005（需要對接 port 連線狀態，規則比較複雜，留到熟悉之後） | — | 未開始 |
 | 7 | Phase 2 起做 W001 / W004 / W005 | — | 未開始 |
 | 8 | W002 / W003（等 FlowEngine 穩定） | Phase 2 中後期 | 未開始（FlowEngine 已穩定，可隨時開工） |
