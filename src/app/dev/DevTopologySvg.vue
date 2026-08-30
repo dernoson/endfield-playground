@@ -13,9 +13,9 @@ import {
     modePortSummaryLabel,
     listGridLines,
     resolveMachineCells,
-    resolveDisplayGrid,
     nodeRotation,
 } from '@/app/dev/topologyPortUtils';
+import { resolveDisplayGrid } from '@/utils/portUtils';
 
 const props = withDefaults(
     defineProps<{

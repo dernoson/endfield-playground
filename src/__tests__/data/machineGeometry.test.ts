@@ -13,8 +13,8 @@ import { machineList } from '@/data/machines';
 import type { Machine } from '@/types/machine';
 import type { DeviceFootprint } from '@/types/footprint';
 import { getDeviceOccupiedCells } from '@/utils/layout/deviceOccupancy';
-import { rotatePortSide, rotatePortOffset } from '@/utils/portUtils';
-import { resolveDisplayGrid, clampPortOffset } from '@/app/dev/topologyPortUtils';
+import { resolveDisplayGrid, rotatePortSide, rotatePortOffset } from '@/utils/portUtils';
+import { clampPortOffset } from '@/app/dev/topologyPortUtils';
 
 type Rotation = 0 | 1 | 2 | 3;
 const ROTATIONS: Rotation[] = [0, 1, 2, 3];

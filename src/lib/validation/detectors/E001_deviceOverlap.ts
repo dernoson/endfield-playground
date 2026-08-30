@@ -4,7 +4,7 @@ import type { Position } from '@/types/euclideanSpace';
 import type { DeviceFootprint, PipelineFootprint } from '@/types/footprint';
 import type { Machine, PortMedia, PortSide } from '@/types/machine';
 import { getMachineMode } from '@/types/machine';
-import { rotatePort } from '@/utils/portUtils';
+import { parsePortHandleIndex, resolveDisplayGrid, rotatePort } from '@/utils/portUtils';
 import { resolvePortAnchorCell } from '@/utils/layout/portAnchor';
 import { isAxisAlignedPath } from '@/utils/layout/pipelineGeometry';
 import { detectOverlaps } from '@/utils/layout/overlapDetection';
@@ -23,32 +23,6 @@ const PIPELINE_LAYER: Record<PortMedia, number> = { belt: 0, pipe: 1 };
 
 /** 端點無法自埠推算時的回退邊：出口朝右、入口朝左 */
 const FALLBACK_SIDE: Record<'out' | 'in', PortSide> = { out: 'right', in: 'left' };
-
-/**
- * 取得設備旋轉後的實際佔格寬高。
- *
- * @param def 設備靜態定義
- * @param rotation 旋轉次數
- * @returns 旋轉後的寬高（格）
- */
-function resolveDisplaySize(def: Machine, rotation: number): { width: number; height: number } {
-    const swapped = rotation === 1 || rotation === 3;
-    return {
-        width: swapped ? def.height : def.width,
-        height: swapped ? def.width : def.height,
-    };
-}
-
-/**
- * 自 Vue Flow 的 handle id 解析埠索引。
- *
- * @param handle handle id，形如 `out-0` / `in-1`
- * @returns 埠索引；解析不出時回傳 null
- */
-function parsePortIndex(handle: string | null | undefined): number | null {
-    const matched = handle?.match(/-(\d+)$/);
-    return matched ? Number(matched[1]) : null;
-}
 
 /**
  * 算出連線某一端在設備外側的錨點格。
@@ -71,10 +45,14 @@ function resolveEndpointCell(
     z: number,
 ): Position {
     const rotation = node.data?.rotation ?? 0;
-    const { width, height } = resolveDisplaySize(def, rotation);
+    const { widthCells: width, heightCells: height } = resolveDisplayGrid(
+        def.width,
+        def.height,
+        rotation,
+    );
 
-    /** 埠索引解析得出時走真實埠，否則退回該側中點 */
-    const portIndex = parsePortIndex(handle);
+    /** 埠索引解析得出時走真實埠，否則退回該側中點；此處不退回埠 0，那會產生看似有依據的錯誤端點 */
+    const portIndex = parsePortHandleIndex(handle, kind);
     const mode = getMachineMode(def, node.data?.machineMode);
     const ports = (kind === 'out' ? mode?.output_ports : mode?.input_ports) ?? [];
     const port = portIndex === null ? undefined : ports[portIndex];

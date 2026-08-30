@@ -6,9 +6,15 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { rotatePortSide, rotatePortOffset, rotatePort } from '@/utils/portUtils';
+import {
+    parsePortHandleIndex,
+    resolveDisplayGrid,
+    rotatePortSide,
+    rotatePortOffset,
+    rotatePort,
+} from '@/utils/portUtils';
 import type { PortSide } from '@/types/machine';
-import { clampPortOffset, resolveDisplayGrid } from '@/app/dev/topologyPortUtils';
+import { clampPortOffset } from '@/app/dev/topologyPortUtils';
 
 // ─── rotatePortSide ──────────────────────────────────────────────────────────
 
@@ -102,5 +108,25 @@ describe('rotatePort() / rotatePortOffset()', () => {
                 rotatePort(side, offset, w, h, rot).offset,
             );
         }
+    });
+});
+
+describe('parsePortHandleIndex', () => {
+    it('解析出對應 kind 的埠索引', () => {
+        expect(parsePortHandleIndex('out-0', 'out')).toBe(0);
+        expect(parsePortHandleIndex('in-12', 'in')).toBe(12);
+    });
+
+    it('kind 不符時回傳 null，不當成同一個埠', () => {
+        expect(parsePortHandleIndex('out-1', 'in')).toBeNull();
+        expect(parsePortHandleIndex('in-1', 'out')).toBeNull();
+    });
+
+    it('handle 缺省或格式不符時回傳 null，由呼叫端決定要不要退回埠 0', () => {
+        expect(parsePortHandleIndex(null, 'out')).toBeNull();
+        expect(parsePortHandleIndex(undefined, 'out')).toBeNull();
+        expect(parsePortHandleIndex('', 'out')).toBeNull();
+        expect(parsePortHandleIndex('output-0', 'out')).toBeNull();
+        expect(parsePortHandleIndex('out-', 'out')).toBeNull();
     });
 });

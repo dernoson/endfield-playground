@@ -6,6 +6,9 @@ import type { PortSide } from '@/types/machine';
  * 錨點刻意取在設備佔格「之外」相鄰的一格：管線路徑若以設備自身的格子  \
  * 為端點，每條連線都會與它的來源與目標設備同格，導致全面誤報。
  *
+ * 與 `src/app/dev/topologyPortUtils.ts` 的 `edgeEndpoint` 不可互換：那支回傳像素
+ * 格心供 SVG 描邊，本支回傳格子外推點供碰撞判定。
+ *
  * @param originX 設備佔格左上角的 x 格索引
  * @param originY 設備佔格左上角的 y 格索引
  * @param displayWidth 旋轉後的佔格寬（格）

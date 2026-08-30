@@ -122,8 +122,11 @@ export function rotatePort(
         y = cy + dx;
     }
 
-    const displayWidth = rotation % 2 === 1 ? machineHeight : machineWidth;
-    const displayHeight = rotation % 2 === 1 ? machineWidth : machineHeight;
+    const { widthCells: displayWidth, heightCells: displayHeight } = resolveDisplayGrid(
+        machineWidth,
+        machineHeight,
+        rotation,
+    );
     const unpadX = (S - displayWidth) / 2;
     const unpadY = (S - displayHeight) / 2;
 
@@ -161,4 +164,51 @@ export function rotatePortOffset(
     rotation: GridRotation,
 ): number {
     return rotatePort(side, offset, machineWidth, machineHeight, rotation).offset;
+}
+
+/**
+ * 旋轉後機器在畫布上佔的格數（90 度與 270 度時寬高對調）。
+ *
+ * @param widthCells 0 度時的寬（格）
+ * @param heightCells 0 度時的高（格）
+ * @param rotation 旋轉步數
+ * @returns 旋轉後的寬高（格）
+ *
+ * @example
+ * resolveDisplayGrid(3, 2, 1) // → { widthCells: 2, heightCells: 3 }
+ */
+export function resolveDisplayGrid(
+    widthCells: number,
+    heightCells: number,
+    rotation: GridRotation = 0,
+): { widthCells: number; heightCells: number } {
+    if (rotation % 2 === 1) {
+        return { widthCells: heightCells, heightCells: widthCells };
+    }
+    return { widthCells, heightCells };
+}
+
+/**
+ * 自 Vue Flow 的 handle id 解析埠索引。
+ *
+ * handle id 由 `FlowNodeOverlay.vue` 依 `modes[].input_ports` / `output_ports`
+ * 動態產生，格式為 `in-{索引}` / `out-{索引}`。解析不出來一律回傳 null，
+ * 要不要退回埠 0 由呼叫端依自身情境決定 —— 連線建立時退回 0 是合理的容錯，
+ * 驗證時退回 0 則會產生看似有依據的錯誤結果。
+ *
+ * @param handle Vue Flow 傳入的 handle id
+ * @param kind 該端是連線的入口還是出口
+ * @returns 埠索引；handle 缺省或格式不符時回傳 null
+ *
+ * @example
+ * parsePortHandleIndex('out-1', 'out') // → 1
+ * parsePortHandleIndex('out-1', 'in')  // → null
+ */
+export function parsePortHandleIndex(
+    handle: string | null | undefined,
+    kind: 'in' | 'out',
+): number | null {
+    const matched = handle?.match(/^(in|out)-(\d+)$/);
+    if (!matched || matched[1] !== kind) return null;
+    return Number(matched[2]);
 }

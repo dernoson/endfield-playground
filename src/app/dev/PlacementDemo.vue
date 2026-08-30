@@ -7,10 +7,9 @@ import { getAllMachines } from '@/data/machines';
 import type { Machine } from '@/types/machine';
 import type { FactoryNode, FactoryEdge } from '@/types/graph';
 import type { GridRotation } from '@/utils/portUtils';
-import { rotatePort } from '@/utils/portUtils';
+import { resolveDisplayGrid, rotatePort } from '@/utils/portUtils';
 import { getMachineMode } from '@/types/machine';
 import DevTopologySvg from '@/app/dev/DevTopologySvg.vue';
-import { resolveDisplayGrid } from '@/app/dev/topologyPortUtils';
 
 const machines = getAllMachines();
 const selectedId = ref(

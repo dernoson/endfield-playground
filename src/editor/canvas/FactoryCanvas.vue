@@ -17,6 +17,7 @@ import { useFlowStore } from '@/store/flowStore';
 import { useCanvasStore } from '@/store/canvasStore';
 import { getMachine, getMachineMode } from '@/data/machines';
 import { onComboTriggered, useComboHeld } from '@/composables/useKeybinding';
+import { parsePortHandleIndex } from '@/utils/portUtils';
 import FlowNodeOverlay from './FlowNodeOverlay.vue';
 import PipelineEdge from './PipelineEdge.vue';
 
@@ -370,19 +371,6 @@ function handleCanvasDrop(event: DragEvent) {
 }
 
 /**
- * 自 handle id（`out-0` / `in-1`）解析埠索引；解析不出來時回退埠 0。  \
- * id 格式與 FlowNodeOverlay.vue 動態產生的 Handle 一致。
- * @param handle Vue Flow 傳入的 handle id
- * @example
- * parsePortIndex('out-1') // → 1
- */
-function parsePortIndex(handle: string | null | undefined): number {
-    if (!handle) return 0;
-    const matched = handle.match(/-(\d+)$/);
-    return matched ? Number(matched[1]) : 0;
-}
-
-/**
  * 依來源節點的機型與出發 handle，查出該埠的傳輸媒質（belt／pipe）。  \
  * 查不到機型 / 型態 / 埠定義時 fallback 為 belt，避免擋下連線操作。
  * @param sourceNode 連線起點節點
@@ -399,7 +387,8 @@ function resolveConnectionPortType(
         : undefined;
     if (!machine) return 'belt';
     const mode = getMachineMode(machine, sourceNode.data?.machineMode);
-    const idx = parsePortIndex(sourceHandle);
+    /** 解析不出埠索引時退回埠 0：媒質只影響邊的顯示，不該因 handle 缺省而擋下連線 */
+    const idx = parsePortHandleIndex(sourceHandle, 'out') ?? 0;
     return mode.output_ports[idx]?.media ?? 'belt';
 }
 
