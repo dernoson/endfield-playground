@@ -1,9 +1,9 @@
-# W0823-V1｜avery｜環境跑通＋ViewSwitcher 單檔教學
+﻿# W0823-V1｜avery｜環境跑通＋ViewSwitcher 單檔教學
 
 | meta | value |
 |------|-------|
 | 週次 | 2026-08-23 → 2026-08-30 |
-| 對應 | 對齊月「新 clone 能開」（支撐 [R-A3](../../roadmap/detail/A3_onboarding_onepager.md)）；元件為教學切片（非正式 CR-05） |
+| 對應 | 對齊月「新 clone 能開」（支撐 [R-A3](../../../roadmap/detail/A3_onboarding_onepager.md)）；元件為教學切片（非正式 CR-05） |
 | 等級 | **加分項**（不擋 8/30） |
 | 擋 8/30 門檻 | **否**（環境名單由 dernoson 記錄即可；元件未交不擋） |
 | 性質 | 環境＋純展示元件（**同一週只這條學習線**；禁止一次掛多元件） |

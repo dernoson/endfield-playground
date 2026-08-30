@@ -1,9 +1,9 @@
-# W0823-S1｜shirone｜E001 設備重疊純函式（R-D2 提前打底）
+﻿# W0823-S1｜shirone｜E001 設備重疊純函式（R-D2 提前打底）
 
 | meta | value |
 |------|-------|
 | 週次 | 2026-08-23 → 2026-08-30 |
-| 對應 roadmap | [R-D2](../../roadmap/detail/D2_e001_overlap_alert.md) §6 切片「08/23」 |
+| 對應 roadmap | [R-D2](../../../roadmap/detail/D2_e001_overlap_alert.md) §6 切片「08/23」 |
 | 等級 | **確定**（加分打底；**不**列 8/30 門檻） |
 | 擋 8/30 門檻 | **否**（失敗可延 9 月；11/8 才需接右側 UI） |
 | 性質 | 純函式＋測試（**本週只做這一種**） |
@@ -67,7 +67,7 @@
 
 ## 4. 開工前檢查
 
-- [ ] 已讀 [D2](../../roadmap/detail/D2_e001_overlap_alert.md) §4.2–§4.3、§6（08/23 切片）、§7 不做
+- [ ] 已讀 [D2](../../../roadmap/detail/D2_e001_overlap_alert.md) §4.2–§4.3、§6（08/23 切片）、§7 不做
 - [ ] 打開型別：`src/types/validation.ts` 的 `Detector`／`Alert`／`ValidationContext`
 - [ ] 打開幾何：`src/utils/layout/` 的 `deviceOccupancy`、`pipelineGeometry`、`overlapDetection`（**用這套，不要自寫格子展開**）
 - [ ] 打開佔格型別：`src/types/footprint.ts` 的 `DeviceFootprint`、`PipelineFootprint`

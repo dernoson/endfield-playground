@@ -8,8 +8,8 @@
 | 建議主責／備援 | L2 攤平（toby／harry 暫定）＋L3 呈現（MBD／goodmorning）／aaaaa |
 | 性質 | 接線 ＋ 畫面 |
 | 依賴 | [A2](./A2_grid_and_port_alignment.md)、[B2](./B2_placement_chain.md) |
-| 狀態 | `[ ]` 未開始 |
-| 最後更新 | 2026-08-22 |
+| 狀態 | `[~]` 進行中（W0823-T1 提前切片已合入；攤平契約未完成） |
+| 最後更新 | 2026-08-30 |
 
 ---
 
@@ -46,7 +46,7 @@ L2 負責把 store 物件轉成 plain props，L3 只認以下形狀：
 | `machineId` | `string` | `machine.id` | 必有 |
 | `sizeText` | `string` | `"3×2"`，rotation 已套用 | 必有 |
 | `modeLabel` | `string \| null` | 目前 `machineMode` 的 label | 單模態給 `null` |
-| `recipes` | `{ name: string; inputs: string; outputs: string; timeText: string }[]` | `getRecipesForMachine` 攤平 | 空陣列 |
+| `recipes` | `{ label: string; inputs: string; outputs: string; timeText: string }[]` | `getRecipesForMachine` 攤平（**`RecipeDef` 無 `name`**，`label` 由 L2 自行組字） | 空陣列 |
 | `powerText` | `string \| null` | 耗電，含單位 | 無資料給 `null` |
 | `portsText` | `string` | 例如 `"入 2／出 1"` | 必有 |
 
@@ -110,12 +110,12 @@ L2 負責把 store 物件轉成 plain props，L3 只認以下形狀：
 
 ## 9. DoD
 
-- [ ] 點選一台設備，Inspector 顯示名稱、佔格、配方、耗電
-- [ ] 點空白處回到空狀態
-- [ ] `InspectorPanel.vue` 不 import 任何 store 與 `src/data/*`（code review 確認）
+- [~] 點選一台設備，Inspector 顯示名稱、佔格、配方、耗電 —— **名稱／佔格／耗電已有**（PR #33）；**配方尚未**
+- [x] 點空白處回到空狀態（文案「未選取設備」）
+- [ ] `InspectorPanel.vue` 不 import 任何 store 與 `src/data/*`（code review 確認）——**未達**：現況仍 `import` `editorStore`／`selectionStore`／`getMachine`（T1 允許唯讀 store；正式 B4 須拆攤平）
 - [ ] props 形狀與 §4.1 一致，全部為 plain 值
-- [ ] 佔格文字在設備旋轉後跟著更新
-- [ ] `pnpm type-check`／`lint-check`／`format-check`／`test` 通過
+- [ ] 佔格文字在設備旋轉後跟著更新（現況顯示 `width×height` 定義值，未跟 node rotation）
+- [x] `pnpm type-check`／`lint-check`／`format-check`／`test` 通過（合入時閘）
 
 ## 10. 風險與未交頂替
 
@@ -130,4 +130,23 @@ L2 負責把 store 物件轉成 plain props，L3 只認以下形狀：
 ## 11. 開發日誌
 
 ### 2026-08-22
-- 建檔。攤平契約設計為後續右側面板的通用範例，欄位刻意全部為 plain 字串以杜絕 L3 做格式化
+- 建檔
+
+### 2026-08-25
+- W0823-T1 改指向本項提前切片（原 canvas／overlay 因佈局自建排廢除）
+
+### 2026-08-30
+- toby PR #33 合入：`InspectorPanel.vue` 顯示選取設備名稱／佔格／耗電＋空狀態
+- **距離 §4.1 攤平契約仍有差距**（面板直接讀 store＋`getMachine`）；9/13 切片應優先拆 L2 攤平層，再補配方
+
+### 2026-08-30（08/31 週派工前檢修）
+
+- **[W0831-T1](../../work_dispatch/toby/0831/W0831-T1_inspector_flatten.md) 只做 §4.1 的子集**：`name`／`machineId`／`sizeText`／`powerText` 四項先攤成 plain 值；`modeLabel`／`recipes`／`portsText` 留 09/13–09/20。理由是本週 L2 僅 toby 3–5h 單線，一次上齊七欄會跨週延宕（派工規則 10）。
+- **配方欄位勘誤：** §4.1 寫 `recipes[].name`，但 `RecipeDef` **無 `name` 欄位**……（工單 GUIDE 已按此更正）。
+- **拆檔位置：** 若本週拆出展示子元件，限 `src/editor/inspector/`；§5 的 `InspectorSidebar.vue` 為容器角色，維持不變。
+
+### 2026-08-30 晚（主編會議）
+
+- **佈局拔 Vue Flow 提前開工** → 本週 **不加深**綁在現行 Vue Flow 選取上的 Inspector 功能。
+- W0831-T1 **改寫**：先澄清「抱著整包機器資料」≠ 資料驗證；可選輕量攤平（不要求點選演示）或 Discord 回「等佈局」結案。
+- 上週合入後點選可能沒反應——記為已知，**不**派修畫布。正式 B4 加深改掛新選取契約之後。

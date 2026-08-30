@@ -8,8 +8,8 @@
 | 建議主責／備援 | aaaaa／無 |
 | 性質 | 資料／純函式 |
 | 依賴 | — |
-| 狀態 | `[~]` 實作完成、待合入／8/30 驗收（V10） |
-| 最後更新 | 2026-08-26 |
+| 狀態 | `[x]` 已完成（W0823-A1／PR #32；M1 技術門檻） |
+| 最後更新 | 2026-08-30 |
 
 ---
 
@@ -114,7 +114,7 @@ V9 已完成 modes-only 埠遷移（外層 `input_ports`／`output_ports` 已移
 - [x] 「錯在資料」：本批無 JSON 待修；utils 紅燈由 V10-I1 消除；codegen 未改
 - [x] 至少一台常用加工機在 **`/dev` 拓樸或擺放演示頁** 的格子數與 JSON `width`×`height` 一致（主畫布目視為加分）
 - [x] `pnpm type-check`／`lint-check`／`format-check`／`test` 通過（合入前品質閘；2026-08-26 全綠）
-- [ ] PR 描述寫明下游消費者：下週工具列與 canvas 讀同一份 `getMachine`
+- [x] PR 描述寫明下游消費者：下週工具列與 canvas 讀同一份 `getMachine`（PR #32 合入；下游於錯機清單與 V10 文件標註）
 
 ## 10. 風險與未交頂替
 
@@ -141,3 +141,8 @@ V9 已完成 modes-only 埠遷移（外層 `input_ports`／`output_ports` 已移
 - V10（W0823-A1）執行：欄位名對齊程式碼（`width`／`height`、`modes[].input_ports`／`output_ports`）；決策落地——資料側本週全綠、三證據從嚴、R-E1 一致性測試併入、`/dev/placement-demo` 備援
 - B1 首跑埠 25 紅（皆 `rotation≠0`）→ 判定 `rotatePortOffset` 舊演算法；I1 pad-to-square 修正後 **388 全綠**；本批無 JSON `fault=data`
 - 清單：[A2_port_grid_defect_list.md](./A2_port_grid_defect_list.md)；上游文件依 V10-G1 回寫本檔
+
+### 2026-08-30
+
+- **結案 `[x]`。** PR #32 `dev/aaaaa0826` 已合入 master；§9 DoD 全勾；M1 技術門檻成立
+- 連帶：B3 對 A2 的封鎖條件解除（見大綱 §9）

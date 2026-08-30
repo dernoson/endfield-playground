@@ -8,8 +8,8 @@
 | 建議主責／備援 | shirone／azure9572 草稿收斂／aaaaa |
 | 性質 | 純函式 |
 | 依賴 | [D2](./D2_e001_overlap_alert.md)（registry） |
-| 狀態 | `[!]` 封鎖中（azure 續留與否待主編裁示） |
-| 最後更新 | 2026-08-22 |
+| 狀態 | `[~]` 部分解鎖（W001 已合入 master；E004／E005／ID 表／右側未完） |
+| 最後更新 | 2026-08-30 |
 
 ---
 
@@ -29,11 +29,11 @@ azure9572 目前的可投入時間有限、去留未定，因此本項在規劃�
 
 | 對象 | 位置 | 現況 |
 |------|------|------|
-| E004／E005 草稿 | azure9572 分支 | 未合入 master |
-| W001 草稿 | `W001_unmatchedMaterial.ts`（azure 分支） | 未合入；曾請求收斂為單一 PR |
-| shirone detector 實績 | E001 及相關測試 | 範圍正確，PR 品質待提升 |
+| E004／E005 草稿 | `origin/dev/azure9572`（未刪） | **仍未合入 master**；訊息標 Unconfirmed |
+| W001 | `src/lib/validation/detectors/W001_unmatchedMaterial.ts` | **已合入 master**（PR #35，2026-08-30；azure 生涯首筆） |
+| shirone detector 實績 | E001 及相關測試 | 已合入；本人要求轉調，後續非本項主責 |
 | 引擎側判定 | `matchRecipeByInputs`、`matchRecipeByEdgeCandidates`（`useFlowEngine.ts`） | **已完整**（V9） |
-| registry | 本輪由 [D2](./D2_e001_overlap_alert.md) 建立 | 待建 |
+| registry | 使用端顯式註冊（見 [D2](./D2_e001_overlap_alert.md)） | `/dev/validation-test` 已示範；主畫布集中入口待 11/01 |
 
 ## 4. 技術決策
 
@@ -104,29 +104,31 @@ azure9572 目前的可投入時間有限、去留未定，因此本項在規劃�
 
 | 項目 | 狀態 |
 |------|------|
-| azure 續留裁示 | **封鎖中**；最遲 11/1 需主編裁示 |
+| azure 續留裁示 | **仍未裁示**；惟 W001 已不必等裁示即可用 |
+| E004／E005 | 仍在舊分支；是否撿檔待 11/1 前決定 |
 | registry | 由 [D2](./D2_e001_overlap_alert.md) 建立，11/1 前完成 |
 | 共用配方匹配純函式 | aaaaa，11/8 |
+| ID 表凍結 | **未做**——W001 已進樹，E004／E005 去留須一次裁 |
 
-封鎖解除條件：主編裁示完成 ＋ ID 表凍結。
+封鎖解除條件（更新）：~~主編裁示完成 ＋~~ ID 表凍結 ＋ 至少一類上右側。W001 合入使「零草稿可撿」風險下降。
 
 ## 9. DoD
 
 - [ ] ID 表已凍結，每個現象只有一個 ID
-- [ ] 至少一類（建議 E004／E005）在右側顯示可懂訊息
+- [ ] 至少一類（建議 E004／E005）在右側顯示可懂訊息 —— **W001 純函式已在**；右側未接
 - [ ] 拆掉必要輸入管線後訊息出現，接回後消失
 - [ ] 配方匹配邏輯與 `useFlowEngine` 共用同一純函式（code review 確認無複製）
-- [ ] 每個 detector 有對應測試檔且通過
-- [ ] detector 不 import Vue／Pinia
-- [ ] 無 AI 生成的暫存大檔進入正式樹
+- [x] 每個 detector 有對應測試檔且通過 —— **W001 測試已合入**（+214）；E004／E005 尚無
+- [x] detector 不 import Vue／Pinia（W001 已確認）
+- [x] 無 AI 生成的暫存大檔進入正式樹（W001 收斂 PR 乾淨）
 
 ## 10. 風險與未交頂替
 
 | 風險 | 對策 |
 |------|------|
-| azure 退出，草稿無人收 | 規劃上已假設不會交付；W001 列加分，由 shirone 或 aaaaa 從 `dev/azure9572` 挑檔 |
+| azure 退出，草稿無人收 | **W001 已進 master**；E004／E005 仍可能需 aaaaa 從 `dev/azure9572` 挑檔 |
 | 兩套配方匹配邏輯分歧 | §4.2 抽共用純函式；DoD 列入 review |
-| shirone 一週一 detector 的節奏吃不下三個 ID | §4.4 只要求一類；E004／E005 可視為同一組 |
+| shirone 轉調後無人收斂 ID | 改由 aaaaa 維護代碼表；11/15 前至少凍結 W001＋一類缺 IO |
 | 舊平行驗證樹復活 | 工單明寫不得擴充 |
 
 **未交頂替：** 11/29 門檻句要求「缺 IO／配方不符在右側有字」。若一類都未完成，[D5](./D5_acceptance_rehearsal.md) 驗收劇本第 6 步失守——這是本項雖列「加分」卻仍需在 11/15 前見到成果的原因。屆時由 aaaaa 以最簡形態（只判「有無輸入邊」）補上。
@@ -135,3 +137,8 @@ azure9572 目前的可投入時間有限、去留未定，因此本項在規劃�
 
 ### 2026-08-22
 - 建檔。規劃上假設 azure 不交付；共用配方匹配純函式列為 aaaaa 的前置交付，避免 detector 與引擎各寫一套
+
+### 2026-08-30
+- W0823-Z1 合入 PR #35：`W001_unmatchedMaterial.ts`＋測試進 master（azure 生涯首次合入）
+- **狀態由 `[!]` 改 `[~]`。** 大綱 §9 移除本項全封鎖列
+- E004／E005 仍停在 `dev/azure9572`；ID 表與右側列表仍為殘項；接手人預設 aaaaa（shirone 轉調）

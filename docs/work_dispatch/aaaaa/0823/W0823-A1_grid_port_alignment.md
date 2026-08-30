@@ -1,10 +1,10 @@
-# W0823-A1｜aaaaa｜佔格與 port 對資料（R-A2）
+﻿# W0823-A1｜aaaaa｜佔格與 port 對資料（R-A2）
 
 | meta | value |
 |------|-------|
 | 週次 | 2026-08-23 → 2026-08-30 |
-| 對應 roadmap | [R-A2](../../roadmap/detail/A2_grid_and_port_alignment.md) |
-| 關聯維運 | [R-E1](../../roadmap/detail/E1_data_codegen_ops.md)（修 JSON 時必跑 codegen） |
+| 對應 roadmap | [R-A2](../../../roadmap/detail/A2_grid_and_port_alignment.md) |
+| 關聯維運 | [R-E1](../../../roadmap/detail/E1_data_codegen_ops.md)（修 JSON 時必跑 codegen） |
 | 等級 | **確定** |
 | 擋 8/30 門檻 | **是**（本週唯一關鍵技術項；無備援 Owner） |
 | 性質 | 資料／純函式（**本週只做這一種**） |
@@ -48,7 +48,7 @@
 
 ## 3. 開工前檢查
 
-- [ ] 已讀 [A2 細項](../../roadmap/detail/A2_grid_and_port_alignment.md) §4–§9（決策與 DoD 以該檔為準）
+- [ ] 已讀 [A2 細項](../../../roadmap/detail/A2_grid_and_port_alignment.md) §4–§9（決策與 DoD 以該檔為準）
 - [ ] 確認本機 `pnpm test`／`pnpm type-check` 可跑
 - [ ] 分支建議：`dev/aaaaa` 或依主編慣例；PR 對準可合入目標
 - [ ] **程式碼現況優先於 A2 文檔欄位名**（見下表）
@@ -85,7 +85,7 @@
 
 1. 清單每列填齊：`machine_id`／`expected_size`／`observed`／`port_mismatch`／`fault`／`owner`／`note`
 2. 只修 `fault=data`（或 `both` 的資料半邊）：改 `docs/aaaaa/data/machines.json`
-3. 執行：`pnpm generate:src-data`（若流程要求先 sync，依 [E1](../../roadmap/detail/E1_data_codegen_ops.md)）
+3. 執行：`pnpm generate:src-data`（若流程要求先 sync，依 [E1](../../../roadmap/detail/E1_data_codegen_ops.md)）
 4. 測試全綠；至少一台常用加工機在畫布／overlay 佔格與 JSON 一致（截圖或錄影附 PR）
 5. 資料錯誤若超出一週可修量：清單仍交、修正按常用度排序，剩餘排 9/6（A2 §10 允許）——但**清單本身不可缺**
 

@@ -277,3 +277,8 @@ ROADMAP §11 規定：**§1.2 已定案與 §2 工項總表變更，須主編＋
 - 執行改指向時查證發現原建議目標 `ToolbarPanel` 不可行（`EquipmentType` 型別鏈），改用 `InspectorPanel`；理由與對照見 §4.1
 - §5 回寫清單八項已執行完畢；ROADMAP 升 v1.1、WEEK 升 v1.4；兩項留待 9 月首週（§5.1）
 - **toby 回覆「還沒開工」**：分岔 A 定案，各檔的「若已開工」條件分支一併收掉，避免留下失效的雙軌指示
+
+### 2026-08-31
+
+- **提前開工**評估另見 [LAYOUT_REWRITE_EARLY_START_0831](./LAYOUT_REWRITE_EARLY_START_0831.md)
+- ROADMAP 升 v1.4（§1.6 決策說明）；L1 主責定 aaaaa（自評可加重底層設計）

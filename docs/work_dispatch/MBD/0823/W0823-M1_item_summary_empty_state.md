@@ -1,9 +1,9 @@
-# W0823-M1｜MBD｜ItemSummaryTable 空狀態（單檔 L3 mock）
+﻿# W0823-M1｜MBD｜ItemSummaryTable 空狀態（單檔 L3 mock）
 
 | meta | value |
 |------|-------|
 | 週次 | 2026-08-23 → 2026-08-30 |
-| 對應 roadmap | [R-D1](../../roadmap/detail/D1_stats_item_summary.md) 的 L3「空狀態」提前切片（正式接 `flowStore` 在 11 月） |
+| 對應 roadmap | [R-D1](../../../roadmap/detail/D1_stats_item_summary.md) 的 L3「空狀態」提前切片（正式接 `flowStore` 在 11 月） |
 | 等級 | **加分項**（不擋 8/30） |
 | 擋 8/30 門檻 | **否** |
 | 性質 | 純展示／mock（**本週只做這一種**） |

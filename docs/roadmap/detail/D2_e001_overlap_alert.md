@@ -1,4 +1,4 @@
-# R-D2 — E001 重疊警訊上右側
+﻿# R-D2 — E001 重疊警訊上右側
 
 | meta | value |
 |------|-------|
@@ -8,7 +8,7 @@
 | 建議主責／備援 | shirone（純函式）＋L2（列表接線）／aaaaa |
 | 性質 | 純函式 ＋ 接線 |
 | 依賴 | [A2](./A2_grid_and_port_alignment.md)、[B2](./B2_placement_chain.md) |
-| 狀態 | `[~]` 可開工（純函式與幾何已就位，dev 頁可觀察） |
+| 狀態 | `[~]` 純函式＋dev 頁已就位；右側 Tips 未做；owner 待移交 |
 | 最後更新 | 2026-08-30 |
 
 ---
@@ -100,7 +100,7 @@ L2 把 `validationStore.alerts` 映射成列表 props：
 | 11/08 | **兩台重疊 → 右側出現一條訊息** |
 | 11/29 | **門檻：** 重疊警訊穩定，分開後消失 |
 
-E001 純函式刻意提前到 8/23 打底（見 [W0823-S1](../../work_dispatch/shirone/W0823-S1_e001_device_overlap.md)），失敗可延到 9 月，不擋 8/30。
+E001 純函式刻意提前到 8/23 打底（見 [W0823-S1](../../work_dispatch/shirone/0823/W0823-S1_e001_device_overlap.md)），失敗可延到 9 月，不擋 8/30。
 
 ## 7. 不做
 
@@ -120,12 +120,12 @@ E001 純函式刻意提前到 8/23 打底（見 [W0823-S1](../../work_dispatch/s
 
 - [ ] 兩台設備重疊 → 右側出現一條含設備名稱的可懂訊息
 - [ ] 分開後訊息消失
-- [ ] 旋轉造成的重疊也能偵測（依賴 [B3](./B3_rotation_90.md)）
-- [ ] `E001_deviceOverlap.test.ts` 通過，含旋轉案例
-- [ ] detector 不 import Vue／Pinia（code review 確認）
-- [ ] E001 已在 `/dev/validation-test` 註冊並實際產出警示
+- [ ] 旋轉造成的重疊也能偵測（依賴 [B3](./B3_rotation_90.md)）——**純函式側測試已含 rotation 案例**；正式畫布演示仍等 B3
+- [x] `E001_deviceOverlap.test.ts` 通過，含旋轉案例（W0823-S1／PR #36）
+- [x] detector 不 import Vue／Pinia（code review 確認）
+- [x] E001 已在 `/dev/validation-test` 註冊並實際產出警示
 - [ ] 警訊列表元件不 import store
-- [ ] `pnpm type-check`／`lint-check`／`format-check`／`test` 通過
+- [x] `pnpm type-check`／`lint-check`／`format-check`／`test` 通過
 
 ## 10. 風險與未交頂替
 
@@ -135,6 +135,7 @@ E001 純函式刻意提前到 8/23 打底（見 [W0823-S1](../../work_dispatch/s
 | shirone 交 AI 大檔（`opus.ts`／`sonnet.ts` 之類） | 工單明寫不得提交進正式樹；一個 detector 一個 PR |
 | detector 悄悄 import Pinia | DoD 列入 import 檢查 |
 | 順手做點擊導覽而延誤 | §4.5 明寫下一階段 |
+| **shirone 轉調（8/27）** | 純函式 owner 移交 aaaaa；過渡期不綁門檻；11/08 右側切片另派 L2／L3 |
 
 **未交頂替：** UI 列表若未交，可暫時把 alert 以純文字列在 StatsPanel 底部，門檻仍成立。
 
@@ -145,5 +146,6 @@ E001 純函式刻意提前到 8/23 打底（見 [W0823-S1](../../work_dispatch/s
 
 ### 2026-08-30
 - 幾何收斂至 `src/utils/layout/`，佔用層編碼改採 (z, d)，`ValidationContext` 座標統一為格子座標
-- 註冊入口改為使用端顯式註冊；E001 已於 `/dev/validation-test` 掛上，封鎖解除
-- 11/01 切片改為右側 Tips 列表與 L2 映射
+- 註冊入口改為使用端顯式註冊；E001 已於 `/dev/validation-test` 掛上，大綱 §9 封鎖解除
+- W0823-S1 合入 PR #36；11/01 切片改為右側 Tips 列表與 L2 映射
+- **owner 警示：** shirone 要求轉調 L2／L3 → 後續純函式維護與 E001 交接改由 aaaaa；本項剩餘工作以右側 UI 為主
