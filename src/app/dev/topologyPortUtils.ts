@@ -8,7 +8,12 @@
  */
 import { getMachine, getMachineMode } from '@/data/machines';
 import type { MachineMode, PortMedia, PortSide } from '@/types/machine';
-import { rotatePortOffset, rotatePortSide } from '@/utils/portUtils';
+import {
+    parsePortHandleIndex,
+    resolveDisplayGrid,
+    rotatePortOffset,
+    rotatePortSide,
+} from '@/utils/portUtils';
 
 export type TopologyPortKind = 'in' | 'out';
 
@@ -66,20 +71,6 @@ export function listModePortMarkers(mode: MachineMode | null): TopologyPortMarke
         });
     });
     return markers;
-}
-
-/**
- * 旋轉後畫布上的格數（90°／270° 時寬高對調）。
- */
-export function resolveDisplayGrid(
-    widthCells: number,
-    heightCells: number,
-    rotation: GridRotation = 0,
-): { widthCells: number; heightCells: number } {
-    if (rotation % 2 === 1) {
-        return { widthCells: heightCells, heightCells: widthCells };
-    }
-    return { widthCells, heightCells };
 }
 
 /**
@@ -195,18 +186,6 @@ export function listGridLines(
     return lines;
 }
 
-/**
- * 自 handle id 解析埠索引；無法解析回傳 null。
- */
-export function parseTopologyHandleIndex(
-    handle: string | null | undefined,
-    kind: TopologyPortKind,
-): number | null {
-    if (!handle) return null;
-    const m = handle.match(new RegExp(`^${kind}-(\\d+)$`));
-    return m ? Number(m[1]) : null;
-}
-
 function normalizeRotation(raw: unknown): GridRotation {
     const n = Number(raw);
     if (n === 1 || n === 2 || n === 3) return n;
@@ -215,6 +194,9 @@ function normalizeRotation(raw: unknown): GridRotation {
 
 /**
  * 邊端點：有 handle 時對齊對應埠格點中心，否則用節點左右中點。
+ *
+ * 回傳的是**像素**相對座標，供 SVG 描邊使用。碰撞判定要的格子外推點在
+ * `src/utils/layout/portAnchor.ts` 的 `resolvePortAnchorCell`，兩者不可互換。
  */
 export function edgeEndpoint(
     nodeX: number,
@@ -229,7 +211,7 @@ export function edgeEndpoint(
     rotation: GridRotation = 0,
 ): { x: number; y: number } {
     if (mode) {
-        const idx = parseTopologyHandleIndex(handle, kind);
+        const idx = parsePortHandleIndex(handle, kind);
         if (idx != null) {
             const markers = listModePortMarkers(mode);
             const marker = markers.find((p) => p.kind === kind && p.index === idx);

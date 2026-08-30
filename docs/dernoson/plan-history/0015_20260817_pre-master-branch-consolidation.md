@@ -504,7 +504,7 @@ cake 沒有假裝它可以 undo 而是誠實留下防呆與註解，處理方式
 
 ### 12 清掉 validation 路徑上的 debug console.log
 
-- **state:** 待實作
+- **state:** 完成
 - **basis:** → O15
 
 validation 相關程式碼每次執行都會噴出大量無條件的除錯輸出，實測時整個 console 被灌滿，真正的
@@ -522,3 +522,4 @@ validation 相關程式碼每次執行都會噴出大量無條件的除錯輸出
 - H1 · 2026-08-17 決斷 —— 使用者裁定開格承載（使用者）
 - H2 · 2026-08-29 修正 —— 複查發現範圍是三檔 15 處而非只有 `validateChains`，正文改寫 → O15
 - H3 · 2026-08-29 改題 —— 舊標題「清掉 validateChains 的 debug console.log」蓋不住實際範圍
+- H4 · 2026-08-30 落地 —— 三檔共 17 處全部移除（`validateChains` 7、`useValidation` 2、`validationStore` 8，後者比 O15 多兩處在 `registerDetector`）；`validateChains` 那批當時已加上 `import.meta.env.DEV` 守衛，仍一併清除，因 dev 頁的人工驗收要靠讀 alert 輸出

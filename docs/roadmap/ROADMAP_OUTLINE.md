@@ -1,11 +1,11 @@
 # Roadmap 大綱｜2026-08-23 → 2026-11-29
 
-**版本：** v1.0
+**版本：** v1.1（2026-08-25）
 **建立日期：** 2026-08-22
 **規劃：** aaaaa
 **守門與合入：** dernoson（主編）
 **上游來源：** 主編提出並確認的 ROADMAP v0.2（決策層原始文件，未公開；其內容已完整拆進本檔與 `detail/`）
-**狀態總覽：** 22 個工項全部 `[ ]` 未開始（規劃完成，待 8/23 公告後開工）
+**狀態總覽：** 22 個工項中 20 項 `[ ]` 未開始；**R-C2、R-D4 於 2026-08-25 改標 `[!]` 封鎖**（佈局視角改自建渲染層，兩項定義／格式待重訂，見 §9）
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 
@@ -47,7 +47,7 @@
 | 關鍵路徑限制 | 月底門檻的必要條件只派 `risk ≤ 中`（aaaaa、shirone、paper、dernoson） |
 | 資料流 | `data_1` → `pnpm sync:aaaaa-data` → `docs/aaaaa/data` → `pnpm generate:src-data` → `src/data` |
 | 速率 | belt 30／min、pipe 60／min（沿用 V8／V9） |
-| 藍圖格式 | 最小 JSON `{ version, planId?, nodes, edges }`；**不做** HTML 自包含記錄檔 |
+| 藍圖格式 | 最小 JSON `{ version, planId?, nodes, edges }`；**不做** HTML 自包含記錄檔<br>**⚠ 2026-08-25：`nodes`／`edges` 已不是儲存形狀，本列待重訂（§9 封鎖表 R-D4），改寫排 9 月首週 v1.2** |
 
 ### 1.3 非目標（11/29 前不做）
 
@@ -106,7 +106,7 @@ R-E 跨月支撐（8/23→11/29，貫穿全期，不綁單月門檻）
 | R-B4 | 選取與設備資訊面板 | M2 | L2 攤平＋L3 呈現 | 接線＋畫面 | **是** | [B4](./detail/B4_selection_inspector.md) |
 | R-B5 | 刪除單台 | M2 | toby／harry | 接線 | 否 | [B5](./detail/B5_delete_single_device.md) |
 | R-C1 | Port 命中與 draft 連線 | M3 | L2 主責 | 接線 | **是** | [C1](./detail/C1_port_hit_and_draft.md) |
-| R-C2 | addConnection 契約與型別檢查 | M3 | aaaaa（規則）＋L2 | 純函式＋接線 | **是** | [C2](./detail/C2_add_connection_contract.md) |
+| R-C2 | ~~addConnection 契約與型別檢查~~ **待重新定義**（§9） | M3 | aaaaa（規則）＋L2 | 純函式＋接線 | **是** | [C2](./detail/C2_add_connection_contract.md) |
 | R-C3 | 管線折線與 90 度彎折渲染 | M3 | L3 | 畫面 | **是** | [C3](./detail/C3_pipeline_polyline_render.md) |
 | R-C4 | 拖移進歷史 | M3 | L2 | 接線 | 否 | [C4](./detail/C4_move_into_history.md) |
 | R-C5 | 源節點素材設定 | M3 | aaaaa（action）＋L2 | 接線 | **是** | [C5](./detail/C5_source_primary_output.md) |
@@ -161,8 +161,8 @@ R-E 跨月支撐（8/23→11/29，貫穿全期，不綁單月門檻）
 
 - [ ] **R-C1** Port 命中與 draft 連線：port 點可見、可點選、拖出暫時折線，放開命中另一 port 才成立
   - 細項：[detail/C1_port_hit_and_draft.md](./detail/C1_port_hit_and_draft.md)
-- [ ] **R-C2** addConnection 契約與型別檢查：`FactoryEdge` 必帶 handle；belt↔pipe 錯接與單埠單線由純函式判定，L2 只呼叫
-  - 細項：[detail/C2_add_connection_contract.md](./detail/C2_add_connection_contract.md)
+- [!] **R-C2** ~~addConnection 契約與型別檢查~~：**2026-08-25 起待重新定義**——佈局自建後連接為衍生值、不儲存，`addConnection` 已無標的；新契約排 9 月首週 v1.2（見 §9）
+  - 細項：[detail/C2_add_connection_contract.md](./detail/C2_add_connection_contract.md)（**內容待更新**）
 - [ ] **R-C3** 管線折線與 90 度彎折渲染：`PipelineEdge` 畫正交折線，違規線段給紅色視覺
   - 細項：[detail/C3_pipeline_polyline_render.md](./detail/C3_pipeline_polyline_render.md)
 - [ ] **R-C4** 拖移進歷史：拖曳結束呼叫 `commitDeviceMove(uids, before)`，Undo 可還原位置
@@ -182,8 +182,8 @@ R-E 跨月支撐（8/23→11/29，貫穿全期，不綁單月門檻）
   - 細項：[detail/D2_e001_overlap_alert.md](./detail/D2_e001_overlap_alert.md)
 - [ ] **R-D3** 配方類警訊：缺輸入／缺輸出（E004／E005）與材料組合不符（W001）至少一類上右側，與 azure 草稿收斂成一套
   - 細項：[detail/D3_recipe_alerts.md](./detail/D3_recipe_alerts.md)
-- [ ] **R-D4** 最小藍圖 JSON 匯出／匯入：`{ version, planId?, nodes, edges }` ＋ Zod 驗證；頂欄 Save／Load
-  - 細項：[detail/D4_blueprint_json_io.md](./detail/D4_blueprint_json_io.md)
+- [!] **R-D4** 最小藍圖 JSON 匯出／匯入：~~`{ version, planId?, nodes, edges }`~~ ＋ Zod 驗證；頂欄 Save／Load。**2026-08-25 起格式待重訂**——儲存形狀改為 `devices`／`pipelines`，`connections` 為衍生值不儲存（見 §9）
+  - 細項：[detail/D4_blueprint_json_io.md](./detail/D4_blueprint_json_io.md)（**內容待更新**）
 - [ ] **R-D5** 驗收劇本與彩排：8 步劇本文件化，11/22 先彩排一次，11/29 正式演示
   - 細項：[detail/D5_acceptance_rehearsal.md](./detail/D5_acceptance_rehearsal.md)
 
@@ -230,9 +230,11 @@ R-E 跨月支撐（8/23→11/29，貫穿全期，不綁單月門檻）
 
 | ID | 封鎖原因 | 等待對象 | 解除條件 | 狀態 |
 |----|----------|----------|----------|------|
-| R-B2 | L2 產能不足（toby ≤2h／假日；harry 動力驅動不可預測） | 每週 work_dispatch 雙軌切分 | toby／harry 各承接「一週一塊」、同週不改同一檔；門檻不綁單一人 | `[~]` 可開工（人力仍緊） |
+| R-B2 | L2 產能不足 **＋ 等待佈局渲染層落地**（2026-08-25 新增後者） | 每週 work_dispatch 雙軌切分；**佈局自建的 L1 六個純函式**（`types/layout`、`deviceOccupancy`、`pipelineGeometry`、`portAnchors`、`resolveConnections`、`toTopology`） | 六個純函式到位且 `editorStore` 模型改寫合入後，B2 才可實際開工 | `[!]` **退回封鎖**（原 `[~]`） |
 | R-B3 | 同上；旋轉牽涉 port side／offset 換算 | R-A2 錯機清單 | A2 完成且 `portUtils` 換算有測試 | `[!]` |
 | R-C1 | 依賴 R-B2 擺放鏈可用 | R-B2 | B2 於 9/27 門檻通過 | `[!]` |
+| **R-C2** | 佈局自建後連接改為衍生值、不儲存，`addConnection`／`removeConnection` 廢除，**本工項原定義失去標的**（2026-08-25 新增） | 主編＋aaaaa 依 §11 重新定義並改版本號 | 新的連接判定契約寫入 §2 工項總表 | `[!]` **待重新定義**（排 9 月首週） |
+| **R-D4** | §1.2 已定案的藍圖格式 `{ version, planId?, nodes, edges }` 不再是儲存形狀（改 `devices`／`pipelines`）（2026-08-25 新增） | 同上 | §1.2 藍圖格式改版並確認 Zod schema 對象 | `[!]` **待重訂格式**（排 9 月首週） |
 | R-D3 | shirone 與 azure9572 同域不同 ID，需先收斂 | 主編對 azure 是否續留的裁示 | 主編裁示＋detector ID 表定案 | `[!]` |
 | R-D2 | detector 註冊入口需集中，避免兩套 | R-E2 守門規則 | `registerDetector` 單一入口確立 | `[!]` |
 
@@ -270,6 +272,7 @@ R-E 跨月支撐（8/23→11/29，貫穿全期，不綁單月門檻）
 - 底層 API 改簽名：標 Breaking，先改 L1 再改 L2，同一週不逼 L3 跟版
 - 主設計稿與功能順序衝突：外觀聽主設計，順序聽本檔
 - §1.2 已定案與 §2 工項總表變更，須主編＋aaaaa 同意後改版本號
+- **渲染層落地前，不把任何月底門檻的必要項押在 L2**（2026-08-25 主編裁示）。佈局視角改自建期間，L2 的可交付性取決於前置純函式，不由人力多寡決定；門檻必要項優先押在資料／純函式域，L2 只派提前切片與加分項
 
 ---
 
@@ -278,3 +281,4 @@ R-E 跨月支撐（8/23→11/29，貫穿全期，不綁單月門檻）
 | 版 | 日期 | 說明 |
 |----|------|------|
 | v1.0 | 2026-08-22 | 依主編已確認的 ROADMAP v0.2 展開為 22 個工項；建立大綱 ↔ 細項結構與 Agent 文檔 |
+| v1.1 | 2026-08-25 | 佈局視角改自建渲染層（主編裁決）的連帶更新：§9 封鎖表 R-B2 退回封鎖並新增 R-C2／R-D4 兩列；§11 新增「渲染層落地前不把門檻必要項押在 L2」。**§1.2 已定案（藍圖格式）與 §2 工項總表（R-C2）的實際改寫另排 9 月首週 v1.2**，本版只登記封鎖與排程原則，未改動兩節內文。影響評估見 [LAYOUT_REWRITE_DISPATCH_IMPACT_0825](../aaaaa/LAYOUT_REWRITE_DISPATCH_IMPACT_0825.md) |

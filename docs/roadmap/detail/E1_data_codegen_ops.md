@@ -63,7 +63,7 @@ V7 建立的資料流已經穩定運作：`data_1` → `pnpm sync:aaaaa-data` �
 |------|------|
 | 產物與來源一致 | 重跑 codegen 後 `src/data` 不應有 diff |
 | 機器無外層 ports | V9 modes-only 決策；回歸保護 |
-| 每台機器有 `size` 且為正整數 | [A2](./A2_grid_and_port_alignment.md) 的前提 |
+| 每台機器有頂層 `width`／`height` 且為正整數 | [A2](./A2_grid_and_port_alignment.md) 的前提 |
 | 每個材料有 `form` | [C5](./C5_source_primary_output.md) 的前提 |
 | tag 值在 `MACHINE_TAGS` 內 | [B1](./B1_toolbar_real_machines.md) 的前提 |
 
