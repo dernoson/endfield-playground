@@ -1,4 +1,4 @@
-# R-B2 — 擺放鏈 L2 串接
+﻿# R-B2 — 擺放鏈 L2 串接
 
 | meta | value |
 |------|-------|
@@ -8,8 +8,8 @@
 | 建議主責／備援 | toby（確定，≤2h／假日）／harry（**可派**，中風險，動力驅動）／aaaaa 記錄轉單 |
 | 性質 | 接線（L2） |
 | 依賴 | [A2](./A2_grid_and_port_alignment.md)、[B1](./B1_toolbar_real_machines.md) |
-| 狀態 | `[~]` 可開工（人力緊；門檻不綁單一人） |
-| 最後更新 | 2026-08-23 |
+| 狀態 | `[!]` 封鎖中（佈局純函式 4／6；缺 resolveConnections／toTopology／store 模型） |
+| 最後更新 | 2026-08-30 |
 
 ---
 
@@ -131,4 +131,11 @@ L1 從 5–6 月就大量提交，`editorStore` 的八個高階 action 早已可
 ## 11. 開發日誌
 
 ### 2026-08-22
-- 建檔。切分原則沿用 8/23 週的 [W0823-T1](../../work_dispatch/toby/W0823-T1_placement_footprint_size.md)／[W0823-H1](../../work_dispatch/harry/W0823-H1_connect_tool_shortcut.md)；封鎖狀態源於「L2 串接目前沒有高投入人選」這項專案級風險
+- 建檔。切分原則沿用 8/23 週的 [W0823-T1](../../work_dispatch/toby/0823/W0823-T1_placement_footprint_size.md)／[W0823-H1](../../work_dispatch/harry/0823/W0823-H1_connect_tool_shortcut.md)；封鎖狀態源於「L2 串接目前沒有高投入人選」這項專案級風險
+
+### 2026-08-25
+- 佈局自建裁決：本項退回 `[!]`；六純函式＋`editorStore` 模型改寫為開工前提
+
+### 2026-08-30
+- **進度盤點：** `src/utils/layout/` 已有 `deviceOccupancy`／`pipelineGeometry`／`overlapDetection`／`portAnchor`（4／6）。**仍缺** `resolveConnections`、`toTopology`（及 `types/layout`）與 store 模型改寫 → **維持 `[!]`**
+- W0823-T1 已改指向 B4，本項本週無直接產出；9/6 起若純函式未補齊，依大綱 §11 不把門檻必要項押在本項

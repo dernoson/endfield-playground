@@ -8,8 +8,8 @@
 | 建議主責／備援 | aaaaa（CR-04 主責）／— |
 | 性質 | 接線 ＋ 畫面 |
 | 依賴 | [B2](./B2_placement_chain.md)、[C1](./C1_port_hit_and_draft.md)、[C5](./C5_source_primary_output.md) |
-| 狀態 | `[ ]` 未開始 |
-| 最後更新 | 2026-08-22 |
+| 狀態 | `[~]` 進行中（空狀態切片已合入；未接 flowStore） |
+| 最後更新 | 2026-08-30 |
 
 ---
 
@@ -109,13 +109,13 @@ FlowEngine 完整、`flowStore` 完整、`ItemSummaryTable.vue` 存在、`MainLa
 
 ## 9. DoD
 
-- [ ] 空畫布顯示「尚未擺放設備」，不是空白也不是一堆零
+- [~] 空畫布顯示「尚未擺放設備」，不是空白也不是一堆零 —— **W0823-M1 已交空陣列文案「目前沒有產耗資料」**（PR #37）；與 §4.2 四種空狀態文案尚未逐一對齊
 - [ ] 一條「源 → 加工」產線的產耗表出現正確數字（與 `/dev/flow-engine` 對同一組資料的結果一致）
 - [ ] 表格含中間物
 - [ ] 改動畫布（加設備／改連線／改源素材）後數字在 150ms 內更新
-- [ ] `ItemSummaryTable.vue` 不 import 任何 store（code review 確認）
-- [ ] 面板內無任何流量計算
-- [ ] `pnpm type-check`／`lint-check`／`format-check`／`test` 通過
+- [x] `ItemSummaryTable.vue` 不 import 任何 store（code review 確認）——維持 props-only
+- [x] 面板內無任何流量計算
+- [x] `pnpm type-check`／`lint-check`／`format-check`／`test` 通過（合入時閘）
 
 ## 10. 風險與未交頂替
 
@@ -131,3 +131,7 @@ FlowEngine 完整、`flowStore` 完整、`ItemSummaryTable.vue` 存在、`MainLa
 
 ### 2026-08-22
 - 建檔。本項技術新增極少，主要工作被定義為「除錯上游資料」與「補空狀態」，避免屆時把時間花在重寫引擎
+
+### 2026-08-30
+- W0823-M1（MBD）PR #37 合入：`ItemSummaryTable` 空陣列顯示「目前沒有產耗資料」；元件維持只吃 `rows` props
+- **狀態改 `[~]`。** 11/01 切片仍須接 `flowStore.itemSummary` 並對齊 §4.2 四種空狀態文案

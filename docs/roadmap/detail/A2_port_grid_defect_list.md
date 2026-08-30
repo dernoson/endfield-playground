@@ -1,11 +1,11 @@
-# A2 佔格／port 錯機清單
+﻿# A2 佔格／port 錯機清單
 
 | meta | value |
 |------|-------|
-| 對應 | [R-A2](./A2_grid_and_port_alignment.md)、[W0823-A1](../../work_dispatch/aaaaa/W0823-A1_grid_port_alignment.md) |
+| 對應 | [R-A2](./A2_grid_and_port_alignment.md)、[W0823-A1](../../work_dispatch/aaaaa/0823/W0823-A1_grid_port_alignment.md) |
 | 來源 | V10-B1 首跑 → V10-I1 修正 `rotatePort`（pad-to-square） |
-| 狀態 | **utils 已修**；資料側埠／佔格測試全綠（2026-08-26） |
-| 最後更新 | 2026-08-26 |
+| 狀態 | **utils 已修；資料側全綠；已合入 master（PR #32）；M1 成立** |
+| 最後更新 | 2026-08-30 |
 
 欄位凍結見 A2 §4.1。`expected_size`＝頂層 `width×height`。
 

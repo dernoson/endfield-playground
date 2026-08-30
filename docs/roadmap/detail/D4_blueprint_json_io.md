@@ -8,8 +8,8 @@
 | 建議主責／備援 | aaaaa／— |
 | 性質 | 純函式 ＋ 接線 |
 | 依賴 | [B2](./B2_placement_chain.md)、[C1](./C1_port_hit_and_draft.md)、[C5](./C5_source_primary_output.md) |
-| 狀態 | `[ ]` 未開始 |
-| 最後更新 | 2026-08-22 |
+| 狀態 | `[!]` 待重訂格式（儲存形狀改 devices／pipelines；排 9 月首週） |
+| 最後更新 | 2026-08-30 |
 
 ---
 
@@ -149,3 +149,9 @@ interface BlueprintFile {
 
 ### 2026-08-22
 - 建檔。schema 刻意最小化；`version` 欄位無實際邏輯但保留為下一輪遷移鉤子
+
+### 2026-08-25
+- 佈局自建裁決：儲存形狀改 `devices`／`pipelines`，`connections` 為衍生值 → 原 `{ nodes, edges }` 格式失效，大綱改標 `[!]`
+
+### 2026-08-30
+- 狀態 meta 同步為 `[!]`；**本週無產出**。Zod schema 重訂仍排 9 月首週
