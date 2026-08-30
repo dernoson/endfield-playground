@@ -5,6 +5,30 @@ import type { PipelineFootprint, PipelinePath } from '@/types/footprint';
 const WALKABLE_AXES: readonly Axis[] = ['x', 'y'] as const;
 
 /**
+ * 判斷一條路徑是否良構：相鄰兩點至多只有一軸不同。
+ *
+ * 管線只能沿軸走，所以斜向的一段不構成路徑——它缺一個轉角點。呼叫端必須
+ * 先問過本述詞再展開佔格，否則等於替使用者發明了一條沒人指定過的路徑。
+ * 少於兩點的路徑沒有段落可以違反，一律視為良構。
+ *
+ * @param waypoints 依序連接的絕對座標路徑
+ * @returns true 表示每一段都沿單一軸
+ * @example
+ * isAxisAlignedPath([{ x: 0, y: 0, z: 0 }, { x: 3, y: 0, z: 0 }]); // true
+ * isAxisAlignedPath([{ x: 0, y: 0, z: 0 }, { x: 3, y: 2, z: 0 }]); // false
+ */
+export function isAxisAlignedPath(waypoints: Position[]): boolean {
+    for (let i = 1; i < waypoints.length; i++) {
+        const prev = waypoints[i - 1];
+        const curr = waypoints[i];
+        if (prev.x !== curr.x && prev.y !== curr.y) {
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
  * 把絕對座標的路徑轉成「起點 ＋ 一串軸向位移」的相對表示。
  *
  * 只沿 x 與 y 產生位移：管線所在層由傳輸媒質固定，路徑本身不換層。  \
@@ -48,6 +72,9 @@ export function absToRelPath(originalPoints: Position[]): PipelinePath {
 
 /**
  * 展開單一管線佔用的所有格點。
+ *
+ * **前置條件**：`waypoints` 必須通過 `isAxisAlignedPath`。斜向的一段會被拆成
+ * 先 x 後 y 兩個位移，等於憑空多出一個轉角，佔格結果不對應任何實際路徑。
  *
  * 依序走過路徑上的每一段位移，逐格記錄經過的座標；再依佔用深度  \
  * 自該格的 z 起向上展開，得到 (z, d) 模型下的完整佔用層。  \

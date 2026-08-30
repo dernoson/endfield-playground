@@ -6,6 +6,7 @@ import type { Machine, PortMedia, PortSide } from '@/types/machine';
 import { getMachineMode } from '@/types/machine';
 import { rotatePort } from '@/utils/portUtils';
 import { resolvePortAnchorCell } from '@/utils/layout/portAnchor';
+import { isAxisAlignedPath } from '@/utils/layout/pipelineGeometry';
 import { detectOverlaps } from '@/utils/layout/overlapDetection';
 
 /** 設備的佔用層起點；一般設備立於地面層 */
@@ -113,10 +114,13 @@ function toDeviceFootprint(node: FactoryNode, def: Machine): DeviceFootprint {
 /**
  * 把連線轉成佔格描述，並把彎折點補上起訖埠錨點成為完整路徑。
  *
+ * 路徑不良構時回傳 null 而不判定：斜向的一段代表這條連線缺一個轉角點，
+ * 它實際走哪條路徑並未被指定，對未定義的路徑做重疊判定只會產生假陽性。
+ *
  * @param edge 已部署的管線；data.bendPoints 為格子座標
  * @param ctx 驗證上下文，用於查兩端設備與其定義
  * @param nodeById 設備節點索引
- * @returns 管線的佔格描述；兩端設備或定義缺失時回傳 null
+ * @returns 管線的佔格描述；兩端設備或定義缺失、或路徑不良構時回傳 null
  */
 function toPipelineFootprint(
     edge: FactoryEdge,
@@ -135,8 +139,10 @@ function toPipelineFootprint(
     const start = resolveEndpointCell(sourceNode, sourceDef, edge.sourceHandle, 'out', z);
     const end = resolveEndpointCell(targetNode, targetDef, edge.targetHandle, 'in', z);
     const bends = (edge.data?.bendPoints ?? []).map((point) => ({ x: point.x, y: point.y, z }));
+    const waypoints = [start, ...bends, end];
+    if (!isAxisAlignedPath(waypoints)) return null;
 
-    return { id: edge.id, waypoints: [start, ...bends, end], depth: PIPELINE_DEPTH };
+    return { id: edge.id, waypoints, depth: PIPELINE_DEPTH };
 }
 
 /**

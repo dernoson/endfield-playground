@@ -6,7 +6,11 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { absToRelPath, getPipelineOccupiedCells } from '@/utils/layout/pipelineGeometry';
+import {
+    absToRelPath,
+    getPipelineOccupiedCells,
+    isAxisAlignedPath,
+} from '@/utils/layout/pipelineGeometry';
 
 describe('absToRelPath', () => {
     it('情況 1:基本 2D 位移（X 軸、Y 軸交替移動）', () => {
@@ -179,5 +183,65 @@ describe('getPipelineOccupiedCells', () => {
             { x: 1, y: 0, z: 0 },
             { x: 1, y: 0, z: 1 },
         ]);
+    });
+});
+
+describe('isAxisAlignedPath', () => {
+    it('水平與垂直的單段路徑都是良構', () => {
+        expect(
+            isAxisAlignedPath([
+                { x: 0, y: 0, z: 0 },
+                { x: 3, y: 0, z: 0 },
+            ]),
+        ).toBe(true);
+        expect(
+            isAxisAlignedPath([
+                { x: 0, y: 0, z: 0 },
+                { x: 0, y: 3, z: 0 },
+            ]),
+        ).toBe(true);
+    });
+
+    it('斜向的一段不是良構', () => {
+        expect(
+            isAxisAlignedPath([
+                { x: 0, y: 0, z: 0 },
+                { x: 3, y: 2, z: 0 },
+            ]),
+        ).toBe(false);
+    });
+
+    it('補上轉角點後同一組端點即為良構', () => {
+        expect(
+            isAxisAlignedPath([
+                { x: 0, y: 0, z: 0 },
+                { x: 3, y: 0, z: 0 },
+                { x: 3, y: 2, z: 0 },
+            ]),
+        ).toBe(true);
+    });
+
+    it('多段中只要有一段斜向即非良構', () => {
+        expect(
+            isAxisAlignedPath([
+                { x: 0, y: 0, z: 0 },
+                { x: 3, y: 0, z: 0 },
+                { x: 5, y: 2, z: 0 },
+            ]),
+        ).toBe(false);
+    });
+
+    it('少於兩點的路徑沒有段落可違反，視為良構', () => {
+        expect(isAxisAlignedPath([])).toBe(true);
+        expect(isAxisAlignedPath([{ x: 4, y: 4, z: 0 }])).toBe(true);
+    });
+
+    it('只有 z 不同時仍視為良構（同一格的不同層）', () => {
+        expect(
+            isAxisAlignedPath([
+                { x: 1, y: 1, z: 0 },
+                { x: 1, y: 1, z: 1 },
+            ]),
+        ).toBe(true);
     });
 });

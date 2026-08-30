@@ -187,6 +187,40 @@ describe('E001_deviceOverlap Detector', () => {
             expect(alerts[0].relatedConnectionUids).toEqual(['pipe_1']);
         });
 
+        it('路徑不良構的連線不參與判定', () => {
+            // dev_b 在 dev_a 的斜下方：兩端錨點的 x 與 y 都不同，且無彎折點
+            // 這條連線缺一個轉角點，實際路徑未被指定，不應憑空判定
+            const ctx = makeCtx(
+                [
+                    makeNode('dev_a', '塑型機', 0, 0),
+                    makeNode('dev_b', '塑型機', 6, 4),
+                    makeNode('dev_mid', '塑型機', 3, 0),
+                ],
+                defs,
+                [makeEdge('conn_1', 'dev_a', 'dev_b')],
+            );
+            expect(E001_deviceOverlap.run(ctx)).toEqual([]);
+        });
+
+        it('補上轉角點後不良構的連線恢復判定', () => {
+            // 端點為 (2,0) 與 (5,4)；在 (2,4) 補一個轉角讓路徑良構
+            // 垂直段 x=2、y 0..4 穿過 dev_mid（佔 x 2..3、y 2..3）
+            const ctx = makeCtx(
+                [
+                    makeNode('dev_a', '塑型機', 0, 0),
+                    makeNode('dev_b', '塑型機', 6, 4),
+                    makeNode('dev_mid', '塑型機', 2, 2),
+                ],
+                defs,
+                [makeEdge('conn_1', 'dev_a', 'dev_b', 'belt', [{ x: 2, y: 4 }])],
+            );
+            const alerts = E001_deviceOverlap.run(ctx);
+
+            expect(alerts).toHaveLength(1);
+            expect(alerts[0].relatedDeviceUids).toEqual(['dev_mid']);
+            expect(alerts[0].relatedConnectionUids).toEqual(['conn_1']);
+        });
+
         it('連線端點指向不存在的節點時安全略過', () => {
             const ctx = makeCtx([makeNode('dev_a', '塑型機', 0, 0)], defs, [
                 makeEdge('conn_1', 'dev_a', 'dev_missing'),
