@@ -1,31 +1,33 @@
-# 文件導覽
+﻿# 文件導覽
 
 這裡放**全員共用**的專案文件。三個問題，三個入口：
 
 | 你想知道 | 打開 |
 |----------|------|
-| **我這週要交什麼** | [work_dispatch/](./work_dispatch/) → 找自己的代號資料夾 |
-| 這週全隊在做什麼、什麼是月底門檻 | [work_dispatch/WEEK_20260823.md](./work_dispatch/WEEK_20260823.md) |
+| **我這週要交什麼** | [work_dispatch/](./work_dispatch/) → 找自己的代號資料夾（**0831**） |
+| 這週全隊在做什麼 | [work_dispatch/WEEK_20260831.md](./work_dispatch/WEEK_20260831.md) |
 | 到 11/29 的整體計畫與各工項驗收標準 | [roadmap/ROADMAP_OUTLINE.md](./roadmap/ROADMAP_OUTLINE.md) |
 
 ---
 
-## 1. 本週（2026-08-23 → 08-30）我的工單
+## 1. 本週（2026-08-31 → 09-06）我的工單
 
 | 你是 | 直接點這裡 |
 |------|------------|
-| aaaaa | [W0823-A1 佔格與 port 對資料](./work_dispatch/aaaaa/W0823-A1_grid_port_alignment.md) |
-| dernoson | [W0823-D0 公告基準＋合入守門](./work_dispatch/dernoson/W0823-D0_announce_and_merge_gate.md) |
-| shirone | [W0823-S1 E001 設備重疊純函式](./work_dispatch/shirone/W0823-S1_e001_device_overlap.md) |
-| paper | [W0823-P1 三塊畫面視覺基準](./work_dispatch/paper/W0823-P1_visual_three_panels.md) |
-| toby | [W0823-T1 選取設備資訊上 Inspector](./work_dispatch/toby/W0823-T1_placement_footprint_size.md)（**8/25 改指向**） |
-| harry | [W0823-H1 P 鍵切換管線工具](./work_dispatch/harry/W0823-H1_connect_tool_shortcut.md) |
-| goodmorning | [W0823-G1 機器卡片 mock](./work_dispatch/goodmorning/W0823-G1_machine_card_mock.md) |
-| avery | [W0823-V1 環境跑通＋ViewSwitcher](./work_dispatch/avery/W0823-V1_env_and_viewswitcher.md) |
-| MBD | [W0823-M1 ItemSummaryTable 空狀態](./work_dispatch/MBD/W0823-M1_item_summary_empty_state.md) |
-| azure9572 | [W0823-Z1 W001 草稿收斂](./work_dispatch/azure9572/W0823-Z1_w001_converge.md) |
+| aaaaa | [W0831-A1 工具列接真實機器資料](./work_dispatch/aaaaa/0831/W0831-A1_toolbar_real_machines.md) |
+| dernoson | [W0831-D0 決策／合入／9 月門檻裁示](./work_dispatch/dernoson/0831/W0831-D0_gate_and_sept_scope.md) |
+| toby | [W0831-T1 Inspector 攤平](./work_dispatch/toby/0831/W0831-T1_inspector_flatten.md) |
+| shirone | [W0831-S1 L3 學習＋E001 交接](./work_dispatch/shirone/0831/W0831-S1_l3_learn_and_e001_handoff.md) |
+| goodmorning | [W0831-G1 MachineCard](./work_dispatch/goodmorning/0831/W0831-G1_machine_card.md) |
+| paper | [W0831-P1 frame 標號](./work_dispatch/paper/0831/W0831-P1_frame_labels.md) |
+| MBD | [W0831-M1 空狀態文案（單步）](./work_dispatch/MBD/0831/W0831-M1_empty_copy_step.md) |
+| harry | [W0831-H0 暫停](./work_dispatch/harry/0831/W0831-H0_pause.md) |
+| azure9572 | [W0831-Z0 暫停](./work_dispatch/azure9572/0831/W0831-Z0_pause.md) |
+| avery | [W0831-V0 暫停＋續留一句](./work_dispatch/avery/0831/W0831-V0_pause_and_retain.md) |
 
-第一次接工單的話，先看 [work_dispatch/README.md §2「工單怎麼讀」](./work_dispatch/README.md)。
+上週（8/23–8/30）工單在各人 `0823/`；總表見 [WEEK_20260823.md](./work_dispatch/WEEK_20260823.md)。
+
+第一次接工單的話，先看 [work_dispatch/README.md](./work_dispatch/README.md)。
 
 ---
 
