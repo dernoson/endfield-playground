@@ -8,13 +8,13 @@
 
 CR-03 擺設位置衝突 —— 持續監聽畫布狀態，偵測設備擺放與管線佈線的空間合法性，以 Error 回饋。警示狀態同時決定 CR-04 流量估算的計算範圍（有 Error 的節點略過）。
 
-規格出處 `spec/03_validation.md`（v0.4，Phase 1）。這份 spec 內含一段 2026-08-04 的重估紀錄，推翻了本文後半的部分規定，是本計畫最需要先處理的地方（見 O1）。
+規格出處 `spec/03_validation.md`（v0.5，Phase 1）。
 
 **本計畫的約束**
 
-- `spec/` 是對外文件，統籌決斷寫在本計畫，不寫回 `spec/`。
-- `待實作` 代表「規格已定、尚未逐項對照程式碼確認」；`overlapDetector.ts` 已存在（見 O2），動任一格前先核對現況。
-- spec 內文與其重估紀錄有直接矛盾（O1），凡引用 spec 內文的格子都要先確認該段是否已被重估紀錄推翻。
+- `spec/03_validation.md` 的 §2.2.1 佔用層編碼與 §2.2.2 偵測實作由本計畫維護並回寫；其餘章節仍以 spec 為對外權威，本計畫不代寫。
+- `待實作` 代表「規格已定、尚未逐項對照程式碼確認」；動任一格前先核對現況。
+- 空間座標一律為格子座標，佔用層以 (z, d) 表示，`d = 佔用層數`。
 
 ## 規劃描述
 
@@ -56,45 +56,91 @@ E003（超出基地框線）獨立成一格且狀態是 `待決斷` 而非 `待�
 
 所以「驗證同步、估算 debounce，兩條路徑不共用」這條設計已經成立，不是待辦。0006#5 剩下的不是機制而是內容：沒有 detector 就沒有東西可觸發。
 
+### O6 · 2026-08-30 07:10:00+08:00 — 分支狀態決定合入方向只能是 merge
+
+`dev/shirone0824` 領先 merge-base `780ebcf` 37 個 commit，`master` 領先 12 個。前者除了 shirone 的三個 detector commit，還含 aaaaa 的 V10 全套（`src/__tests__/data/machineGeometry.test.ts`、`src/app/dev/PlacementDemo.vue`、`portUtils` 的 pad-to-square `rotatePort` 修正）與 0825 派工文件，這些在 `master` 上都不存在。
+
+因此 cherry-pick 那三個 commit 會丟掉本計畫要改的對象（`machineGeometry.test.ts`）與它依賴的 `rotatePort` 修正。`git merge-tree` 驗證兩邊可自動合併，唯一雙邊改動的 `W0823-D0` 改的是不同行。
+
+### O7 · 2026-08-30 07:15:00+08:00 — 座標語意與佔用層編碼定案
+
+- **更新:** O1
+
+`Position` 由不定長的 `number[]` 改為具名三軸 `{ x, y, z }`，語意固定為格子座標；`Axis` 收窄為 `'x' | 'y'`（管線只在平面上走，所在層由媒質固定）。像素到格子的換算落在 `useValidation.buildContext()`，`ValidationContext` 對外保證格子座標。佔用層編碼採 `d`（佔用深度），`d = h + 1`，`occupiedLayers = { z … z+d-1 }`（來源：`docs/aaaaa/LAYOUT_REWRITE_DISPATCH_IMPACT_0825.md` §4 第 2 項主編裁決）。
+
+O1 記的「spec 內含推翻自身後半內容的重估紀錄」在該區塊刪除後不再成立。O1 當時量到的是事實、推論也對，是樹動了，所以是更新而非更正或推翻。
+
+`d` 恰好等於佔格描述的 `size.z`：把 (z, d) 展開成第三軸的格點之後，層別交集在幾何層不需要任何條件分支。這是採 `d` 而非 `h` 的實際好處。
+
+### O8 · 2026-08-30 07:20:00+08:00 — 兩套同名 getOccupiedCells 的實際爆炸面很小
+
+`src/utils/geometryUtils.ts` 與 `src/utils/shirone/getMachineOccupiedGrids.ts` 各有一個 `getOccupiedCells`，簽章、回傳型別與維度都不同。前者只有 `src/__tests__/data/machineGeometry.test.ts` 與檔內 `isDeviceWithinBaseRegion` 使用；`cellsOverlap` 與 `isDeviceWithinBaseRegion` 本身零使用。
+
+所以把 `geometryUtils` 收斂成只管基地邊界、佔格改由 `src/utils/layout/deviceOccupancy.ts` 單一提供，實際要跟改的只有一個測試檔，且它的斷言（格數與四角）一字不必動。`geometryUtils` 另有一份私有複製的 `BASE_REGION_SIZES`，與 `canvasStore` 重複，一併收為單一來源。
+
+### O9 · 2026-08-30 07:25:00+08:00 — E001 轉換層的頭尾缺口與端點外推的必要性
+
+原 `E001_deviceOverlap` 只在 `conn.data.bendPoints` 非空時才建管線，且 `waypoints` 完全來自 `bendPoints` —— 無彎折點的直線連線因此完全不進偵測，有彎折點者兩端線段也不被檢查。
+
+補頭尾時端點必須取在設備佔格「之外」相鄰的一格。若以埠所在的邊界格為端點，每條連線都會與它的來源與目標設備同格（一般設備佔用層 {0,1} 與傳送帶 {0} 交集非空），結果是每一條連線都報一筆。`editorStore` 的 16 條 `mockEdges` 全無 `data` 也無 handle，因此埠推算必須有回退路徑。
+
+### O10 · 2026-08-30 07:30:00+08:00 — 下游文件的引用面遠大於本次改動範圍
+
+`getOccupiedCells` 與 `cellsOverlap` 在 `docs/` 底下另有 22 份文件引用（`docs/aaaaa/dev/dev_v5/B1_geometry_utils.md` 18 處最多，其次為 `docs/shirone/README.md`、`docs/shirone/DETECTOR_CHECKLIST.md`、`docs/roadmap/detail/A2`／`B2`／`B3`）。本次只改 `spec/03_validation.md`、`D2`、`docs/dernoson/L1/shirone.md`、`W0823-S1` 與其技術註記共五份。
+
+其餘文件在改動後會指向不存在的函式。這是刻意的範圍取捨，不是遺漏。
+
+### O11 · 2026-08-30 07:35:00+08:00 — validation 路徑的 debug 輸出蓋掉實際結果
+
+`validationStore.run()` 內有 6 處 `console.log` / `console.time`、`registerDetector` 有 2 處、`useValidation.runValidation()` 另有 2 處。dev 頁的人工驗收要靠看 alert 筆數與訊息，這些輸出會把 console 灌滿。對應 `0015#12`。
+
+
 ## 待辦
 
-### 1 統一重疊偵測器：多維空間索引
+### 1 統一重疊偵測器：三軸格點索引
 
-- **state:** 實作中
-- **basis:** → O3
+- **state:** 完成
+- **basis:** → O7、O8、O9
 
-不分開實作 E001 與 E002，改以一個全局空間索引一次解決：遍歷所有設備（`getMachineOccupiedGrids`）與連線（`getPipelineOccupiedGrids`）取得佔用格子，撞到同一格即記為重疊。座標用原始值不做 `Math.floor`，回傳物件 id。
+設備與管線的空間重疊是同一個判定，共用一張稀疏格點表一次算完：兩者各自展開成佔格（`@/utils/layout/deviceOccupancy`、`pipelineGeometry`），打進 `Map<"x,y,z", id[]>`，同格即記為重疊配對。索引結構用字串 key 而非巢狀陣列，因為藍圖座標可為負值且分布稀疏。輸出是字典序去重後的 `[idA, idB]` 配對，代碼指派留給 detector。
 
-演算法本體已落地並有 13 個測試案例（O3）。與原正文的兩處差異已確認採用程式碼的版本：索引結構用稀疏 `Map` 而非多維陣列 `allgrid`（維度執行期才決定、大座標稀疏，理由在檔內註解），輸出是去重的 id 清單而非 `{id1, id2}` 配對。
+座標固定三軸且語意為格子座標，換算在 `useValidation.buildContext()` 完成，幾何層不做 `Math.floor`。佔用層 (z, d) 已在佔格展開時化為第三軸的格點，層別交集因此不需要條件分支。
 
-剩下兩件事：一是輸出型別要不要改回配對，取決於 0006#3 的裁決（分類需要知道是「誰與誰」撞在一起）；二是它目前不符合 `Detector` 介面也沒被 `registerDetector()`，在接上之前整個 CR-03 對使用者不存在。
+`E001_deviceOverlap` 是薄轉換層：把 `ValidationContext` 轉成佔格描述、把配對包成 Alert；並在 `src/app/dev/ValidationTest.vue` 顯式 `registerDetector` 掛上。
 
-判準：`overlapDetector.test.ts` 的重疊判定案例全通過（已達成），且偵測結果實際進入 `validationStore.alerts`。
+判準：`overlapDetection.test.ts` 的重疊判定案例全通過，且偵測結果實際進入 `validationStore.alerts`。
 
 **沿革**
 
 - H1 · 2026-08-11 決斷 —— 自 `spec/03_validation.md` 重估紀錄第 1、2 節轉入 → O1（來源：spec 重估紀錄）
 - H2 · 2026-08-11 落地 —— `detectOverlaps` 演算法與測試已在 tree，未接上 store → O3
 - H3 · 2026-08-11 修正 —— 索引結構與輸出型別以程式碼實況為準，正文改寫 → O3（取代 H1 的 `allgrid` 描述）
+- H4 · 2026-08-30 改題 —— 原題「統一重疊偵測器：多維空間索引」；維度固定為三軸後不再是多維 → O7
+- H5 · 2026-08-30 決斷 —— 座標固定三軸格子座標、佔用層採 (z, d)（使用者裁決）→ O7
+- H6 · 2026-08-30 落地 —— 幾何遷入 `src/utils/layout/`，E001 於 dev 頁註冊並實際產出 alert → O8、O9
 
 ### 2 高度層與立體碰撞判定
 
-- **state:** 待實作
-- **basis:** → O4
+- **state:** 實作中
+- **basis:** → O7、O9
 
-每個物件帶 `z`（物理層，0 = 地面、1 = 空中）與 `h`（貫穿旗標，1 表示同時佔滿 z=0 與 z=1）。佔用層 `occupiedLayers(obj) = h === 1 ? {0,1} : {z}`；兩物件佔同一格子時，佔用層交集非空才算衝突。
+每個物件帶 `z`（起始層，0 = 地面、1 = 空中）與 `d`（佔用深度，自 z 起向上佔滿的層數）。佔用層 `occupiedLayers(obj) = { z … z+d-1 }`；兩物件佔同一格子時，佔用層交集非空才算衝突。
 
-各類物件的 (z, h)：一般設備 (0,1)、傳送帶本體 (0,0)、水管本體 (1,0)、取出口 / 存入口 / 供貨源樁 (0,0)、傳送帶的分匯流器與物流橋 (0,0)、水管的分匯流器與中介橋 (0,1)。
+各類物件的 (z, d)：一般設備 (0,2)、傳送帶本體 (0,1)、水管本體 (1,1)、取出口 / 存入口 / 供貨源樁 (0,1)、傳送帶的分匯流器與物流橋 (0,1)、水管的分匯流器與中介橋 (0,2)。
 
-要點：水管的分匯流器與物流橋雖屬水管系統，因 h=1 佔用 {0,1}，**不享有水管本體的重疊豁免**，判定同一般設備。
+要點：水管的分匯流器與物流橋雖屬水管系統，因 d=2 佔用 {0,1}，**不享有水管本體的重疊豁免**，判定同一般設備。
 
-現況只有第三個座標軸，沒有層別語意（O4）：`shironesMachine` 無 `z` / `h` 欄位。落地路徑是型別加欄位 + 把 `h = 1` 展成兩層格點餵給既有的 `detectOverlaps`，偵測器本體不必改。
+`d` 即佔格描述的 `size.z`，展開成第三軸格點後偵測器本體不需要任何層別判斷（O7）。E001 轉換層目前以類別預設值指派：設備一律 (0,2)、管線依 `data.portType` 決定 z（belt 0、pipe 1）且 d=1。
 
-判準：spec 第 3 節「h=0 物件互不阻擋」「h=1 阻擋水管」「水管分匯流器歸為 h=1」三項通過。
+欠的是資料面：`Machine` 型別尚無層別欄位，`machines.ts` 也沒有回填，因此傳送帶、取貨口、分匯流器等特例目前一律當一般設備處理。這一項屬 aaaaa 的資料域。
+
+判準：spec 第 3 節「d=1 物件互不阻擋」「d=2 阻擋水管」「水管分匯流器歸為 d=2」三項通過。
 
 **沿革**
 
 - H1 · 2026-08-11 決斷 —— 自 `spec/03_validation.md` 2.2.1 節轉入（來源：spec）
+- H2 · 2026-08-30 決斷 —— 佔用層編碼由 `h` 改為 `d`，`d = h + 1`（使用者裁決）→ O7
+- H3 · 2026-08-30 落地 —— 佔用層以佔格 `size.z` 表達並在 E001 轉換層以類別預設值指派；資料面欄位待補 → O9（取代 H1 的 `h` 表述）
 
 ### 3 Error 代碼分類的職責歸屬
 
@@ -105,11 +151,14 @@ E003（超出基地框線）獨立成一格且狀態是 `待決斷` 而非 `待�
 
 需要使用者裁決的是：對外仍呈現 E001 / E002 兩碼（分類邏輯放在驗證核心）、還是合併成單一「空間衝突」碼？前者要定義分類規則（兩個都是設備 → E001；含管線 → E002？），後者要同步改 CR-02 與 CR-09 spec 中引用這兩碼的地方。
 
-裁決還會決定一件實作面的事：現有 `detectOverlaps` 回的是去重的 id 清單，分類若需要「誰與誰撞」就得改回配對輸出（O3）。
+偵測側已合一：一個偵測器、一張格點表同時涵蓋設備與管線（2026-08-24 dernoson 與 shirone 合議），輸出已是 `[idA, idB]` 配對，分類需要的「誰與誰撞」資訊具備。待決的只剩對外呈現幾碼。
+
+在裁決之前，`E001_deviceOverlap` 對所有空間衝突一律吐 `E001`。
 
 **沿革**
 
 - H1 · 2026-08-11 決斷 —— 自 `spec/03_validation.md` 重估紀錄第 1 節與 2.2 節的矛盾轉入，維持未決 → O1（來源：spec）
+- H2 · 2026-08-30 修正 —— 輸出已改為配對，本格不再牽動輸出型別；偵測側合一但呈現碼數維持未決 → O9
 
 ### 4 E003 超出基地框線：留還是砍
 
@@ -134,7 +183,9 @@ E003（超出基地框線）獨立成一格且狀態是 `待決斷` 而非 `待�
 
 與 CR-04 的 debounce 重算不同 —— 驗證是同步的，估算才 debounce。兩者的觸發時機不可共用同一條路徑。
 
-機制已完整落地（O5）：`useValidation` 的 deep + immediate + 無 debounce watch、`MainLayout` 中先驗證再估算的呼叫順序，且有測試。剩下的不是機制而是內容 —— 註冊數為 0 時觸發了也沒有 detector 可跑，兩項驗證都測不了。本格要到 0006#1 接上 store 之後才能收。
+機制已完整落地（O5）：`useValidation` 的 deep + immediate + 無 debounce watch、`MainLayout` 中先驗證再估算的呼叫順序，且有測試。`buildContext()` 另負責把像素座標換算為格子座標，`ValidationContext` 對外只保證格子座標。
+
+E001 已在 `/dev/validation-test` 註冊，觸發與重跑因此可端到端實測。剩下的是把 spec 第 3 節那兩項在該頁逐條走過。
 
 判準：spec 第 3 節「E001 旋轉觸發重疊」「警示即時更新」兩項通過。
 
@@ -142,6 +193,7 @@ E003（超出基地框線）獨立成一格且狀態是 `待決斷` 而非 `待�
 
 - H1 · 2026-08-11 決斷 —— 自 `spec/03_validation.md` 2.1 節轉入（來源：spec）
 - H2 · 2026-08-11 落地 —— 同步 watch 與呼叫順序已在 `useValidation` / `MainLayout` 成立且有測試 → O5
+- H3 · 2026-08-30 落地 —— `buildContext()` 承擔座標換算；E001 於 dev 頁註冊後觸發鏈端到端可驗 → O7、O9
 
 ### 6 畫布視覺警示與 Error 優先
 
