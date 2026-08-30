@@ -10,7 +10,8 @@
 | 性質 | 資料／純函式（**本週只做這一種**） |
 | 預估時數 | 11–20h 區間內可吃完；建議週末爆發一次收尾 |
 | review_gate | dernoson |
-| 狀態 | `[ ]` 未開始 |
+| 狀態 | `[~]` V10 交付完成、待主編 review（PR #32） |
+| PR | https://github.com/dernoson/endfield-playground/pull/32 |
 
 ---
 
@@ -57,12 +58,14 @@
 | JSON `size` | `width`／`height`（頂層欄位） |
 | `modes[].ports` | `modes[].input_ports`／`modes[].output_ports` |
 | `getOccupiedCells(node, machine)` | `src/utils/geometryUtils.ts`（已吃 `rotation` 0/1/2/3） |
-| 埠旋轉 | `rotatePortSide`／`rotatePortOffset`（`src/utils/portUtils.ts`） |
+| 埠旋轉 | `rotatePort`／`rotatePortSide`／`rotatePortOffset`（`src/utils/portUtils.ts`） |
 | 查詢 | `getMachine`／`getMachineById`（`src/data/machines.ts`，**codegen 產物勿手改**） |
 
 參考既有測試風格：`src/__tests__/data/machines.test.ts`。
 
-**本週複查發現的既有落差（請在錯機清單多開一列記錄，不必本週修）：** `useValidation.buildContext()` 傳給 detector 的 `FactoryNode.position` 是 Vue Flow **像素**座標（吸附 `gridSize`＝20），但 `geometryUtils.getOccupiedCells()` 註解寫「假設 position 已經是格子座標」。兩者對不上時，畫面上重疊的設備在 E001 眼中不會重疊。shirone 本週的 E001 會照官方函式寫並在 PR 註明此落差；換算歸屬（改 `getOccupiedCells` 簽名、或在 `FactoryNodeData` 增 `gridX`／`gridY`）由你在幾何域裁決，可排 9 月。
+**本週複查發現的既有落差（請在錯機清單多開一列記錄，不必本週修）：** `useValidation.buildContext()` 傳給 detector 的 `FactoryNode.position` 是 Vue Flow **像素**座標（吸附 `gridSize`＝20），但 `geometryUtils.getOccupiedCells()` 註解寫「假設 position 已經是格子座標」。兩者對不上時，畫面上重疊的設備在 E001 眼中不會重疊。shirone 本週的 E001 會照官方函式寫並在 PR 註明此落差。
+
+**2026-08-25 更新：此落差已由佈局視角自建的決議解決，不必再排 9 月裁決。** 新方案將 `Position` 統一為格子座標 `{x, y, z}`，全專案單一座標型別，像素／格子兩套並存的情況消失。錯機清單仍請保留該列作為紀錄，`owner` 改記「已由渲染層決議解決」。
 
 ---
 
@@ -90,14 +93,15 @@
 
 ## 5. DoD（勾完才算本週完成）
 
-對齊 A2 §9：
+對齊 A2 §9（2026-08-26 檢核）：
 
-- [ ] 錯機清單存在，每列具備 A2 §4.1 全部欄位
-- [ ] `machineGeometry.test.ts` 涵蓋全部機器 × 四種 rotation 並通過
-- [ ] 「錯在資料」已修；codegen 後 `src/data/machines.ts` 一致
-- [ ] 至少一台常用加工機佔格正確（證據附 PR）
-- [ ] `pnpm type-check`／`lint-check`／`format-check`／`test` 通過
-- [ ] PR 描述含下游消費者（下節）
+- [x] 錯機清單存在，每列具備 A2 §4.1 全部欄位
+- [x] `machineGeometry.test.ts` 涵蓋全部機器 × 四種 rotation 並通過
+- [x] 「錯在資料」：本批無 JSON 待修；utils 紅燈已由 V10-I1 消除；codegen 未改
+- [x] 至少一台常用加工機佔格正確（證據：`/dev/placement-demo` 個人驗收；待主編確認）
+- [x] `pnpm type-check`／`lint-check`／`format-check`／`test` 通過
+- [x] PR 描述含下游消費者（PR #32）
+- [~] review_gate 合入判定（dernoson）
 
 ---
 
@@ -112,7 +116,11 @@
 渲染側 fault=render 列 → 轉單 L2／L3，不在本 PR 改 canvas
 ```
 
-**合入後誰在畫布驗收：** 本週是 **toby（W0823-T1）**——他要讓節點外框吃 `width`×`height`，你的 codegen 結果一改，他當天就能在畫布上看出對不對。清單初稿一產出就丟 Discord，讓他先看渲染列。
+**合入後誰在畫布驗收（8/25 更新）：** toby 的 W0823-T1 已改指向 `InspectorPanel`，不再改畫布外框，因此**畫布側驗收改由你自己執行**——用 `/dev` 拓樸頁（`DevTopologySvg.vue`）抽查即可，那頁本來就在畫格子制設備與埠，不依賴即將廢除的 `FlowNodeOverlay`。
+
+toby 的新標的仍是你的下游：他會在 Inspector 顯示選取設備的 `width`×`height`，**那是全隊最快看出你資料修對沒有的地方**。清單初稿一產出仍請丟 Discord。
+
+**錯機清單的 `fault=render` 列（8/25 更新）：** 渲染歸屬對象已不再是 `FlowNodeOverlay`（該檔排 9 月廢除），`owner` 欄請改記「待佈局層落地後轉單」，不要指名本週的 L2 人力。
 
 ---
 
@@ -127,9 +135,9 @@
 | 時機 | 動作 |
 |------|------|
 | 開工 | 可自行開工；不必每日 ping |
-| 清單初稿產出 | Discord 丟連結即可（方便 L2 預覽渲染列） |
+| 清單初稿產出 | Discord 丟連結（**2026-08-26 已貼**） |
 | 卡住（codegen／合入／門檻判定） | dernoson |
-| 完成 | PR ＋ 回寫 A2 §11 開發日誌；週日會演示「放一台佔格正確」 |
+| 完成 | PR #32 ＋ 回寫 A2 §11；週日會演示 `/dev/placement-demo` |
 
 ---
 
@@ -140,3 +148,17 @@
 - 依 R-A2 正式派工
 - 註明文檔 `size`／`ports` 與程式碼 `width`/`height`／`input_ports`/`output_ports` 對照
 - 執行以本檔為準（先前的 TICKETS 草稿不採用）
+
+### 2026-08-25
+
+- 佈局視角改自建渲染層：**本單交付物完全不變**（資料、測試、錯機清單皆不觸渲染層），仍為 8/30 門檻唯一技術項
+- §3 像素／格子座標落差標為**已由渲染層決議解決**，取消原訂 9 月幾何域裁決
+- §6 畫布驗收人由 toby 改為自行以 `DevTopologySvg.vue` 抽查；`fault=render` 列的 `owner` 填法同步調整
+- 已知連帶（本週不處理）：本單新建的 `src/__tests__/data/machineGeometry.test.ts` 會 import 即將廢除的 `geometryUtils`，9 月動工時須跟改，已回寫決策層規劃檔的連帶清單
+
+### 2026-08-26
+
+- **V10 執行完成（待 review）：** B1 測試＋consistency；C1 清單；I1 `rotatePort` pad-to-square；E1 `/dev/placement-demo`；G1 A2 回寫；F1 品質閘全綠；PR #32
+- 本批無 JSON `fault=data`；B1 首跑 25 埠紅皆 utils，I1 後全綠
+- Discord 清單＋PR 已貼；`/dev` 個人驗收完，待主編驗收
+- 主畫布加分項：設備旋轉正常但 **port 牽線（Vue Flow edge）未跟著改** → `fault=render`，登記清單 §4；**非本單範圍**（見 §1 不要碰 canvas）；修復歸 **R-B3**（toby／harry，L2 接線）或佈局層換址後重做 Handle 定位
