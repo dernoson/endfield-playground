@@ -6,6 +6,7 @@
  *   - immediate watch 在 composable setup 時即跑一次
  *   - editorStore.nodes / edges 變動會觸發 validation 重跑
  *   - ValidationContext 內容正確（devices / connections / getDef 對應）
+ *   - ValidationContext 的座標已由像素換算為格子座標
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
@@ -15,7 +16,7 @@ import { useValidation } from '@/composables/useValidation';
 import { useValidationStore } from '@/store/validationStore';
 import { useEditorStore } from '@/store/editorStore';
 import type { Alert, Detector, ValidationContext } from '@/types/validation';
-import type { FactoryNode } from '@/types/graph';
+import type { FactoryNode, FactoryEdge } from '@/types/graph';
 
 // ─── 測試輔助 ────────────────────────────────────────────────────────────────
 
@@ -43,13 +44,23 @@ function makeSpyDetector(code: string): {
     return { detector, contexts };
 }
 
-function makeNode(id: string): FactoryNode {
+function makeNode(id: string, x = 0, y = 0): FactoryNode {
     return {
         id,
         type: 'default',
-        position: { x: 0, y: 0 },
+        position: { x, y },
         data: { label: `node ${id}`, machineType: '粉碎機', recipeIndex: 0 },
     };
+}
+
+/** 建立一條帶彎折點的連線；座標為畫布像素 */
+function makeEdge(id: string, bendPoints: { x: number; y: number }[]): FactoryEdge {
+    return {
+        id,
+        source: 'n1',
+        target: 'n2',
+        data: { portType: 'belt', bendPoints },
+    } as FactoryEdge;
 }
 
 // ─── immediate watch ─────────────────────────────────────────────────────────
@@ -179,6 +190,39 @@ describe('useValidation — ctx 內容', () => {
             // getDef 用真實設備名稱應能查到（粉碎機）
             expect(contexts[0].getDef('粉碎機')).toBeDefined();
             expect(contexts[0].getDef('不存在的機器')).toBeUndefined();
+        });
+    });
+
+    it('節點的像素座標除以 gridSize 後才進 ctx', () => {
+        scope.run(() => {
+            const editor = useEditorStore();
+            editor.nodes = [makeNode('n1', 200, 300)];
+            editor.edges = [];
+
+            const vs = useValidationStore();
+            const { detector, contexts } = makeSpyDetector('E001');
+            vs.registerDetector(detector);
+
+            useValidation();
+
+            // gridSize 預設 20，200 / 20 = 10、300 / 20 = 15
+            expect(contexts[0].devices[0].position).toEqual({ x: 10, y: 15 });
+        });
+    });
+
+    it('連線的 bendPoints 同樣換算為格子座標', () => {
+        scope.run(() => {
+            const editor = useEditorStore();
+            editor.nodes = [];
+            editor.edges = [makeEdge('e1', [{ x: 40, y: 60 }])];
+
+            const vs = useValidationStore();
+            const { detector, contexts } = makeSpyDetector('E001');
+            vs.registerDetector(detector);
+
+            useValidation();
+
+            expect(contexts[0].connections[0].data?.bendPoints).toEqual([{ x: 2, y: 3 }]);
         });
     });
 });

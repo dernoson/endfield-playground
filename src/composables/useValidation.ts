@@ -38,16 +38,39 @@ export function useValidation() {
 
     /**
      * 從目前的 editorStore 建立 ValidationContext。  \
-     * getDef 直接代理至 `getMachine`，提供 detector 取得設備靜態定義。
-     * baseRegion 從 canvasStore 取得，用於 E002 / E006 等邊界檢查。
+     * 節點與彎折點的像素座標在此除以 `gridSize` 換算為格子座標，  \
+     * detector 因此不需要、也拿不到 gridSize。  \
+     * getDef 直接代理至 `getMachine`，提供 detector 取得設備靜態定義。  \
+     * baseRegion 從 canvasStore 取得，用於 E003 等邊界檢查。
      * @returns 供各 detector 讀取的驗證上下文
      * @example
      * const context = buildContext()
      */
     function buildContext(): ValidationContext {
+        /** 單格像素；換算基準取自畫布視圖狀態 */
+        const gridSize = canvasStore.gridSize;
+
+        /**
+         * 把畫布像素座標換算成所在的格子索引。
+         *
+         * @param point 畫布像素座標
+         * @returns 該點所在的格子索引
+         */
+        const toGridCell = (point: { x: number; y: number }) => ({
+            x: Math.floor(point.x / gridSize),
+            y: Math.floor(point.y / gridSize),
+        });
+
         return {
-            devices: editorStore.nodes,
-            connections: editorStore.edges,
+            devices: editorStore.nodes.map((node) => ({
+                ...node,
+                position: toGridCell(node.position),
+            })),
+            connections: editorStore.edges.map((edge) => {
+                const data = edge.data;
+                if (!data?.bendPoints) return edge;
+                return { ...edge, data: { ...data, bendPoints: data.bendPoints.map(toGridCell) } };
+            }),
             getDef: getMachine,
             baseRegion: canvasStore.baseRegion,
         };
@@ -55,12 +78,7 @@ export function useValidation() {
 
     /** 用當前藍圖狀態跑一次完整驗證；結果寫入 validationStore.alerts */
     function runValidation(): void {
-        console.log('[Validation] runValidation start', {
-            devices: editorStore.nodes.length,
-            connections: editorStore.edges.length,
-        });
         validationStore.run(buildContext());
-        console.log('[Validation] runValidation complete');
     }
 
     watch([() => editorStore.nodes, () => editorStore.edges], runValidation, {
