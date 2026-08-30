@@ -1,9 +1,9 @@
-# W0823-P1｜paper｜三塊畫面視覺基準（對齊月）
+﻿# W0823-P1｜paper｜三塊畫面視覺基準（對齊月）
 
 | meta | value |
 |------|-------|
 | 週次 | 2026-08-23 → 2026-08-30 |
-| 對應 roadmap | 上游三塊畫面基準；為 [R-B1](../../roadmap/detail/B1_toolbar_real_machines.md)／[R-B4](../../roadmap/detail/B4_selection_inspector.md)／右側警訊（[R-D1](../../roadmap/detail/D1_stats_item_summary.md)、[R-D2](../../roadmap/detail/D2_e001_overlap_alert.md)）預留視覺對齊 |
+| 對應 roadmap | 上游三塊畫面基準；為 [R-B1](../../../roadmap/detail/B1_toolbar_real_machines.md)／[R-B4](../../../roadmap/detail/B4_selection_inspector.md)／右側警訊（[R-D1](../../../roadmap/detail/D1_stats_item_summary.md)、[R-D2](../../../roadmap/detail/D2_e001_overlap_alert.md)）預留視覺對齊 |
 | 等級 | **確定**（**不**列 8/30 技術門檻） |
 | 擋 8/30 門檻 | **否**（未交則工程沿用現有 UI；9/6–9/20 再套稿） |
 | 性質 | 視覺／Figma（**本週只做這一種；零程式**） |

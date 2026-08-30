@@ -1,9 +1,9 @@
-# W0823-Z1｜azure9572｜W001 草稿收斂為可 review 單 PR
+﻿# W0823-Z1｜azure9572｜W001 草稿收斂為可 review 單 PR
 
 | meta | value |
 |------|-------|
 | 週次 | 2026-08-23 → 2026-08-30 |
-| 對應 roadmap | [R-D3](../../roadmap/detail/D3_recipe_alerts.md)（W001 加分項；規劃上**可假設你不交付**） |
+| 對應 roadmap | [R-D3](../../../roadmap/detail/D3_recipe_alerts.md)（W001 加分項；規劃上**可假設你不交付**） |
 | 編制 | **不在** roadmap v0.2 九人編制內；本單＝續留草稿收斂，**非**主線 Owner |
 | 等級 | **加分項**（不擋 8/30） |
 | 擋 8/30 門檻 | **否** |

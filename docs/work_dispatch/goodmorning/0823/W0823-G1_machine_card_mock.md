@@ -1,9 +1,9 @@
-# W0823-G1｜goodmorning｜工具列機器卡片 mock（單檔 L3）
+﻿# W0823-G1｜goodmorning｜工具列機器卡片 mock（單檔 L3）
 
 | meta | value |
 |------|-------|
 | 週次 | 2026-08-23 → 2026-08-30 |
-| 對應 roadmap | [R-B1](../../roadmap/detail/B1_toolbar_real_machines.md) 的 L3 卡片切片（提前 mock；B1 正式串資料在 9 月） |
+| 對應 roadmap | [R-B1](../../../roadmap/detail/B1_toolbar_real_machines.md) 的 L3 卡片切片（提前 mock；B1 正式串資料在 9 月） |
 | 等級 | **加分項**（不擋 8/30） |
 | 擋 8/30 門檻 | **否**（未交不計失敗；頂替＝Toolbar 維持現有 `UButton` 列表） |
 | 性質 | 純畫面 mock（**本週只做這一種**） |
@@ -30,7 +30,7 @@
 | **畫面** | 一張卡片上看得见：**名稱**（例如「粉碎機」）＋**佔格文字**（例如「3×2」）；滑鼠點卡片有反應（之後別人會拿去接放置，你這週只要 emit） |
 | **交哪個檔** | **只准這一個新檔：** `src/components/MachineCard/Index.vue`（資料夾名、檔名必須一字不差） |
 | **不要碰** | `editorStore`／任何 `src/store/**`、`ToolbarPanel.vue`（別人的容器）、`FactoryCanvas.vue`、演算法、detector、InfoPanel 整包、repo **根目錄**亂放 `.vue` |
-| **卡住找誰** | dernoson（路徑／怎麼交檔）；卡片長什麼樣可對 [paper 稿](../../paper/)（沒稿就用文字排版）。**週中會有人在 Discord 問你一句進度** |
+| **卡住找誰** | dernoson（路徑／怎麼交檔）；卡片長什麼樣可對 [paper 稿](../../../paper/)（沒稿就用文字排版）。**週中會有人在 Discord 問你一句進度** |
 
 ---
 

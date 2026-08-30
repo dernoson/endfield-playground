@@ -1,4 +1,4 @@
-# W0823-T1｜toby｜選取設備資訊上 Inspector（R-B4 提前切片）
+﻿# W0823-T1｜toby｜選取設備資訊上 Inspector（R-B4 提前切片）
 
 > **⚠ 2026-08-25 改指向：本單的交付標的已更換。**
 > 原標的（`FlowNodeOverlay.vue` 節點佔格尺寸）因渲染層方案調整，該檔已排入 9 月廢除清單，本週再改會白做。
@@ -10,9 +10,9 @@
 | meta | value |
 |------|-------|
 | 週次 | 2026-08-23 → 2026-08-30 |
-| 對應 roadmap | [R-B4](../../roadmap/detail/B4_selection_inspector.md)（提前做「選取 → 顯示設備資訊」；完整選取面板門檻在 9/27） |
+| 對應 roadmap | [R-B4](../../../roadmap/detail/B4_selection_inspector.md)（提前做「選取 → 顯示設備資訊」；完整選取面板門檻在 9/27） |
 | 原對應 | ~~R-B2 預覽佔格讀真實 size~~（8/25 改指向，見頁首） |
-| 依賴提醒 | [R-A2](../../roadmap/detail/A2_grid_and_port_alignment.md) 本週由 aaaaa 修資料；你顯示出來的 `width`/`height` 以 codegen 後為準 |
+| 依賴提醒 | [R-A2](../../../roadmap/detail/A2_grid_and_port_alignment.md) 本週由 aaaaa 修資料；你顯示出來的 `width`/`height` 以 codegen 後為準 |
 | 等級 | **確定**（加分項；**不**列 8/30 必要條件） |
 | 擋 8/30 門檻 | **否**（未交不擋；頂替＝Inspector 維持現況） |
 | 性質 | 接線（**本週只做這一種**） |
@@ -56,7 +56,7 @@
 | 新標的**確定保留** | `InspectorPanel.vue` 在渲染層變更的盤點裡屬「不動」——你這次寫的東西不會被刪 |
 | 性質沒變 | 一樣是「接線」：把 store 裡的資料攤成畫面。符合「同一人同一週一種性質」 |
 | 時數沒變 | ≤2h；而且比原標的**更單純**（全唯讀，沒有 CSS 旋轉與 `transform-origin` 的坑） |
-| 一樣是提前切片 | 原本是 R-B2 的提前切片，現在是 [R-B4](../../roadmap/detail/B4_selection_inspector.md) 的提前切片，結構相同 |
+| 一樣是提前切片 | 原本是 R-B2 的提前切片，現在是 [R-B4](../../../roadmap/detail/B4_selection_inspector.md) 的提前切片，結構相同 |
 | 額外好處 | aaaaa 本週在修機器資料，**你這塊是全隊最快看出資料對不對的地方**——點一台機器就知道佔格數字有沒有修對 |
 
 **本週不做：** 編輯設備屬性（改配方／改環境／改名稱）、多選時的彙總、刪除按鈕、管線資訊、把面板拆成新元件。**唯讀顯示就好。**

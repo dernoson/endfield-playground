@@ -1,10 +1,10 @@
-# W0823-D0｜dernoson｜公告基準＋合入守門（R-A1）
+﻿# W0823-D0｜dernoson｜公告基準＋合入守門（R-A1）
 
 | meta | value |
 |------|-------|
 | 週次 | 2026-08-23 → 2026-08-30 |
-| 對應 roadmap | [R-A1](../../roadmap/detail/A1_announce_and_baseline.md)（主） |
-| 本週順帶 | [R-A3](../../roadmap/detail/A3_onboarding_onepager.md) 貼入／置頂、[R-A4](../../roadmap/detail/A4_weekly_cadence_gate.md) 會上宣讀規則、[R-E2](../../roadmap/detail/E2_layer_guard_pr_rules.md) 自動退回清單口頭凍結 |
+| 對應 roadmap | [R-A1](../../../roadmap/detail/A1_announce_and_baseline.md)（主） |
+| 本週順帶 | [R-A3](../../../roadmap/detail/A3_onboarding_onepager.md) 貼入／置頂、[R-A4](../../../roadmap/detail/A4_weekly_cadence_gate.md) 會上宣讀規則、[R-E2](../../../roadmap/detail/E2_layer_guard_pr_rules.md) 自動退回清單口頭凍結 |
 | 等級 | **確定** |
 | 擋 8/30 門檻 | **是（公告節奏）**；技術門檻本週由 aaaaa／W0823-A1 扛 |
 | 性質 | 決策／文件／合入（**本週只做這一種；禁止再開 L2 實作單給自己**） |
@@ -25,7 +25,7 @@
 | 欄 | 內容 |
 |----|------|
 | **畫面** | 會後每人手上有：大綱連結、自己的四欄工單、知道卡住找誰；Discord 置頂可見三條硬規則＋半頁上手 |
-| **交哪個檔** | Discord 公告摘要（≤15 行）；確認／貼入 `docs/dernoson/` 上手半頁（A3；稿可由 aaaaa 代擬）；本週待審 PR 合入或明確延壓標註；回寫 [WEEK_20260823](../WEEK_20260823.md) 狀態 |
+| **交哪個檔** | Discord 公告摘要（≤15 行）；確認／貼入 `docs/dernoson/` 上手半頁（A3；稿可由 aaaaa 代擬）；本週待審 PR 合入或明確延壓標註；回寫 [WEEK_20260823](../../WEEK_20260823.md) 狀態 |
 | **不要碰** | 任何 L2 畫布實作、`machines.json`  bulk 修正、新開長篇 spec、幫別人代寫整包功能 |
 | **卡住找誰** | aaaaa（公告稿／A3 草稿代擬）；合入爭議無人可 escalate（你就是主編），改找 aaaaa 對齊範圍 |
 
@@ -64,8 +64,8 @@
 
 ## 4. 開工前檢查
 
-- [ ] 已讀 [A1](../../roadmap/detail/A1_announce_and_baseline.md) §4.1–§4.3（三條硬規則、會程、四欄）
-- [ ] 已打開 [WEEK_20260823](../WEEK_20260823.md)（正式工單索引；**忽略** TICKETS 草稿）
+- [ ] 已讀 [A1](../../../roadmap/detail/A1_announce_and_baseline.md) §4.1–§4.3（三條硬規則、會程、四欄）
+- [ ] 已打開 [WEEK_20260823](../../WEEK_20260823.md)（正式工單索引；**忽略** TICKETS 草稿）
 - [ ] 若要代擬稿：向 aaaaa 要 Discord 摘要草稿（≤15 行）＋ A3 半頁草稿
 - [ ] 清點目前 open PR 數量；超過 3 先排序（門檻相關 > 確定 > 加分項）
 
@@ -77,8 +77,8 @@
 
 1. 確認摘要含：
    - A1 §4.1 **三條硬規則原文**
-   - 大綱里程碑表連結：[ROADMAP_OUTLINE](../../roadmap/ROADMAP_OUTLINE.md)
-   - 本週工單入口：[WEEK_20260823](../WEEK_20260823.md)（或各人 `work_dispatch/<code>/`）
+   - 大綱里程碑表連結：[ROADMAP_OUTLINE](../../../roadmap/ROADMAP_OUTLINE.md)
+   - 本週工單入口：[WEEK_20260823](../../WEEK_20260823.md)（或各人 `work_dispatch/<code>/`）
    - **不要**在摘要裡承諾 harry／toby 為 8/30 門檻必要條件
 2. Discord 貼出（≤15 行）＋ repo 連結（A1 §4.4 方案 C）
 3. 會上宣讀；當場確認每人「卡住找誰」
