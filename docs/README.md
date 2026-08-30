@@ -4,9 +4,11 @@
 
 | 你想知道 | 打開 |
 |----------|------|
-| **我這週要交什麼** | [work_dispatch/](./work_dispatch/) → 找自己的代號資料夾（**0831**） |
-| 這週全隊在做什麼 | [work_dispatch/WEEK_20260831.md](./work_dispatch/WEEK_20260831.md) |
-| 到 11/29 的整體計畫與各工項驗收標準 | [roadmap/ROADMAP_OUTLINE.md](./roadmap/ROADMAP_OUTLINE.md) |
+| **我這週要交什麼** | [work_dispatch/](./work_dispatch/) → **0831**（aaaaa 先看 **A0**） |
+| 這週全隊／驗收 | [WEEK_20260831.md](./work_dispatch/WEEK_20260831.md) |
+| 下週（依 L1 宣告） | [WEEK_20260907.md](./work_dispatch/WEEK_20260907.md) |
+| 到 11/29 計畫 | [roadmap/ROADMAP_OUTLINE.md](./roadmap/ROADMAP_OUTLINE.md)（§1.6 佈局） |
+| 佈局 SVG 定案 | [LAYOUT_REWRITE_EARLY_START_0831.md](./aaaaa/LAYOUT_REWRITE_EARLY_START_0831.md) |
 
 ---
 
@@ -14,16 +16,16 @@
 
 | 你是 | 直接點這裡 |
 |------|------------|
-| aaaaa | [W0831-A1 工具列接真實機器資料](./work_dispatch/aaaaa/0831/W0831-A1_toolbar_real_machines.md) |
-| dernoson | [W0831-D0 決策／合入／9 月門檻裁示](./work_dispatch/dernoson/0831/W0831-D0_gate_and_sept_scope.md) |
-| toby | [W0831-T1 Inspector 攤平](./work_dispatch/toby/0831/W0831-T1_inspector_flatten.md) |
-| shirone | [W0831-S1 L3 學習＋E001 交接](./work_dispatch/shirone/0831/W0831-S1_l3_learn_and_e001_handoff.md) |
-| goodmorning | [W0831-G1 MachineCard](./work_dispatch/goodmorning/0831/W0831-G1_machine_card.md) |
+| aaaaa | [**A0 L1 打底（最優）**](./work_dispatch/aaaaa/0831/W0831-A0_layout_l1_foundation.md) → [A1 B1（次優）](./work_dispatch/aaaaa/0831/W0831-A1_toolbar_real_machines.md) |
+| dernoson | [W0831-D0 定案宣布／閘門](./work_dispatch/dernoson/0831/W0831-D0_gate_and_sept_scope.md) |
+| shirone | [W0831-S1 MachineCard](./work_dispatch/shirone/0831/W0831-S1_machine_card.md) |
+| goodmorning | [W0831-G1 工具列 style](./work_dispatch/goodmorning/0831/W0831-G1_toolbar_style.md) |
+| toby | [W0831-T1 等 L1 宣告](./work_dispatch/toby/0831/W0831-T1_inspector_flatten.md) |
 | paper | [W0831-P1 frame 標號](./work_dispatch/paper/0831/W0831-P1_frame_labels.md) |
-| MBD | [W0831-M1 空狀態文案（單步）](./work_dispatch/MBD/0831/W0831-M1_empty_copy_step.md) |
-| harry | [W0831-H0 暫停](./work_dispatch/harry/0831/W0831-H0_pause.md) |
+| MBD | [W0831-M1 空狀態文案](./work_dispatch/MBD/0831/W0831-M1_empty_copy_step.md) |
+| harry | [W0831-H0 暫停（回歸後等宣告）](./work_dispatch/harry/0831/W0831-H0_pause.md) |
 | azure9572 | [W0831-Z0 暫停](./work_dispatch/azure9572/0831/W0831-Z0_pause.md) |
-| avery | [W0831-V0 暫停＋續留一句](./work_dispatch/avery/0831/W0831-V0_pause_and_retain.md) |
+| avery | [W0831-V0 暫停＋續留](./work_dispatch/avery/0831/W0831-V0_pause_and_retain.md) |
 
 上週（8/23–8/30）工單在各人 `0823/`；總表見 [WEEK_20260823.md](./work_dispatch/WEEK_20260823.md)。
 
