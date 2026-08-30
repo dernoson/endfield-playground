@@ -2,7 +2,7 @@
  * V10-B1 — 機器佔格與埠合法性
  *
  * 對全部 machineList × rotation ∈ {0,1,2,3} 斷言：
- * 1. getOccupiedCells 格數＝旋轉後寬×高，且四角落在預期矩形內
+ * 1. getDeviceOccupiedCells 格數＝旋轉後寬×高，且四角落在預期矩形內
  * 2. 各 mode 埠經 rotate 後 offset 不得超出對應邊（不得靠 clamp 掩蓋）
  *
  * 本檔不修資料；失敗案例供錯機清單（V10-C1）轉錄。
@@ -11,24 +11,22 @@
 import { describe, it, expect } from 'vitest';
 import { machineList } from '@/data/machines';
 import type { Machine } from '@/types/machine';
-import type { FactoryNode } from '@/types/graph';
-import { getOccupiedCells } from '@/utils/geometryUtils';
+import type { DeviceFootprint } from '@/types/footprint';
+import { getDeviceOccupiedCells } from '@/utils/layout/deviceOccupancy';
 import { rotatePortSide, rotatePortOffset } from '@/utils/portUtils';
 import { resolveDisplayGrid, clampPortOffset } from '@/app/dev/topologyPortUtils';
 
 type Rotation = 0 | 1 | 2 | 3;
 const ROTATIONS: Rotation[] = [0, 1, 2, 3];
 
-function makeFakeNode(machine: Machine, rotation: Rotation): FactoryNode {
+/** 以原點為左上角造一個佔格描述；本檔只驗 xy 佔格，佔用深度取 1 */
+function makeFootprint(machine: Machine, rotation: Rotation): DeviceFootprint {
     return {
         id: `geo-${machine.id}`,
-        position: { x: 0, y: 0 },
-        data: {
-            label: machine.name,
-            machineType: machine.name,
-            rotation,
-        },
-    } as FactoryNode;
+        position: { x: 0, y: 0, z: 0 },
+        rotation,
+        size: { x: machine.width, y: machine.height, z: 1 },
+    };
 }
 
 function expectedFootprint(
@@ -50,8 +48,11 @@ function expectedFootprint(
 describe('machineGeometry', () => {
     describe.each(machineList)('$id $name', (machine) => {
         it.each(ROTATIONS)('rotation=%s occupied cell count and corners', (rotation) => {
-            const node = makeFakeNode(machine, rotation);
-            const cells = getOccupiedCells(node, machine);
+            const cells = new Set(
+                getDeviceOccupiedCells(makeFootprint(machine, rotation)).map(
+                    (cell) => `${cell.x},${cell.y}`,
+                ),
+            );
             const { width, height, cellCount } = expectedFootprint(machine, rotation);
 
             expect(
