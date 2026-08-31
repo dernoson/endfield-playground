@@ -8,7 +8,7 @@
 **上游：** [LAYOUT_REWRITE_EARLY_START_0831](../LAYOUT_REWRITE_EARLY_START_0831.md)、[佈局視角渲染層自建_初步規劃與評估](../佈局視角渲染層自建_初步規劃與評估.md)、[R-B2](../../roadmap/detail/B2_placement_chain.md)  
 **門檻週：** 2026-08-31 → 2026-09-06  
 **開發分支：** `dev/aaaaa0831`  
-**狀態總覽：** `[~]` 進行中（A1／B1／C1 完成；D–H 未開始）
+**狀態總覽：** `[~]` 進行中（A–F 完成；G／H 未開始｜解鎖三件＋`/dev` 已齊）
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 >
@@ -118,22 +118,25 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 
 ## V11-D｜resolveConnections
 
-- [ ] **V11-D1** 純函式＋測試：端點＝埠錨點 → Connection；斷線保留管線
+- [x] **V11-D1** 純函式＋測試：端點＝埠錨點 → Connection；斷線保留管線
   - 細項：[dev_v11/D1_resolve_connections.md](./dev_v11/D1_resolve_connections.md)
+  - 產物：`resolveConnections.ts`、`resolveConnections.test.ts`（6）
 
 ---
 
 ## V11-E｜toTopology
 
-- [ ] **V11-E1** 純函式＋測試：layout → FlowEngine 可用的 nodes／edges 形
+- [x] **V11-E1** 純函式＋測試：layout → FlowEngine 可用的 nodes／edges 形
   - 細項：[dev_v11/E1_to_topology.md](./dev_v11/E1_to_topology.md)
+  - 產物：`toTopology.ts`、`toTopology.test.ts`（4）；可餵 `buildGraph`
 
 ---
 
 ## V11-F｜／dev 格點演示（必要）
 
-- [ ] **V11-F1** `/dev` 頁：看得見格子＋衍生連線（或斷線）結果；不接 editorStore
+- [x] **V11-F1** `/dev` 頁：看得見格子＋衍生連線（或斷線）結果；不接 editorStore
   - 細項：[dev_v11/F1_dev_grid_preview.md](./dev_v11/F1_dev_grid_preview.md)
+  - 產物：`LayoutL1Preview.vue`、`mockLayout.ts`；路由 `/dev/layout-l1-preview`
 
 ---
 
@@ -157,10 +160,10 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 |----|---------|---------|----------|
 | B1 | — | — | **已解除**（A1 定案；B1 型別已落地） |
 | C1 | — | — | **已解除**（portAnchors 改名＋deviceOccupancy 補測） |
-| D1 | 依賴 B1＋C1（錨點 API 路徑） | — | **可開工** |
-| E1 | 依賴 D1（連線衍生） | — | D1 可測 |
-| F1 | 依賴 D1／E1 至少可餵 fixture | — | 函式可呼叫 |
-| G1 | 解鎖句依賴 B＋D＋E 皆可測 | — | 三件綠 |
+| D1 | — | — | **已解除**（resolveConnections 可測） |
+| E1 | — | — | **已解除**（toTopology 可測；解鎖三件齊） |
+| F1 | — | — | **已解除**（`/dev/layout-l1-preview`） |
+| G1 | 解鎖句依賴 B＋D＋E 皆可測；F1 必要併驗收 | — | **可開工**（三件＋dev 已齊） |
 | H1 | 時數讓位 A0；不擋解鎖 | — | A0 主線達標後盡力 |
 | — | **不動** editorStore／舊畫布加深 | — | 本版硬鎖 |
 
@@ -171,10 +174,10 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 ### L1 主線（解鎖硬標準）
 
 - [x] `src/types/layout.ts`（或等價）可編譯；Breaking 註記已寫
-- [ ] `resolveConnections` 單元測試綠
-- [ ] `toTopology` 單元測試綠
+- [x] `resolveConnections` 單元測試綠
+- [x] `toTopology` 單元測試綠
 - [x] 既有 layout utils 檔名對齊＋補測綠
-- [ ] `/dev` 格點演示可跑（本版必要）
+- [x] `/dev` 格點演示可跑（本版必要）
 - [x] 未改 `editorStore` 簽章；未加深舊 Vue Flow 佈局畫布
 - [ ] 達門檻：已發 `layout-L1：…；L2 可開 …`；未達：PR／Discord 寫明缺什麼
 
@@ -208,9 +211,9 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 | A1 定案 | 範圍／契約 | [x] | 11 項 |
 | B1 型別 | types/layout＋Breaking | [x] | toFootprint＋測 |
 | C1 utils | 檔名對齊＋補測 | [x] | portAnchors＋deviceOccupancy 測 |
-| D1 連線 | resolveConnections 可測 | [ ] | 解鎖必要 |
-| E1 拓樸 | toTopology 可測 | [ ] | 解鎖必要 |
-| F1 演示 | /dev 格點 | [ ] | 必要 |
+| D1 連線 | resolveConnections 可測 | [x] | 解鎖必要 |
+| E1 拓樸 | toTopology 可測 | [x] | 解鎖必要 |
+| F1 演示 | /dev 格點 | [x] | `/dev/layout-l1-preview` |
 | G1 驗收 | 品質閘＋解鎖句 | [ ] | |
 | H1 B1 | 工具列真機器 | [ ] | 次優 |
 
@@ -227,3 +230,6 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 - 分支：`dev/aaaaa0831`
 - **V11-B1 完成：** `types/layout`＋`toFootprint`＋測試 5 綠；type-check 過；不動 store
 - **V11-C1 完成：** `portAnchors` 改名；`deviceOccupancy.test.ts`；layout 測 47 綠
+- **V11-D1 完成：** `resolveConnections` 幾何對齊；測試 6；layout 測 53 綠
+- **V11-E1 完成：** `toTopology` Adapter；斷線不進 edges；可餵 `buildGraph`；layout 測 57 綠；**解鎖三件齊**
+- **V11-F1 完成：** `/dev/layout-l1-preview`；connected／broken fixture；mockLayout 測 2；可發 G1 解鎖句

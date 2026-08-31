@@ -35,9 +35,9 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 
 | # | 項 | 狀態 |
 |---|----|------|
-| 1 | B／D／E 測試輸出 | [ ] |
-| 2 | C1 改名＋補測 | [ ] |
-| 3 | F1 `/dev` 截圖或步驟 | [ ] |
+| 1 | B／D／E 測試輸出 | [x] 程式已綠（待 PR 附輸出） |
+| 2 | C1 改名＋補測 | [x] |
+| 3 | F1 `/dev` 截圖或步驟 | [x] 步驟見 [F1 §4.1](./F1_dev_grid_preview.md)；截圖待驗收 |
 | 4 | Breaking 註記在 PR | [ ] |
 | 5 | 下游消費者段落 | [ ] |
 | 6 | 解鎖句或缺項聲明 | [ ] |
