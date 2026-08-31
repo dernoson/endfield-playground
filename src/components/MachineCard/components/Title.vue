@@ -17,9 +17,9 @@ defineProps<{
 /* Title */
 .title {
   position: absolute;
-  width: 448px;
-  height: 52px;
   left: 3px;
+  right: 0px;
+  height: 52px;
   top: 0px;
 }
 
@@ -32,7 +32,7 @@ defineProps<{
   top: 0px;
 
   background: #3D3D3D;
-  border-radius: 0px 50px 0px 0px;
+  border-radius: 0px 40px 0px 0px;
 }
 
 /* Text */
