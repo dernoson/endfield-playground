@@ -1,26 +1,6 @@
 <script setup lang="ts">
+import type { Formula } from '../types';
 import defaultItemImage from './item.png';
-
-export interface FormulaItem {
-    /** 材料或產物名稱（顯示於圓形底板正下方） */
-    name: string;
-    /** 圖示路徑或已 import 之圖片（選填，未提供時自動採用預設 item.png） */
-    image?: string;
-    /** 數量（選填，顯示於右下角黃色圓圈標籤） */
-    amount?: number;
-}
-
-/** 單筆可用配方 */
-export interface Formula {
-    /** 配方週期秒數（顯示於配方區塊上方「週期 Xs」） */
-    duration: number;
-    /** 輸入材料清單 */
-    input: FormulaItem[];
-    /** 輸出產物清單 */
-    output: FormulaItem[];
-}
-
-/** MachineCard 對外 Props 介面 */
 
 defineProps<{
     singleformula: Formula;
@@ -188,7 +168,11 @@ defineProps<{
     color: #2b2b2b;
 }
 
-.operator.plus {
+.operator {
+    width: 10px;
+    height: 19px;
+    font-style: normal;
+    font-weight: 700;
     font-size: 16px;
     line-height: 19px;
     text-align: center;
@@ -200,8 +184,10 @@ defineProps<{
 }
 
 .operator.arrow {
-    margin-left: 10px;
-    margin-right: 10px;
+    width: 35px;
+    height: 19px;
+    font-style: normal;
+    font-weight: 700;
     font-size: 16px;
     line-height: 19px;
     text-align: center;

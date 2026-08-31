@@ -4,18 +4,11 @@ import Machine from './components/Machine.vue';
 import FormulaList from './components/FormulaList.vue';
 import Info from './components/Info.vue';
 import Button from './components/Button.vue';
-import type { Formula } from './components/SingleFormula.vue';
+import type { MachineCardProps } from './types';
 
-const props = defineProps<{
-    id: string;
-    name: string;
-    sizeText: string;
-    tag?: string;
-    iconUrl?: string;
-    power?: string;
-    selectedRecipe?: string;
-    formulas?: Formula[];
-}>();
+export * from './types';
+
+const props = defineProps<MachineCardProps>();
 
 const emit = defineEmits<{
     (event: 'pick', machineId: string): void;

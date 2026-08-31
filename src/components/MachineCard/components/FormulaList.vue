@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import SingleFormula, { type Formula } from './SingleFormula.vue';
+import SingleFormula from './SingleFormula.vue';
+import type { Formula } from '../types';
 import defaultItemImage from './item.png';
 
 const props = defineProps<{
