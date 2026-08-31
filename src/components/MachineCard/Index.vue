@@ -1,3 +1,7 @@
+<script lang="ts">
+export * from './types';
+</script>
+
 <script setup lang="ts">
 import Title from './components/Title.vue';
 import Machine from './components/Machine.vue';
@@ -5,8 +9,6 @@ import FormulaList from './components/FormulaList.vue';
 import Info from './components/Info.vue';
 import Button from './components/Button.vue';
 import type { MachineCardProps } from './types';
-
-export * from './types';
 
 const props = defineProps<MachineCardProps>();
 
