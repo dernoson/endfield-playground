@@ -4,7 +4,7 @@ import defaultItemImage from './item.png';
 
 const props = defineProps<{
   title?: string;
-  cycleTime?: number | string;
+  duration?: number | string;
   formulas?: any[];
 }>();
 
@@ -13,9 +13,6 @@ const sampleFormula = {
   input: [
     { name: '粗製紫晶', image: defaultItemImage, amount: 2 },
     { name: '纖維原料', image: defaultItemImage, amount: 1 },
-    { name: '高純藍鐵', image: defaultItemImage, amount: 3 },
-    { name: '超導凝膠', image: defaultItemImage, amount: 4 },
-    { name: '精煉原油', image: defaultItemImage, amount: 2 },
   ],
   output: [
     { name: '紫晶纖維', image: defaultItemImage, amount: 1 },

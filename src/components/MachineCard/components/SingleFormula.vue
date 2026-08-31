@@ -1,22 +1,29 @@
 <script setup lang="ts">
 import defaultItemImage from './item.png';
 
-interface formula_item
-{
-    name:   string;
-    image:  string;
-    amount: number;
-}
-type item = any;
-interface formula
-{
-    duration: number;
-    input:    item[];
-    output:   item[];
+export interface FormulaItem {
+  /** 材料或產物名稱（顯示於圓形底板正下方） */
+  name: string;
+  /** 圖示路徑或已 import 之圖片（選填，未提供時自動採用預設 item.png） */
+  image?: string;
+  /** 數量（選填，顯示於右下角黃色圓圈標籤） */
+  amount?: number;
 }
 
+/** 單筆可用配方 */
+export interface Formula {
+  /** 配方週期秒數（顯示於配方區塊上方「週期 Xs」） */
+  duration: number;
+  /** 輸入材料清單 */
+  input: FormulaItem[];
+  /** 輸出產物清單 */
+  output: FormulaItem[];
+}
+
+/** MachineCard 對外 Props 介面 */
+
 defineProps<{
-    singleformula: formula
+    singleformula: Formula
 }>();
 </script>
 

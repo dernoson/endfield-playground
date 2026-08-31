@@ -4,6 +4,7 @@ import Machine from './components/Machine.vue';
 import FormulaList from './components/FormulaList.vue';
 import Info from './components/Info.vue';
 import Button from './components/Button.vue';
+import type { Formula } from './components/SingleFormula.vue';
 
 const props = defineProps<{
   id: string;
@@ -13,7 +14,7 @@ const props = defineProps<{
   iconUrl?: string;
   power?: string;
   selectedRecipe?: string;
-  formulas?: any[];
+  formulas?: Formula[];
 }>();
 
 const emit = defineEmits<{
