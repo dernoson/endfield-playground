@@ -31,7 +31,7 @@ defineProps<{
                 v-for="(item, index) in singleformula.input"
                 :key="`in-${index}`"
             >
-                <span v-if="index > 0" class="operator">+</span>
+                <span v-if="index > 0" class="operator plus">+</span>
 
                 <div class="item">
                     <div class="plate">
@@ -52,7 +52,7 @@ defineProps<{
                 v-for="(item, index) in singleformula.output"
                 :key="`out-${index}`"
             >
-                <span v-if="index > 0" class="operator">+</span>
+                <span v-if="index > 0" class="operator plus">+</span>
 
                 <div class="item">
                     <div class="plate">
@@ -94,7 +94,7 @@ defineProps<{
   flex-direction: row;
   align-items: center;
   padding: 10px 14px 8px 14px;
-  gap: 8px;
+  gap: 3px;
   background: rgba(43, 43, 43, 0.2);
   border-radius: 4px;
   overflow-x: auto;
@@ -192,16 +192,23 @@ defineProps<{
   color: #2B2B2B;
 }
 
-.operator {
+.operator.plus {
   font-size: 16px;
-  color: #00FF66;
+  line-height: 19px;
+  text-align: center;
+  color: #CFCFCF;
   user-select: none;
-  padding: 0 2px;
+  flex: none;
+  flex-grow: 0;
   flex-shrink: 0;
 }
 
 .operator.arrow {
-  font-size: 18px;
-  color: #00FF66;
+  margin-left: 10px;
+  margin-right: 10px;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
+  color: #CFCFCF;
 }
 </style>
