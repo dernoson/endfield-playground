@@ -1,51 +1,47 @@
-<script setup lang="ts">
-defineProps<{
-  name?: string;
-}>();
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <div class="title">
-    <div class="plate"></div>
-    <div class="text">
-      <slot>{{ name || 'name' }}</slot>
+    <div class="title">
+        <div class="plate"></div>
+        <div class="text">
+            <slot>物件資訊面板</slot>
+        </div>
     </div>
-  </div>
 </template>
 
 <style scoped>
 /* Title */
 .title {
-  position: absolute;
-  left: 3px;
-  right: 0px;
-  height: 52px;
-  top: 0px;
+    position: absolute;
+    left: 3px;
+    right: 0px;
+    height: 52px;
+    top: 0px;
 }
 
 /* Plate */
 .plate {
-  position: absolute;
-  height: 52px;
-  left: 0px;
-  right: 0px;
-  top: 0px;
+    position: absolute;
+    height: 52px;
+    left: 0px;
+    right: 0px;
+    top: 0px;
 
-  background: #3D3D3D;
-  border-radius: 0px 40px 0px 0px;
+    background: #3d3d3d;
+    border-radius: 0px 40px 0px 0px;
 }
 
 /* Text */
 .text {
-  position: absolute;
-  height: 28px;
-  left: 19px;
-  top: 12px;
+    position: absolute;
+    height: 28px;
+    left: 19px;
+    top: 12px;
 
-  font-size: 24px;
-  line-height: 28px;
+    font-size: 24px;
+    line-height: 28px;
 
-  color: #FFFFFF;
-  white-space: nowrap;
+    color: #ffffff;
+    white-space: nowrap;
 }
 </style>
