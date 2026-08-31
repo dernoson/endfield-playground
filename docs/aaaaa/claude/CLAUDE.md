@@ -155,12 +155,16 @@ docs/aaaaa/dev/
 | V7 | 資料 v3 遷移（data_1 → data → src/data） | [todolist_v7.md](../dev/todolist_v7.md) / [dev_v7/](../dev/dev_v7/) | **完成**（A–G） |
 | V8 | Dev 預覽＋埠一對一／pipe60／H8／form | [todolist_v8.md](../dev/todolist_v8.md) / [dev_v8/](../dev/dev_v8/) | **實作完成**（A–G） |
 | V9 | 強化視覺化預覽工具 | [todolist_v9.md](../dev/todolist_v9.md) / [dev_v9/](../dev/dev_v9/) | **實作完成**（A–G） |
+| V10 | 佔格與 port 對資料（W0823-A1） | [todolist_v10.md](../dev/todolist_v10.md) / [dev_v10/](../dev/dev_v10/) | **完成**（F1／H1 手動結案） |
+| V11 | 佈局 L1 打底（W0831-A0／A1） | [todolist_v11.md](../dev/todolist_v11.md) / [dev_v11/](../dev/dev_v11/) | **進行中** |
 
 V5 相關入口：`V5_INIT_REPORT.md`、`todolist_v5.md`、`dev_v5.md`、`dev_v5/`。  
 V6 相關入口：`MILESTONE_0726.md`、`todolist_v6.md`、`dev_v6/`。  
 V7 相關入口：`data_0/`、`data_1/`、`data/`、`todolist_v7.md`、`dev_v7/`；指令 `pnpm sync:aaaaa-data`、`pnpm generate:src-data`。  
 V8 相關入口：`todolist_v8.md`、`dev_v8/`。  
-V9 相關入口：`todolist_v9.md`、`dev_v9/`（**實作完成**）。
+V9 相關入口：`todolist_v9.md`、`dev_v9/`（**實作完成**）。  
+V10 相關入口：`todolist_v10.md`、`dev_v10/`（**完成**）。  
+V11 相關入口：`todolist_v11.md`、`dev_v11/`（**現行**；佈局 SVG 自建 L1）。
 最新功能完成報告：`docs/aaaaa/report_v4.md`（V4；後續版本應新增對應 `report_vN.md`）。
 
 ### 4.7 產品 Roadmap 工作流（docs/roadmap/）
