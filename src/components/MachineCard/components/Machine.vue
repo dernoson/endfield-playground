@@ -1,9 +1,14 @@
 <script setup lang="ts">
-// 連接到圖片庫 先不做
+import testImage from './image.png';
+
+defineProps<{
+  src?: string;
+}>();
 </script>
 
 <template>
   <div class="machine">
+    <img :src="src || testImage" alt="machine" class="machine-image" />
   </div>
 </template>
 
@@ -13,6 +18,9 @@
   position: absolute;
   right: 10px;
   top: 30px;
-  background: url(image_furnance_1.png);
+}
+
+.machine-image {
+  display: block;
 }
 </style>

@@ -11,9 +11,8 @@ import buttonSvg from './Button.svg';
 <style scoped>
 .button {
   position: absolute;
-  top: 50%;
+  top: 45%;
   right: -10px;
-  transform: translateY(-50%);
   width: 24px;
   height: 39px;
   cursor: pointer;
