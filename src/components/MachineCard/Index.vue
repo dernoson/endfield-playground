@@ -1,16 +1,9 @@
-/* button */
+<script setup lang="ts">
+import Frame from './frame.vue';
+</script>
 
-position: absolute;
-width: 24px;
-height: 39px;
-left: 437px;
-top: 369px;
-
-/* button */
-
-position: absolute;
-width: 24px;
-height: 39px;
-right: -10px;
-top: 369px;
-
+<template>
+  <div class="machine-card">
+    <Frame />
+  </div>
+</template>
