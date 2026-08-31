@@ -46,7 +46,7 @@
 | `types/layout.ts` | 不存在 | **新建**（B1） |
 | `deviceOccupancy.ts` | 已有；缺獨立單元測（幾何測經 machineGeometry） | 補測（C1） |
 | `pipelineGeometry.ts` | 已有＋測 | 維持 |
-| `portAnchors.ts` | 現為 `portAnchor.ts`＋測 | **改名**＋更新 import（C1） |
+| `portAnchors.ts` | 已改名＋測 | **C1 完成** |
 | `overlapDetection.ts` | 已有＋測（規劃表未列但為現行 4／6） | 維持；列入六件族譜 |
 | `resolveConnections.ts` | 無 | **新建**（D1） |
 | `toTopology.ts` | 無 | **新建**（E1） |

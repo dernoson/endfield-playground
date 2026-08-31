@@ -8,7 +8,7 @@
 **上游：** [LAYOUT_REWRITE_EARLY_START_0831](../LAYOUT_REWRITE_EARLY_START_0831.md)、[佈局視角渲染層自建_初步規劃與評估](../佈局視角渲染層自建_初步規劃與評估.md)、[R-B2](../../roadmap/detail/B2_placement_chain.md)  
 **門檻週：** 2026-08-31 → 2026-09-06  
 **開發分支：** `dev/aaaaa0831`  
-**狀態總覽：** `[ ]` 未開始（A1 定案文件已落版）
+**狀態總覽：** `[~]` 進行中（A1／B1／C1 完成；D–H 未開始）
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 >
@@ -102,15 +102,17 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 
 ## V11-B｜型別與 Breaking 註記
 
-- [ ] **V11-B1** `types/layout.ts`：PlacedDevice／Pipeline／衍生 Connection；轉 footprint；Breaking 註記（`devices`／`pipelines`）
+- [x] **V11-B1** `types/layout.ts`：PlacedDevice／Pipeline／衍生 Connection；轉 footprint；Breaking 註記（`devices`／`pipelines`）
   - 細項：[dev_v11/B1_types_layout.md](./dev_v11/B1_types_layout.md)
+  - 產物：`src/types/layout.ts`、`src/utils/layout/toFootprint.ts`、`toFootprint.test.ts`
 
 ---
 
 ## V11-C｜既有 layout utils 對齊
 
-- [ ] **V11-C1** `portAnchor` → `portAnchors`；補 `deviceOccupancy` 等缺測；全綠
+- [x] **V11-C1** `portAnchor` → `portAnchors`；補 `deviceOccupancy` 等缺測；全綠
   - 細項：[dev_v11/C1_layout_utils_align.md](./dev_v11/C1_layout_utils_align.md)
+  - 產物：`portAnchors.ts`、`deviceOccupancy.test.ts`
 
 ---
 
@@ -153,9 +155,9 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 
 | ID | 封鎖原因 | 等待對象 | 解除條件 |
 |----|---------|---------|----------|
-| B1 | — | — | **已解除**（A1 定案） |
-| C1 | 依賴 B1 型別穩定（改名可先做） | — | B1 草圖可編譯 |
-| D1 | 依賴 B1＋C1（錨點 API 路徑） | — | C1 改名合入路徑可用 |
+| B1 | — | — | **已解除**（A1 定案；B1 型別已落地） |
+| C1 | — | — | **已解除**（portAnchors 改名＋deviceOccupancy 補測） |
+| D1 | 依賴 B1＋C1（錨點 API 路徑） | — | **可開工** |
 | E1 | 依賴 D1（連線衍生） | — | D1 可測 |
 | F1 | 依賴 D1／E1 至少可餵 fixture | — | 函式可呼叫 |
 | G1 | 解鎖句依賴 B＋D＋E 皆可測 | — | 三件綠 |
@@ -168,12 +170,12 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 
 ### L1 主線（解鎖硬標準）
 
-- [ ] `src/types/layout.ts`（或等價）可編譯；Breaking 註記已寫
+- [x] `src/types/layout.ts`（或等價）可編譯；Breaking 註記已寫
 - [ ] `resolveConnections` 單元測試綠
 - [ ] `toTopology` 單元測試綠
-- [ ] 既有 layout utils 檔名對齊＋補測綠
+- [x] 既有 layout utils 檔名對齊＋補測綠
 - [ ] `/dev` 格點演示可跑（本版必要）
-- [ ] 未改 `editorStore` 簽章；未加深舊 Vue Flow 佈局畫布
+- [x] 未改 `editorStore` 簽章；未加深舊 Vue Flow 佈局畫布
 - [ ] 達門檻：已發 `layout-L1：…；L2 可開 …`；未達：PR／Discord 寫明缺什麼
 
 ### B1 次優
@@ -204,8 +206,8 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 | 工項 | 工單要求 | V11 狀態 | 備註 |
 |------|----------|----------|------|
 | A1 定案 | 範圍／契約 | [x] | 11 項 |
-| B1 型別 | types/layout＋Breaking | [ ] | |
-| C1 utils | 檔名對齊＋補測 | [ ] | 決策 7 |
+| B1 型別 | types/layout＋Breaking | [x] | toFootprint＋測 |
+| C1 utils | 檔名對齊＋補測 | [x] | portAnchors＋deviceOccupancy 測 |
 | D1 連線 | resolveConnections 可測 | [ ] | 解鎖必要 |
 | E1 拓樸 | toTopology 可測 | [ ] | 解鎖必要 |
 | F1 演示 | /dev 格點 | [ ] | 必要 |
@@ -223,3 +225,5 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 - 實作策略：原定 API／演算法先寫，驗證階段再修
 - V10 F1／H1 手動完成、不帶入本版
 - 分支：`dev/aaaaa0831`
+- **V11-B1 完成：** `types/layout`＋`toFootprint`＋測試 5 綠；type-check 過；不動 store
+- **V11-C1 完成：** `portAnchors` 改名；`deviceOccupancy.test.ts`；layout 測 47 綠

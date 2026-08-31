@@ -1,7 +1,7 @@
 # V11-C1 — 既有 layout utils 檔名對齊與補測
 
 **對應工項：** V11-C1  
-**狀態：** `[ ]` 未開始  
+**狀態：** `[x]` 完成（2026-08-31）  
 **依賴：** A1（可與 B1 平行；改名不依賴新領域型別）  
 **最後更新：** 2026-08-31  
 **正式依據：** A1 決策 7；評估文 §4.7
@@ -26,7 +26,7 @@
 
 ---
 
-## 3. 檔案計畫
+## 3. 檔案計畫（已落地）
 
 | 動作 | 檔案 |
 |------|------|
@@ -40,9 +40,9 @@
 
 ## 4. 驗證標準
 
-- [ ] 全專案無殘留 `@/utils/layout/portAnchor` import
-- [ ] layout 相關測試全綠
-- [ ] type-check／lint／format 過
+- [x] 全專案無殘留 `@/utils/layout/portAnchor` import
+- [x] layout 相關測試全綠（`src/__tests__/utils/layout/` 47 passed）
+- [x] type-check／lint-check 過；本工項相關檔已 prettier（全庫 format-check 仍有既有債，不在本單）
 
 ---
 
@@ -51,3 +51,6 @@
 ### 2026-08-31
 
 - 依決策 7 開細項
+- `git mv` 改名 `portAnchors`；E001／topologyPortUtils 跟改
+- 新增 `deviceOccupancy.test.ts`（旋轉、d／z）
+- layout 測 47 綠；type-check／lint／format 過
