@@ -41,7 +41,7 @@ defineProps<{
 /* information 容器 */
 .info {
   position: absolute;
-  width: 431px;
+  width: 190px;
   height: 125px;
   left: 0px;
   top: 10px;
@@ -50,14 +50,11 @@ defineProps<{
 /* selected-machine */
 .selected-machine {
   position: absolute;
-  width: 190.35px;
+  width: 190px;
   height: 23px;
-  left: 10px;
-  top: 3px;
+  margin-left: 10px;
+  margin-top: 3px;
 
-  font-family: 'Sans TC', sans-serif;
-  font-style: normal;
-  font-weight: 400;
   font-size: 20px;
   line-height: 23px;
 
@@ -69,8 +66,8 @@ defineProps<{
 .info-list {
   position: absolute;
   width: 230px;
-  left: 20px;
-  top: 35px;
+  margin-left: 20px;
+  margin-top: 40px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -78,16 +75,13 @@ defineProps<{
 
 .info-row {
   width: 230px;
-  height: 21px;
+  height: 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  font-family: 'Sans TC';
-  font-style: thin;
   font-size: 18px;
-  line-height: 21px;
-
+  line-height: 18px;
   color: #CFCFCF;
 }
 
