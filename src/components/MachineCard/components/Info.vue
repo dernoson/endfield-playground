@@ -1,18 +1,102 @@
 <script setup lang="ts">
+defineProps<{
+  selectedMachine?: string;
+  size?: string;
+  power?: string;
+  selectedRecipe?: string;
+}>();
 </script>
 
 <template>
   <div class="info">
+    <!-- 1. selectedmachine -->
+    <div class="selected-machine">
+      已選取：{{ selectedMachine || '精煉爐' }}
+    </div>
+
+    <!-- 2. 3組資訊列表 (置左 a:  b 置右) -->
+    <div class="info-list">
+      <!-- size -->
+      <div class="info-row size">
+        <span class="label">佔地大小：</span>
+        <span class="value">{{ size || '3×3' }}</span>
+      </div>
+
+      <!-- power -->
+      <div class="info-row power">
+        <span class="label">電力消耗：</span>
+        <span class="value">{{ power || '30 kW' }}</span>
+      </div>
+
+      <!-- selectedrecipe -->
+      <div class="info-row selected-recipe">
+        <span class="label">預設配方：</span>
+        <span class="value">{{ selectedRecipe || '鐵錠' }}</span>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
-/* imformation (配合 frame padding-left: 3px，left 調整為 6px，總偏移維持 9px) */
+/* information 容器 */
 .info {
   position: absolute;
   width: 431px;
   height: 125px;
   left: 6px;
   top: 63px;
+}
+
+/* selected-machine */
+.selected-machine {
+  position: absolute;
+  width: 190.35px;
+  height: 23px;
+  left: 0px;
+  top: 3px;
+
+  font-family: 'HarmonyOS Sans TC', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 23px;
+
+  color: #FFFFFF;
+  white-space: nowrap;
+}
+
+/* 3組 text 容器 ({some div}) */
+.info-list {
+  position: absolute;
+  width: 229.52px;
+  left: 22px;
+  top: 35px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.info-row {
+  width: 229.52px;
+  height: 21px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  font-family: 'HarmonyOS Sans TC', sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 18px;
+  line-height: 21px;
+
+  color: #CFCFCF;
+}
+
+.info-row .label {
+  white-space: nowrap;
+}
+
+.info-row .value {
+  white-space: nowrap;
 }
 </style>

@@ -13,8 +13,6 @@ import buttonSvg from './Button.svg';
   position: absolute;
   top: 45%;
   right: -10px;
-  width: 24px;
-  height: 39px;
   cursor: pointer;
 }
 </style>

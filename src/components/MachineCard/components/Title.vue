@@ -19,7 +19,7 @@ defineProps<{
   position: absolute;
   width: 448px;
   height: 52px;
-  left: 0px;
+  left: 3px;
   top: 0px;
 }
 
@@ -39,7 +39,8 @@ defineProps<{
 .text {
   position: absolute;
   height: 28px;
-  left: 20px;
+  left: 19px;
+  right: 234.1px;
   top: 12px;
 
   font-family: 'HarmonyOS Sans TC', sans-serif;

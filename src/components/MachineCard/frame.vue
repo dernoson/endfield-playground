@@ -8,14 +8,19 @@ import Button from './components/Button.vue';
 
 <template>
   <div class="frame-container">
+    <!-- 1. 卡片底板 -->
     <div class="plate"></div>
-    <div class="frame-content">
-      <Title />
-      <Machine />
-      <Formula />
+
+    <!-- 2. 卡片核心主要內容 (Info + Formula) -->
+    <div class="frame-body">
       <Info />
-      <Button />
+      <Formula />
     </div>
+
+    <!-- 3. 貼附於 Frame 的漂浮元素 -->
+    <Title />
+    <Machine />
+    <Button />
   </div>
 </template>
 
@@ -27,7 +32,7 @@ import Button from './components/Button.vue';
   box-sizing: border-box;
 }
 
-/* plate */
+/* 底板 */
 .plate {
   box-sizing: border-box;
 
@@ -43,13 +48,12 @@ import Button from './components/Button.vue';
   border-radius: 0px 40px 0px 0px;
 }
 
-/* frame 內部 padding-left: 3px (避開最左側黃色邊條) */
-.frame-content {
+/* 卡片主體內容區 (避開最左側 3px 黃條，margin-top 52px 對齊 title 下緣) */
+.frame-body {
   position: absolute;
   left: 3px;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  box-sizing: border-box;
+  top: 0px;
+  margin-left: 6px;
+  margin-top: 52px;
 }
 </style>
