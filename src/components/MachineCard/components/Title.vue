@@ -8,7 +8,7 @@ defineProps<{
   <div class="title">
     <div class="plate"></div>
     <div class="text">
-      <slot>{{ name || '裝配機' }}</slot>
+      <slot>{{ name || 'name' }}</slot>
     </div>
   </div>
 </template>

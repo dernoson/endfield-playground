@@ -11,7 +11,7 @@ defineProps<{
   <div class="info">
     <!-- 1. selectedmachine -->
     <div class="selected-machine">
-      已選取：{{ selectedMachine || '精煉爐' }}
+      已選取：{{ selectedMachine || 'selectedMachine' }}
     </div>
 
     <!-- 2. 3組資訊列表 (置左 a:  b 置右) -->
@@ -19,19 +19,19 @@ defineProps<{
       <!-- size -->
       <div class="info-row size">
         <span class="label">尺寸</span>
-        <span class="value">{{ size || '3*3' }}</span>
+        <span class="value">{{ size || 'size' }}</span>
       </div>
 
       <!-- power -->
       <div class="info-row power">
         <span class="label">耗電量</span>
-        <span class="value">{{ power || '10kW' }}</span>
+        <span class="value">{{ power || 'power' }}</span>
       </div>
 
       <!-- selectedrecipe -->
       <div class="info-row selected-recipe">
         <span class="label">目前配方</span>
-        <span class="value">{{ selectedRecipe || '紫晶纖維(15s)' }}</span>
+        <span class="value">{{ selectedRecipe || 'selectedRecipe' }}</span>
       </div>
     </div>
   </div>

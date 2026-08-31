@@ -4,6 +4,15 @@ import Machine from './components/Machine.vue';
 import FormulaList from './components/FormulaList.vue';
 import Info from './components/Info.vue';
 import Button from './components/Button.vue';
+
+defineProps<{
+  name?: string;
+  sizeText?: string;
+  power?: string;
+  selectedRecipe?: string;
+  iconUrl?: string;
+  formulas?: any[];
+}>();
 </script>
 
 <template>
@@ -13,13 +22,18 @@ import Button from './components/Button.vue';
 
     <!-- 2. 卡片核心主要內容 (Info + FormulaList) -->
     <div class="frame-body">
-      <Info />
-      <FormulaList />
+      <Info
+        :selected-machine="name"
+        :size="sizeText"
+        :power="power"
+        :selected-recipe="selectedRecipe"
+      />
+      <FormulaList :formulas="formulas" />
     </div>
 
     <!-- 3. 貼附於 Frame 的漂浮元素 -->
-    <Title />
-    <Machine />
+    <Title :name="name" />
+    <Machine :src="iconUrl" />
     <Button />
   </div>
 </template>
