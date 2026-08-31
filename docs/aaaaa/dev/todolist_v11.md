@@ -8,7 +8,7 @@
 **上游：** [LAYOUT_REWRITE_EARLY_START_0831](../LAYOUT_REWRITE_EARLY_START_0831.md)、[佈局視角渲染層自建_初步規劃與評估](../佈局視角渲染層自建_初步規劃與評估.md)、[R-B2](../../roadmap/detail/B2_placement_chain.md)  
 **門檻週：** 2026-08-31 → 2026-09-06  
 **開發分支：** `dev/aaaaa0831`  
-**狀態總覽：** `[~]` 進行中（A–F 完成；G／H 未開始｜解鎖三件＋`/dev` 已齊）
+**狀態總覽：** `[~]` A–G 完成（解鎖句已發）；H1 B1 工具列次優未做
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 >
@@ -142,8 +142,10 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 
 ## V11-G｜驗收、PR、解鎖宣告
 
-- [ ] **V11-G1** 品質閘；PR；達門檻則發 layout-L1 解鎖句，否則標缺什麼
+- [x] **V11-G1** 品質閘；PR；達門檻則發 layout-L1 解鎖句，否則標缺什麼
   - 細項：[dev_v11/G1_acceptance_and_unlock.md](./dev_v11/G1_acceptance_and_unlock.md)
+  - 證據：[dev_v11/evidence/G1_unlock.md](./dev_v11/evidence/G1_unlock.md)
+  - 解鎖句：`layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可開最小 GridCanvas 只讀渲染（仍待 store 模型另開）`
 
 ---
 
@@ -163,8 +165,8 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 | D1 | — | — | **已解除**（resolveConnections 可測） |
 | E1 | — | — | **已解除**（toTopology 可測；解鎖三件齊） |
 | F1 | — | — | **已解除**（`/dev/layout-l1-preview`） |
-| G1 | 解鎖句依賴 B＋D＋E 皆可測；F1 必要併驗收 | — | **可開工**（三件＋dev 已齊） |
-| H1 | 時數讓位 A0；不擋解鎖 | — | A0 主線達標後盡力 |
+| G1 | — | — | **已解除**（解鎖句已發；待 dernoson 合入） |
+| H1 | 時數讓位 A0；不擋解鎖 | — | 次優未做 |
 | — | **不動** editorStore／舊畫布加深 | — | 本版硬鎖 |
 
 ---
@@ -179,7 +181,7 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 - [x] 既有 layout utils 檔名對齊＋補測綠
 - [x] `/dev` 格點演示可跑（本版必要）
 - [x] 未改 `editorStore` 簽章；未加深舊 Vue Flow 佈局畫布
-- [ ] 達門檻：已發 `layout-L1：…；L2 可開 …`；未達：PR／Discord 寫明缺什麼
+- [x] 達門檻：已發 `layout-L1：…；L2 可開 …`
 
 ### B1 次優
 
@@ -214,7 +216,7 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 | D1 連線 | resolveConnections 可測 | [x] | 解鎖必要 |
 | E1 拓樸 | toTopology 可測 | [x] | 解鎖必要 |
 | F1 演示 | /dev 格點 | [x] | `/dev/layout-l1-preview` |
-| G1 驗收 | 品質閘＋解鎖句 | [ ] | |
+| G1 驗收 | 品質閘＋解鎖句 | [x] | 見 evidence/G1_unlock |
 | H1 B1 | 工具列真機器 | [ ] | 次優 |
 
 ---
@@ -233,3 +235,4 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 - **V11-D1 完成：** `resolveConnections` 幾何對齊；測試 6；layout 測 53 綠
 - **V11-E1 完成：** `toTopology` Adapter；斷線不進 edges；可餵 `buildGraph`；layout 測 57 綠；**解鎖三件齊**
 - **V11-F1 完成：** `/dev/layout-l1-preview`；connected／broken fixture；mockLayout 測 2；可發 G1 解鎖句
+- **V11-G1 完成：** 品質閘過；解鎖句已發；證據 `evidence/G1_unlock.md`；PR 待合入
