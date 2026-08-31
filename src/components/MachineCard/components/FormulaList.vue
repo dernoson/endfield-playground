@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SingleFormula from './SingleFormula.vue';
+import defaultItemImage from './item.png';
 
 const props = defineProps<{
   title?: string;
@@ -11,11 +12,11 @@ const defaultFormulas: any[] = [
   {
     duration: 15,
     input: [
-      { name: '粗製紫晶', image: '', amount: 2 },
-      { name: '纖維原料', image: '', amount: 1 },
+      { name: '粗製紫晶', image: defaultItemImage, amount: 2 },
+      { name: '纖維原料', image: defaultItemImage, amount: 1 },
     ],
     output: [
-      { name: '紫晶纖維', image: '', amount: 1 },
+      { name: '紫晶纖維', image: defaultItemImage, amount: 1 },
     ],
   },
 ];

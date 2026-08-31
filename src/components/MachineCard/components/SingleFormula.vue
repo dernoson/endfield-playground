@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import defaultItemImage from './item.png';
+
 interface formula_item
 {
     name:   string;
@@ -21,7 +23,7 @@ defineProps<{
 <template>
     <div class="single-formula">
         <div class="duration">
-            {{ singleformula.duration }}s
+            週期 {{ singleformula.duration }}s
         </div>
 
         <div class="formula-row">
@@ -32,15 +34,15 @@ defineProps<{
                 <span v-if="index > 0" class="operator">+</span>
 
                 <div class="item">
-                    <span v-if="item.name" class="item-name">{{ item.name }}</span>
-
                     <div class="plate">
-                        <img v-if="item.image" :src="item.image" class="item-image">
+                        <img :src="item.image || defaultItemImage" class="item-image" alt="item">
 
                         <div v-if="item.amount !== undefined" class="num">
                             <span class="num-text">{{ item.amount }}</span>
                         </div>
                     </div>
+
+                    <span v-if="item.name" class="item-name">{{ item.name }}</span>
                 </div>
             </template>
 
@@ -53,15 +55,15 @@ defineProps<{
                 <span v-if="index > 0" class="operator">+</span>
 
                 <div class="item">
-                    <span v-if="item.name" class="item-name">{{ item.name }}</span>
-
                     <div class="plate">
-                        <img v-if="item.image" :src="item.image" class="item-image">
+                        <img :src="item.image || defaultItemImage" class="item-image" alt="item">
 
                         <div v-if="item.amount !== undefined" class="num">
                             <span class="num-text">{{ item.amount }}</span>
                         </div>
                     </div>
+
+                    <span v-if="item.name" class="item-name">{{ item.name }}</span>
                 </div>
             </template>
         </div>
@@ -72,25 +74,45 @@ defineProps<{
 .single-formula {
   position: relative;
   margin: 10px 7px 0 7px;
-  padding: 10px 14px;
-  background: rgba(43, 43, 43, 0.2);
-  border-radius: 4px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .duration {
-  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 21px;
   color: #CFCFCF;
   margin-bottom: 6px;
+  padding-left: 2px;
 }
 
 .formula-row {
+  box-sizing: border-box;
   display: flex;
   flex-direction: row;
   align-items: center;
+  padding: 10px 14px 8px 14px;
   gap: 8px;
+  background: rgba(43, 43, 43, 0.2);
+  border-radius: 4px;
   overflow-x: auto;
+  overflow-y: hidden;
   color: #CFCFCF;
+  scrollbar-width: thin;
+  scrollbar-color: #666 transparent;
+}
+
+.formula-row::-webkit-scrollbar {
+  height: 4px;
+}
+.formula-row::-webkit-scrollbar-thumb {
+  background: #666;
+  border-radius: 2px;
+}
+.formula-row::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 /* item */
@@ -99,13 +121,21 @@ defineProps<{
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  width: 56.94px;
+  gap: 3px;
+  width: 71.63px;
+  flex-shrink: 0;
   box-sizing: border-box;
 }
 
+/* item-name */
 .item-name {
-  font-size: 12px;
+  width: 71.63px;
+  min-height: 18.37px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
   color: #CFCFCF;
   white-space: nowrap;
 }
@@ -127,11 +157,13 @@ defineProps<{
 
 /* image */
 .item-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 50%;
+  position: absolute;
+  width: 55.1px;
+  height: 55.1px;
+  top: -3px;
+  left: -3px;
   display: block;
+  z-index: 1;
 }
 
 /* num (數量標籤) */
@@ -161,13 +193,14 @@ defineProps<{
 
 .operator {
   font-size: 16px;
-  color: #CFCFCF;
+  color: #00FF66;
   user-select: none;
   padding: 0 2px;
+  flex-shrink: 0;
 }
 
 .operator.arrow {
   font-size: 18px;
-  color: #EEFD1C;
+  color: #00FF66;
 }
 </style>
