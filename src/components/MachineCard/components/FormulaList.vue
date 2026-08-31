@@ -8,17 +8,29 @@ const props = defineProps<{
   formulas?: any[];
 }>();
 
+const sampleFormula = {
+  duration: 15,
+  input: [
+    { name: '粗製紫晶', image: defaultItemImage, amount: 2 },
+    { name: '纖維原料', image: defaultItemImage, amount: 1 },
+    { name: '高純藍鐵', image: defaultItemImage, amount: 3 },
+    { name: '超導凝膠', image: defaultItemImage, amount: 4 },
+    { name: '精煉原油', image: defaultItemImage, amount: 2 },
+  ],
+  output: [
+    { name: '紫晶纖維', image: defaultItemImage, amount: 1 },
+    { name: '結構基板', image: defaultItemImage, amount: 2 },
+    { name: '活性催化劑', image: defaultItemImage, amount: 1 },
+  ],
+};
+
 const defaultFormulas: any[] = [
-  {
-    duration: 15,
-    input: [
-      { name: '粗製紫晶', image: defaultItemImage, amount: 2 },
-      { name: '纖維原料', image: defaultItemImage, amount: 1 },
-    ],
-    output: [
-      { name: '紫晶纖維', image: defaultItemImage, amount: 1 },
-    ],
-  },
+  sampleFormula,
+  sampleFormula,
+  sampleFormula,
+  sampleFormula,
+  sampleFormula,
+  sampleFormula,
 ];
 </script>
 
