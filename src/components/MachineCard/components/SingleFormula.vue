@@ -32,13 +32,13 @@ defineProps<{
                 <span v-if="index > 0" class="operator">+</span>
 
                 <div class="item">
-                    <span class="item-name">{{ item.name }}</span>
+                    <span v-if="item.name" class="item-name">{{ item.name }}</span>
 
-                    <div class="item-icon">
-                        <img v-if="item.image" :src="item.image">
+                    <div class="plate">
+                        <img v-if="item.image" :src="item.image" class="item-image">
                     </div>
 
-                    <div class="item-amount">
+                    <div v-if="item.amount !== undefined" class="item-amount">
                         {{ item.amount }}
                     </div>
                 </div>
@@ -53,13 +53,13 @@ defineProps<{
                 <span v-if="index > 0" class="operator">+</span>
 
                 <div class="item">
-                    <span class="item-name">{{ item.name }}</span>
+                    <span v-if="item.name" class="item-name">{{ item.name }}</span>
 
-                    <div class="item-icon">
-                        <img v-if="item.image" :src="item.image">
+                    <div class="plate">
+                        <img v-if="item.image" :src="item.image" class="item-image">
                     </div>
 
-                    <div class="item-amount">
+                    <div v-if="item.amount !== undefined" class="item-amount">
                         {{ item.amount }}
                     </div>
                 </div>
@@ -93,12 +93,15 @@ defineProps<{
   color: #CFCFCF;
 }
 
+/* item */
 .item {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  min-width: 45px;
+  width: 56.94px;
+  box-sizing: border-box;
 }
 
 .item-name {
@@ -107,22 +110,27 @@ defineProps<{
   white-space: nowrap;
 }
 
-.item-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1.5px solid #EEFD1C;
-  background: rgba(255, 255, 255, 0.08);
+/* plate */
+.plate {
+  box-sizing: border-box;
+  position: relative;
+  width: 55px;
+  height: 55px;
+  background: #2B2B2B;
+  border: 3px solid #EEFD1C;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), inset 0px 4px 4px rgba(0, 0, 0, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
 }
 
-.item-icon img {
+/* image */
+.item-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  display: block;
 }
 
 .item-amount {
