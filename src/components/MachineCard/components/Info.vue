@@ -25,13 +25,13 @@ defineProps<{
       <!-- power -->
       <div class="info-row power">
         <span class="label">耗電量</span>
-        <span class="value">{{ power || '10 kW' }}</span>
+        <span class="value">{{ power || '10kW' }}</span>
       </div>
 
       <!-- selectedrecipe -->
       <div class="info-row selected-recipe">
         <span class="label">目前配方</span>
-        <span class="value">{{ selectedRecipe || '紫晶纖維' }}</span>
+        <span class="value">{{ selectedRecipe || '紫晶纖維(15s)' }}</span>
       </div>
     </div>
   </div>

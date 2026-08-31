@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Title from './components/Title.vue';
 import Machine from './components/Machine.vue';
-import Formula from './components/Formula.vue';
+import FormulaList from './components/FormulaList.vue';
 import Info from './components/Info.vue';
 import Button from './components/Button.vue';
 </script>
@@ -11,10 +11,10 @@ import Button from './components/Button.vue';
     <!-- 1. 卡片底板 -->
     <div class="plate"></div>
 
-    <!-- 2. 卡片核心主要內容 (Info + Formula) -->
+    <!-- 2. 卡片核心主要內容 (Info + FormulaList) -->
     <div class="frame-body">
       <Info />
-      <Formula />
+      <FormulaList />
     </div>
 
     <!-- 3. 貼附於 Frame 的漂浮元素 -->
@@ -48,12 +48,12 @@ import Button from './components/Button.vue';
   border-radius: 0px 40px 0px 0px;
 }
 
-/* 卡片主體內容區 (避開最左側 3px 黃條，margin-top 52px 對齊 title 下緣) */
+/* 卡片主體內容區 (設定明確寬高與右邊界，避免 absolute 容器寬度塌陷為 0) */
 .frame-body {
   position: absolute;
-  left: 3px;
-  top: 0px;
-  margin-left: 6px;
-  margin-top: 52px;
+  left: 9px;
+  right: 6px;
+  top: 52px;
+  bottom: 0px;
 }
 </style>
