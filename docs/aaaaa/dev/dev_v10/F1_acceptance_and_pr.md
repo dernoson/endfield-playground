@@ -1,9 +1,9 @@
 # V10-F1 — 8/30 驗收、品質閘與 PR
 
 **對應工項：** V10-F1  
-**狀態：** `[~]` 個人驗收完；PR #32 待主編 review／`/dev` 主編驗收  
+**狀態：** `[x]` **手動完成**（2026-08-31；V10 結案，不帶入 V11）  
 **依賴：** B1、C1、D1、E1、I1、G1（均已完成）  
-**最後更新：** 2026-08-26  
+**最後更新：** 2026-08-31  
 **正式依據：** [W0823-A1](../../../work_dispatch/aaaaa/W0823-A1_grid_port_alignment.md) §5–§8、[R-A2](../../../roadmap/detail/A2_grid_and_port_alignment.md) §9  
 **PR：** https://github.com/dernoson/endfield-playground/pull/32
 
@@ -96,6 +96,10 @@ review_gate：dernoson
 ---
 
 ## 9. 開發日誌
+
+### 2026-08-31
+
+- **手動標完成**：V10 結案；不帶入 V11。PR #32／主編 `/dev` 若仍在途，不擋本標注。
 
 ### 2026-08-26
 

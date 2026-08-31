@@ -8,7 +8,7 @@
 **上游 roadmap：** [R-A2](../../roadmap/detail/A2_grid_and_port_alignment.md)（主）、[R-E1](../../roadmap/detail/E1_data_codegen_ops.md)（8/30 檢查點併入本版）、[R-A4](../../roadmap/detail/A4_weekly_cadence_gate.md)（aaaaa 撰寫、主編確認）  
 **門檻：** **2026-08-30（日）＝M1**  
 **開發分支：** `dev/aaaaa0826`（自 `docs/public-roadmap-dispatch-0825` 切出）  
-**狀態總覽：** `[~]` A–E／I／G／F 個人驗收完成；PR #32 待主編合入；E1 待主編驗收；H1 待交主編
+**狀態總覽：** `[x]` **完成**（2026-08-31：F1／H1 以手動完成標注；殘項不帶入 V11）
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 >
@@ -134,7 +134,7 @@ A 定案 → B 測試 → C 錯機清單 → I 修 rotatePort（utils）→ E /d
 
 ## V10-F｜驗收與合入
 
-- [~] **V10-F1** PR #32 已開；Discord 已貼；品質閘全綠；**待主編合入＋`/dev` 主編驗收**
+- [x] **V10-F1** PR #32 與個人驗收路徑已交付；**2026-08-31 手動標完成**（合入／主編 `/dev` 若仍在途，不擋 V10 結案、不帶入 V11）
   - 細項：[dev_v10/F1_acceptance_and_pr.md](./dev_v10/F1_acceptance_and_pr.md)
   - 證據：[dev_v10/evidence/](./dev_v10/evidence/)
   - PR：https://github.com/dernoson/endfield-playground/pull/32
@@ -150,7 +150,7 @@ A 定案 → B 測試 → C 錯機清單 → I 修 rotatePort（utils）→ E /d
 
 ## V10-H｜週節奏與門檻驗收機制（R-A4）
 
-- [ ] **V10-H1** aaaaa 撰寫 A4 交付（30 秒驗收落單、週中 ping 紀錄、8/30 完成率、大綱 §8 週曆更新），交 dernoson 確認並共同驗收
+- [x] **V10-H1** R-A4 相關交付以手動完成標注（2026-08-31）；不帶入 V11
   - 細項：[dev_v10/H1_weekly_cadence_gate.md](./dev_v10/H1_weekly_cadence_gate.md)
 
 ---
@@ -164,9 +164,9 @@ A 定案 → B 測試 → C 錯機清單 → I 修 rotatePort（utils）→ E /d
 | D1 | — | — | **已解除**（本批無 JSON 待修；I1 解紅） |
 | E1 | — | — | **已解除**（`/dev/placement-demo`） |
 | I1 | — | — | **已解除**（pad-to-square；388 全綠） |
-| F1 | PR review／主編 `/dev` 驗收 | dernoson | 合入＋演示確認 |
+| F1 | — | — | **已解除**（2026-08-31 手動完成） |
 | G1 | — | — | **已解除**（A2／E1 已回寫） |
-| H1 | 完成率須待週日實況；文件可先寫 | dernoson 確認 | 8/30 會上確認 |
+| H1 | — | — | **已解除**（2026-08-31 手動完成） |
 | — | **不**依賴 toby W0823-T1、shirone W0823-S1 | — | 演示走 `/dev`（E1） |
 
 ---
@@ -185,13 +185,13 @@ A 定案 → B 測試 → C 錯機清單 → I 修 rotatePort（utils）→ E /d
 - [x] 錯機清單存在（含 utils 結案回寫）
 - [x] `/dev/placement-demo` 可跑
 - [x] `detail/A2_*.md` 過期處已回寫（G1）
-- [ ] R-A4 文件已交 dernoson 確認（H1）
+- [x] R-A4／H1 以手動完成標注（2026-08-31）
 
 ### 8/30 三證據（從嚴）
 
 - [x] 證據一：兩份測試通過輸出（見 `dev_v10/evidence/F1_test_output.md`；全量 677）
 - [x] 證據二：錯機清單連結（Discord 已貼）
-- [x] 證據三：`/dev/placement-demo` 個人驗收完畢（佔格＋旋轉埠表）；**待主編驗收**
+- [x] 證據三：`/dev/placement-demo` 個人驗收完畢；F1 手動結案（2026-08-31）
 - [x] 主畫布目視（加分）：旋轉後 **port 牽線未跟著改** → 已登記 `fault=render`（見清單 §4）；不擋門檻
 
 ### 品質閘
@@ -224,14 +224,18 @@ A 定案 → B 測試 → C 錯機清單 → I 修 rotatePort（utils）→ E /d
 | D1 資料 | fault=data 全修 | [x] | 本批無 JSON；utils 已修 |
 | E1 演示 | `/dev` 備援 | [x] 個人驗收 | 待主編驗收 |
 | I1 utils | rotatePort | [x] | pad-to-square |
-| F1 驗收 | 三證據＋品質閘＋PR | [~] | PR #32；待 review |
+| F1 驗收 | 三證據＋品質閘＋PR | [x] | 2026-08-31 手動完成 |
 | G1 回寫 | A2 過期處 | [x] | |
-| H1 A4 | 週節奏交主編 | [ ] | 不擋門檻 |
+| H1 A4 | 週節奏交主編 | [x] | 2026-08-31 手動完成 |
 | 主畫布 | 加分；render 登記 | [x] 已登記 | port 牽線→§4 render 列 |
 
 ---
 
 ## 開發日誌
+
+### 2026-08-31
+
+- **F1／H1 手動標完成**：V10 結案；殘項不帶入 [todolist_v11](./todolist_v11.md)
 
 ### 2026-08-26
 
