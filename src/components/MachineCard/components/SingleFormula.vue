@@ -36,10 +36,10 @@ defineProps<{
 
                     <div class="plate">
                         <img v-if="item.image" :src="item.image" class="item-image">
-                    </div>
 
-                    <div v-if="item.amount !== undefined" class="item-amount">
-                        {{ item.amount }}
+                        <div v-if="item.amount !== undefined" class="num">
+                            <span class="num-text">{{ item.amount }}</span>
+                        </div>
                     </div>
                 </div>
             </template>
@@ -57,10 +57,10 @@ defineProps<{
 
                     <div class="plate">
                         <img v-if="item.image" :src="item.image" class="item-image">
-                    </div>
 
-                    <div v-if="item.amount !== undefined" class="item-amount">
-                        {{ item.amount }}
+                        <div v-if="item.amount !== undefined" class="num">
+                            <span class="num-text">{{ item.amount }}</span>
+                        </div>
                     </div>
                 </div>
             </template>
@@ -114,15 +114,15 @@ defineProps<{
 .plate {
   box-sizing: border-box;
   position: relative;
-  width: 55px;
-  height: 55px;
+  width: 55.1px;
+  height: 55.1px;
   background: #2B2B2B;
   border: 3px solid #EEFD1C;
+  border-radius: 50%;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), inset 0px 4px 4px rgba(0, 0, 0, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
 }
 
 /* image */
@@ -130,13 +130,33 @@ defineProps<{
   width: 100%;
   height: 100%;
   object-fit: contain;
+  border-radius: 50%;
   display: block;
 }
 
-.item-amount {
-  font-size: 12px;
-  color: #FFFFFF;
+/* num (數量標籤) */
+.num {
+  position: absolute;
+  right: -5px;
+  bottom: -2px;
+  width: 19px;
+  height: 20px;
+  background: #EEFD1C;
+  border-radius: 50%;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.num-text {
+  font-style: normal;
   font-weight: 500;
+  font-size: 14px;
+  line-height: 19px;
+  text-align: center;
+  color: #2B2B2B;
 }
 
 .operator {
