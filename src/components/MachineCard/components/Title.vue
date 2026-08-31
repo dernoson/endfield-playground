@@ -43,7 +43,7 @@ defineProps<{
   right: 234.1px;
   top: 12px;
 
-  font-family: 'HarmonyOS Sans TC', sans-serif;
+  font-family: 'Sans TC';
   font-style: normal;
   font-weight: 300;
   font-size: 24px;
