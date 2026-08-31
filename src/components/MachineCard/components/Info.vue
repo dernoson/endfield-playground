@@ -18,20 +18,20 @@ defineProps<{
     <div class="info-list">
       <!-- size -->
       <div class="info-row size">
-        <span class="label">佔地大小：</span>
-        <span class="value">{{ size || '3×3' }}</span>
+        <span class="label">尺寸</span>
+        <span class="value">{{ size || '3*3' }}</span>
       </div>
 
       <!-- power -->
       <div class="info-row power">
-        <span class="label">電力消耗：</span>
-        <span class="value">{{ power || '30 kW' }}</span>
+        <span class="label">耗電量</span>
+        <span class="value">{{ power || '10 kW' }}</span>
       </div>
 
       <!-- selectedrecipe -->
       <div class="info-row selected-recipe">
-        <span class="label">預設配方：</span>
-        <span class="value">{{ selectedRecipe || '鐵錠' }}</span>
+        <span class="label">目前配方</span>
+        <span class="value">{{ selectedRecipe || '紫晶纖維' }}</span>
       </div>
     </div>
   </div>
@@ -43,7 +43,7 @@ defineProps<{
   position: absolute;
   width: 431px;
   height: 125px;
-  left: 6px;
+  left: 0px;
   top: 10px;
 }
 
@@ -52,7 +52,7 @@ defineProps<{
   position: absolute;
   width: 190.35px;
   height: 23px;
-  left: 0px;
+  left: 10px;
   top: 3px;
 
   font-family: 'Sans TC', sans-serif;
@@ -69,7 +69,7 @@ defineProps<{
 .info-list {
   position: absolute;
   width: 230px;
-  left: 22px;
+  left: 20px;
   top: 35px;
   display: flex;
   flex-direction: column;

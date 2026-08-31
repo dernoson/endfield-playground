@@ -40,7 +40,6 @@ defineProps<{
   position: absolute;
   height: 28px;
   left: 19px;
-  right: 234.1px;
   top: 12px;
 
   font-family: 'Sans TC';
