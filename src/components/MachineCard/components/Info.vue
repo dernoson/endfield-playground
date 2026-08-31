@@ -44,7 +44,7 @@ defineProps<{
   width: 431px;
   height: 125px;
   left: 6px;
-  top: 63px;
+  top: 10px;
 }
 
 /* selected-machine */
@@ -68,7 +68,7 @@ defineProps<{
 /* 3組 text 容器 ({some div}) */
 .info-list {
   position: absolute;
-  width: 229.52px;
+  width: 230px;
   left: 22px;
   top: 35px;
   display: flex;
@@ -77,15 +77,14 @@ defineProps<{
 }
 
 .info-row {
-  width: 229.52px;
+  width: 230px;
   height: 21px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
   font-family: 'HarmonyOS Sans TC', sans-serif;
-  font-style: normal;
-  font-weight: 300;
+  font-style: thin;
   font-size: 18px;
   line-height: 21px;
 
