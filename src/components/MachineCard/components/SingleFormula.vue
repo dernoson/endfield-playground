@@ -158,10 +158,11 @@ defineProps<{
 /* image */
 .item-image {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 55.1px;
   height: 55.1px;
-  top: -3px;
-  left: -3px;
   display: block;
   z-index: 1;
 }
