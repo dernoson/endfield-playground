@@ -145,6 +145,7 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 - [x] **V11-G1** 品質閘；PR；達門檻則發 layout-L1 解鎖句，否則標缺什麼
   - 細項：[dev_v11/G1_acceptance_and_unlock.md](./dev_v11/G1_acceptance_and_unlock.md)
   - 證據：[dev_v11/evidence/G1_unlock.md](./dev_v11/evidence/G1_unlock.md)
+  - PR：https://github.com/dernoson/endfield-playground/pull/40
   - 解鎖句：`layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可開最小 GridCanvas 只讀渲染（仍待 store 模型另開）`
 
 ---

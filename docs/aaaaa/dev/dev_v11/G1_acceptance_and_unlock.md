@@ -5,7 +5,8 @@
 **依賴：** B1、D1、E1 可測；F1 可跑；C1 建議同批；H1 不擋  
 **最後更新：** 2026-08-31  
 **正式依據：** W0831-A0 §2–§3；A1 決策 2  
-**證據：** [evidence/G1_unlock.md](./evidence/G1_unlock.md)
+**證據：** [evidence/G1_unlock.md](./evidence/G1_unlock.md)  
+**PR：** https://github.com/dernoson/endfield-playground/pull/40
 
 ---
 
@@ -65,4 +66,5 @@ review_gate：dernoson（合入；不代寫）。
 ### 2026-08-31
 
 - 解鎖升為三件皆可測；F1 必要併入個人驗收
-- 品質閘通過；發解鎖句；開 PR 待 dernoson 合入
+- 品質閘通過；發解鎖句；PR #40 待 dernoson 合入
+  - https://github.com/dernoson/endfield-playground/pull/40
