@@ -1,7 +1,7 @@
 # V11-D1 — resolveConnections
 
 **對應工項：** V11-D1  
-**狀態：** `[ ]` 未開始  
+**狀態：** `[x]` 完成（2026-08-31）  
 **依賴：** B1（型別）、C1（`portAnchors` 路徑）  
 **最後更新：** 2026-08-31  
 **正式依據：** A1 決策 6；評估文 §1（連接為衍生值）
@@ -20,23 +20,27 @@ Vue Flow 邊綁死兩端節點，無法表達「刪設備後管線留在原地�
 
 1. 對每條 `Pipeline`，取其 **waypoints 首／末** 為端點格  
 2. 對每台 `PlacedDevice`，依 machine mode 埠＋rotation，用 `resolvePortAnchorCell` 得外側錨點格  
-3. 端點格與某埠錨點**座標相等** → 該端掛上該埠  
+3. 端點格與某埠錨點**座標相等**（初稿比 **xy**）→ 該端掛上該埠  
 4. 兩端皆掛上 → 產出一條衍生 `Connection`  
 5. 任一端無對上 → **斷線**（`from`／`to` 對應側為 `null`）；**Pipeline 物件仍保留**
 
-媒質／埠 media 不相容：初稿可先只做幾何對齊，不相容標註於 Connection 或測試待決；**驗證階段再修**（見 A1 §2.1）。
+媒質／埠 media 不相容：初稿只做幾何；驗證期再修。
 
-### 2.2 建議簽章（初稿）
+### 2.2 落地簽章
 
 ```ts
 function resolveConnections(
   devices: PlacedDevice[],
   pipelines: Pipeline[],
-  // 查埠所需：getMachine 或預先解析的 port layout 表
+  getMachine?: GetMachineFn, // 預設 getMachineById
 ): Connection[]
 ```
 
-實作細節（埠列表取 `modes[].input_ports`／`output_ports`、旋轉用既有 `rotatePort*`）依原定演算法先寫；fixture 釘死再對行為。
+| 規則 | 值 |
+|------|-----|
+| Connection.id | `＝ pipelineId`（1:1） |
+| 同格多埠 | 起點偏好 `output`、終點偏好 `input` |
+| 未知 machineType | 該設備埠不進錨點表 |
 
 ### 2.3 不做
 
@@ -45,7 +49,7 @@ function resolveConnections(
 
 ---
 
-## 3. 檔案計畫
+## 3. 檔案計畫（已落地）
 
 | 動作 | 檔案 |
 |------|------|
@@ -56,9 +60,9 @@ function resolveConnections(
 
 ## 4. 驗證標準
 
-- [ ] 對齊→Connection；錯位→斷線且 pipeline 仍在（測試）
-- [ ] 刪設備情境：僅剩管線、兩端 null（或一端 null）可表達
-- [ ] 單元測試綠
+- [x] 對齊→Connection；錯位→斷線且仍產出 Connection
+- [x] 刪設備／空 devices：兩端 null
+- [x] 單元測試綠（6）；layout 全測 53 綠；type-check 過
 
 ---
 
@@ -66,4 +70,5 @@ function resolveConnections(
 
 ### 2026-08-31
 
-- 規則依決策 6 落檔；簽章初稿驗證期可修
+- 落地幾何對齊；id＝pipelineId；可注入 getMachine
+- 測試：對齊／斷線／ orphan／半連／空 path／旋轉
