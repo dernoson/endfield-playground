@@ -81,4 +81,4 @@
 ### 2026-09-01
 
 - 落地 selector＋ToolbarPanel 並存列表；測試 4 綠
-- 驗收指南與 evidence 落檔；PR 自 `dev/aaaaa0831-h1` 待 review_gate 合入
+- 驗收指南與 evidence 落檔；PR [#43](https://github.com/dernoson/endfield-playground/pull/43) 待 review_gate 合入

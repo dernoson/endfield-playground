@@ -11,7 +11,7 @@
 | 預估時數 | 在 A0 之後能做多少算多少；目標仍盡力 9/6 可截圖 |
 | review_gate | dernoson |
 | 工單風格 | 目標＋邊界＋契約（自帶流程；不附 Vue 教學） |
-| 狀態 | `[x]` 已交付（V11-H1）；PR 待 review_gate 合入 |
+| 狀態 | `[x]` 已交付（V11-H1）；PR [#43](https://github.com/dernoson/endfield-playground/pull/43) 待 review_gate 合入 |
 
 ---
 

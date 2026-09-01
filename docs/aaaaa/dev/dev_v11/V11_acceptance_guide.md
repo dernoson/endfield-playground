@@ -12,7 +12,7 @@
 | 工項 | 內容 | PR | 分支 |
 |------|------|-----|------|
 | A0 L1 打底 | types／utils／`/dev` 格點／解鎖句 | [#40](https://github.com/dernoson/endfield-playground/pull/40) **已合入 master** | `dev/aaaaa0831` |
-| A1 B1 工具列 | 真實機器列表並存五顆 | **待開**（本指南 §2） | `dev/aaaaa0831-h1` |
+| A1 B1 工具列 | 真實機器列表並存五顆 | [#43](https://github.com/dernoson/endfield-playground/pull/43) **待合入** | `dev/aaaaa0831-h1` |
 
 V11 執行計畫：[todolist_v11.md](../todolist_v11.md)＋本目錄 `dev_v11/`。
 

@@ -8,7 +8,7 @@
 **上游：** [LAYOUT_REWRITE_EARLY_START_0831](../LAYOUT_REWRITE_EARLY_START_0831.md)、[佈局視角渲染層自建_初步規劃與評估](../佈局視角渲染層自建_初步規劃與評估.md)、[R-B2](../../roadmap/detail/B2_placement_chain.md)  
 **門檻週：** 2026-08-31 → 2026-09-06  
 **開發分支：** A0→`dev/aaaaa0831`（已合入）；A1→`dev/aaaaa0831-h1`  
-**狀態總覽：** `[x]` A–H 完成；A0 PR [#40](https://github.com/dernoson/endfield-playground/pull/40) **已合入 master**；A1 PR 待開  
+**狀態總覽：** `[x]` A–H 完成；A0 PR [#40](https://github.com/dernoson/endfield-playground/pull/40) **已合入 master**；A1 PR [#43](https://github.com/dernoson/endfield-playground/pull/43) 待合入  
 **驗收指南：** [dev_v11/V11_acceptance_guide.md](./dev_v11/V11_acceptance_guide.md)
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
@@ -157,6 +157,7 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
   - 細項：[dev_v11/H1_toolbar_real_machines.md](./dev_v11/H1_toolbar_real_machines.md)
   - 產物：`toolbarMachines.ts`、`ToolbarPanel.vue`；測 4 綠
   - 證據：[dev_v11/evidence/H1_acceptance.md](./dev_v11/evidence/H1_acceptance.md)
+  - PR：https://github.com/dernoson/endfield-playground/pull/43
   - 驗收：主 app `/` 手動（無 `/dev` 專頁）；見 [V11_acceptance_guide §2](./dev_v11/V11_acceptance_guide.md)
 
 ---
@@ -247,4 +248,4 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 
 - PR #40 合入 master；H1 自最新 master 切 `dev/aaaaa0831-h1` 續推
 - 新增 [V11_acceptance_guide.md](./dev_v11/V11_acceptance_guide.md)、[H1_acceptance.md](./dev_v11/evidence/H1_acceptance.md)
-- 回寫 W0831-A0／A1 與 WEEK_20260831 驗收步驟；A1 PR 待 review_gate 合入
+- 回寫 W0831-A0／A1 與 WEEK_20260831 驗收步驟；A1 PR [#43](https://github.com/dernoson/endfield-playground/pull/43) 待 review_gate 合入
