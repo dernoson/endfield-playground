@@ -11,7 +11,7 @@
 | 預估時數 | 在 A0 之後能做多少算多少；目標仍盡力 9/6 可截圖 |
 | review_gate | dernoson |
 | 工單風格 | 目標＋邊界＋契約（自帶流程；不附 Vue 教學） |
-| 狀態 | `[x]` 已交付（V11-H1；真實機器列表並存，不接落子） |
+| 狀態 | `[x]` 已交付（V11-H1）；PR 待 review_gate 合入 |
 
 ---
 
@@ -111,9 +111,58 @@
 - [x] 點選有明確下一步（本地 highlight＋console；未呼叫 store）
 - [x] **現有五顆按鈕的落子與拖曳仍可用**（未動 `EquipmentType`／store 簽名／`dataTransfer` key）
 - [x] 未讓 L3 卡片自己讀 `src/data/*`（經 `toolbarMachines` 攤平）
-- [ ] PR 寫下游消費者（合入／續推時補）
+- [x] PR 寫下游消費者（見 §7 與 H1 PR body）
 - [x] `pnpm type-check`／toolbar 單元測通過
 
 ## 6. 未交頂替
 
 無。延誤須週日會改期並寫進大綱 §8。
+
+---
+
+## 7. 驗收指南（review_gate／週日會 V3）
+
+**總表：** [V11_acceptance_guide.md](../../../aaaaa/dev/dev_v11/V11_acceptance_guide.md) §2  
+**證據：** [H1_acceptance.md](../../../aaaaa/dev/dev_v11/evidence/H1_acceptance.md)
+
+### 7.1 自動化（必跑）
+
+```bash
+pnpm type-check
+pnpm test src/__tests__/editor/toolbarMachines.test.ts
+```
+
+預期：**4 tests** 全綠。佔格對照：粉碎機 3×3、塑型機 3×3、灌裝機 6×4、分流器 1×1。
+
+### 7.2 視覺 — 主編輯器 `/`（必看｜9/6 演示截圖）
+
+**注意：** 本單**無** `/dev` 專頁、**無** Storybook（`ToolbarPanel` 在 L2 `src/editor/`）。
+
+```text
+1. pnpm dev → http://localhost:5173/（主編輯器，不是 /dev）
+2. 畫面下方工具列：
+   - 上半：既有五顆（精煉爐、粉碎機…）
+   - 下半：分類 Tab ＋ 橫向機器列表（名稱 ＋ 佔格，如「粉碎機」「3×3」）
+3. 預設 Tab「基礎生產」：應見多台真實機器
+4. 切「合成製造」→ 灌裝機 6×4；切「物流設備」→ 分流器 1×1
+5. 點一台真實機器 → 卡片高亮；Console 出現
+   [toolbar] real machine selected (no store / no place) { id, name, sizeText, tag }
+6. 點上半「粉碎機」→ 仍可進入放置模式；拖曳到畫布仍可落子
+7. 點真實機器後畫布不應進入放置模式
+```
+
+### 7.3 硬約束（合入前勾選）
+
+- [x] 未改 `EquipmentType`／`armPlacement`／`setSelectedEquipment`／`dataTransfer` key
+- [x] 未改 `FactoryCanvas`／`FlowNodeOverlay`／`editorStore` 簽名
+- [x] 真實機器列表與五顆按鈕**並存**（未刪改舊按鈕）
+- [x] L3 未直接 import `src/data/*`
+
+### 7.4 下游消費者（PR body 必含）
+
+| 誰 | 怎麼用 |
+|----|--------|
+| 9/6 演示 | 主 app 底部工具列截圖 |
+| W0831-S1 | 吃 `ToolbarMachineRow`：`id`／`name`／`sizeText` |
+| B2 | 本 PR **不接**落子 |
+| goodmorning G1 | PaperFigBottomBar 視覺；與資料列表分開 |

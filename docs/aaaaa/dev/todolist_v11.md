@@ -7,8 +7,9 @@
 **正式工單：** [W0831-A0](../../work_dispatch/aaaaa/0831/W0831-A0_layout_l1_foundation.md)（最優）、[W0831-A1](../../work_dispatch/aaaaa/0831/W0831-A1_toolbar_real_machines.md)（次優）  
 **上游：** [LAYOUT_REWRITE_EARLY_START_0831](../LAYOUT_REWRITE_EARLY_START_0831.md)、[佈局視角渲染層自建_初步規劃與評估](../佈局視角渲染層自建_初步規劃與評估.md)、[R-B2](../../roadmap/detail/B2_placement_chain.md)  
 **門檻週：** 2026-08-31 → 2026-09-06  
-**開發分支：** `dev/aaaaa0831`  
-**狀態總覽：** `[x]` A–H 完成（含次優 B1 工具列）；PR #40 待合入／可續推 H1
+**開發分支：** A0→`dev/aaaaa0831`（已合入）；A1→`dev/aaaaa0831-h1`  
+**狀態總覽：** `[x]` A–H 完成；A0 PR [#40](https://github.com/dernoson/endfield-playground/pull/40) **已合入 master**；A1 PR 待開  
+**驗收指南：** [dev_v11/V11_acceptance_guide.md](./dev_v11/V11_acceptance_guide.md)
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 >
@@ -145,7 +146,7 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 - [x] **V11-G1** 品質閘；PR；達門檻則發 layout-L1 解鎖句，否則標缺什麼
   - 細項：[dev_v11/G1_acceptance_and_unlock.md](./dev_v11/G1_acceptance_and_unlock.md)
   - 證據：[dev_v11/evidence/G1_unlock.md](./dev_v11/evidence/G1_unlock.md)
-  - PR：https://github.com/dernoson/endfield-playground/pull/40
+  - PR：https://github.com/dernoson/endfield-playground/pull/40（**已合入 master**）
   - 解鎖句：`layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可開最小 GridCanvas 只讀渲染（仍待 store 模型另開）`
 
 ---
@@ -155,6 +156,8 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 - [x] **V11-H1** ToolbarPanel ≥1 分類真實機器名＋佔格；與五顆按鈕並存；不接 store 落子
   - 細項：[dev_v11/H1_toolbar_real_machines.md](./dev_v11/H1_toolbar_real_machines.md)
   - 產物：`toolbarMachines.ts`、`ToolbarPanel.vue`；測 4 綠
+  - 證據：[dev_v11/evidence/H1_acceptance.md](./dev_v11/evidence/H1_acceptance.md)
+  - 驗收：主 app `/` 手動（無 `/dev` 專頁）；見 [V11_acceptance_guide §2](./dev_v11/V11_acceptance_guide.md)
 
 ---
 
@@ -167,7 +170,7 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 | D1 | — | — | **已解除**（resolveConnections 可測） |
 | E1 | — | — | **已解除**（toTopology 可測；解鎖三件齊） |
 | F1 | — | — | **已解除**（`/dev/layout-l1-preview`） |
-| G1 | — | — | **已解除**（解鎖句已發；待 dernoson 合入） |
+| G1 | — | — | **已解除**（解鎖句已發；PR #40 已合入 master） |
 | H1 | — | — | **已解除**（真實機器列表並存；不接落子） |
 | — | **不動** editorStore／舊畫布加深 | — | 本版硬鎖 |
 
@@ -191,8 +194,8 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 
 ### 品質閘
 
-- [ ] `pnpm type-check`／`lint-check`／`format-check`／`test` 對改動範圍可過
-- [ ] PR 含下游消費者與 Breaking 註記摘要
+- [x] `pnpm type-check`／`lint-check`／本範圍 `test` 可過（layout 59＋toolbar 4＝63）
+- [x] A0 PR #40 含下游消費者與 Breaking 註記；A1 PR 待開（含 H1 下游段落）
 
 ---
 
@@ -237,5 +240,11 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 - **V11-D1 完成：** `resolveConnections` 幾何對齊；測試 6；layout 測 53 綠
 - **V11-E1 完成：** `toTopology` Adapter；斷線不進 edges；可餵 `buildGraph`；layout 測 57 綠；**解鎖三件齊**
 - **V11-F1 完成：** `/dev/layout-l1-preview`；connected／broken fixture；mockLayout 測 2；可發 G1 解鎖句
-- **V11-G1 完成：** 品質閘過；解鎖句已發；證據 `evidence/G1_unlock.md`；PR 待合入
+- **V11-G1 完成：** 品質閘過；解鎖句已發；證據 `evidence/G1_unlock.md`；PR #40 已合入 master
 - **V11-H1 完成：** 工具列真實機器分類列表與五顆並存；點選＝本地＋console；不接 store
+
+### 2026-09-01
+
+- PR #40 合入 master；H1 自最新 master 切 `dev/aaaaa0831-h1` 續推
+- 新增 [V11_acceptance_guide.md](./dev_v11/V11_acceptance_guide.md)、[H1_acceptance.md](./dev_v11/evidence/H1_acceptance.md)
+- 回寫 W0831-A0／A1 與 WEEK_20260831 驗收步驟；A1 PR 待 review_gate 合入

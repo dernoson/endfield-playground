@@ -4,7 +4,8 @@
 **狀態：** `[x]` 完成（2026-09-01）  
 **依賴：** 無硬依賴 A0  
 **最後更新：** 2026-09-01  
-**正式依據：** [W0831-A1](../../../work_dispatch/aaaaa/0831/W0831-A1_toolbar_real_machines.md)
+**正式依據：** [W0831-A1](../../../work_dispatch/aaaaa/0831/W0831-A1_toolbar_real_machines.md)  
+**驗收集：** [V11_acceptance_guide.md](./V11_acceptance_guide.md) §2｜[evidence/H1_acceptance.md](./evidence/H1_acceptance.md)
 
 ---
 
@@ -52,6 +53,18 @@
 - [x] L3 未讀 `src/data`（selector 在 editor／toolbar）
 - [x] type-check／toolbar 測 4 綠
 
+### 4.1 手動驗收（主 app `/`）
+
+本項**無** `/dev` 專頁、**無** Storybook。review_gate 依下列步驟驗收（詳 [evidence/H1_acceptance.md](./evidence/H1_acceptance.md)）：
+
+```text
+1. pnpm dev → http://localhost:5173/
+2. 工具列下半：分類 Tab ＋ 機器名＋佔格
+3. 切 Tab 抽查灌裝機 6×4、分流器 1×1
+4. 點真實機器 → 高亮 ＋ console.info（no store / no place）
+5. 上半五顆仍可落子／拖曳；點真實機器不觸發放置模式
+```
+
 ### 下游消費者（合入／續 PR 用）
 
 | 誰 | 怎麼用 |
@@ -68,3 +81,4 @@
 ### 2026-09-01
 
 - 落地 selector＋ToolbarPanel 並存列表；測試 4 綠
+- 驗收指南與 evidence 落檔；PR 自 `dev/aaaaa0831-h1` 待 review_gate 合入
