@@ -142,7 +142,8 @@ function handleRealMachineClick(row: ToolbarMachineRow) {
 .toolbar-row--legacy {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    flex: 0 0 40%;
+    flex: 0 0 auto;
+    height: 2.25rem;
     width: 100%;
     gap: 0;
 }
@@ -155,7 +156,7 @@ function handleRealMachineClick(row: ToolbarMachineRow) {
 .toolbar-real {
     display: flex;
     flex-direction: column;
-    flex: 1 1 60%;
+    flex: 1 1 auto;
     min-height: 0;
     border-top: 1px solid rgb(63 63 70);
     background: rgb(24 24 27 / 0.85);
@@ -193,19 +194,20 @@ function handleRealMachineClick(row: ToolbarMachineRow) {
     min-height: 0;
     padding: 0.35rem;
     overflow-x: auto;
-    overflow-y: hidden;
-    align-items: stretch;
+    overflow-y: auto;
+    align-items: flex-start;
 }
 
 .toolbar-machine {
     display: flex;
     flex: 0 0 auto;
     flex-direction: column;
-    justify-content: center;
-    gap: 0.1rem;
-    min-width: 4.5rem;
-    max-width: 7rem;
-    padding: 0.25rem 0.45rem;
+    justify-content: flex-start;
+    gap: 0.15rem;
+    min-width: 5.5rem;
+    max-width: 8rem;
+    min-height: 2.75rem;
+    padding: 0.3rem 0.5rem;
     text-align: left;
     color: rgb(228 228 231);
     background: rgb(39 39 42);
@@ -224,18 +226,21 @@ function handleRealMachineClick(row: ToolbarMachineRow) {
 }
 
 .toolbar-machine__name {
+    flex-shrink: 0;
     font-size: 0.75rem;
     font-weight: 600;
-    line-height: 1.2;
+    line-height: 1.25;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .toolbar-machine__size {
+    flex-shrink: 0;
     font-size: 0.65rem;
     color: rgb(161 161 170);
     font-variant-numeric: tabular-nums;
+    line-height: 1.2;
 }
 
 .toolbar-real__empty {
