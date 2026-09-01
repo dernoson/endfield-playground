@@ -122,6 +122,27 @@ Agents：
 - `dependency-grapher`：只讀分析相依關係並輸出 Mermaid markdown，不修改原始碼。
 - `test-writer`：建立或更新 Vitest 測試，測試檔鏡射至 `src/__tests__/`。
 
+### A.10 Storybook 開發守則
+
+完整操作方式參考 `tutorial/storybook/developer.md`。使用 `pnpm storybook` 啟動元件開發環境，
+預設網址為 `http://localhost:6006`；它可與 `pnpm dev` 同時執行。交付前可用
+`pnpm build-storybook` 驗證靜態建置。
+
+- Story 與元件放在同一資料夾，命名為 `<元件檔名>.stories.ts`。
+- `title` 統一使用 `L3/<資料夾>/<元件>`。
+- Story 的 export 名稱使用英文，介面顯示名稱透過 `name` 使用繁體中文。
+- 每個元件至少提供一個預設狀態及一個邊界狀態，例如空資料、極端值、`null` 或超長文字。
+- Nuxt UI 已在 `.storybook/preview.ts` 註冊，Story 不需要自行安裝或包裝。
+- Vue Flow 節點與連線必須使用 `.storybook/vueFlowHarness.ts` 的 `nodeHarness` 或
+  `edgeHarness`；此類 Story 的 meta 不設定 `component`，只暴露元件真正需要的資料。
+- 嚴禁在 `.storybook/preview.ts` 註冊 Pinia，避免掩蓋 L3 元件直接依賴 store 的違規。
+- 修改 `.storybook/preview.ts` 的 import 後必須重啟 Storybook；Tailwind 任意尺寸必須帶單位，
+  例如 `h-[600px]`。
+
+提交前應實際開啟 Story，檢查 Controls、各邊界狀態與 Accessibility 分頁。axe-core 的
+`Violations` 應逐項確認，但零違規不代表完整無障礙；鍵盤流程、焦點順序與螢幕閱讀器仍需人工測試，
+且目前 Accessibility 結果不會阻擋 CI。
+
 ## B. 專案架構導覽
 
 ## 1. 專案定位與技術棧
@@ -146,6 +167,7 @@ Agents：
 - VueUse
 - Tailwind CSS
 - Vitest
+- Storybook
 
 ## 2. 整體資料流
 
@@ -215,6 +237,12 @@ StatsPanel 和 InspectorSidebar，並啟動 validation 與 FlowEngine watcher。
 ### `vitest.config.ts`
 
 設定 Vitest Node 測試環境及 `@` alias。
+
+### `.storybook/`
+
+設定 Vue 3 + Vite 的元件開發環境。`preview.ts` 提供 Nuxt UI 與全域樣式；
+`vueFlowHarness.ts` 讓 Vue Flow 節點和連線在真實畫布環境中渲染。Story 檔案與元件共置於
+`src/components/`，並以 `*.stories.ts` 命名。
 
 ### `tsconfig.app.json`
 
