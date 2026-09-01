@@ -8,9 +8,6 @@
 
 ## 現在開著的（逐格）
 
-- `0016#1` · **待實作** — 套件安裝與 Storybook 骨架
-- `0016#2` · **待實作** — preview 的執行期前置
-- `0016#4` · **待實作** — 無外部依賴元件的 story
 - `0016#5` · **待實作** — ShortcutRow 的 Nuxt UI 路徑
 - `0016#6` · **待實作** — Vue Flow 元件的 decorator 與 story
 - `0015#4` · **阻塞**（等 `0001#8`） — 剩餘四條 branch 的去留與合併順序
@@ -134,7 +131,7 @@
 - `0003#12` · **實作中** — spec/ 與 plan-history/ 的同步責任
 - `0001#8` · **待決斷** — 架構人工對答：七題逐題裁決
 
-> 要做某一格：`python3 docs/dernoson/plan-history/plan-item.py 0016#1`
+> 要做某一格：`python3 docs/dernoson/plan-history/plan-item.py 0016#5`
 > —— 只回那一格的正文與它的依據，不必讀整份計畫。
 
 ## draft / in-progress（流水號降序）
