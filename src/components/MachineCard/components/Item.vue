@@ -29,15 +29,15 @@ defineProps<{
     flex-direction: column;
     align-items: center;
     gap: 3px;
-    width: 71.63px;
+    width: 71px;
     flex-shrink: 0;
     box-sizing: border-box;
 }
 
 /* item-name */
 .item-name {
-    width: 71.63px;
-    min-height: 18.37px;
+    width: 71px;
+    min-height: 18px;
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
@@ -51,8 +51,8 @@ defineProps<{
 .plate {
     box-sizing: border-box;
     position: relative;
-    width: 55.1px;
-    height: 55.1px;
+    width: 55px;
+    height: 55px;
     background: #2b2b2b;
     border: 3px solid #eefd1c;
     border-radius: 50%;
@@ -70,8 +70,8 @@ defineProps<{
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 55.1px;
-    height: 55.1px;
+    width: 55px;
+    height: 55px;
     display: block;
     z-index: 1;
 }
