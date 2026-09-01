@@ -1,13 +1,13 @@
 /**
  * 埠錨點格單元測試
  *
- * 測試對象：src/utils/layout/portAnchor.ts
+ * 測試對象：src/utils/layout/portAnchors.ts
  * 重點：錨點必須落在設備佔格「之外」相鄰的一格，否則每條連線都會與自己的
  * 來源與目標設備同格而全面誤報。
  */
 
 import { describe, it, expect } from 'vitest';
-import { resolvePortAnchorCell } from '@/utils/layout/portAnchor';
+import { resolvePortAnchorCell } from '@/utils/layout/portAnchors';
 
 describe('resolvePortAnchorCell', () => {
     /** 左上角在 (10, 10) 的 3x2 設備，佔格為 x: 10..12、y: 10..11 */
