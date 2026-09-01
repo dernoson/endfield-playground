@@ -10,11 +10,9 @@
 
 - `0016#1` · **待實作** — 套件安裝與 Storybook 骨架
 - `0016#2` · **待實作** — preview 的執行期前置
-- `0016#3` · **待決斷** — Storybook 掛在 /dev/storybook/<component> 的方式
 - `0016#4` · **待實作** — 無外部依賴元件的 story
 - `0016#5` · **待實作** — ShortcutRow 的 Nuxt UI 路徑
 - `0016#6` · **待實作** — Vue Flow 元件的 decorator 與 story
-- `0016#7` · **待決斷** — story 的 CI 涵蓋與互動測試
 - `0015#4` · **阻塞**（等 `0001#8`） — 剩餘四條 branch 的去留與合併順序
 - `0015#9` · **待實作** — 用 L3 按鈕取代 Ctrl+R 作為重置畫布入口
 - `0015#10` · **待實作** — 讓 resetCanvas 走 Command Pattern
