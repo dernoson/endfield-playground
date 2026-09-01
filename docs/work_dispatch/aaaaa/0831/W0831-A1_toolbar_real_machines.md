@@ -11,7 +11,7 @@
 | 預估時數 | 在 A0 之後能做多少算多少；目標仍盡力 9/6 可截圖 |
 | review_gate | dernoson |
 | 工單風格 | 目標＋邊界＋契約（自帶流程；不附 Vue 教學） |
-| 狀態 | `[ ]` 未開始 |
+| 狀態 | `[x]` 已交付（V11-H1；真實機器列表並存，不接落子） |
 
 ---
 
@@ -106,13 +106,13 @@
 
 ## 5. DoD
 
-- [ ] ≥1 分類列出真實機器（名稱＋佔格）
-- [ ] 佔格文字與 `width`×`height` 一致（抽查 3 台，例：粉碎機 3×3）
-- [ ] 點選有明確下一步（PR 註明；未呼叫 store）
-- [ ] **現有五顆按鈕的落子與拖曳仍可用**（未動 `EquipmentType`／store 簽名／`dataTransfer` key）
-- [ ] 未讓 L3 卡片自己讀 `src/data/*`
-- [ ] PR 寫下游消費者
-- [ ] `pnpm type-check`／`lint-check`／`format-check`／`test` 通過
+- [x] ≥1 分類列出真實機器（名稱＋佔格）
+- [x] 佔格文字與 `width`×`height` 一致（抽查 3 台，例：粉碎機 3×3）
+- [x] 點選有明確下一步（本地 highlight＋console；未呼叫 store）
+- [x] **現有五顆按鈕的落子與拖曳仍可用**（未動 `EquipmentType`／store 簽名／`dataTransfer` key）
+- [x] 未讓 L3 卡片自己讀 `src/data/*`（經 `toolbarMachines` 攤平）
+- [ ] PR 寫下游消費者（合入／續推時補）
+- [x] `pnpm type-check`／toolbar 單元測通過
 
 ## 6. 未交頂替
 

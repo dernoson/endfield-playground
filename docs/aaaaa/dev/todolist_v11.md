@@ -8,7 +8,7 @@
 **上游：** [LAYOUT_REWRITE_EARLY_START_0831](../LAYOUT_REWRITE_EARLY_START_0831.md)、[佈局視角渲染層自建_初步規劃與評估](../佈局視角渲染層自建_初步規劃與評估.md)、[R-B2](../../roadmap/detail/B2_placement_chain.md)  
 **門檻週：** 2026-08-31 → 2026-09-06  
 **開發分支：** `dev/aaaaa0831`  
-**狀態總覽：** `[~]` A–G 完成（解鎖句已發）；H1 B1 工具列次優未做
+**狀態總覽：** `[x]` A–H 完成（含次優 B1 工具列）；PR #40 待合入／可續推 H1
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 >
@@ -152,8 +152,9 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 
 ## V11-H｜B1 工具列真機器（次優）
 
-- [ ] **V11-H1** ToolbarPanel ≥1 分類真實機器名＋佔格；與五顆按鈕並存；不接 store 落子
+- [x] **V11-H1** ToolbarPanel ≥1 分類真實機器名＋佔格；與五顆按鈕並存；不接 store 落子
   - 細項：[dev_v11/H1_toolbar_real_machines.md](./dev_v11/H1_toolbar_real_machines.md)
+  - 產物：`toolbarMachines.ts`、`ToolbarPanel.vue`；測 4 綠
 
 ---
 
@@ -167,7 +168,7 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 | E1 | — | — | **已解除**（toTopology 可測；解鎖三件齊） |
 | F1 | — | — | **已解除**（`/dev/layout-l1-preview`） |
 | G1 | — | — | **已解除**（解鎖句已發；待 dernoson 合入） |
-| H1 | 時數讓位 A0；不擋解鎖 | — | 次優未做 |
+| H1 | — | — | **已解除**（真實機器列表並存；不接落子） |
 | — | **不動** editorStore／舊畫布加深 | — | 本版硬鎖 |
 
 ---
@@ -186,7 +187,7 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 
 ### B1 次優
 
-- [ ] ≥1 分類真實機器名＋`width×height`；既有五顆按鈕仍可用；未呼叫 store 落子
+- [x] ≥1 分類真實機器名＋`width×height`；既有五顆按鈕仍可用；未呼叫 store 落子
 
 ### 品質閘
 
@@ -218,7 +219,7 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 | E1 拓樸 | toTopology 可測 | [x] | 解鎖必要 |
 | F1 演示 | /dev 格點 | [x] | `/dev/layout-l1-preview` |
 | G1 驗收 | 品質閘＋解鎖句 | [x] | 見 evidence/G1_unlock |
-| H1 B1 | 工具列真機器 | [ ] | 次優 |
+| H1 B1 | 工具列真機器 | [x] | 並存列表；不接落子 |
 
 ---
 
@@ -237,3 +238,4 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 - **V11-E1 完成：** `toTopology` Adapter；斷線不進 edges；可餵 `buildGraph`；layout 測 57 綠；**解鎖三件齊**
 - **V11-F1 完成：** `/dev/layout-l1-preview`；connected／broken fixture；mockLayout 測 2；可發 G1 解鎖句
 - **V11-G1 完成：** 品質閘過；解鎖句已發；證據 `evidence/G1_unlock.md`；PR 待合入
+- **V11-H1 完成：** 工具列真實機器分類列表與五顆並存；點選＝本地＋console；不接 store
