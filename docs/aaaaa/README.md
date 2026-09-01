@@ -1,10 +1,10 @@
 ﻿# CR-04｜FlowEngine 靜態流量分析引擎
 
 **負責人：** aaaaa  
-**階段：** L1 基礎建設完成 ✅ / V5～**V9＋H1 驗收補強完成**  
+**階段：** L1 基礎建設完成 ✅ / V5～V10 完成；**V11 進行中**（佈局 L1 打底）  
 **依賴 CR：** CR-01（設備擺放）、CR-02（管線連接）、CR-03（警示與 Error 狀態）  
-**文件版本：** v3.2  
-**最後更新：** 2026-08-02
+**文件版本：** v3.3  
+**最後更新：** 2026-08-31
 
 ---
 
@@ -16,11 +16,12 @@
 - 📦 **資料格式（產品／機器／物態）** → [DATA_FORMAT_GUIDE.md](./DATA_FORMAT_GUIDE.md)
 - 📖 查詢 L1 API → [L1 API Reference](./L1_API_REFERENCE.md)
 - 🔧 使用 FlowEngine → [FlowEngine Guide](./FLOW_ENGINE_GUIDE.md)
-- 📝 查看工項進度 → [todolist_v9.md](./dev/todolist_v9.md)（現行）｜[todolist_v8.md](./dev/todolist_v8.md)｜[todolist_v6.md](./dev/todolist_v6.md)
-- 📂 瀏覽技術文件 → [dev_v9/](./dev/dev_v9/)｜[dev_v8/](./dev/dev_v8/)｜[dev_v7/](./dev/dev_v7/)｜[dev_v6/](./dev/dev_v6/)
+- 📝 查看工項進度 → [todolist_v11.md](./dev/todolist_v11.md)（**現行**）｜[todolist_v10.md](./dev/todolist_v10.md)｜[todolist_v9.md](./dev/todolist_v9.md)
+- 📂 瀏覽技術文件 → [dev_v11/](./dev/dev_v11/)｜[dev_v10/](./dev/dev_v10/)｜[dev_v9/](./dev/dev_v9/)
 - 🧪 測試 FlowEngine → `/dev/flow-engine`（引擎／機器／產品；H／V7／V9；D1 最短鏈）
 - 🎯 開發 Detector → [shirone/DETECTOR_CHECKLIST.md](../shirone/DETECTOR_CHECKLIST.md)
 - 🖱️ 拖曳 Undo 原文 → [MILESTONE_0726.md](./MILESTONE_0726.md)（已結案）
+- 📐 佈局自建 L1 → [LAYOUT_REWRITE_EARLY_START_0831.md](./LAYOUT_REWRITE_EARLY_START_0831.md)｜[todolist_v11](./dev/todolist_v11.md)
 - 📦 資料版本 → [data_0/](./data_0/)（舊）｜[data_1/](./data_1/)（來源）｜[data/](./data/)（工作副本）
   - 同步：`pnpm sync:aaaaa-data`｜重產 `src/data`：`pnpm generate:src-data`
 

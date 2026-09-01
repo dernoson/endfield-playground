@@ -11,7 +11,7 @@
 | 預估時數 | **盡量吃滿**；B1 見 [A1](./W0831-A1_toolbar_real_machines.md) 為次優 |
 | review_gate | dernoson（合入；**不**代寫） |
 | 工單風格 | 目標＋邊界＋契約；不附教學 |
-| 狀態 | `[ ]` 未開始 |
+| 狀態 | `[x]` 解鎖句已發（見 V11-G1／PR）；合入待 dernoson |
 
 ---
 
@@ -55,10 +55,16 @@ layout-L1：<已完成項>；L2 可開 <允許的下一刀>
 
 ## 3. DoD
 
-- [ ] 本週有可審的 L1 進度（函式／型別／測試至少一條主線）  
-- [ ] 未加深舊 Vue Flow 佈局畫布  
-- [ ] （若達解鎖條件）已發 §2 宣告；未達則 PR／Discord 寫明「尚未解鎖、缺什麼」  
-- [ ] `pnpm type-check`／`lint-check`／`format-check`／`test` 對你改動的範圍可過  
+- [x] 本週有可審的 L1 進度（函式／型別／測試至少一條主線）  
+- [x] 未加深舊 Vue Flow 佈局畫布  
+- [x] （若達解鎖條件）已發 §2 宣告；未達則 PR／Discord 寫明「尚未解鎖、缺什麼」  
+- [x] `pnpm type-check`／`lint-check`／`format-check`／`test` 對你改動的範圍可過  
+
+### 解鎖句（已發）
+
+```text
+layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可開最小 GridCanvas 只讀渲染（仍待 store 模型另開）
+```
 
 ## 4. 未交頂替
 
