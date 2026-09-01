@@ -8,8 +8,6 @@
 
 ## 現在開著的（逐格）
 
-- `0016#5` · **待實作** — ShortcutRow 的 Nuxt UI 路徑
-- `0016#6` · **待實作** — Vue Flow 元件的 decorator 與 story
 - `0015#4` · **阻塞**（等 `0001#8`） — 剩餘四條 branch 的去留與合併順序
 - `0015#9` · **待實作** — 用 L3 按鈕取代 Ctrl+R 作為重置畫布入口
 - `0015#10` · **待實作** — 讓 resetCanvas 走 Command Pattern
@@ -131,12 +129,11 @@
 - `0003#12` · **實作中** — spec/ 與 plan-history/ 的同步責任
 - `0001#8` · **待決斷** — 架構人工對答：七題逐題裁決
 
-> 要做某一格：`python3 docs/dernoson/plan-history/plan-item.py 0016#5`
+> 要做某一格：`python3 docs/dernoson/plan-history/plan-item.py 0015#4`
 > —— 只回那一格的正文與它的依據，不必讀整份計畫。
 
 ## draft / in-progress（流水號降序）
 
-- **0016** [0016_20260901_l3-storybook](./0016_20260901_l3-storybook.md) — `draft`
 - **0015** [0015_20260817_pre-master-branch-consolidation](./0015_20260817_pre-master-branch-consolidation.md) — `in-progress`，待辦待決剩 4/12
 - **0014** [0014_20260811_cr11-device-toolbar](./0014_20260811_cr11-device-toolbar.md) — `draft`
 - **0013** [0013_20260811_cr10-power-calculation](./0013_20260811_cr10-power-calculation.md) — `draft`
