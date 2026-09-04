@@ -33,13 +33,16 @@ const activeTag = ref<MachineCategory>(DEFAULT_TOOLBAR_MACHINE_TAG);
 /** 本地選取的真實機器 id（不進 store） */
 const selectedRealMachineId = ref<string | null>(null);
 
+/** 當前分類下的真實機器列（唯讀列表；點選不進 store） */
 const realMachines = computed(() => listToolbarMachines(activeTag.value));
 
 /**
  * 點擊設備按鈕時武裝放置模式，之後點擊畫布即可放置該設備。
+ * 同時清空真實機器本地高亮，避免與 legacy 武裝態同時亮起。
  * @param equipment 選擇的設備類型
  */
 function handleEquipClick(equipment: EquipmentType) {
+    selectedRealMachineId.value = null;
     editorStore.armPlacement(equipment);
 }
 
@@ -50,6 +53,7 @@ function handleEquipClick(equipment: EquipmentType) {
  * @param equipment 被拖拉的設備類型
  */
 function handleEquipDragStart(event: DragEvent, equipment: EquipmentType) {
+    selectedRealMachineId.value = null;
     editorStore.setSelectedEquipment(equipment);
 
     if (!event.dataTransfer) {
@@ -58,6 +62,15 @@ function handleEquipDragStart(event: DragEvent, equipment: EquipmentType) {
 
     event.dataTransfer.effectAllowed = 'copy';
     event.dataTransfer.setData('application/x-endfield-equipment', equipment);
+}
+
+/**
+ * 切換真實機器分類 Tab；清空本地選取，避免切回原 Tab 時殘留高亮。
+ * @param tag 目標分類
+ */
+function handleTagClick(tag: MachineCategory) {
+    activeTag.value = tag;
+    selectedRealMachineId.value = null;
 }
 
 /**
@@ -78,7 +91,7 @@ function handleRealMachineClick(row: ToolbarMachineRow) {
 <template>
     <div class="panel toolbar-bottom toolbar-panel">
         <!-- 既有五顆：落子／拖曳路徑不變 -->
-        <div class="toolbar-row toolbar-row--legacy">
+        <div class="toolbar-row--legacy">
             <UButton
                 v-for="equipment in equipments"
                 :key="equipment.id"
@@ -103,17 +116,16 @@ function handleRealMachineClick(row: ToolbarMachineRow) {
                     class="toolbar-tag"
                     :class="{ 'toolbar-tag--active': activeTag === tag }"
                     :aria-selected="activeTag === tag"
-                    @click="activeTag = tag"
+                    @click="handleTagClick(tag)"
                 >
                     {{ tag }}
                 </button>
             </div>
-            <div class="toolbar-real__list" role="list">
+            <div class="toolbar-real__list">
                 <button
                     v-for="row in realMachines"
                     :key="row.id"
                     type="button"
-                    role="listitem"
                     class="toolbar-machine"
                     :class="{ 'toolbar-machine--selected': selectedRealMachineId === row.id }"
                     :title="`${row.name}（${row.id}）`"
