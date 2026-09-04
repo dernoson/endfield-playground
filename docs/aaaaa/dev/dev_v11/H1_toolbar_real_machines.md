@@ -82,3 +82,7 @@
 
 - 落地 selector＋ToolbarPanel 並存列表；測試 4 綠
 - 驗收指南與 evidence 落檔；PR [#43](https://github.com/dernoson/endfield-playground/pull/43) 待 review_gate 合入
+
+### 2026-09-04
+
+- 依主編 review 修正：拿掉 list／listitem role、補 `realMachines` JSDoc、移除殘留 `toolbar-row` class、點 legacy／拖曳／切 Tab 時清空真實機器本地高亮
