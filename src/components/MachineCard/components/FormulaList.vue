@@ -1,35 +1,11 @@
 <script setup lang="ts">
 import SingleFormula from './SingleFormula.vue';
 import type { Formula } from '../types';
-import defaultItemImage from './item.png';
 
 const props = defineProps<{
     title?: string;
-    duration?: number | string;
     formulas?: Formula[];
 }>();
-
-const sampleFormula: Formula = {
-    duration: 15,
-    input: [
-        { name: '粗製紫晶', image: defaultItemImage, amount: 2 },
-        { name: '纖維原料', image: defaultItemImage, amount: 1 },
-    ],
-    output: [
-        { name: '紫晶纖維', image: defaultItemImage, amount: 1 },
-        { name: '結構基板', image: defaultItemImage, amount: 2 },
-        { name: '活性催化劑', image: defaultItemImage, amount: 1 },
-    ],
-};
-
-const defaultFormulas: Formula[] = [
-    sampleFormula,
-    sampleFormula,
-    sampleFormula,
-    sampleFormula,
-    sampleFormula,
-    sampleFormula,
-];
 </script>
 
 <template>
@@ -42,9 +18,9 @@ const defaultFormulas: Formula[] = [
         <!-- 配方內容容器 -->
         <div class="list-container">
             <slot>
-                <!-- 預設 formula 項目 -->
+                <!-- formula 項目 -->
                 <SingleFormula
-                    v-for="(formula, index) in props.formulas || defaultFormulas"
+                    v-for="(formula, index) in props.formulas"
                     :key="index"
                     :singleformula="formula"
                 />

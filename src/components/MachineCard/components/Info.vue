@@ -10,26 +10,26 @@ defineProps<{
 <template>
     <div class="info">
         <!-- 1. selectedmachine -->
-        <div class="selected-machine">已選取：{{ selectedMachine || 'selectedMachine' }}</div>
+        <div class="selected-machine">已選取：{{ selectedMachine || '—' }}</div>
 
         <!-- 2. 3組資訊列表 (置左 a:  b 置右) -->
         <div class="info-list">
             <!-- size -->
             <div class="info-row size">
                 <span class="label">尺寸</span>
-                <span class="value">{{ size || 'size' }}</span>
+                <span class="value">{{ size || '—' }}</span>
             </div>
 
             <!-- power -->
             <div class="info-row power">
                 <span class="label">耗電量</span>
-                <span class="value">{{ power || 'power' }}</span>
+                <span class="value">{{ power || '—' }}</span>
             </div>
 
             <!-- selectedrecipe -->
             <div class="info-row selected-recipe">
                 <span class="label">目前配方</span>
-                <span class="value">{{ selectedRecipe || 'selectedRecipe' }}</span>
+                <span class="value">{{ selectedRecipe || '—' }}</span>
             </div>
         </div>
     </div>

@@ -14,7 +14,6 @@ export interface MachineCardProps {
     id: string;
     name: string;
     sizeText: string;
-    tag?: string;
     iconUrl?: string;
     power?: string;
     selectedRecipe?: string;
