@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SingleFormula from './SingleFormula.vue';
-import type { Formula } from '../types';
+import type { Formula } from './types';
 
 const props = defineProps<{
     title?: string;

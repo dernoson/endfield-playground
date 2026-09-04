@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { FormulaItem } from '../types';
+import type { FormulaItem } from './types';
 import defaultItemImage from './item.png';
 
 defineProps<{

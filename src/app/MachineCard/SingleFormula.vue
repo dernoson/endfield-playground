@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Item from './Item.vue';
-import type { Formula } from '../types';
+import type { Formula } from './types';
 
 defineProps<{
     singleformula: Formula;
