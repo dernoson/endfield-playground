@@ -10,12 +10,26 @@ import Info from './Info.vue';
 import Button from './Button.vue';
 import type { MachineCardProps } from './types';
 
+/** 元件傳入之機器卡片屬性 */
 const props = defineProps<MachineCardProps>();
 
+/** 元件對外觸發之事件定義 */
 const emit = defineEmits<{
+    /**
+     * 當使用者點擊卡片時對外觸發，通知上層選取該機器。
+     * @param event 事件名稱 'pick'
+     * @param machineId 被選取的機器唯一識別碼
+     */
     (event: 'pick', machineId: string): void;
 }>();
 
+/**
+ * 處理卡片點擊互動，向外部發送選取事件與機器 ID。
+ *
+ * @example
+ * // 於模板中綁定點擊事件
+ * onClick()
+ */
 function onClick(): void {
     emit('pick', props.id);
 }
@@ -30,7 +44,7 @@ function onClick(): void {
         <div class="frame-body">
             <Info
                 :selected-machine="name"
-                :size="sizeText"
+                :sizeText="sizeText"
                 :power="power"
                 :selected-recipe="selectedRecipe"
             />

@@ -2,7 +2,9 @@
 import type { FormulaItem } from './types';
 import defaultItemImage from './item.png';
 
+/** 配方物品圖示標籤元件之屬性定義 */
 defineProps<{
+    /** 所要呈現的物品資料（包含名稱、圖標與數量） */
     item: FormulaItem;
 }>();
 </script>

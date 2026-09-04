@@ -1,8 +1,13 @@
 <script setup lang="ts">
+/** 機器狀態與規格資訊區塊之屬性定義 */
 defineProps<{
-    selectedMachine?: string;
-    size?: string;
+    /** 目前已選取的機器名稱，未傳入時顯示佔位符號 */
+    selectedMachine: string;
+    /** 機器佔地尺寸文字（例如「3×3」），未傳入時顯示佔位符號 */
+    sizeText: string;
+    /** 機器運作耗電量文字（例如「10kW」），未傳入時顯示佔位符號 */
     power?: string;
+    /** 當前設定的配方名稱與耗時，未傳入時顯示佔位符號 */
     selectedRecipe?: string;
 }>();
 </script>
@@ -10,14 +15,14 @@ defineProps<{
 <template>
     <div class="info">
         <!-- 1. selectedmachine -->
-        <div class="selected-machine">已選取：{{ selectedMachine || '—' }}</div>
+        <div class="selected-machine">已選取：{{ selectedMachine }}</div>
 
         <!-- 2. 3組資訊列表 (置左 a:  b 置右) -->
         <div class="info-list">
             <!-- size -->
             <div class="info-row size">
                 <span class="label">尺寸</span>
-                <span class="value">{{ size || '—' }}</span>
+                <span class="value">{{ sizeText }}</span>
             </div>
 
             <!-- power -->

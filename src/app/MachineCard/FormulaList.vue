@@ -2,8 +2,9 @@
 import SingleFormula from './SingleFormula.vue';
 import type { Formula } from './types';
 
+/** 可用配方清單區塊之屬性定義 */
 const props = defineProps<{
-    title?: string;
+    /** 機器支援的可用配方清單 */
     formulas?: Formula[];
 }>();
 </script>
@@ -11,9 +12,7 @@ const props = defineProps<{
 <template>
     <div class="formula-list">
         <!-- Text 標題 -->
-        <div class="title-text">
-            {{ title || '可用配方一覽' }}
-        </div>
+        <div class="title-text">可用配方一覽</div>
 
         <!-- 配方內容容器 -->
         <div class="list-container">

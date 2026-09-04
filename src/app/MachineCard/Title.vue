@@ -1,4 +1,8 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+/**
+ * 機器卡片頂部標題列元件，展示面板名稱底板與標題文字。
+ */
+</script>
 
 <template>
     <div class="title">

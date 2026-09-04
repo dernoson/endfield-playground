@@ -2,7 +2,9 @@
 import Item from './Item.vue';
 import type { Formula } from './types';
 
+/** 單一配方展示元件之屬性定義 */
 defineProps<{
+    /** 所要呈現的單一配方資料（包含週期、原料與產物） */
     singleformula: Formula;
 }>();
 </script>
