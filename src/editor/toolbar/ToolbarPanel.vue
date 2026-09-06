@@ -278,7 +278,10 @@ function handleEquipDragStart(event: DragEvent, equipmentId: string) {
                             ></div>
                             
                             <!-- 黃色底線層 -->
-                            <div class="absolute left-0 top-[92px] w-full h-[4px] rounded-b-[8px] bg-[#eefd1c]"></div>
+                            <div 
+                                class="absolute left-0 top-[92px] w-full h-[4px] rounded-b-[8px] bg-[#eefd1c] transition-shadow duration-300"
+                                :class="editorStore.selectedEquipment === equipment.id ? 'shadow-[0_2px_4px_rgba(238,253,28,0.5)]' : 'shadow-none'"
+                            ></div>
 
                             <!-- 圖片容器：100x100 完整紅色中空方框標示範圍 -->
                             <div class="absolute left-0 top-0 w-[100px] h-[100px] border-[2px] border-red-500 bg-transparent flex items-center justify-center">
