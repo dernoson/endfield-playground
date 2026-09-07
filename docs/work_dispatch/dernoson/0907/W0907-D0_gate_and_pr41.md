@@ -1,65 +1,65 @@
-# W0907-D0｜dernoson｜裁 #41、守 L2 閘門
+# W0907-D0｜dernoson｜守閘、白紙審、合入順序
 
 | meta | value |
 |------|-------|
 | 週次 | 2026-09-07 → 2026-09-13 |
 | 等級 | **確定**（決策／合入，不兼功能） |
 | 擋門檻 | 否（但閘門失守會撤回 L2） |
-| 上游 | [WEEK_20260907](../../WEEK_20260907.md)、[personal_profile §2.4](../../../aaaaa/collaborator_survey/personal_profile/README.md) |
+| 上游 | [WEEK_20260907](../../WEEK_20260907.md) |
 | 產能參考 | 3–5h，全額給守門 |
 
 ---
 
-## 1. 本週要裁的三件事
+## 1. 本週定案（已裁，不用再等）
 
-| # | 事項 | 需要的產出 | 期限 |
-|---|------|-----------|------|
-| 1 | **[PR #41](https://github.com/dernoson/endfield-playground/pull/41) 的 MachineCard 路徑** | 一句話定案：留在 shirone 現行位置，或搬到 `src/components/MachineCard/`。**裁完直接寫進 PR comment**，shirone 的 [S1](../../shirone/0907/W0907-S1_machinecard_land.md) 等這句才動 | **9/09 前**（週三） |
-| 2 | **L2 本週開放範圍** | 確認＝「只讀渲染＋視窗座標」，擺放／選取仍鎖。若你要放寬，改的是 [WEEK_20260907](../../WEEK_20260907.md) §2，不是口頭 | 發工單當天 |
-| 3 | **踩鎖三筆的處置** | 明文退件（不是沉默不合）：goodmorning `ToolbarPanel`×3、MBD `MainLayout`、avery `FactoryLayout`（檔名含 U+2060） | 9/09 前 |
-
-第 3 項要**寫一句理由給當事人**。上週三人都自報「已完成／已開 PR」，沉默不合會讓他們下週原樣再交一次。
+| # | 事項 | 結論 |
+|---|------|------|
+| 1 | **MachineCard 路徑** | **維持** `src/app/MachineCard/`（主編 9/07 確認）。[S1](../../shirone/0907/W0907-S1_machinecard_land.md) 改為「對白紙＋拆配方素材」，不再搬路徑 |
+| 2 | **L2 本週開放範圍** | 「只讀渲染＋視窗座標」；擺放／選取仍鎖 |
+| 3 | **L3 過審** | goodmorning G1、shirone S1：**白紙過審**是合入前提之一；你管技術／範圍，paper 管對稿 |
 
 ---
 
-## 2. 閘門判準（本週版）
+## 2. 仍要處理
+
+| # | 事項 | 產出 | 期限 |
+|---|------|------|------|
+| A | 踩鎖三筆明文退件 | goodmorning `ToolbarPanel`×3、MBD `MainLayout`、avery `FactoryLayout`（U+2060）各一句理由 | 9/09 前 |
+| B | #41 範圍對齊新 S1 | PR comment 寫明：路徑不動；本週加「對白紙」＋「素材拆到 `src/components`＋獨立 story」 | 發工單後盡快 |
+| C | G1／S1 合入前確認 | 技術綠＋**paper 已回「過」** | 隨 PR |
+
+---
+
+## 3. 閘門判準（本週版）
 
 | PR 內容 | 處置 |
 |---------|------|
-| 只讀渲染、視窗座標、純函式、Storybook | 可審 |
-| 改 `editorStore` 簽名、擺放／選取落子、加深 `FactoryCanvas`／Vue Flow | **退回**，附一句範圍依據 |
-| toby 與 harry 動到同一個檔 | **退回後到者**，不自行合併 |
+| 只讀渲染、視窗座標、純函式、Storybook（含 Toolbar／按鈕 story） | 可審 |
+| G1／S1 視覺對稿未得 paper「過」 | **先掛著**，不硬合 |
+| 改 `editorStore` 簽名、擺放／選取、加深 `FactoryCanvas`／Vue Flow | **退回** |
+| toby 與 harry 同檔 | **退回後到者** |
 | 網頁 Upload、檔名含不可見字元、檔落根目錄 | 退回，不例外 |
-
-**退回時只寫「超出 9/06 宣告範圍」＋連結**，不要幫對方改。
-
----
-
-## 3. 合入順序
-
-**#41 → A0 → T1 → H1 → 加分。** 待審維持 ≤3 條。
+| G1 去改 `ToolbarPanel` 或做主 app 接線 | **退回**（交付只到 Storybook） |
 
 ---
 
-## 4. 不做（規則 17）
+## 4. 合入順序
 
-上週你交了 Storybook 11 筆基建，範圍拿捏正確（未搶 layout）。本週**維持同一條線**：
-
-- 不寫 `layoutStore`、不寫 `GridCanvas`、不補 `useGridViewport`。
-- 下游交不出來的正確處置是**延壓並在 roadmap 標示**，不是自己吃下。你是全隊唯一 gate，時間吃掉的是決策品質。
+**A0 → T1 → H1 →（paper 過後的）S1／G1 → 其餘加分。**  
+#41 等 S1 兩項做完＋白紙過再合。待審維持 ≤3 條。
 
 ---
 
-## 5. 備援
+## 5. 不做（規則 17）
 
-你若本週不可用，**不指定暫代 review**——一律延壓到你回來，並在 Discord 說一聲。本週沒有任何工項的門檻條件綁在「一定要合入」。
+不寫 `layoutStore`、`GridCanvas`、`useGridViewport`。下游交不出來就延壓標 roadmap，不要自己吃。
 
 ---
 
 ## 6. DoD
 
-- [ ] #41 路徑已裁並寫進 PR comment（9/09 前）
-- [ ] 踩鎖三筆各有一句退件理由送達當事人
-- [ ] 本週合入的 PR 皆在宣告範圍內；範圍外者有退回紀錄
-- [ ] 週末待審 ≤3 條
-- [ ] 自己的 diff 不含 `src/store/layoutStore.ts`、`src/editor/layout/*`
+- [ ] 踩鎖三筆各有退件理由送達
+- [ ] #41 comment 已對齊「路徑不動＋本週兩項」
+- [ ] 合入的 L3 皆有 paper「過」紀錄（G1／S1）
+- [ ] 本週合入皆在宣告範圍內
+- [ ] 自己的 diff 不含 layout 功能實作
