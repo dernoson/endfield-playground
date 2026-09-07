@@ -36,18 +36,18 @@ const props = defineProps<{
     position: absolute;
     left: 0px;
     right: 0px;
-    width: 100%;
     top: 140px;
     bottom: 14px;
+    display: flex;
+    flex-direction: column;
 
     border-top: 1px solid #dadada;
 }
 
 /* Text */
 .title-text {
-    position: absolute;
-    left: 13px;
-    top: 16px;
+    padding: 16px 0 11px 13px;
+    flex-shrink: 0;
 
     font-style: normal;
     font-weight: 400;
@@ -60,11 +60,9 @@ const props = defineProps<{
 
 /* 配方內容容器 */
 .list-container {
-    position: absolute;
-    top: 50px;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
 
     /* 超出高度自動滾動，橫向嚴格裁切 */
     overflow-y: auto;
