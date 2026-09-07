@@ -95,8 +95,6 @@ function onClick(): void {
 <style scoped>
 .machine-card {
     font-family: 'HarmonyOS Sans TC', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     position: relative;
     width: 451px;
     height: 686px;
