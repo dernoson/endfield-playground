@@ -13,52 +13,35 @@ const rowRef = ref<HTMLElement | null>(null);
 const canScrollLeft = ref(false);
 const canScrollRight = ref(false);
 
-/** 偵測目前水平捲動進度，動態切換左右提示顯示狀態 */
-function updateScrollState(): void {
+/** 檢查當前橫向滾動容器狀態，動態決定兩側提示是否顯示 */
+function updateScrollHints(): void {
     const el = rowRef.value;
     if (!el) return;
-
-    const { scrollLeft, scrollWidth, clientWidth } = el;
-    const maxScrollLeft = scrollWidth - clientWidth;
-
-    // 容許 1px 渲染誤差
-    canScrollLeft.value = scrollLeft > 1;
-    canScrollRight.value = maxScrollLeft > 1 && scrollLeft < maxScrollLeft - 1;
+    canScrollLeft.value = el.scrollLeft > 1;
+    canScrollRight.value = el.scrollLeft + el.clientWidth < el.scrollWidth - 1;
 }
 
-/** 點選箭頭時提供平滑滾動操作 */
-function scrollByDirection(direction: 'left' | 'right'): void {
-    const el = rowRef.value;
-    if (!el) return;
-    const offset = direction === 'left' ? -90 : 90;
-    el.scrollBy({ left: offset, behavior: 'smooth' });
+function onScroll(): void {
+    updateScrollHints();
 }
-
-let resizeObserver: ResizeObserver | null = null;
 
 onMounted(() => {
     nextTick(() => {
-        updateScrollState();
-        if (typeof ResizeObserver !== 'undefined' && rowRef.value) {
-            resizeObserver = new ResizeObserver(() => {
-                updateScrollState();
-            });
-            resizeObserver.observe(rowRef.value);
-        }
+        updateScrollHints();
     });
+    window.addEventListener('resize', updateScrollHints);
 });
 
 onUnmounted(() => {
-    if (resizeObserver) {
-        resizeObserver.disconnect();
-        resizeObserver = null;
-    }
+    window.removeEventListener('resize', updateScrollHints);
 });
 
 watch(
     () => props.singleformula,
     () => {
-        nextTick(updateScrollState);
+        nextTick(() => {
+            updateScrollHints();
+        });
     },
     { deep: true },
 );
@@ -69,7 +52,7 @@ watch(
         <div class="duration">週期 {{ singleformula.duration }}s</div>
 
         <div class="formula-row-wrapper">
-            <div ref="rowRef" class="formula-row" @scroll.passive="updateScrollState">
+            <div ref="rowRef" class="formula-row" @scroll="onScroll">
                 <template v-for="(item, index) in singleformula.input" :key="`in-${index}`">
                     <span v-if="index > 0" class="operator plus">+</span>
                     <FormulaItem :item="item" />
@@ -83,28 +66,16 @@ watch(
                 </template>
             </div>
 
-            <!-- 左側捲動提示 -->
-            <div
-                v-show="canScrollLeft"
-                class="scroll-hint left"
-                role="button"
-                aria-label="向左捲動"
-                @click="scrollByDirection('left')"
-            >
-                <div class="plate" />
-                <div class="arrow" />
+            <!-- 左側滾動提示 (有左側滾動空間時顯示) -->
+            <div v-if="canScrollLeft" class="scroll-hint left">
+                <div class="hint-plate" />
+                <div class="hint-arrow" />
             </div>
 
-            <!-- 右側捲動提示 -->
-            <div
-                v-show="canScrollRight"
-                class="scroll-hint right"
-                role="button"
-                aria-label="向右捲動"
-                @click="scrollByDirection('right')"
-            >
-                <div class="plate" />
-                <div class="arrow" />
+            <!-- 右側滾動提示 (有右側滾動空間時顯示) -->
+            <div v-if="canScrollRight" class="scroll-hint right">
+                <div class="hint-plate" />
+                <div class="hint-arrow" />
             </div>
         </div>
     </div>
@@ -131,6 +102,8 @@ watch(
 .formula-row-wrapper {
     position: relative;
     width: 100%;
+    border-radius: 4px;
+    overflow: hidden;
 }
 
 .formula-row {
@@ -155,70 +128,6 @@ watch(
     display: none;
 }
 
-/* 捲動提示指示層 */
-.scroll-hint {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 15px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    z-index: 5;
-    user-select: none;
-}
-
-.scroll-hint.left {
-    left: 0;
-}
-
-.scroll-hint.right {
-    right: 0;
-    justify-content: flex-end;
-}
-
-/* 提示底板漸層 */
-.scroll-hint.left .plate {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 10px;
-    background: linear-gradient(270deg, rgba(71, 71, 71, 0) 0%, #3c3c3c 100%);
-    border-radius: 4px 0 0 4px;
-}
-
-.scroll-hint.right .plate {
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 10px;
-    background: linear-gradient(90deg, rgba(71, 71, 71, 0) 0%, #3c3c3c 100%);
-    border-radius: 0 4px 4px 0;
-}
-
-/* 提示三角形箭頭 (13 x 6.5) */
-.scroll-hint.left .arrow {
-    position: relative;
-    margin-left: 4.88px;
-    width: 6.5px;
-    height: 13px;
-    background: #ffffff;
-    clip-path: polygon(100% 0%, 100% 100%, 0% 50%);
-    z-index: 1;
-}
-
-.scroll-hint.right .arrow {
-    position: relative;
-    margin-right: 4.88px;
-    width: 6.5px;
-    height: 13px;
-    background: #ffffff;
-    clip-path: polygon(0% 0%, 0% 100%, 100% 50%);
-    z-index: 1;
-}
-
 .operator {
     display: flex;
     align-items: center;
@@ -241,5 +150,63 @@ watch(
 .operator.arrow {
     width: 35px;
     height: 19px;
+}
+
+/* 滾動提示容器 (左右側) */
+.scroll-hint {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 14px;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.scroll-hint.left {
+    left: 0;
+}
+
+.scroll-hint.right {
+    right: 0;
+}
+
+.scroll-hint.left .hint-plate {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 10px;
+    background: linear-gradient(270deg, rgba(71, 71, 71, 0) 0%, #3c3c3c 100%);
+}
+
+.scroll-hint.right .hint-plate {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 10px;
+    background: linear-gradient(90deg, rgba(71, 71, 71, 0) 0%, #3c3c3c 100%);
+}
+
+.scroll-hint.left .hint-arrow {
+    position: absolute;
+    left: 4.5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6.5px;
+    height: 13px;
+    background: #ffffff;
+    clip-path: polygon(100% 0%, 100% 100%, 0% 50%);
+}
+
+.scroll-hint.right .hint-arrow {
+    position: absolute;
+    right: 4.5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6.5px;
+    height: 13px;
+    background: #ffffff;
+    clip-path: polygon(0% 0%, 0% 100%, 100% 50%);
 }
 </style>
