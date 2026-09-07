@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Item from './Item.vue';
+import FormulaItem from '@/components/FormulaItem/Index.vue';
 import type { Formula } from './types';
 
 /** 單一配方展示元件之屬性定義 */
@@ -16,14 +16,14 @@ defineProps<{
         <div class="formula-row">
             <template v-for="(item, index) in singleformula.input" :key="`in-${index}`">
                 <span v-if="index > 0" class="operator plus">+</span>
-                <Item :item="item" />
+                <FormulaItem :item="item" />
             </template>
 
             <span class="operator arrow">→</span>
 
             <template v-for="(item, index) in singleformula.output" :key="`out-${index}`">
                 <span v-if="index > 0" class="operator plus">+</span>
-                <Item :item="item" />
+                <FormulaItem :item="item" />
             </template>
         </div>
     </div>
