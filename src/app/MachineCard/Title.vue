@@ -21,15 +21,14 @@
     right: 0px;
     height: 52px;
     top: 0px;
+    display: flex;
+    align-items: center;
 }
 
 /* Plate */
 .plate {
     position: absolute;
-    height: 52px;
-    left: 0px;
-    right: 0px;
-    top: 0px;
+    inset: 0;
 
     background: #3d3d3d;
     border-radius: 0px 40px 0px 0px;
@@ -37,10 +36,9 @@
 
 /* Text */
 .text {
-    position: absolute;
-    height: 28px;
-    left: 19px;
-    top: 12px;
+    position: relative;
+    z-index: 1;
+    margin-left: 19px;
 
     font-style: normal;
     font-weight: 300;
