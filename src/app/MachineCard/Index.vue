@@ -60,6 +60,7 @@ function onClick(): void {
 
 <style scoped>
 .machine-card {
+    font-family: 'HarmonyOS Sans TC', sans-serif;
     position: relative;
     width: 451px;
     height: 686px;

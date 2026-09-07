@@ -49,7 +49,6 @@ const props = defineProps<{
     padding-left: 13px;
     padding-top: 16px;
 
-    font-family: 'HarmonyOS Sans TC', sans-serif;
     font-style: normal;
     font-weight: 400;
     font-size: 20px;

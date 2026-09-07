@@ -23,6 +23,7 @@ defineProps<FormulaItemProps>();
 <style scoped>
 /* item */
 .item {
+    font-family: 'HarmonyOS Sans TC', sans-serif;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -37,7 +38,6 @@ defineProps<FormulaItemProps>();
 .item-name {
     width: 71px;
     min-height: 18px;
-    font-family: 'HarmonyOS Sans TC', sans-serif;
     font-style: normal;
     font-weight: 500;
     font-size: 16px;
@@ -93,7 +93,6 @@ defineProps<FormulaItemProps>();
 }
 
 .num-text {
-    font-family: 'HarmonyOS Sans TC', sans-serif;
     font-style: normal;
     font-weight: 500;
     font-size: 14px;

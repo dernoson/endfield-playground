@@ -38,7 +38,6 @@ defineProps<{
 }
 
 .duration {
-    font-family: 'HarmonyOS Sans TC', sans-serif;
     font-style: normal;
     font-weight: 400;
     font-size: 18px;
@@ -74,7 +73,6 @@ defineProps<{
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'HarmonyOS Sans TC', sans-serif;
     font-style: normal;
     font-weight: 700;
     font-size: 16px;

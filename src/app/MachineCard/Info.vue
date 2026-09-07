@@ -58,7 +58,6 @@ defineProps<{
     margin-left: 13px;
     margin-top: 3px;
 
-    font-family: 'HarmonyOS Sans TC', sans-serif;
     font-style: normal;
     font-weight: 400;
     font-size: 20px;
@@ -86,7 +85,6 @@ defineProps<{
     justify-content: space-between;
     align-items: center;
 
-    font-family: 'HarmonyOS Sans TC', sans-serif;
     font-style: normal;
     font-weight: 400;
     font-size: 18px;
