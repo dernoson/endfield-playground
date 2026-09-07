@@ -44,7 +44,7 @@ defineProps<{
 /* information 容器 */
 .info {
     position: absolute;
-    width: 190px;
+    width: 250px;
     height: 125px;
     left: 0px;
     top: 10px;
@@ -70,16 +70,16 @@ defineProps<{
 /* 3組 text 容器 ({some div}) */
 .info-list {
     position: absolute;
+    left: 20px;
+    top: 40px;
     width: 230px;
-    margin-left: 20px;
-    margin-top: 40px;
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
 .info-row {
-    width: 230px;
+    width: 100%;
     height: 18px;
     display: flex;
     justify-content: space-between;
