@@ -37,8 +37,9 @@ defineProps<FormulaItemProps>();
 .item-name {
     width: 71px;
     min-height: 18px;
+    font-family: 'HarmonyOS Sans TC', sans-serif;
     font-style: normal;
-    font-weight: 400;
+    font-weight: 500;
     font-size: 16px;
     line-height: 19px;
     text-align: center;
@@ -92,6 +93,7 @@ defineProps<FormulaItemProps>();
 }
 
 .num-text {
+    font-family: 'HarmonyOS Sans TC', sans-serif;
     font-style: normal;
     font-weight: 500;
     font-size: 14px;
