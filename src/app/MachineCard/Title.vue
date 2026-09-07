@@ -46,6 +46,7 @@
     font-weight: 300;
     font-size: 24px;
     line-height: 28px;
+    letter-spacing: 0.03em;
 
     color: #ffffff;
     white-space: nowrap;

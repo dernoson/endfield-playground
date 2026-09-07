@@ -23,7 +23,7 @@ defineProps<FormulaItemProps>();
 <style scoped>
 /* item */
 .item {
-    font-family: 'HarmonyOS Sans TC', '標楷體', 'DFKai-SB', 'Courier New', monospace;
+    font-family: 'HarmonyOS Sans TC', sans-serif;
     position: relative;
     display: flex;
     flex-direction: column;

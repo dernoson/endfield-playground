@@ -61,8 +61,32 @@ function onClick(): void {
 <style>
 @font-face {
     font-family: 'HarmonyOS Sans TC';
-    src: url('./HarmonyOS Sans TC.ttf') format('truetype');
+    src: url('./fonts/HarmonyOS_Sans_TC_Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HarmonyOS Sans TC';
+    src: url('./fonts/HarmonyOS_Sans_TC_Regular.ttf') format('truetype');
     font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HarmonyOS Sans TC';
+    src: url('./fonts/HarmonyOS_Sans_TC_Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HarmonyOS Sans TC';
+    src: url('./fonts/HarmonyOS_Sans_TC_Bold.ttf') format('truetype');
+    font-weight: 700;
     font-style: normal;
     font-display: swap;
 }
@@ -70,8 +94,9 @@ function onClick(): void {
 
 <style scoped>
 .machine-card {
-    font-family: 'HarmonyOS Sans TC', '標楷體', 'DFKai-SB', 'Courier New', monospace;
-    font-synthesis: weight;
+    font-family: 'HarmonyOS Sans TC', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     position: relative;
     width: 451px;
     height: 686px;
