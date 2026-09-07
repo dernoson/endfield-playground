@@ -53,10 +53,10 @@ defineProps<{
 /* selected-machine */
 .selected-machine {
     position: absolute;
+    left: 13px;
+    top: 3px;
     width: 190px;
     height: 23px;
-    margin-left: 13px;
-    margin-top: 3px;
 
     font-style: normal;
     font-weight: 400;

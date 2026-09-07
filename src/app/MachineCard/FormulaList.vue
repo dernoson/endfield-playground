@@ -46,8 +46,8 @@ const props = defineProps<{
 /* Text */
 .title-text {
     position: absolute;
-    padding-left: 13px;
-    padding-top: 16px;
+    left: 13px;
+    top: 16px;
 
     font-style: normal;
     font-weight: 400;
