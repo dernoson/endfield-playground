@@ -62,13 +62,14 @@ function onClick(): void {
 @font-face {
     font-family: 'HarmonyOS Sans TC';
     src: url('./HarmonyOS Sans TC.ttf') format('truetype');
-    font-weight: 100 900;
+    font-weight: 400;
     font-style: normal;
     font-display: swap;
 }
 
 .machine-card {
     font-family: 'HarmonyOS Sans TC', sans-serif;
+    font-synthesis: weight;
     position: relative;
     width: 451px;
     height: 686px;

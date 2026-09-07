@@ -86,7 +86,7 @@ defineProps<{
     align-items: center;
 
     font-style: normal;
-    font-weight: 400;
+    font-weight: 300;
     font-size: 18px;
     line-height: 18px;
     color: #cfcfcf;

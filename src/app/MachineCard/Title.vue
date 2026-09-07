@@ -42,6 +42,8 @@
     left: 19px;
     top: 12px;
 
+    font-style: normal;
+    font-weight: 300;
     font-size: 24px;
     line-height: 28px;
 

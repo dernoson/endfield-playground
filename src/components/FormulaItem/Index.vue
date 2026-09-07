@@ -39,7 +39,7 @@ defineProps<FormulaItemProps>();
     width: 71px;
     min-height: 18px;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 400;
     font-size: 16px;
     line-height: 19px;
     text-align: center;
