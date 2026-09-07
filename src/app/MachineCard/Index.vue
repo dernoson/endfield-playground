@@ -59,6 +59,14 @@ function onClick(): void {
 </template>
 
 <style scoped>
+@font-face {
+    font-family: 'HarmonyOS Sans TC';
+    src: url('./HarmonyOS Sans TC.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
 .machine-card {
     font-family: 'HarmonyOS Sans TC', sans-serif;
     position: relative;
