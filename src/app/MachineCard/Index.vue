@@ -54,7 +54,7 @@ function onClick(): void {
         <!-- 3. 貼附於 Frame 的漂浮元素 -->
         <Title />
         <Machine :src="iconUrl" />
-        <Button class="card-button" />
+        <Button />
     </div>
 </template>
 
@@ -91,13 +91,5 @@ function onClick(): void {
     right: 6px;
     top: 52px;
     bottom: 0px;
-}
-
-/* 卡片右緣按鈕定位 */
-.card-button {
-    position: absolute;
-    top: 45%;
-    right: -10px;
-    cursor: pointer;
 }
 </style>

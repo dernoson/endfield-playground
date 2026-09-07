@@ -1,16 +1,29 @@
 <script setup lang="ts">
 /**
- * 三角形按鈕 / 指示圖形元件（取代原本的 Button.svg，作為純展示通用圖形元件）。
- * 本元件僅負責形狀本體渲染，不包含定位樣式；位置由上游容器負責。
+ * 機器卡片邊緣操作按鈕元件（僅供 MachineCard 內部使用）。
+ * 外層負責卡片邊緣定位（.button），內層為純 CSS 刻出的向左指示三角形（.triangle）。
  */
 </script>
 
 <template>
-    <div class="triangle" />
+    <div class="button">
+        <div class="triangle" />
+    </div>
 </template>
 
 <style scoped>
-/* 三角形本體（純 CSS 刻出，取代原本 Button.svg） */
+/* 按鈕位置定位層（貼附於卡片右側） */
+.button {
+    position: absolute;
+    top: 45%;
+    right: -10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 三角形本體（純 CSS 刻出，高度 40px） */
 .triangle {
     width: 20px;
     height: 40px;
