@@ -1,7 +1,7 @@
 # V11-G1 證據 — 品質閘與解鎖句
 
-**日期：** 2026-08-31  
-**分支：** `dev/aaaaa0831`
+**日期：** 2026-08-31（PR 合入：2026-09-01）  
+**分支：** `dev/aaaaa0831` → PR #40 已合入 `master`
 
 ---
 
@@ -47,4 +47,12 @@ layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可
 - L2（toby／harry 等宣告後）：可開最小 GridCanvas **只讀**渲染；仍待 store 模型改寫另開
 - FlowEngine：經 `toTopology` 吃 nodes／edges；本 PR 不改引擎本體
 - B2 落子鏈：仍封鎖至 store 模型；本週不接落子
-- W0831-A1／H1 B1 工具列：次優、不擋本解鎖
+- W0831-A1／H1 B1 工具列：次優、不擋本解鎖；**H1 另開 PR**（`dev/aaaaa0831-h1`）
+
+---
+
+## 6. PR 狀態
+
+| PR | 狀態 |
+|----|------|
+| [#40](https://github.com/dernoson/endfield-playground/pull/40) layout-L1（A0） | **已合入 master** |
