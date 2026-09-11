@@ -9,10 +9,10 @@
  *
  * | 舊 | 新（目標） | V11-B1 狀態 |
  * |----|------------|-------------|
- * | `nodes`／`edges` | `devices`／`pipelines`；`connections` 為衍生 | 僅型別；**不動** store |
+ * | `nodes`／`edges` | `devices`／`pipelines`；`connections` 為衍生 | 型別已落地；平行 `layoutStore`（V12）不改 `editorStore` |
  * | `addConnection`／`removeConnection` | 廢除；改管線 path actions | 註記 |
  * | `removeDevices` 連帶刪邊 | 管線留在原地（可斷線） | 註記 |
- * | 藍圖 JSON `nodes`／`edges` | `devices`／`pipelines` | 註記 |
+ * | 藍圖 JSON `nodes`／`edges` | `devices`／`pipelines` | 註記（遷移不在 V12） |
  */
 
 import type { Position } from '@/types/euclideanSpace';
@@ -113,3 +113,16 @@ export interface LayoutSnapshot {
     devices: PlacedDevice[];
     pipelines: Pipeline[];
 }
+
+/**
+ * 放置／移動失敗原因（V12 layoutStore）
+ *
+ * - `overlap`：與既有設備或管線佔格衝突
+ * - `invalid`：缺機器定義、找不到 uid、重複 id、座標不合法等
+ */
+export type PlacementFailReason = 'overlap' | 'invalid';
+
+/**
+ * 放置合法性結果；**不 throw**，供 L2 決定是否畫紅框
+ */
+export type PlacementResult = { ok: true } | { ok: false; reason: PlacementFailReason };
