@@ -8,7 +8,7 @@
 **上游：** [WEEK_20260907](../../work_dispatch/WEEK_20260907.md) v1.1、[ROADMAP_OUTLINE](../../roadmap/ROADMAP_OUTLINE.md) v1.6 R-B2、[EARLY_START](../LAYOUT_REWRITE_EARLY_START_0831.md)  
 **門檻週：** 2026-09-07 → 2026-09-13  
 **開發分支：** `dev/aaaaa0907`（建議）  
-**狀態總覽：** `[ ]` 定案已落；實作未開始  
+**狀態總覽：** `[~]` C1／D1 完成；E1（驗收＋PR／解鎖句）未開始  
 **驗收指南：** [dev_v12/V12_acceptance_guide.md](./dev_v12/V12_acceptance_guide.md)
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
@@ -104,17 +104,17 @@ layout-store：useLayoutStore 可讀寫 devices／pipelines；connections 為 ge
 
 ## V12-C｜layoutStore 契約
 
-- [ ] **V12-C1** `src/store/layoutStore.ts`：單一 Pinia；state＝devices／pipelines；`connections` getter；action 最小集＋`PlacementResult`；return `readonly()`；測試釘 §3 四點
+- [x] **V12-C1** `src/store/layoutStore.ts`：單一 Pinia；state＝devices／pipelines；`connections` getter；action 最小集＋`PlacementResult`；return `readonly()`；測試釘 §3 四點
   - 細項：[dev_v12/C1_layout_store.md](./dev_v12/C1_layout_store.md)
-  - 產物（計畫）：`layoutStore.ts`、`layoutStore.test.ts`；必要時 `PlacementResult` 型別落 `types/layout.ts`
+  - 產物：`src/store/layoutStore.ts`、`src/__tests__/store/layoutStore.test.ts`；`PlacementResult` 於 `types/layout.ts`
 
 ---
 
 ## V12-D｜／dev store 演示（週會必要）
 
-- [ ] **V12-D1** `/dev` 頁：載入 mock fixture → 經 `layoutStore` 顯示 devices／pipelines／connections；可切換已連接／斷線；不接 editorStore
+- [x] **V12-D1** `/dev` 頁：載入 mock fixture → 經 `layoutStore` 顯示 devices／pipelines／connections；可切換已連接／斷線；不接 editorStore
   - 細項：[dev_v12/D1_dev_store_preview.md](./dev_v12/D1_dev_store_preview.md)
-  - 產物（計畫）：預覽頁＋路由（建議 `/dev/layout-store-preview`）
+  - 產物：`LayoutStorePreview.vue`；路由 `/dev/layout-store-preview`；DevLayout 導覽
 
 ---
 
@@ -131,9 +131,9 @@ layout-store：useLayoutStore 可讀寫 devices／pipelines；connections 為 ge
 | ID | 封鎖原因 | 等待對象 | 解除條件 |
 |----|---------|---------|----------|
 | B1 | — | — | **已解除**（文件收斂完成） |
-| C1 | — | — | store＋四釘測綠 |
-| D1 | 依賴 C1 | C1 | store 可載入 fixture |
-| E1 | 依賴 C1＋D1 | — | 品質閘＋解鎖句落檔 |
+| C1 | — | — | **已解除**（layoutStore＋四釘測綠） |
+| D1 | — | — | **已解除**（`/dev/layout-store-preview`） |
+| E1 | 依賴 C1＋D1 | — | **可開工**；品質閘＋解鎖句落檔 |
 | — | **不動** editorStore／ToolbarPanel／GridCanvas／viewport | — | 本版硬鎖 |
 
 ---
@@ -142,15 +142,15 @@ layout-store：useLayoutStore 可讀寫 devices／pipelines；connections 為 ge
 
 ### A0 主線（對照 WEEK §0.1 V1）
 
-- [ ] `src/store/layoutStore.ts` 在 master 或可審 PR
-- [ ] `connections` 為 getter（呼叫 `resolveConnections`）；非 state
-- [ ] action 最小集：載入快照、加／刪設備、移動、加／刪管線；重疊回傳 `PlacementResult`
-- [ ] return 面 `readonly()`；測試證明不可直接 mutate 讀取面
-- [ ] `loadSnapshot(toLayoutSnapshot(scenario))` 再匯出等值
-- [ ] `pnpm test src/__tests__/store/layoutStore.test.ts` 綠
-- [ ] `pnpm test src/__tests__/store/editorStore.test.ts` 原樣綠
-- [ ] `pnpm type-check` 綠
-- [ ] `/dev` store 演示可跑（週會）
+- [x] `src/store/layoutStore.ts` 在 master 或可審 PR
+- [x] `connections` 為 getter（呼叫 `resolveConnections`）；非 state
+- [x] action 最小集：載入快照、加／刪設備、移動、加／刪管線；重疊回傳 `PlacementResult`
+- [x] return 面 `readonly()`；測試證明不可直接 mutate 讀取面
+- [x] `loadSnapshot(toLayoutSnapshot(scenario))` 再匯出等值
+- [x] `pnpm test src/__tests__/store/layoutStore.test.ts` 綠
+- [x] `pnpm test src/__tests__/store/editorStore.test.ts` 原樣綠
+- [x] `pnpm type-check` 綠
+- [x] `/dev` store 演示可跑（週會）
 - [ ] PR body：讀取面簽章＋解鎖句（或「本週仍只讀」）
 
 ### 品質閘
@@ -176,8 +176,8 @@ layout-store：useLayoutStore 可讀寫 devices／pipelines；connections 為 ge
 |------|----------|----------|------|
 | A1 定案 | 形狀／唯讀／回傳／dev／解鎖 | [x] | 9 項 |
 | B1 殘項 | V11 文件收斂 | [x] | 前置完成 |
-| C1 store | layoutStore＋四釘測 | [ ] | 擋門檻 |
-| D1 演示 | /dev 週會 | [ ] | 必要 |
+| C1 store | layoutStore＋四釘測 | [x] | 測綠；擋門檻程式面完成 |
+| D1 演示 | /dev 週會 | [x] | `/dev/layout-store-preview` |
 | E1 驗收 | 品質閘＋解鎖句 | [ ] | — |
 
 ---
@@ -190,4 +190,6 @@ layout-store：useLayoutStore 可讀寫 devices／pipelines；connections 為 ge
 - 負責人確認 9 項決策（單一 store／readonly／PlacementResult／dev 必要／不解鎖擺放）
 - 交叉比對：PR #40（9/1）、#43（9/4）皆已 MERGED；V11 程式無殘刀，僅文件狀態待收斂 → B1
 - **V12-B1 完成：** 回寫 todolist_v11／V11_acceptance／H1／evidence；CLAUDE 索引 V11→完成、V12→現行；AGENT_ROADMAP v1.6
+- **V12-C1 完成：** `layoutStore`＋`PlacementResult`；四釘測綠；`editorStore` 測原樣綠；type-check 過；`addPipeline` 亦做佔格檢查
+- **V12-D1 完成：** `/dev/layout-store-preview`；真實機器＋預設／點格放置＋自動 belt；未接 editorStore
 - 分支建議：`dev/aaaaa0907`

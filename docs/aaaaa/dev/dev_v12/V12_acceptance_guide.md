@@ -59,18 +59,20 @@ pnpm test src/__tests__/store/editorStore.test.ts
 
 ---
 
-## 4. A0 — 視覺／週會（`/dev`，約 30 秒）
+## 4. A0 — 視覺／週會（`/dev`，約 1 分鐘）
 
-詳見 [D1](./D1_dev_store_preview.md)（路由以實作為準，建議 `/dev/layout-store-preview`）：
+詳見 [D1](./D1_dev_store_preview.md)：
 
 ```text
 1. pnpm dev → /dev/layout-store-preview
-2. 已連接：經 layoutStore.loadSnapshot 後可見 devices／pipelines；connections 端點非全 null
-3. 斷線：管線仍在；connections 顯示斷線（from／to null）
-4. 確認未接 editorStore／主畫布
+2. 選真實機器 →「放到預設點」或點空格；紫條 devices 增加
+3. 點兩台設備（藍起點／紫終點）→「自動拉 belt」→ 綠線；connections 非 null
+4. 故意重疊放置 → last=overlap（不 throw）
+5. 確認未接 editorStore／未改 ToolbarPanel
 ```
 
 **本項為週會報告必要；未交則不得標個人驗收完成。**
+**與 V11 `/dev/layout-l1-preview` 差異：** V11 只切 fixture；V12 經 store 讀寫真實機器。
 
 ---
 
