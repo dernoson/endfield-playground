@@ -188,7 +188,7 @@ layout-store：useLayoutStore 可讀寫 devices／pipelines；connections 為 ge
 
 ### 2026-09-12
 
-- **V12-E1 完成：** 品質閘 51 tests 綠；`evidence/E1_unlock.md`；解鎖句明寫本週仍只讀；開 PR
+- **V12-E1 完成：** 品質閘 51 tests 綠；`evidence/E1_unlock.md`；解鎖句明寫本週仍只讀；PR [#45](https://github.com/dernoson/endfield-playground/pull/45)
 
 ### 2026-09-11
 

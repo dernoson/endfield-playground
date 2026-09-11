@@ -12,7 +12,7 @@
 
 | 工項 | 內容 | PR | 分支 |
 |------|------|-----|------|
-| A0 layout store | `layoutStore`＋測試＋`/dev` 演示＋解鎖句 | 見 [E1_unlock](./evidence/E1_unlock.md) | `dev/aaaaa0907` |
+| A0 layout store | `layoutStore`＋測試＋`/dev` 演示＋解鎖句 | [#45](https://github.com/dernoson/endfield-playground/pull/45) **待審** | `dev/aaaaa0907` |
 
 V12 執行計畫：[todolist_v12.md](../todolist_v12.md)＋本目錄 `dev_v12/`。
 

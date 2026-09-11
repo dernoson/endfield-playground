@@ -76,4 +76,4 @@ type PlacementResult =
 
 | PR | 狀態 |
 |----|------|
-| （開 PR 後回填） | 待審 |
+| [#45](https://github.com/dernoson/endfield-playground/pull/45) V12／W0907-A0 | **待審** |
