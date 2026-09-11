@@ -107,6 +107,12 @@ const devPages = [
         icon: '🧩',
         description: 'V11：fixture＋resolveConnections／toTopology',
     },
+    {
+        path: '/dev/layout-store-preview',
+        name: '佈局 store',
+        icon: '📦',
+        description: 'V12：真實機器＋layoutStore 互動（放置／belt）',
+    },
 ];
 </script>
 
