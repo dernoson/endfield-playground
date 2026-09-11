@@ -2,7 +2,7 @@
 
 **週次：** 2026-09-07 → 2026-09-13  
 **負責人：** aaaaa  
-**最後更新：** 2026-09-11  
+**最後更新：** 2026-09-12  
 **工單：** [W0907-A0](../../work_dispatch/aaaaa/0907/W0907-A0_layout_store_model.md)  
 **對照公開驗收：** [WEEK_20260907 §0.1 V1](../../work_dispatch/WEEK_20260907.md)
 
@@ -12,7 +12,7 @@
 
 | 工項 | 內容 | PR | 分支 |
 |------|------|-----|------|
-| A0 layout store | `layoutStore`＋測試＋`/dev` 演示＋解鎖句 | （待開） | `dev/aaaaa0907` |
+| A0 layout store | `layoutStore`＋測試＋`/dev` 演示＋解鎖句 | 見 [E1_unlock](./evidence/E1_unlock.md) | `dev/aaaaa0907` |
 
 V12 執行計畫：[todolist_v12.md](../todolist_v12.md)＋本目錄 `dev_v12/`。
 
@@ -51,11 +51,11 @@ pnpm test src/__tests__/store/editorStore.test.ts
 
 ## 3. A0 — 硬約束（diff）
 
-- [ ] 未改 `editorStore` 簽名或欄位
-- [ ] 未碰 `src/editor/layout/GridCanvas.vue`
-- [ ] 未碰 `src/editor/toolbar/ToolbarPanel.vue`
-- [ ] 未加深 `FactoryCanvas`／Vue Flow 佈局
-- [ ] store 內未重寫幾何／連線演算法（組用 `utils/layout/*`）
+- [x] 未改 `editorStore` 簽名或欄位
+- [x] 未碰 `src/editor/layout/GridCanvas.vue`
+- [x] 未碰 `src/editor/toolbar/ToolbarPanel.vue`
+- [x] 未加深 `FactoryCanvas`／Vue Flow 佈局
+- [x] store 內未重寫幾何／連線演算法（組用 `utils/layout/*`）
 
 ---
 

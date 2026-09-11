@@ -1,0 +1,79 @@
+# V12-E1 證據 — 品質閘與解鎖句
+
+**日期：** 2026-09-12  
+**分支：** `dev/aaaaa0907`  
+**工單：** [W0907-A0](../../../work_dispatch/aaaaa/0907/W0907-A0_layout_store_model.md)
+
+---
+
+## 1. 解鎖句（正式宣告｜可複製）
+
+```text
+layout-store：useLayoutStore 可讀寫 devices／pipelines；connections 為 getter；測試綠；L2 可開（本週仍只讀；擺放／選取等 9/14 整合）
+```
+
+> **不是**解鎖擺放／選取／落子。toby T1 本週仍吃 props；B2 仍封鎖。
+
+---
+
+## 2. 品質閘（本工項範圍）
+
+| 閘 | 結果 |
+|----|------|
+| `pnpm type-check` | 通過 |
+| `pnpm test` layoutStore＋editorStore＋previewUtils | **3 files／51 tests** 通過 |
+| 硬約束 diff | 未改 `editorStore`／`GridCanvas`／`ToolbarPanel`／`FactoryCanvas` |
+
+---
+
+## 3. `/dev` 驗收步驟（D1）
+
+見 [V12_acceptance_guide §4](../V12_acceptance_guide.md)／[D1](../D1_dev_store_preview.md)：
+
+```text
+pnpm dev → /dev/layout-store-preview
+選真實機器 → 放置 → 兩機自動 belt → 重疊回傳 overlap
+```
+
+---
+
+## 4. 讀取面簽章（PR body）
+
+```ts
+function useLayoutStore(): {
+  readonly devices: Readonly<PlacedDevice[]>;
+  readonly pipelines: Readonly<Pipeline[]>;
+  readonly connections: Readonly<Connection[]>; // getter → resolveConnections
+  loadSnapshot(snapshot: LayoutSnapshot): void;
+  toSnapshot(): LayoutSnapshot;
+  addDevice(device: PlacedDevice): PlacementResult;
+  removeDevice(id: string): void;
+  moveDevice(id: string, position: Position): PlacementResult;
+  addPipeline(pipeline: Pipeline): PlacementResult;
+  removePipeline(id: string): void;
+};
+
+type PlacementResult =
+  | { ok: true }
+  | { ok: false; reason: 'overlap' | 'invalid' };
+```
+
+---
+
+## 5. 下游消費者（PR 用）
+
+```text
+下游消費者：
+- L2（toby T1）：本週仍吃 props／fixture；9/14 再接 layoutStore
+- L2（harry H1）：純座標，與 store 無關
+- B2 擺放鏈：等本版 store 契約＋殼可擺放；本週不接落子、不解鎖擺放
+- FlowEngine：仍經 toTopology；本版不改引擎
+```
+
+---
+
+## 6. PR 狀態
+
+| PR | 狀態 |
+|----|------|
+| （開 PR 後回填） | 待審 |

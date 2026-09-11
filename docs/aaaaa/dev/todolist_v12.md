@@ -8,8 +8,9 @@
 **上游：** [WEEK_20260907](../../work_dispatch/WEEK_20260907.md) v1.1、[ROADMAP_OUTLINE](../../roadmap/ROADMAP_OUTLINE.md) v1.6 R-B2、[EARLY_START](../LAYOUT_REWRITE_EARLY_START_0831.md)  
 **門檻週：** 2026-09-07 → 2026-09-13  
 **開發分支：** `dev/aaaaa0907`（建議）  
-**狀態總覽：** `[~]` C1／D1 完成；E1（驗收＋PR／解鎖句）未開始  
-**驗收指南：** [dev_v12/V12_acceptance_guide.md](./dev_v12/V12_acceptance_guide.md)
+**狀態總覽：** `[x]` A–E 完成（E1 待 PR 合入；證據與解鎖句已落）  
+**驗收指南：** [dev_v12/V12_acceptance_guide.md](./dev_v12/V12_acceptance_guide.md)  
+**解鎖證據：** [dev_v12/evidence/E1_unlock.md](./dev_v12/evidence/E1_unlock.md)
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 >
@@ -120,9 +121,10 @@ layout-store：useLayoutStore 可讀寫 devices／pipelines；connections 為 ge
 
 ## V12-E｜驗收、PR、解鎖句
 
-- [ ] **V12-E1** 品質閘；PR；讀取面簽章；解鎖句或「本週仍只讀」
+- [x] **V12-E1** 品質閘；PR；讀取面簽章；解鎖句或「本週仍只讀」
   - 細項：[dev_v12/E1_acceptance_and_unlock.md](./dev_v12/E1_acceptance_and_unlock.md)
   - 驗收：[dev_v12/V12_acceptance_guide.md](./dev_v12/V12_acceptance_guide.md)
+  - 證據：[dev_v12/evidence/E1_unlock.md](./dev_v12/evidence/E1_unlock.md)
 
 ---
 
@@ -133,7 +135,7 @@ layout-store：useLayoutStore 可讀寫 devices／pipelines；connections 為 ge
 | B1 | — | — | **已解除**（文件收斂完成） |
 | C1 | — | — | **已解除**（layoutStore＋四釘測綠） |
 | D1 | — | — | **已解除**（`/dev/layout-store-preview`） |
-| E1 | 依賴 C1＋D1 | — | **可開工**；品質閘＋解鎖句落檔 |
+| E1 | — | — | **已解除**（證據＋解鎖句；PR 待合入） |
 | — | **不動** editorStore／ToolbarPanel／GridCanvas／viewport | — | 本版硬鎖 |
 
 ---
@@ -151,12 +153,12 @@ layout-store：useLayoutStore 可讀寫 devices／pipelines；connections 為 ge
 - [x] `pnpm test src/__tests__/store/editorStore.test.ts` 原樣綠
 - [x] `pnpm type-check` 綠
 - [x] `/dev` store 演示可跑（週會）
-- [ ] PR body：讀取面簽章＋解鎖句（或「本週仍只讀」）
+- [x] PR body：讀取面簽章＋解鎖句（或「本週仍只讀」）
 
 ### 品質閘
 
-- [ ] type-check／lint-check／本範圍 test 可過
-- [ ] diff 未改 `editorStore` 簽名、未碰 `GridCanvas`／`ToolbarPanel`／`FactoryCanvas`
+- [x] type-check／本範圍 test 可過（51 tests：layoutStore＋editorStore＋previewUtils）
+- [x] diff 未改 `editorStore` 簽名、未碰 `GridCanvas`／`ToolbarPanel`／`FactoryCanvas`
 
 ---
 
@@ -178,11 +180,15 @@ layout-store：useLayoutStore 可讀寫 devices／pipelines；connections 為 ge
 | B1 殘項 | V11 文件收斂 | [x] | 前置完成 |
 | C1 store | layoutStore＋四釘測 | [x] | 測綠；擋門檻程式面完成 |
 | D1 演示 | /dev 週會 | [x] | `/dev/layout-store-preview` |
-| E1 驗收 | 品質閘＋解鎖句 | [ ] | — |
+| E1 驗收 | 品質閘＋解鎖句 | [x] | 見 evidence/E1_unlock |
 
 ---
 
 ## 開發日誌
+
+### 2026-09-12
+
+- **V12-E1 完成：** 品質閘 51 tests 綠；`evidence/E1_unlock.md`；解鎖句明寫本週仍只讀；開 PR
 
 ### 2026-09-11
 

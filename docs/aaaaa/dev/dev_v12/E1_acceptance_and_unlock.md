@@ -1,10 +1,11 @@
 # V12-E1 — 驗收、PR、解鎖句
 
 **對應工項：** V12-E1  
-**狀態：** `[ ]` 未開始  
+**狀態：** `[x]` 完成（2026-09-12；證據落檔＋PR）  
 **日期：** 2026-09-11  
 **依賴：** [C1](./C1_layout_store.md)、[D1](./D1_dev_store_preview.md)  
-**驗收集：** [V12_acceptance_guide.md](./V12_acceptance_guide.md)
+**驗收集：** [V12_acceptance_guide.md](./V12_acceptance_guide.md)  
+**證據：** [evidence/E1_unlock.md](./evidence/E1_unlock.md)
 
 ---
 
@@ -16,7 +17,7 @@
 
 ## 2. 解鎖句規則
 
-### 2.1 達契約（預期本週）
+### 2.1 達契約（本週已發）
 
 ```text
 layout-store：useLayoutStore 可讀寫 devices／pipelines；connections 為 getter；測試綠；L2 可開（本週仍只讀；擺放／選取等 9/14 整合）
@@ -39,11 +40,11 @@ layout-store：尚未解鎖；缺 <具體缺項>。L2 維持只讀 props／fixtu
 
 ## 3. PR 檢查清單
 
-- [ ] 標題帶 `W0907-A0`／`V12`
-- [ ] 下游消費者段落（todolist 概述）
-- [ ] 讀取面簽章（型別即可）
-- [ ] 解鎖句或「尚未解鎖」
-- [ ] 硬約束：未改 editorStore／GridCanvas／ToolbarPanel／FactoryCanvas
+- [x] 標題帶 `W0907-A0`／`V12`
+- [x] 下游消費者段落（todolist 概述）
+- [x] 讀取面簽章（型別即可）
+- [x] 解鎖句或「尚未解鎖」
+- [x] 硬約束：未改 editorStore／GridCanvas／ToolbarPanel／FactoryCanvas
 
 ---
 
@@ -51,21 +52,27 @@ layout-store：尚未解鎖；缺 <具體缺項>。L2 維持只讀 props／fixtu
 
 | 證據 | 路徑 |
 |------|------|
-| 解鎖句（達時） | `dev_v12/evidence/E1_unlock.md`（實作後建） |
+| 解鎖句（達） | [evidence/E1_unlock.md](./evidence/E1_unlock.md) |
 | 驗收步驟 | [V12_acceptance_guide.md](./V12_acceptance_guide.md) |
 
 ---
 
 ## 5. DoD
 
-- [ ] C1＋D1 DoD 滿足
-- [ ] 驗收指南步驟可跑通
-- [ ] PR 可審或已合入
-- [ ] 解鎖句已貼 PR／Discord（或明寫未解鎖）
+- [x] C1＋D1 DoD 滿足
+- [x] 驗收指南步驟可跑通
+- [x] PR 可審（見證據 §6）
+- [x] 解鎖句已寫入證據／PR body（本週仍只讀）
 
 ---
 
 ## 6. 開發日誌
+
+### 2026-09-12
+
+- 品質閘：type-check 過；layoutStore＋editorStore＋previewUtils **51 tests** 綠
+- 證據 `E1_unlock.md` 落檔；解鎖句明寫本週仍只讀
+- 開 PR（見證據 §6）
 
 ### 2026-09-11
 
