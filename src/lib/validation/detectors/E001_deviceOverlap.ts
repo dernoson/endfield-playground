@@ -5,7 +5,7 @@ import type { DeviceFootprint, PipelineFootprint } from '@/types/footprint';
 import type { Machine, PortMedia, PortSide } from '@/types/machine';
 import { getMachineMode } from '@/types/machine';
 import { parsePortHandleIndex, resolveDisplayGrid, rotatePort } from '@/utils/portUtils';
-import { resolvePortAnchorCell } from '@/utils/layout/portAnchor';
+import { resolvePortAnchorCell } from '@/utils/layout/portAnchors';
 import { isAxisAlignedPath } from '@/utils/layout/pipelineGeometry';
 import { detectOverlaps } from '@/utils/layout/overlapDetection';
 

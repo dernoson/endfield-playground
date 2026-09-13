@@ -11,7 +11,7 @@
 | 預估時數 | **盡量吃滿**；B1 見 [A1](./W0831-A1_toolbar_real_machines.md) 為次優 |
 | review_gate | dernoson（合入；**不**代寫） |
 | 工單風格 | 目標＋邊界＋契約；不附教學 |
-| 狀態 | `[ ]` 未開始 |
+| 狀態 | `[x]` 已交付；PR [#40](https://github.com/dernoson/endfield-playground/pull/40) **已合入 master** |
 
 ---
 
@@ -55,10 +55,16 @@ layout-L1：<已完成項>；L2 可開 <允許的下一刀>
 
 ## 3. DoD
 
-- [ ] 本週有可審的 L1 進度（函式／型別／測試至少一條主線）  
-- [ ] 未加深舊 Vue Flow 佈局畫布  
-- [ ] （若達解鎖條件）已發 §2 宣告；未達則 PR／Discord 寫明「尚未解鎖、缺什麼」  
-- [ ] `pnpm type-check`／`lint-check`／`format-check`／`test` 對你改動的範圍可過  
+- [x] 本週有可審的 L1 進度（函式／型別／測試至少一條主線）  
+- [x] 未加深舊 Vue Flow 佈局畫布  
+- [x] （若達解鎖條件）已發 §2 宣告；未達則 PR／Discord 寫明「尚未解鎖、缺什麼」  
+- [x] `pnpm type-check`／`lint-check`／`format-check`／`test` 對你改動的範圍可過  
+
+### 解鎖句（已發）
+
+```text
+layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可開最小 GridCanvas 只讀渲染（仍待 store 模型另開）
+```
 
 ## 4. 未交頂替
 
@@ -70,3 +76,41 @@ layout-L1：<已完成項>；L2 可開 <允許的下一刀>
 |----|------|
 | **A0（本單）** | **最優** |
 | [A1](./W0831-A1_toolbar_real_machines.md) | **次優**；9/6 仍盡力演示，但時數衝突時讓位 A0 |
+
+---
+
+## 6. 驗收指南（review_gate／週日會）
+
+**總表：** [V11_acceptance_guide.md](../../../aaaaa/dev/dev_v11/V11_acceptance_guide.md) §1  
+**證據：** [G1_unlock.md](../../../aaaaa/dev/dev_v11/evidence/G1_unlock.md)
+
+### 6.1 自動化（必跑）
+
+```bash
+pnpm type-check
+pnpm test src/__tests__/utils/layout/ src/__tests__/data/mockLayout.test.ts
+```
+
+預期：**8 files／59 tests** 全綠。
+
+### 6.2 視覺 — `/dev/layout-l1-preview`（必看）
+
+```text
+1. pnpm dev → 開 /dev/layout-l1-preview
+2. 預設「已連接」：兩台分流器＋綠管線；連線摘要 from/to 非 null；拓樸 edges=1
+3. 點「斷線」：橙管線；from/to 為 null；edges=0
+4. 確認頁面為 L1 除錯工具，未接 editorStore／主畫布
+```
+
+### 6.3 解鎖句（已合入，週日會可複製）
+
+```text
+layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可開最小 GridCanvas 只讀渲染（仍待 store 模型另開）
+```
+
+### 6.4 硬約束（合入前勾選）
+
+- [x] 未改 `editorStore` 簽名
+- [x] 未加深 `FactoryCanvas`／`FlowNodeOverlay`
+- [x] `types/layout.ts` 含 Breaking 註記（devices／pipelines 目標模型）
+- [x] PR 含下游消費者段落（L2／FlowEngine／B2）

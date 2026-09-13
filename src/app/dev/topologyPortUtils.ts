@@ -196,7 +196,7 @@ function normalizeRotation(raw: unknown): GridRotation {
  * 邊端點：有 handle 時對齊對應埠格點中心，否則用節點左右中點。
  *
  * 回傳的是**像素**相對座標，供 SVG 描邊使用。碰撞判定要的格子外推點在
- * `src/utils/layout/portAnchor.ts` 的 `resolvePortAnchorCell`，兩者不可互換。
+ * `src/utils/layout/portAnchors.ts` 的 `resolvePortAnchorCell`，兩者不可互換。
  */
 export function edgeEndpoint(
     nodeX: number,

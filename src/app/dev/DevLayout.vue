@@ -101,6 +101,12 @@ const devPages = [
         icon: '📐',
         description: 'V10：真實佔格＋rotatePort（pad-to-square）演示',
     },
+    {
+        path: '/dev/layout-l1-preview',
+        name: '佈局 L1 格點',
+        icon: '🧩',
+        description: 'V11：fixture＋resolveConnections／toTopology',
+    },
 ];
 </script>
 

@@ -26,6 +26,13 @@
     ```
 2. 等待一段時間，在任意網頁瀏覽器輸入 http://localhost:5173，即可看到我們當前主要畫面
 3. 想要進入開發用頁面，在瀏覽器輸入 http://localhost:5173/dev
+4. 想單獨看某個 UI 元件的各種狀態，在 terminal 輸入
+    ```bash
+    pnpm storybook
+    ```
+    然後在瀏覽器輸入 http://localhost:6006
+    - 開發者請看 [tutorial/storybook/developer.md](./tutorial/storybook/developer.md)
+    - 設計師請看 [tutorial/storybook/designer.md](./tutorial/storybook/designer.md)
 
 ### 3 建議安裝 VS Code Extension
 
@@ -124,8 +131,10 @@
 │  ├─ router/          # 路由設定
 │  ├─ store/           # Pinia 狀態管理
 │  ├─ types/           # 型別定義
-│  ├─ tutorial/        # 教學文件
-|  ├─ components/      # 可重用元件
+│  ├─ components/      # 可重用元件
 │  └─ composables/     # 可重用邏輯
+├─ tutorial/           # 新手教學（github 操作、storybook 使用）
+│  ├─ github/
+│  └─ storybook/
 └─ README.md
 ```
