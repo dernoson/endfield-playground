@@ -28,7 +28,8 @@ function toggleBottomBar() {
 
 function handleKeyDown(event: KeyboardEvent) {
     const target = event.target as HTMLElement;
-    const isEditable = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
+    const isEditable =
+        target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
     if (isEditable) return;
     if (event.ctrlKey || event.metaKey || event.altKey) return;
     if (event.key.toLowerCase() === 'z') {
@@ -41,14 +42,18 @@ function handleWheelScroll(event: WheelEvent) {
     target.scrollLeft += event.deltaY;
 }
 
-onMounted(() => { window.addEventListener('keydown', handleKeyDown); });
+onMounted(() => {
+    window.addEventListener('keydown', handleKeyDown);
+});
 
-onUnmounted(() => { window.removeEventListener('keydown', handleKeyDown); });
+onUnmounted(() => {
+    window.removeEventListener('keydown', handleKeyDown);
+});
 
 /** 分類 Tab */
 const categoryTabs = ['全部', '物流', '倉儲', '生產', '合成', '電力', '功能'];
 
-/** 
+/**
  * 擴充後的所有設備清單
  */
 const equipments: Array<{ id: string; category: string; label: string }> = [
@@ -114,18 +119,18 @@ const equipments: Array<{ id: string; category: string; label: string }> = [
     { id: 'sprinkler', category: '功能', label: '灑水機' },
 ];
 
-/** 
- * 根據分類與關鍵字進行過濾 
+/**
+ * 根據分類與關鍵字進行過濾
  */
 const filteredEquipments = computed(() => {
     let result = equipments;
     if (activeCategory.value !== '全部') {
-        result = result.filter(eq => eq.category === activeCategory.value);
+        result = result.filter((eq) => eq.category === activeCategory.value);
     }
     const query = searchQuery.value.trim().toLowerCase();
     if (query) {
-        result = result.filter((eq) => 
-            eq.label.toLowerCase().includes(query) || eq.id.toLowerCase().includes(query)
+        result = result.filter(
+            (eq) => eq.label.toLowerCase().includes(query) || eq.id.toLowerCase().includes(query),
         );
     }
     return result;
@@ -147,22 +152,34 @@ function handleEquipDragStart(event: DragEvent, equipmentId: string) {
 
 <template>
     <!-- 永遠釘死在畫布最底端 -->
-    <div class="absolute bottom-0 left-0 z-50 flex w-full flex-col pointer-events-none">
-        
+    <div class="pointer-events-none absolute bottom-0 left-0 z-50 flex w-full flex-col">
         <!-- 懸浮控制層：32px (左上角視角按鈕與收合三角形) -->
-        <div class="relative w-full h-[32px] shrink-0">
-            
+        <div class="relative h-[32px] w-full shrink-0">
             <!-- 視角切換分頁：474x32 -->
-            <div class="pointer-events-auto absolute bottom-0 left-0 flex h-[32px] w-[474px] items-center rounded-tr-[25px] bg-[#4E4E4E] pl-[80px]">
-                <button type="button" class="flex h-[26px] w-[80px] items-center justify-center text-[16px] font-light leading-none text-white disabled:opacity-100" disabled>
+            <div
+                class="pointer-events-auto absolute bottom-0 left-0 flex h-[32px] w-[474px] items-center rounded-tr-[25px] bg-[#4E4E4E] pl-[80px]"
+            >
+                <button
+                    type="button"
+                    class="flex h-[26px] w-[80px] items-center justify-center text-[16px] leading-none font-light text-white disabled:opacity-100"
+                    disabled
+                >
                     佈局視角
                 </button>
                 <span class="text-white/50">|</span>
-                <button type="button" class="flex h-[26px] w-[80px] items-center justify-center text-[16px] font-light leading-none text-white disabled:opacity-100" disabled>
+                <button
+                    type="button"
+                    class="flex h-[26px] w-[80px] items-center justify-center text-[16px] leading-none font-light text-white disabled:opacity-100"
+                    disabled
+                >
                     流程視角
                 </button>
                 <span class="text-white/50">|</span>
-                <button type="button" class="flex h-[26px] w-[80px] items-center justify-center text-[16px] font-light leading-none text-white disabled:opacity-100" disabled>
+                <button
+                    type="button"
+                    class="flex h-[26px] w-[80px] items-center justify-center text-[16px] leading-none font-light text-white disabled:opacity-100"
+                    disabled
+                >
                     並列視角
                 </button>
                 <p class="ml-2 text-xs font-light text-[#A4A4A4]">(按TAB切換視角)</p>
@@ -184,26 +201,30 @@ function handleEquipDragStart(event: DragEvent, equipmentId: string) {
         </div>
 
         <!-- 實體面板：CSS Grid 動畫 -->
-        <div 
-            class="pointer-events-auto w-full grid transition-all duration-300 ease-in-out"
+        <div
+            class="pointer-events-auto grid w-full transition-all duration-300 ease-in-out"
             :class="bottomBarOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'"
         >
             <div class="overflow-hidden">
                 <!-- 鎖定面板高度為 208px -->
-                <div class="flex h-[208px] w-full shrink-0 flex-col bg-[#4e4e4e] px-[80px] pt-[23px]">
-                    
+                <div
+                    class="flex h-[208px] w-full shrink-0 flex-col bg-[#4e4e4e] px-[80px] pt-[23px]"
+                >
                     <!-- 上排：搜尋框 + 分類 Tab -->
-                    <div class="flex h-[43px] w-[1114px] shrink-0 items-center gap-[18px] mb-[18px]">
-                        
+                    <div
+                        class="mb-[18px] flex h-[43px] w-[1114px] shrink-0 items-center gap-[18px]"
+                    >
                         <!-- 搜尋框 -->
-                        <label class="flex h-full w-[218px] cursor-text items-center gap-2 rounded-full border border-[#eefd1c] bg-[#3c3c3c] px-[18px]">
+                        <label
+                            class="flex h-full w-[218px] cursor-text items-center gap-2 rounded-full border border-[#eefd1c] bg-[#3c3c3c] px-[18px]"
+                        >
                             <UIcon name="i-lucide-search" class="size-5 shrink-0 text-white/50" />
-                            <input 
+                            <input
                                 v-model="searchQuery"
-                                type="text" 
-                                placeholder="搜尋設備..." 
+                                type="text"
+                                placeholder="搜尋設備..."
                                 aria-label="搜尋設備"
-                                class="w-full bg-transparent text-[20px] font-[250] leading-none tracking-[0.03em] text-white/50 placeholder:text-white/50 focus:outline-none" 
+                                class="w-full bg-transparent text-[20px] leading-none font-[250] tracking-[0.03em] text-white/50 placeholder:text-white/50 focus:outline-none"
                             />
                         </label>
 
@@ -213,7 +234,7 @@ function handleEquipDragStart(event: DragEvent, equipmentId: string) {
                             :key="tab"
                             type="button"
                             @click="activeCategory = tab"
-                            class="h-[43px] w-[110px] rounded-[15px] text-[20px] font-light leading-none tracking-[0.03em] text-white transition-colors"
+                            class="h-[43px] w-[110px] rounded-[15px] text-[20px] leading-none font-light tracking-[0.03em] text-white transition-colors"
                             :class="activeCategory === tab ? 'bg-[#2b2b2b]' : 'bg-[#3c3c3c]'"
                             :aria-label="`切換至 ${tab} 分類`"
                         >
@@ -223,15 +244,19 @@ function handleEquipDragStart(event: DragEvent, equipmentId: string) {
 
                     <!-- 下排：設備卡片列 -->
                     <!-- 綁定 @wheel.prevent 事件來轉換垂直滾動為水平滾動 -->
-                    <div 
+                    <div
                         class="flex h-[100px] w-[1760px] shrink-0 items-start gap-[18px] overflow-x-auto [&::-webkit-scrollbar]:hidden"
-                        style="scrollbar-width: none;"
+                        style="scrollbar-width: none"
                         @wheel.prevent="handleWheelScroll"
                     >
-                        
                         <!-- 無搜尋結果提示 -->
-                        <div v-if="filteredEquipments.length === 0" class="flex h-[100px] w-full items-center justify-center text-[20px] font-light text-white/50">
-                            {{ activeCategory !== '全部' ? `在「${activeCategory}」分類中` : '' }}找不到符合「{{ searchQuery }}」的設備
+                        <div
+                            v-if="filteredEquipments.length === 0"
+                            class="flex h-[100px] w-full items-center justify-center text-[20px] font-light text-white/50"
+                        >
+                            {{
+                                activeCategory !== '全部' ? `在「${activeCategory}」分類中` : ''
+                            }}找不到符合「{{ searchQuery }}」的設備
                         </div>
 
                         <!-- 物件卡片 -->
@@ -242,31 +267,42 @@ function handleEquipDragStart(event: DragEvent, equipmentId: string) {
                             draggable="true"
                             @click="handleEquipClick(equipment.id)"
                             @dragstart="handleEquipDragStart($event, equipment.id)"
-                            class="relative shrink-0 w-[266px] h-[100px] text-left focus:outline-none"
+                            class="relative h-[100px] w-[266px] shrink-0 text-left focus:outline-none"
                         >
                             <!-- 深色背景層 -->
-                            <div 
-                                class="absolute left-0 top-[14px] w-full h-[78px] rounded-t-[8px]"
-                                :class="props.selectedEquipment === equipment.id ? 'bg-[#1c1c1c]' : 'bg-[#2b2b2b]'"
+                            <div
+                                class="absolute top-[14px] left-0 h-[78px] w-full rounded-t-[8px]"
+                                :class="
+                                    props.selectedEquipment === equipment.id
+                                        ? 'bg-[#1c1c1c]'
+                                        : 'bg-[#2b2b2b]'
+                                "
                             ></div>
-                            
+
                             <!-- 黃色底線層 -->
-                            <div 
-                                class="absolute left-0 top-[92px] w-full h-[4px] rounded-b-[8px] bg-[#eefd1c] transition-shadow duration-300"
-                                :class="props.selectedEquipment === equipment.id ? 'shadow-[0_2px_4px_rgba(238,253,28,0.5)]' : 'shadow-none'"
+                            <div
+                                class="absolute top-[92px] left-0 h-[4px] w-full rounded-b-[8px] bg-[#eefd1c] transition-shadow duration-300"
+                                :class="
+                                    props.selectedEquipment === equipment.id
+                                        ? 'shadow-[0_2px_4px_rgba(238,253,28,0.5)]'
+                                        : 'shadow-none'
+                                "
                             ></div>
 
                             <!-- 圖片容器：100x100 完整紅色中空方框標示範圍 -->
-                            <div class="absolute left-0 top-0 w-[100px] h-[100px] border-[2px] border-red-500 bg-transparent flex items-center justify-center">
+                            <div
+                                class="absolute top-0 left-0 flex h-[100px] w-[100px] items-center justify-center border-[2px] border-red-500 bg-transparent"
+                            >
                                 <!-- 之後放置真實圖片的地方 -->
                             </div>
 
                             <!-- 文字層 -->
-                            <span class="absolute left-[107px] top-[41px] text-[20px] font-light leading-none tracking-[0.03em] text-white">
+                            <span
+                                class="absolute top-[41px] left-[107px] text-[20px] leading-none font-light tracking-[0.03em] text-white"
+                            >
                                 {{ equipment.label }}
                             </span>
                         </button>
-                        
                     </div>
                 </div>
             </div>
