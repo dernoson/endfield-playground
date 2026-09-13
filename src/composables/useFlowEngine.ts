@@ -35,6 +35,7 @@ import { BELT_RATE_LIMIT, rateLimitForMedia, formToPortMedia } from '@/types/flo
 import { getRecipesForMachine, getItemForm } from '@/data/products';
 import { getMachine, getMachineMode } from '@/data/machines';
 import type { PortMedia } from '@/types/machine';
+import { parsePortHandleIndex } from '@/utils/portUtils';
 import { useEditorStore } from '@/store/editorStore';
 import { useFlowStore } from '@/store/flowStore';
 import { useValidationStore } from '@/store/validationStore';
@@ -194,16 +195,6 @@ function machineHasRecipes(machineType: string, machineMode?: string): boolean {
 }
 
 /**
- * 自 Vue Flow handle id 解析埠索引（`out-0` / `in-1`）。
- * 無法解析時回傳 0。
- */
-function parseHandlePortIndex(handle: string | null | undefined, kind: 'in' | 'out'): number {
-    if (!handle) return 0;
-    const m = handle.match(new RegExp(`^${kind}-(\\d+)$`));
-    return m ? Number(m[1]) : 0;
-}
-
-/**
  * 取得節點指定 handle 對應埠的媒質。
  * handle 缺省或無埠／索引越界時回傳 null（略過埠媒質，改由 form 等回退）。
  */
@@ -219,7 +210,8 @@ function resolvePortMedia(
     const mode = getMachineMode(machine, machineMode);
     const ports = direction === 'in' ? mode.input_ports : mode.output_ports;
     if (!ports.length) return null;
-    const idx = parseHandlePortIndex(handle, direction);
+    /** 解析不出埠索引時退回埠 0：媒質檢查是容錯路徑，不該因 handle 缺省而擋下連線 */
+    const idx = parsePortHandleIndex(handle, direction) ?? 0;
     return ports[idx]?.media ?? null;
 }
 
@@ -451,14 +443,7 @@ export function validateChains(graph: FlowGraph): void {
         if (node.isSink && node.isValid) {
             queue.push(uid);
             reachableSinks.add(uid);
-            if (import.meta.env.DEV) {
-                console.log(`[validateChains] 找到 Sink: ${uid}, machineType=${node.machineType}`);
-            }
         }
-    }
-
-    if (import.meta.env.DEV) {
-        console.log(`[validateChains] 共 ${queue.length} 個 Sink，開始反向 BFS`, Array.from(queue));
     }
 
     //  Step 2：反向 BFS，找出所有可以到達 sink 的節點
@@ -466,42 +451,19 @@ export function validateChains(graph: FlowGraph): void {
         const current = queue.shift()!;
         const incomingEdges = inEdges.get(current) ?? [];
 
-        if (import.meta.env.DEV && incomingEdges.length > 0) {
-            console.log(`[validateChains] 處理 ${current}, inEdges:`, incomingEdges);
-        }
-
         for (const connUid of incomingEdges) {
             const meta = edgeMeta.get(connUid);
-            if (!meta) {
-                if (import.meta.env.DEV) {
-                    console.log(`[validateChains] 邊 ${connUid} 無 meta，跳過`);
-                }
-                continue;
-            }
+            if (!meta) continue;
 
             const upstreamUid = meta.sourceDeviceUid;
             if (reachableSinks.has(upstreamUid)) continue; // 已訪問
 
             const upstreamNode = nodes.get(upstreamUid);
-            if (!upstreamNode || !upstreamNode.isValid) {
-                if (import.meta.env.DEV) {
-                    console.log(
-                        `[validateChains] 上游 ${upstreamUid} isValid=${upstreamNode?.isValid}，跳過`,
-                    );
-                }
-                continue; // 已被 CR-03 或其他原因標記為非法
-            }
+            if (!upstreamNode || !upstreamNode.isValid) continue; // 已被 CR-03 或其他原因標記為非法
 
-            if (import.meta.env.DEV) {
-                console.log(`[validateChains] 加入可達節點: ${upstreamUid}`);
-            }
             reachableSinks.add(upstreamUid);
             queue.push(upstreamUid);
         }
-    }
-
-    if (import.meta.env.DEV) {
-        console.log('[validateChains] 可達 Sink 的節點:', Array.from(reachableSinks));
     }
 
     //  Step 3：未被標記的節點加入 invalidSubgraphUids

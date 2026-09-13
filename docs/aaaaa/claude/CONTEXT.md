@@ -140,3 +140,4 @@
 - CR-02／CR-03 對齊埠一對一與媒質拒絕（V8 引擎側已完成；UI／Detector 後續）
 - 可選：`report_v8.md` 正式關閉報告
 - V9 實作完成：modes-only、基礎材料輸出點、tag／WxH 預覽、反向最短鏈路、輸入匹配配方、V9 演示（見 `todolist_v9.md`）
+- V10 完成（佔格／port 對資料）；V11 現行：佈局 L1 打底（見 `todolist_v11.md`／`dev_v11/`）

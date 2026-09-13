@@ -16,9 +16,8 @@
                 <p class="font-semibold">驗證系統架構（CR-03）：</p>
                 <ul class="ml-4 space-y-1">
                     <li>
-                        • 本頁掛載時會呼叫
-                        <code>validationStore.registerDetector(E001_deviceOverlap)</code
-                        >，卸載時取消註冊
+                        • 本頁於 setup 時以 <code>registerDetector()</code> 掛上
+                        <code>E001_deviceOverlap</code>，因此下方警示會實際反映設備重疊
                     </li>
                     <li>
                         • 透過 <code>useValidation()</code> 監聽
@@ -32,9 +31,10 @@
 
                 <p class="mt-3 font-semibold">測試流程：</p>
                 <ol class="ml-4 list-decimal space-y-1">
-                    <li>點擊「新增設備 A」「新增與 A 重疊的設備 B」</li>
-                    <li>觀察「目前警示」出現一筆 E001 錯誤</li>
-                    <li>點擊「新增不重疊的設備 C」，警示筆數不變</li>
+                    <li>點擊「清空所有設備」建立基線，警示應為 0 筆</li>
+                    <li>點擊「新增設備 A」，警示仍為 0 筆</li>
+                    <li>點擊「新增與 A 重疊的設備 B」，警示出現 1 筆 E001</li>
+                    <li>點擊「新增不重疊的設備 C」，警示筆數維持 1 筆</li>
                     <li>點擊「清空所有設備」，警示應歸零</li>
                 </ol>
             </div>
@@ -134,7 +134,7 @@
                             node.data?.machineType || 'Unknown'
                         }}</span>
                         <span class="ml-2 text-gray-500">
-                            @({{ node.position.x }}, {{ node.position.y }})
+                            @({{ node.position.x }}, {{ node.position.y }}) px
                         </span>
                     </div>
                 </div>
@@ -145,7 +145,6 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue';
 import { useEditorStore } from '@/store/editorStore';
 import { useValidationStore } from '@/store/validationStore';
 import { useValidation } from '@/composables/useValidation';
@@ -155,19 +154,15 @@ import { E001_deviceOverlap } from '@/lib/validation/detectors/E001_deviceOverla
 const editorStore = useEditorStore();
 /** 驗證 store：本頁展示其 alerts / errorCount / warningCount */
 const validationStore = useValidationStore();
+
+/** 註冊必須早於 useValidation()：後者的 watch 是 immediate，setup 當下就會跑一次 */
+validationStore.registerDetector(E001_deviceOverlap);
+
 /** 啟動 editorStore → validationStore 的自動重跑監聽 */
 useValidation();
 
-/** 掛載時註冊 E001 detector；卸載時取消註冊，避免影響其他頁面 */
-onMounted(() => {
-    validationStore.registerDetector(E001_deviceOverlap);
-});
-onUnmounted(() => {
-    validationStore.unregisterDetector(E001_deviceOverlap.code);
-});
-
 /**
- * 在格子座標 (10,10) 擺放一台 3x3 精煉爐，作為重疊測試的基準設備 A。
+ * 在像素座標 (200,200)（gridSize 20 下即格子 (10,10)）擺放一台精煉爐，作為重疊測試的基準設備 A。
  * @example
  * testPlaceDeviceA()
  */
@@ -175,13 +170,13 @@ function testPlaceDeviceA() {
     editorStore.placeDevice({
         id: crypto.randomUUID(),
         type: 'default',
-        position: { x: 10, y: 10 },
+        position: { x: 200, y: 200 },
         data: { label: '測試設備 A', machineType: '精煉爐', recipeIndex: 0, rotation: 0 },
     });
 }
 
 /**
- * 在格子座標 (11,11) 擺放一台 3x3 精煉爐，與設備 A 佔用格子重疊，用於觸發 E001。
+ * 在像素座標 (220,220)（即格子 (11,11)）擺放一台精煉爐，與設備 A 佔用格子重疊，用於觸發 E001。
  * @example
  * testPlaceOverlappingDeviceB()
  */
@@ -189,13 +184,13 @@ function testPlaceOverlappingDeviceB() {
     editorStore.placeDevice({
         id: crypto.randomUUID(),
         type: 'default',
-        position: { x: 11, y: 11 },
+        position: { x: 220, y: 220 },
         data: { label: '測試設備 B', machineType: '精煉爐', recipeIndex: 0, rotation: 0 },
     });
 }
 
 /**
- * 在格子座標 (50,50) 擺放一台 3x3 精煉爐，與既有設備不重疊，用於驗證 E001 不誤報。
+ * 在像素座標 (1000,1000)（即格子 (50,50)）擺放一台精煉爐，與既有設備不重疊，用於驗證 E001 不誤報。
  * @example
  * testPlaceNonOverlappingDeviceC()
  */
@@ -203,7 +198,7 @@ function testPlaceNonOverlappingDeviceC() {
     editorStore.placeDevice({
         id: crypto.randomUUID(),
         type: 'default',
-        position: { x: 50, y: 50 },
+        position: { x: 1000, y: 1000 },
         data: { label: '測試設備 C', machineType: '精煉爐', recipeIndex: 0, rotation: 0 },
     });
 }

@@ -1,145 +1,232 @@
-/**
- * E001 設備重疊偵測測試
- */
-
 import { describe, it, expect } from 'vitest';
-import { E001_deviceOverlap } from '@/lib/validation/detectors/E001_deviceOverlap';
+import type { FactoryNode, FactoryEdge } from '@/types/graph';
+import type { Machine, PortMedia } from '@/types/machine';
 import type { ValidationContext } from '@/types/validation';
-import type { FactoryNode } from '@/types/graph';
-import type { Machine } from '@/types/machine';
+import { E001_deviceOverlap } from '@/lib/validation/detectors/E001_deviceOverlap';
 
-describe('E001_deviceOverlap', () => {
-    // 測試用機器定義（2x2 設備）
-    const mockMachine: Machine = {
-        id: 'test_machine',
-        name: '測試設備',
-        width: 2,
-        height: 2,
-        power: 10,
-        tags: [],
-        is_source: false,
-        is_sink: false,
+/**
+ * 建立最小機器定義測試 fixture。
+ * 只填幾何與埠欄位，其餘欄位不影響重疊判定，故以斷言略過型別完整性。
+ */
+function makeDef(name: string, width: number, height: number): Machine {
+    return {
+        name,
+        width,
+        height,
         modes: [
             {
-                id: 'base_mode',
-                label: '基礎模式',
-                input_ports: [],
-                output_ports: [],
+                id: 'default',
+                label: 'default',
+                input_ports: [{ side: 'left', offset: 0, media: 'belt' }],
+                output_ports: [{ side: 'right', offset: 0, media: 'belt' }],
                 loss: null,
             },
         ],
-        onTick: null,
-        onInput: null,
-        onOutput: null,
-        calcEfficiency: null,
+    } as unknown as Machine;
+}
+
+/** 建立最小節點測試 fixture；position 為格子座標 */
+function makeNode(
+    id: string,
+    machineType: string,
+    x: number,
+    y: number,
+    rotation: 0 | 1 | 2 | 3 = 0,
+): FactoryNode {
+    return {
+        id,
+        position: { x, y },
+        data: { label: machineType, machineType, rotation },
+    } as FactoryNode;
+}
+
+/** 建立最小連線測試 fixture；bendPoints 為格子座標 */
+function makeEdge(
+    id: string,
+    source: string,
+    target: string,
+    portType: PortMedia = 'belt',
+    bendPoints?: { x: number; y: number }[],
+): FactoryEdge {
+    return {
+        id,
+        source,
+        target,
+        sourceHandle: 'out-0',
+        targetHandle: 'in-0',
+        data: bendPoints ? { portType, bendPoints } : { portType },
+    } as FactoryEdge;
+}
+
+/** 建立最小驗證上下文 */
+function makeCtx(
+    devices: FactoryNode[],
+    defs: Record<string, Machine>,
+    connections: FactoryEdge[] = [],
+): ValidationContext {
+    return {
+        devices,
+        connections,
+        getDef: (type: string) => defs[type],
+        baseRegion: null,
+    };
+}
+
+describe('E001_deviceOverlap Detector', () => {
+    const defs = {
+        粉碎機: makeDef('粉碎機', 3, 2),
+        塑型機: makeDef('塑型機', 2, 2),
     };
 
-    // 輔助函式：建立測試設備
-    function createDevice(id: string, x: number, y: number): FactoryNode {
-        return {
-            id,
-            type: 'factory-node',
-            position: { x, y },
-            data: {
-                label: '測試',
-                machineType: 'test_machine',
-            },
-        };
-    }
+    describe('設備之間', () => {
+        it('兩台設備分開時不產生警示', () => {
+            const ctx = makeCtx(
+                [makeNode('dev_a', '粉碎機', 0, 0), makeNode('dev_b', '塑型機', 10, 10)],
+                defs,
+            );
+            expect(E001_deviceOverlap.run(ctx)).toEqual([]);
+        });
 
-    // 輔助函式：建立測試 context
-    function createContext(devices: FactoryNode[]): ValidationContext {
-        return {
-            devices,
-            connections: [],
-            getDef: () => mockMachine,
-            baseRegion: null,
-        };
-    }
+        it('兩台設備重疊時產生一筆 E001 Alert', () => {
+            const ctx = makeCtx(
+                [makeNode('dev_a', '粉碎機', 0, 0), makeNode('dev_b', '塑型機', 1, 0)],
+                defs,
+            );
+            const alerts = E001_deviceOverlap.run(ctx);
 
-    it('H1：無設備時不應產生錯誤', () => {
-        const ctx = createContext([]);
-        const alerts = E001_deviceOverlap.run(ctx);
-        expect(alerts).toHaveLength(0);
+            expect(alerts).toHaveLength(1);
+            expect(alerts[0].code).toBe('E001');
+            expect(alerts[0].level).toBe('error');
+            expect(alerts[0].relatedDeviceUids).toEqual(expect.arrayContaining(['dev_a', 'dev_b']));
+            expect(alerts[0].message).toContain('粉碎機');
+            expect(alerts[0].message).toContain('塑型機');
+        });
+
+        it('考慮旋轉時能正確判定重疊', () => {
+            // 粉碎機 3x2 旋轉 90 度（rotation 1）變成 2x3，佔用 x: 0..1、y: 0..2
+            // 塑型機 2x2 在 (0, 2) 與其在 y=2 處相撞
+            const ctxCollide = makeCtx(
+                [makeNode('dev_rot', '粉碎機', 0, 0, 1), makeNode('dev_b', '塑型機', 0, 2, 0)],
+                defs,
+            );
+            expect(E001_deviceOverlap.run(ctxCollide)).toHaveLength(1);
+
+            // 不旋轉時 3x2 的 y 只佔用 0..1，與 (0, 2) 不重疊
+            const ctxSafe = makeCtx(
+                [makeNode('dev_norot', '粉碎機', 0, 0, 0), makeNode('dev_b', '塑型機', 0, 2, 0)],
+                defs,
+            );
+            expect(E001_deviceOverlap.run(ctxSafe)).toEqual([]);
+        });
+
+        it('缺 getDef 定義時安全略過該節點而不崩潰', () => {
+            const ctx = makeCtx(
+                [makeNode('dev_unknown', '不存在的機器', 0, 0), makeNode('dev_b', '塑型機', 0, 0)],
+                defs,
+            );
+            expect(() => E001_deviceOverlap.run(ctx)).not.toThrow();
+            expect(E001_deviceOverlap.run(ctx)).toEqual([]);
+        });
     });
 
-    it('H2：單一設備時不應產生錯誤', () => {
-        const device = createDevice('dev1', 0, 0);
-        const ctx = createContext([device]);
-        const alerts = E001_deviceOverlap.run(ctx);
-        expect(alerts).toHaveLength(0);
-    });
+    describe('管線', () => {
+        it('連線只連自己兩端時不產生警示', () => {
+            // 端點取埠外側一格，不落在來源與目標設備自身的佔格內
+            const ctx = makeCtx(
+                [makeNode('dev_a', '塑型機', 0, 0), makeNode('dev_b', '塑型機', 6, 0)],
+                defs,
+                [makeEdge('conn_1', 'dev_a', 'dev_b')],
+            );
+            expect(E001_deviceOverlap.run(ctx)).toEqual([]);
+        });
 
-    it('H3：兩個不重疊的設備不應產生錯誤', () => {
-        const deviceA = createDevice('devA', 0, 0); // 佔據 (0,0) ~ (1,1)
-        const deviceB = createDevice('devB', 3, 3); // 佔據 (3,3) ~ (4,4)
-        const ctx = createContext([deviceA, deviceB]);
-        const alerts = E001_deviceOverlap.run(ctx);
-        expect(alerts).toHaveLength(0);
-    });
+        it('無彎折點的直線連線穿越第三台設備時產生警示', () => {
+            // dev_mid 佔 x: 3..4、y: 0..1，落在出口 (2,0) 到入口 (5,0) 的直線上
+            const ctx = makeCtx(
+                [
+                    makeNode('dev_a', '塑型機', 0, 0),
+                    makeNode('dev_b', '塑型機', 6, 0),
+                    makeNode('dev_mid', '塑型機', 3, 0),
+                ],
+                defs,
+                [makeEdge('conn_1', 'dev_a', 'dev_b')],
+            );
+            const alerts = E001_deviceOverlap.run(ctx);
 
-    it('H4：兩個完全重疊的設備應產生一筆錯誤', () => {
-        const deviceA = createDevice('devA', 0, 0);
-        const deviceB = createDevice('devB', 0, 0); // 同位置
-        const ctx = createContext([deviceA, deviceB]);
-        const alerts = E001_deviceOverlap.run(ctx);
+            expect(alerts).toHaveLength(1);
+            expect(alerts[0].relatedDeviceUids).toEqual(['dev_mid']);
+            expect(alerts[0].relatedConnectionUids).toEqual(['conn_1']);
+        });
 
-        expect(alerts).toHaveLength(1);
-        expect(alerts[0].code).toBe('E001');
-        expect(alerts[0].level).toBe('error');
-        expect(alerts[0].relatedDeviceUids).toContain('devA');
-        expect(alerts[0].relatedDeviceUids).toContain('devB');
-    });
+        it('水管走空中層時與傳送帶互不阻擋', () => {
+            const ctx = makeCtx(
+                [makeNode('dev_a', '塑型機', 0, 0), makeNode('dev_b', '塑型機', 6, 0)],
+                defs,
+                [
+                    makeEdge('belt_1', 'dev_a', 'dev_b', 'belt'),
+                    makeEdge('pipe_1', 'dev_a', 'dev_b', 'pipe'),
+                ],
+            );
+            expect(E001_deviceOverlap.run(ctx)).toEqual([]);
+        });
 
-    it('H5：兩個部分重疊的設備應產生一筆錯誤', () => {
-        const deviceA = createDevice('devA', 0, 0); // 佔據 (0,0) ~ (1,1)
-        const deviceB = createDevice('devB', 1, 1); // 佔據 (1,1) ~ (2,2)
-        // 共用格子 (1,1)
-        const ctx = createContext([deviceA, deviceB]);
-        const alerts = E001_deviceOverlap.run(ctx);
+        it('水管穿越一般設備時產生警示', () => {
+            // 一般設備佔用層為 {0, 1}，水管在 z=1，交集非空
+            const ctx = makeCtx(
+                [
+                    makeNode('dev_a', '塑型機', 0, 0),
+                    makeNode('dev_b', '塑型機', 6, 0),
+                    makeNode('dev_mid', '塑型機', 3, 0),
+                ],
+                defs,
+                [makeEdge('pipe_1', 'dev_a', 'dev_b', 'pipe')],
+            );
+            const alerts = E001_deviceOverlap.run(ctx);
 
-        expect(alerts).toHaveLength(1);
-        expect(alerts[0].code).toBe('E001');
-    });
+            expect(alerts).toHaveLength(1);
+            expect(alerts[0].relatedConnectionUids).toEqual(['pipe_1']);
+        });
 
-    it('H6：三個設備兩兩重疊應產生三筆錯誤', () => {
-        const deviceA = createDevice('devA', 0, 0);
-        const deviceB = createDevice('devB', 0, 0);
-        const deviceC = createDevice('devC', 0, 0);
-        const ctx = createContext([deviceA, deviceB, deviceC]);
-        const alerts = E001_deviceOverlap.run(ctx);
+        it('路徑不良構的連線不參與判定', () => {
+            // dev_b 在 dev_a 的斜下方：兩端錨點的 x 與 y 都不同，且無彎折點
+            // 這條連線缺一個轉角點，實際路徑未被指定，不應憑空判定
+            const ctx = makeCtx(
+                [
+                    makeNode('dev_a', '塑型機', 0, 0),
+                    makeNode('dev_b', '塑型機', 6, 4),
+                    makeNode('dev_mid', '塑型機', 3, 0),
+                ],
+                defs,
+                [makeEdge('conn_1', 'dev_a', 'dev_b')],
+            );
+            expect(E001_deviceOverlap.run(ctx)).toEqual([]);
+        });
 
-        // 三台設備兩兩配對：(A,B), (A,C), (B,C)
-        expect(alerts).toHaveLength(3);
-    });
+        it('補上轉角點後不良構的連線恢復判定', () => {
+            // 端點為 (2,0) 與 (5,4)；在 (2,4) 補一個轉角讓路徑良構
+            // 垂直段 x=2、y 0..4 穿過 dev_mid（佔 x 2..3、y 2..3）
+            const ctx = makeCtx(
+                [
+                    makeNode('dev_a', '塑型機', 0, 0),
+                    makeNode('dev_b', '塑型機', 6, 4),
+                    makeNode('dev_mid', '塑型機', 2, 2),
+                ],
+                defs,
+                [makeEdge('conn_1', 'dev_a', 'dev_b', 'belt', [{ x: 2, y: 4 }])],
+            );
+            const alerts = E001_deviceOverlap.run(ctx);
 
-    it('H7：設備 machineType 為空時應跳過檢查', () => {
-        const device: FactoryNode = {
-            id: 'dev1',
-            type: 'factory-node',
-            position: { x: 0, y: 0 },
-            data: {
-                label: '測試',
-                // machineType 未定義
-            },
-        };
-        const ctx = createContext([device]);
-        const alerts = E001_deviceOverlap.run(ctx);
+            expect(alerts).toHaveLength(1);
+            expect(alerts[0].relatedDeviceUids).toEqual(['dev_mid']);
+            expect(alerts[0].relatedConnectionUids).toEqual(['conn_1']);
+        });
 
-        expect(alerts).toHaveLength(0);
-    });
-
-    it('H8：getDef 返回 undefined 時應跳過檢查', () => {
-        const deviceA = createDevice('devA', 0, 0);
-        const deviceB = createDevice('devB', 0, 0);
-        const ctx: ValidationContext = {
-            devices: [deviceA, deviceB],
-            connections: [],
-            getDef: () => undefined, // 模擬無定義
-            baseRegion: null,
-        };
-        const alerts = E001_deviceOverlap.run(ctx);
-
-        expect(alerts).toHaveLength(0);
+        it('連線端點指向不存在的節點時安全略過', () => {
+            const ctx = makeCtx([makeNode('dev_a', '塑型機', 0, 0)], defs, [
+                makeEdge('conn_1', 'dev_a', 'dev_missing'),
+            ]);
+            expect(() => E001_deviceOverlap.run(ctx)).not.toThrow();
+            expect(E001_deviceOverlap.run(ctx)).toEqual([]);
+        });
     });
 });

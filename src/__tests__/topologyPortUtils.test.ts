@@ -5,15 +5,14 @@ import { describe, it, expect } from 'vitest';
 import {
     resolveNodeMode,
     listModePortMarkers,
-    parseTopologyHandleIndex,
     modePortSummaryLabel,
     edgeEndpoint,
     portPositionOnGrid,
     portPositionOnRect,
     clampPortOffset,
     listGridLines,
-    resolveDisplayGrid,
 } from '@/app/dev/topologyPortUtils';
+import { parsePortHandleIndex, resolveDisplayGrid } from '@/utils/portUtils';
 import { getMachine } from '@/data/machines';
 
 describe('topologyPortUtils', () => {
@@ -34,9 +33,9 @@ describe('topologyPortUtils', () => {
         expect(markers.filter((m) => m.kind === 'in').every((m) => m.media === 'belt')).toBe(true);
     });
 
-    it('parseTopologyHandleIndex／edgeEndpoint 對齊 out-0 格點中心', () => {
-        expect(parseTopologyHandleIndex('out-0', 'out')).toBe(0);
-        expect(parseTopologyHandleIndex(null, 'out')).toBeNull();
+    it('parsePortHandleIndex／edgeEndpoint 對齊 out-0 格點中心', () => {
+        expect(parsePortHandleIndex('out-0', 'out')).toBe(0);
+        expect(parsePortHandleIndex(null, 'out')).toBeNull();
         const mode = resolveNodeMode('基礎材料輸出點', 'solid_belt');
         const machine = getMachine('基礎材料輸出點')!;
         const cell = 20;

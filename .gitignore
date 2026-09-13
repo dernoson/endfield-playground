@@ -10,6 +10,7 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+storybook-static
 *.local
 
 # Editor directories and files
@@ -32,3 +33,13 @@ components.d.ts
 # Claude Code: personal config symlinked to docs/dernoson/claude
 /.claude
 /CLAUDE.md
+
+# Agents
+.agents/
+
+# Python cache (docs/dernoson/plan-history tooling)
+__pycache__/
+*.pyc
+
+# 決策層文件（問卷、commit 分析、個人檔與風險矩陣、派工複查）：不進版控
+docs/aaaaa/collaborator_survey

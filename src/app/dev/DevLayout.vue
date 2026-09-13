@@ -95,6 +95,18 @@ const devPages = [
         icon: '🚨',
         description: '測試 detector 註冊與警示顯示',
     },
+    {
+        path: '/dev/placement-demo',
+        name: '擺放／埠旋轉',
+        icon: '📐',
+        description: 'V10：真實佔格＋rotatePort（pad-to-square）演示',
+    },
+    {
+        path: '/dev/layout-l1-preview',
+        name: '佈局 L1 格點',
+        icon: '🧩',
+        description: 'V11：fixture＋resolveConnections／toTopology',
+    },
 ];
 </script>
 

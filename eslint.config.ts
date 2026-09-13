@@ -19,7 +19,13 @@ export default defineConfigWithVueTs(
 
     {
         name: 'app/files-to-ignore',
-        ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**', '**/*.test.ts'],
+        ignores: [
+            '**/dist/**',
+            '**/dist-ssr/**',
+            '**/coverage/**',
+            '**/storybook-static/**',
+            '**/*.test.ts',
+        ],
     },
 
     pluginVue.configs['flat/essential'],

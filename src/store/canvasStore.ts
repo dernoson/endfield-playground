@@ -4,8 +4,8 @@ import { defineStore } from 'pinia';
 /** 基地選擇：null = 自由畫布（無邊界 / 無方位標示） */
 export type BaseRegion = 'wuling' | 'valley4' | null;
 
-/** 基地對應的畫布格子尺寸 */
-const BASE_REGION_SIZES: Record<Exclude<BaseRegion, null>, { w: number; h: number }> = {
+/** 基地對應的畫布格子尺寸；為基地邊界判定的單一來源 */
+export const BASE_REGION_SIZES: Record<Exclude<BaseRegion, null>, { w: number; h: number }> = {
     wuling: { w: 256, h: 256 },
     valley4: { w: 192, h: 192 },
 };

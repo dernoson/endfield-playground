@@ -1,18 +1,23 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useMagicKeys } from '@vueuse/core';
+import { useEventListener, useRafFn } from '@vueuse/core';
 import { Background } from '@vue-flow/background';
 import { Controls } from '@vue-flow/controls';
 import { MiniMap } from '@vue-flow/minimap';
 import { VueFlow, EdgeLabelRenderer, useVueFlow } from '@vue-flow/core';
-import type { NodeDragEvent, NodeMouseEvent } from '@vue-flow/core';
+import type { Connection, EdgeMouseEvent, NodeDragEvent, NodeMouseEvent } from '@vue-flow/core';
+import type { DropdownMenuItem } from '@nuxt/ui';
 import type { DevicePositionSnapshot, EquipmentType, Rotation } from '@/types/editor';
-import type { FactoryNode } from '@/types/graph';
+import type { FactoryEdge, FactoryNode } from '@/types/graph';
+import type { PortMedia } from '@/types/machine';
 import { useEditorStore } from '@/store/editorStore';
 import { useSelectionStore } from '@/store/selectionStore';
 import { useFlowStore } from '@/store/flowStore';
 import { useCanvasStore } from '@/store/canvasStore';
+import { getMachine, getMachineMode } from '@/data/machines';
+import { onComboTriggered, useComboHeld } from '@/composables/useKeybinding';
+import { parsePortHandleIndex } from '@/utils/portUtils';
 import FlowNodeOverlay from './FlowNodeOverlay.vue';
 import PipelineEdge from './PipelineEdge.vue';
 
@@ -35,10 +40,24 @@ const { nodes, edges, snapToGrid, activeTool, selectedEquipment, placementArmed 
     storeToRefs(editorStore);
 /** 解構 flowStore 的響應式參照，供流量標籤 overlay 讀取 */
 const { edgeFlows, congestedEdges } = storeToRefs(flowStore);
-/** 解構 canvasStore 的響應式參照，供 template 綁定畫布格線 */
-const { gridSize } = storeToRefs(canvasStore);
+/** 解構 canvasStore 的響應式參照，供 template 綁定畫布格線與基地框線 */
+const { gridSize, canvasSize } = storeToRefs(canvasStore);
+
+/**
+ * 目前選定基地對應的框線像素尺寸；自由畫布（canvasSize 為 null）時不顯示框線。
+ * 換算方式：格數（canvasSize.w / h）× 單格像素（gridSize），與 geometryUtils
+ * 的 0-indexed 格子座標系一致，框線左上角固定對齊 flow 座標原點 (0, 0)。
+ */
+const baseRegionBoundary = computed(() =>
+    canvasSize.value
+        ? {
+              width: canvasSize.value.w * gridSize.value,
+              height: canvasSize.value.h * gridSize.value,
+          }
+        : null,
+);
 /** Vue Flow 提供的座標轉換 API；vfEdges 用於流量標籤 overlay 的定位計算 */
-const { screenToFlowCoordinate, edges: vfEdges } = useVueFlow();
+const { screenToFlowCoordinate, edges: vfEdges, viewport, setViewport } = useVueFlow();
 
 /** 需要顯示流量標籤的管線（rate > 0 且已計算） */
 const labeledEdges = computed(() => vfEdges.value.filter((e) => edgeFlows.value.has(e.id)));
@@ -69,13 +88,53 @@ const equipmentLabelMap: Record<EquipmentType, string> = {
 const equipmentTypes = Object.keys(equipmentLabelMap) as EquipmentType[];
 
 /**
- * VueFlow 選取範圍變化時，同步選取的節點 id 到 selectionStore。
+ * VueFlow 選取範圍變化時，同步選取的節點 id 與管線 id 到 selectionStore。
  * @param selection VueFlow 提供的選取變化事件內容
  * @example
- * handleSelectionChange({ nodes: [{ id: 'node-1' }] })
+ * handleSelectionChange({ nodes: [{ id: 'node-1' }], edges: [{ id: 'edge-1' }] })
  */
-function handleSelectionChange(selection: { nodes?: Array<{ id: string }> }) {
+function handleSelectionChange(selection: {
+    nodes?: Array<{ id: string }>;
+    edges?: Array<{ id: string }>;
+}) {
     selectionStore.setSelection((selection.nodes ?? []).map((node) => node.id));
+    selectionStore.setEdgeSelection((selection.edges ?? []).map((edge) => edge.id));
+}
+
+/** 管線右鍵選單目前是否展開 */
+const edgeContextMenuOpen = ref(false);
+
+/** 管線右鍵選單目前的目標管線 uid；無選單展開時為 null */
+const edgeContextMenuTargetId = ref<string | null>(null);
+
+/** 管線右鍵選單的錨點螢幕座標，跟隨右鍵點擊位置更新 */
+const edgeContextMenuPosition = ref({ x: 0, y: 0 });
+
+/** 管線右鍵選單項目：目前僅提供刪除該管線 */
+const edgeContextMenuItems = computed<DropdownMenuItem[]>(() => [
+    {
+        label: '刪除管線',
+        icon: 'i-lucide-trash-2',
+        onSelect: () => {
+            if (!edgeContextMenuTargetId.value) return;
+            editorStore.removeConnection(edgeContextMenuTargetId.value);
+            edgeContextMenuTargetId.value = null;
+        },
+    },
+]);
+
+/**
+ * 在管線上按下滑鼠右鍵時，於點擊處開啟刪除選單，並阻擋瀏覽器原生選單。
+ * @param event VueFlow 提供的管線右鍵事件，含目標管線與原生滑鼠事件
+ * @example
+ * handleEdgeContextMenu({ edge, event: mouseEvent } as EdgeMouseEvent)
+ */
+function handleEdgeContextMenu({ edge, event }: EdgeMouseEvent) {
+    event.preventDefault();
+    const mouseEvent = event as MouseEvent;
+    edgeContextMenuTargetId.value = edge.id;
+    edgeContextMenuPosition.value = { x: mouseEvent.clientX, y: mouseEvent.clientY };
+    edgeContextMenuOpen.value = true;
 }
 
 /** CR-01 拿起預覽中的旋轉狀態，僅存在於 placementArmed 期間，放置後隨即由 disarm 重置 */
@@ -89,45 +148,82 @@ const previewRotation = ref<Rotation>(0);
  */
 const rotateTargetUid = ref<string | null>(null);
 
-/** 監聽鍵盤按鍵狀態，供下方 R 鍵旋轉、Esc 取消放置的 watch 讀取 */
-const keys = useMagicKeys();
-
 /** 拿起狀態結束（放置或取消）時，重置預覽旋轉為 0，避免殘留到下一次拿起 */
 watch(placementArmed, (armed) => {
     if (!armed) previewRotation.value = 0;
 });
 
 /**
- * R 鍵：依序循環 0° → 90° → 180° → 270° → 0°。
+ * 旋轉設備（可配置，預設 R 鍵）：依序循環 0° → 90° → 180° → 270° → 0°。
  * - 拿起預覽中：旋轉 previewRotation（放置時套用）
  * - 非拿起狀態且畫布上有點選中的已放置設備：呼叫 editorStore.rotateDevice 直接旋轉該設備（自動進歷史）
  */
-watch(
-    () => keys.r.value,
-    (pressed) => {
-        if (!pressed) return;
+onComboTriggered('rotateDevice', () => {
+    if (placementArmed.value) {
+        previewRotation.value = ((previewRotation.value + 1) % 4) as Rotation;
+        return;
+    }
 
-        if (placementArmed.value) {
-            previewRotation.value = ((previewRotation.value + 1) % 4) as Rotation;
-            return;
-        }
+    if (!rotateTargetUid.value) return;
+    const target = nodes.value.find((n) => n.id === rotateTargetUid.value);
+    if (!target) return;
+    const current = (target.data?.rotation ?? 0) as Rotation;
+    editorStore.rotateDevice(target.id, ((current + 1) % 4) as Rotation);
+});
 
-        if (!rotateTargetUid.value) return;
-        const target = nodes.value.find((n) => n.id === rotateTargetUid.value);
-        if (!target) return;
-        const current = (target.data?.rotation ?? 0) as Rotation;
-        editorStore.rotateDevice(target.id, ((current + 1) % 4) as Rotation);
-    },
-);
-
-/** Esc 鍵：拿起預覽中按下時取消本次拿起 */
-watch(
-    () => keys.escape.value,
-    (pressed) => {
-        if (!pressed || !placementArmed.value) return;
+/**
+ * Escape 鍵：拿起預覽中按下時取消本次拿起。  \
+ * 固定綁在原生 Escape，**不**透過 keybindingStore 配置——與 `openSettings`（可配置，
+ * 見 `useShortcuts.ts`）共用同一顆實體按鍵時，取消放置永遠優先；即使使用者把
+ * `openSettings` 改綁到別的鍵，Escape 取消放置的行為依然不變。
+ */
+useEventListener(window, 'keydown', (event: KeyboardEvent) => {
+    if (event.key === 'Escape' && placementArmed.value) {
         editorStore.disarmPlacement();
-    },
+    }
+});
+
+/** 畫面平移速度（px/秒），四個方向共用；不做成可調參數，超出本次範圍 */
+const PAN_SPEED_PER_SECOND = 600;
+
+/** WASD（可配置）持續按住狀態：上／下／左／右 */
+const panUpHeld = useComboHeld('panUp');
+const panDownHeld = useComboHeld('panDown');
+const panLeftHeld = useComboHeld('panLeft');
+const panRightHeld = useComboHeld('panRight');
+
+/** 是否有任一畫面平移方向鍵按住中，控制下方 raf loop 的啟停 */
+const isPanning = computed(
+    () => panUpHeld.value || panDownHeld.value || panLeftHeld.value || panRightHeld.value,
 );
+
+/**
+ * WASD 按住移動畫面：每幀依按住方向與 delta time 位移 Vue Flow 的 viewport。  \
+ * 平移的是 Vue Flow 自身的 viewport（`setViewport`），不是 `canvasStore.offset`——
+ * 後者目前未接上實際畫布渲染。  \
+ * 方向語意：上／左 = 視角往該方向移動（看到更上/左方的內容），故 viewport.x / y 增加；
+ * 下／右則相反。
+ */
+const { pause: pausePan, resume: resumePan } = useRafFn(
+    ({ delta }) => {
+        const distance = (PAN_SPEED_PER_SECOND * delta) / 1000;
+        let dx = 0;
+        let dy = 0;
+        if (panUpHeld.value) dy += distance;
+        if (panDownHeld.value) dy -= distance;
+        if (panLeftHeld.value) dx += distance;
+        if (panRightHeld.value) dx -= distance;
+        if (dx === 0 && dy === 0) return;
+        setViewport({ ...viewport.value, x: viewport.value.x + dx, y: viewport.value.y + dy });
+    },
+    { immediate: false },
+);
+
+/** 僅在至少一個方向鍵按住時啟動 raf loop，放開後暫停，避免長期空轉 */
+watch(isPanning, (panning) => {
+    if (panning) resumePan();
+    else pausePan();
+});
 
 /**
  * 依螢幕座標與設備類型，組出一個可加入畫布的 FactoryNode。
@@ -273,6 +369,51 @@ function handleCanvasDrop(event: DragEvent) {
     placeNodeAtPointer(droppedEquipment, event.clientX, event.clientY);
     editorStore.disarmPlacement();
 }
+
+/**
+ * 依來源節點的機型與出發 handle，查出該埠的傳輸媒質（belt／pipe）。  \
+ * 查不到機型 / 型態 / 埠定義時 fallback 為 belt，避免擋下連線操作。
+ * @param sourceNode 連線起點節點
+ * @param sourceHandle 連線起點 handle id
+ * @example
+ * resolveConnectionPortType(sourceNode, 'out-0') // → 'belt'
+ */
+function resolveConnectionPortType(
+    sourceNode: FactoryNode,
+    sourceHandle: string | null | undefined,
+): PortMedia {
+    const machine = sourceNode.data?.machineType
+        ? getMachine(sourceNode.data.machineType)
+        : undefined;
+    if (!machine) return 'belt';
+    const mode = getMachineMode(machine, sourceNode.data?.machineMode);
+    /** 解析不出埠索引時退回埠 0：媒質只影響邊的顯示，不該因 handle 缺省而擋下連線 */
+    const idx = parsePortHandleIndex(sourceHandle, 'out') ?? 0;
+    return mode.output_ports[idx]?.media ?? 'belt';
+}
+
+/**
+ * 使用者拖曳出一條新連線放開時，組出 FactoryEdge 並透過 editorStore.addConnection() 建立管線。  \
+ * 全程走 L1 高階 action，會自動進歷史（可 undo/redo）。
+ * @param connection Vue Flow 提供的連線結果（起點 / 終點節點與 handle id）
+ * @example
+ * handleConnect({ source: 'a', target: 'b', sourceHandle: 'out-0', targetHandle: 'in-0' })
+ */
+function handleConnect(connection: Connection) {
+    const sourceNode = nodes.value.find((n) => n.id === connection.source);
+    if (!sourceNode) return;
+
+    const edge: FactoryEdge = {
+        id: `edge-${crypto.randomUUID()}`,
+        source: connection.source,
+        target: connection.target,
+        sourceHandle: connection.sourceHandle,
+        targetHandle: connection.targetHandle,
+        type: 'pipeline',
+        data: { portType: resolveConnectionPortType(sourceNode, connection.sourceHandle) },
+    };
+    editorStore.addConnection(edge);
+}
 </script>
 
 <template>
@@ -291,6 +432,8 @@ function handleCanvasDrop(event: DragEvent) {
             :snap-grid="[gridSize, gridSize]"
             class="factory-flow"
             @selection-change="handleSelectionChange"
+            @connect="handleConnect"
+            @edge-context-menu="handleEdgeContextMenu"
             @node-click="handleNodeClick"
             @pane-click="handlePaneClick"
             @node-drag-start="handleNodeDragStart"
@@ -302,8 +445,19 @@ function handleCanvasDrop(event: DragEvent) {
             <Controls />
             <MiniMap />
 
-            <!-- F2：管線流量速率標籤 overlay -->
             <EdgeLabelRenderer>
+                <!-- CR-01 §2.1：基地選擇框線 overlay，純視覺參考、不阻擋擺放 -->
+                <div
+                    v-if="baseRegionBoundary"
+                    class="pointer-events-none absolute border-2 border-emerald-400/70"
+                    :style="{
+                        transform: 'translate(0px, 0px)',
+                        width: `${baseRegionBoundary.width}px`,
+                        height: `${baseRegionBoundary.height}px`,
+                    }"
+                />
+
+                <!-- F2：管線流量速率標籤 overlay -->
                 <div
                     v-for="edge in labeledEdges"
                     :key="edge.id"
@@ -317,5 +471,18 @@ function handleCanvasDrop(event: DragEvent) {
                 </div>
             </EdgeLabelRenderer>
         </VueFlow>
+
+        <!-- CR-02 管線右鍵刪除選單：錨點跟隨右鍵座標定位，選單內容由 Nuxt UI 傳送門渲染 -->
+        <div
+            class="pointer-events-none fixed z-50 h-0 w-0"
+            :style="{
+                left: `${edgeContextMenuPosition.x}px`,
+                top: `${edgeContextMenuPosition.y}px`,
+            }"
+        >
+            <UDropdownMenu v-model:open="edgeContextMenuOpen" :items="edgeContextMenuItems">
+                <span />
+            </UDropdownMenu>
+        </div>
     </div>
 </template>
