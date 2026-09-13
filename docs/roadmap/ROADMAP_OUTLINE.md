@@ -1,11 +1,11 @@
 # Roadmap 大綱｜2026-08-23 → 2026-11-29
 
-**版本：** v1.5（2026-08-31；SVG 提前**定案**＋L1 最優＋L2 等宣告）
+**版本：** v1.6（2026-09-06；L1 **已解鎖**＋B1 9/6 切片合入）
 **建立日期：** 2026-08-22
 **規劃：** aaaaa
 **守門與合入：** dernoson（主編）
 **上游來源：** 主編提出並確認的 ROADMAP v0.2（決策層原始文件，未公開；其內容已完整拆進本檔與 `detail/`）
-**狀態總覽：** **M1 成立。** **佈局 SVG 自建：已定案、提前開工、L1 打底最優先**；L2 強綁項等 aaaaa **宣布 L1 完成**後再開（§1.6）。詳見 §8／§9／§12。
+**狀態總覽：** **M1 成立。** **佈局 L1 已宣告解鎖**（PR #40，2026-09-01）：`layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可開最小 GridCanvas 只讀渲染（仍待 store 模型另開）`。**B1 9/6 切片已合入**（PR #43）。L2 強綁擺放／選取仍待 store 模型；GridCanvas 只讀可開、本週尚未開工。詳見 §8／§9／§12。
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 
@@ -46,7 +46,7 @@
 | 引擎不重算 | FlowEngine 只在 L1 跑；L2／L3 只讀 `flowStore` |
 | 工單格式 | 四欄固定：畫面｜交哪個檔｜不要碰｜卡住找誰 |
 | 一週一塊 | 同一人同一週只做一種性質（純函式／畫面／接線） |
-| **佈局渲染層** | **確認提前開發**佈局視角 **SVG 自建**（拔 Vue Flow；流程視角續用 Vue Flow）。**L1 打底最優先**（aaaaa）。**L2 強綁項**須等 aaaaa **宣布** `layout-L1：…；L2 可開 …` 後開工。見 **§1.6**、[EARLY_START](../aaaaa/LAYOUT_REWRITE_EARLY_START_0831.md) |
+| **佈局渲染層** | **確認提前開發**佈局視角 **SVG 自建**（拔 Vue Flow；流程視角續用 Vue Flow）。**L1 打底已合入並宣告解鎖**（PR #40）。**L2 僅可開宣告允許的下一刀**（GridCanvas 只讀）；強綁擺放／選取仍待 store 模型。見 **§1.6**、[EARLY_START](../aaaaa/LAYOUT_REWRITE_EARLY_START_0831.md) |
 | **佈局 L1 主責** | **aaaaa**；時數與 B1 衝突時 **L1＞B1**。dernoson 只裁示／合入／守閘，不兼功能（規則 17） |
 | 關鍵路徑限制 | 月底門檻必要條件只派 `risk ≤ 中`。**9 月起程式必要實質只剩 aaaaa**（shirone 已轉 L3）。渲染層落地前**不把必要項押在 L2**（§11） |
 | 資料流 | `data_1` → `pnpm sync:aaaaa-data` → `docs/aaaaa/data` → `pnpm generate:src-data` → `src/data` |
@@ -70,11 +70,11 @@ R-A 對齊（8/23→8/30）✅ M1
       ▼
 R-B 擺放（9/6→9/27）──── 使用者可見：真機器選單、擺放、選取、刪／轉
       │                      │
-      │                      ├── 並行軌道【佈局自建 L1→殼】（§1.6）
-      │                      │     缺則 B2／B3／B5／C* 無法正式開工
-      │                      │     主責：aaaaa（L1）；殼落地後 L2 可平行
+      │                      ├── 並行軌道【佈局自建 L1✅→只讀殼可開】（§1.6）
+      │                      │     落子／選取仍等 store 模型
+      │                      │     主責：aaaaa（L1 已交）；殼由 L2 薄片
       │                      ▼
-      │                 09/13 起優先於「舊 Vue Flow 加深」
+      │                 09/13 起 L2 僅 GridCanvas 只讀；舊 Vue Flow 不加碼
       ▼
 R-C 連線（10/4→10/25）── 全部掛新畫布；C2 契約須先重訂
       ▼
@@ -108,11 +108,11 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 | **為何改？** | Vue Flow 節點盒限制 paper 稿 1:1 落地；佔格／port／管線與資料模型長期分叉；8/30 主編：不提前則設計 UI「沒地方擺」 |
 | **為何提前？** | **已定案提前開工**（8/30–31）。評估與閘門：[EARLY_START](../aaaaa/LAYOUT_REWRITE_EARLY_START_0831.md) |
 | **優先序** | **① L1 打底（最優）→ ② B1 工具列演示 → ③ 不強綁加分**。L2 強綁**禁止**搶跑 |
-| **卡住誰？** | **直接等 L1 宣告：** B2／B3／B5、B4 選取端、C\* 畫布、GridCanvas 接線。**不卡：** B1、D1–D3、L3 卡片／dev 視覺／paper |
-| **關鍵路徑** | 寬度＝1。完成宣告前 L2 空等；加人不能平行加速 L1 |
-| **誰做 L1？** | **aaaaa**（[W0831-A0](../work_dispatch/aaaaa/0831/W0831-A0_layout_l1_foundation.md)） |
-| **L2 解鎖** | 唯一信號：aaaaa 宣布 `layout-L1：…；L2 可開 …`。dernoson 守閘：無宣告則退回強綁 L2 PR |
-| **誰不做？** | dernoson 不兼功能；toby／harry 無宣告不開畫布；L3 不碰 layout 演算法 |
+| **卡住誰？** | **直接等 store 模型／可擺放殼：** B2／B3／B5、B4 選取端、C\* 畫布。**已可開：** GridCanvas 只讀（宣告範圍）。**不卡：** B1（9/6 切片已合入）、D1–D3、L3 卡片／dev 視覺／paper |
+| **關鍵路徑** | 寬度＝1 仍在 store 模型（aaaaa）。只讀殼可平行，但不能假裝 B2 已解 |
+| **誰做 L1？** | **aaaaa**（[W0831-A0](../work_dispatch/aaaaa/0831/W0831-A0_layout_l1_foundation.md)）**已交** |
+| **L2 解鎖** | **已發**（aaaaa，PR #40 合入 9/1）：`layout-L1：types/layout + resolveConnections + toTopology 可測已推；L2 可開最小 GridCanvas 只讀渲染（仍待 store 模型另開）`。dernoson 守閘：超出宣告範圍的強綁 L2 仍退回 |
+| **誰不做？** | dernoson 不兼功能；toby／harry **僅**可開宣告允許的下一刀（GridCanvas 只讀）；L3 不碰 layout 演算法 |
 
 首次派工影響分析（8/25）：[LAYOUT_REWRITE_DISPATCH_IMPACT_0825](../aaaaa/LAYOUT_REWRITE_DISPATCH_IMPACT_0825.md)。
 
@@ -170,10 +170,10 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 
 **門檻句：** 從下方選單拉多種真機器放到畫布；點選後看到該機資訊；能刪單台；能轉 90 度（若 8 月未做完，9 月必須完成）。對應主編步驟 2 ＋ 5。
 
-- [ ] **R-B1** 工具列接真實機器資料：`ToolbarPanel` 清單改吃 `getAllMachines`／`getMachinesByTag`，分類 Tab 可先少類，卡片顯示真名與佔格
-  - 細項：[detail/B1_toolbar_real_machines.md](./detail/B1_toolbar_real_machines.md)
+- [~] **R-B1** 工具列接真實機器資料：`ToolbarPanel` 清單改吃 `getAllMachines`／`getMachinesByTag`，分類 Tab 可先少類，卡片顯示真名與佔格
+  - 細項：[detail/B1_toolbar_real_machines.md](./detail/B1_toolbar_real_machines.md)（**9/6 切片已合入** PR #43：分類 Tab＋名稱＋佔格、不接 store／落子。整包仍待 9/27：真實機器尚未走落子鏈）
 - [!] **R-B2** 擺放鏈 L2 串接：工具列意圖 → drop／click → **只呼叫** `placeDevice`；預覽佔格讀真實 machine size
-  - 細項：[detail/B2_placement_chain.md](./detail/B2_placement_chain.md)（**仍封鎖**：等佈局自建 L1 殘項＋渲染殼，見 §1.6／§9；**不再**以改舊 `FactoryCanvas` 為路徑）
+  - 細項：[detail/B2_placement_chain.md](./detail/B2_placement_chain.md)（**L1 宣告已發**；允許的下一刀是 GridCanvas **只讀**，不是本項。本項仍等 store 模型＋殼可擺放；本週 toby 等閘、harry 暫停 → 薄片尚未開工）
 - [!] **R-B3** 旋轉 90 度：拿起中或已放置皆可 `rotateDevice`；port side／offset 走 `portUtils`
   - 細項：[detail/B3_rotation_90.md](./detail/B3_rotation_90.md)（**A2 依賴已解除**；仍等 B2／佈局殼）
 - [~] **R-B4** 選取與設備資訊面板：選取 → L2 攤成 plain props → L3 顯示
@@ -222,12 +222,13 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 不綁單月門檻，但每月都要有動作。
 
 - [~] **R-E1** 資料與 codegen 維運：`data_1` → `data` → `src/data` 同步流程保持可跑，資料改動附測試
-  - 細項：[detail/E1_data_codegen_ops.md](./detail/E1_data_codegen_ops.md)（W0823-A1 併入 `dataConsistency.test.ts`；本週檢查點已過）
+  - 細項：[detail/E1_data_codegen_ops.md](./detail/E1_data_codegen_ops.md)（W0823-A1 併入 `dataConsistency.test.ts`；本週 L1 打底未改 codegen 管線）
 - [~] **R-E2** 三層守門與 PR 規範：待審 PR ≤ 3、禁止根目錄上傳與檔名當版本、Breaking 先改 L1
-  - 細項：[detail/E2_layer_guard_pr_rules.md](./detail/E2_layer_guard_pr_rules.md)（8/23 口頭凍結退回清單；**8/30 一次清空全部待審 PR**——規則實跑，惟合入仍單點）
+  - 細項：[detail/E2_layer_guard_pr_rules.md](./detail/E2_layer_guard_pr_rules.md)（本週週中合入 #40／#42／#43；**#41 仍開**。閘門：無宣告強綁 L2 未放行）
 - [ ] **R-E3** 備援與人力調度：可投入時間不穩定者不承擔門檻必要條件、每週配對名額 ≤ 2、已知空窗不派工
   - 細項涉及個別成員的可投入時間與備援安排，**於決策層維護、不公開**；對協作者生效的部分已寫進 [A4](./detail/A4_weekly_cadence_gate.md) 與每週工單
-  - **2026-08-30 決策層備註（摘要）：** shirone 轉 L3 已定案（本週 MachineCard）、azure／avery 續留未定、MBD 不可規劃 → 9 月門檻須縮小；**8/30 晚另裁：佈局拔 Vue Flow 提前開工**
+  - **2026-09-07 決策層備註（摘要）：** MBD 9/4 請接下來兩週假（現實工作）→ 9/7–9/20 不派。avery 9/6 回主編：到 9/14 前約 5h，派零散 L3（paper 小按鈕／icon，未交沒差）；**再失聯除名**。其餘見 9/6 備註。
+  - **2026-09-06 決策層備註（摘要）：** L1 解鎖已發；harry 下週 3–5h 回歸；avery 續留（風險降為高）；azure 可能請假至 9/19；goodmorning 自報可能退出。9 月門檻仍只硬綁 B1（aaaaa），L2 薄片不列必要。
 
 ---
 
@@ -239,8 +240,8 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 |------|----------|-------------------|
 | 08/23 | A1、A3、A4 | **已交：** 公告大綱＋Discord；發 W0823 十張四欄工單；A4 規則口頭凍結 |
 | **08/30** | **A2（門檻）** | **M1 成立。** 放一台佔格證據＝測試全綠＋錯機清單＋`/dev/placement-demo`；PR #32 合入。同日清空待審 PR #33–#38 |
-| 09/06 | **L1 打底最優**＋B1 次優 | **必追：** [A0](../work_dispatch/aaaaa/0831/W0831-A0_layout_l1_foundation.md) L1 進度（理想含解鎖宣告）。**次優演示：** B1 真機器列表（[A1](../work_dispatch/aaaaa/0831/W0831-A1_toolbar_real_machines.md)）。L3／視覺加分並行。**L2 強綁等待宣告**。驗收見 [WEEK_0831 §0.1](../work_dispatch/WEEK_20260831.md) |
-| 09/13 | **佈局自建；L2 僅在解鎖後** | 見 [WEEK_20260907](../work_dispatch/WEEK_20260907.md)：有宣告→L2 薄片；無宣告→L2 續等、aaaaa 續 L1 |
+| 09/06 | **L1 打底最優**＋B1 次優 | **已交。** L1 解鎖句＋`/dev/layout-l1-preview`＝PR #40（9/1）。B1 真機器列表＝PR #43（9/4）。L2 強綁未開（符合閘門）。加分：S1 PR #41 待合；G1 改錯檔不宜合；T1 等閘成功 |
+| 09/13 | **佈局自建；L2 薄片可開** | 見 [WEEK_20260907](../work_dispatch/WEEK_20260907.md) v1.1：A0＝`layoutStore`；T1＝GridCanvas 只讀；H1＝viewport（另檔）；S1＝MachineCard 路徑維持＋對白紙＋拆配方素材；G1＝工具列／按鈕 Storybook（接線歸 L2）；P1＝命名＋排版概念。**擺放／選取仍鎖** |
 | 09/20 | 新殼互動擇一 | 旋轉或單刪（B3／B5）在**新殼**上擇一穩定演示；否則延並標 §9 |
 | 09/27 | **M2 門檻** | **硬綁 B1**。B2／B4：殼已可演示擺放／選取才列必要；否則依 §11 降級（D0 書面）。B3／B5 未完本日補或改期 |
 | 10/04 | C1、C2 | 兩個 port 能連一條直線，型別對才允許。**C2 定義待 v1.2⁺ 重訂** |
@@ -259,25 +260,27 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 
 | ID | 封鎖原因 | 等待對象 | 解除條件 | 狀態 |
 |----|----------|----------|----------|------|
-| R-B2 | 等佈局 L1＋殼 | **aaaaa（L1）**；L2＝toby／harry **僅在宣告後** | L1 可測／可宣告＋最小殼 | `[!]` **L1 打底進行中**。解鎖信號見 [EARLY_START §0](../aaaaa/LAYOUT_REWRITE_EARLY_START_0831.md) |
+| R-B2 | L1 已宣告；下一刀僅 GridCanvas 只讀。本項（`placeDevice` 落子鏈）仍等 **store 模型＋殼可擺放** | **aaaaa（store 模型）**；L2＝toby／harry **僅只讀殼** | 最小 GridCanvas 只讀先演示；落子仍須 store 模型 | `[!]` **L1 已解鎖，只讀殼可開、本週尚未開工**。解鎖句見 [G1_unlock](../aaaaa/dev/dev_v11/evidence/G1_unlock.md) |
 | R-B3 | 旋轉牽涉 port side／offset 換算；依賴擺放鏈 | R-B2；原等 R-A2 | **A2 已完成**（`rotatePort` pad-to-square＋測試全綠）→ A2 條件解除；仍等 B2／佈局層 | `[!]`（A2 依賴已清） |
 | R-C1 | 依賴 R-B2 擺放鏈可用 | R-B2 | B2 於 9/27 門檻通過（或依 §11 改降級方案） | `[!]` |
-| **R-C2** | 佈局自建後連接改為衍生值、不儲存，`addConnection`／`removeConnection` 廢除，**本工項原定義失去標的**（2026-08-25） | 主編＋aaaaa 依 §11 重新定義並改版本號 | 新的連接判定契約寫入 §2 工項總表 | `[!]` **待重新定義**（排 9 月首週） |
-| **R-D4** | §1.2 已定案的藍圖格式 `{ version, planId?, nodes, edges }` 不再是儲存形狀（改 `devices`／`pipelines`）（2026-08-25） | 同上 | §1.2 藍圖格式改版並確認 Zod schema 對象 | `[!]` **待重訂格式**（排 9 月首週） |
+| **R-C2** | 佈局自建後連接改為衍生值、不儲存，`addConnection`／`removeConnection` 廢除，**本工項原定義失去標的**（2026-08-25） | 主編＋aaaaa 依 §11 重新定義並改版本號 | 新的連接判定契約寫入 §2 工項總表 | `[!]` **待重新定義**（原排 9 月首週；**本週未做**，順延） |
+| **R-D4** | §1.2 已定案的藍圖格式 `{ version, planId?, nodes, edges }` 不再是儲存形狀（改 `devices`／`pipelines`）（2026-08-25） | 同上 | §1.2 藍圖格式改版並確認 Zod schema 對象 | `[!]` **待重訂格式**（原排 9 月首週；**本週未做**，順延） |
 | ~~R-D3~~ | ~~shirone 與 azure9572 同域不同 ID~~ | — | — | **部分解除（8/30）：** W001 已合入 master（PR #35）。E004／E005 仍在 `dev/azure9572`；ID 表未凍結；右側未接。改標 `[~]`，不再列本表 |
 | ~~R-D2~~ | ~~detector 註冊入口需集中~~ | — | — | **已解除（8/30）：** 使用端顯式 `registerDetector`；E001 於 `/dev/validation-test` 掛上。整項改 `[~]`（缺右側 Tips）。shirone 轉調 → 後續 owner 待移交 aaaaa |
 
 新增封鎖一律回寫本表，寫明原因與等待對象；口頭封鎖不算數。
 
-### 9.1 本週（W0823）完成率快照（A4 §4.4）
+### 9.1 本週（W0831）完成率快照（A4 §4.4）
 
 | 等級 | 分母 | 已 30 秒驗收／已合入 | 完成率 |
 |------|------|----------------------|--------|
-| **確定（擋門檻）** | 2（A1＝W0823-A1、D0＝W0823-D0） | 2 | **100%** |
-| **確定（加分）** | 4（S1、P1、T1、H1） | 4 有產出；P1 缺 frame 標號／變更摘要 → 計部分 | **3 全達＋1 部分** |
-| **加分** | 4（G1、V1、M1、Z1） | M1、Z1 合入；G1、V1 零產出 | **2／4** |
+| **確定（解鎖／演示）** | 2（A0＝L1 解鎖、A1＝B1 9/6 切片） | 2 皆合入 master（#40、#43） | **100%** |
+| **確定（閘門）** | 1（D0） | 1（合入優先序守住；無宣告 L2 未放行） | **達成** |
+| **加分／暫停** | 8（S1、G1、T1、P1、M1、H0、Z0、V0） | S1 有 PR 未合；T1 等閘成功；H0／Z0 不計；V0 續留成立；G1／P1／M1 未達標的或未進 repo | **不擋門檻** |
 
-說明：依 A4，「PR 已開但主編無工時合入」計完成——本週四條待審於 8/30 晚間全數合入，無需動用延壓條款。avery 未回週報、計未達；goodmorning 事前回報上游設計變更，計未達但不列個人失效（見派工決策層）。
+說明：主編本週週中合入 3 條 PR，未再集中到週日晚間一次排空。#41（shirone MachineCard）仍開；**路徑維持 `src/app/MachineCard/`**（主編 9/07），0907 改為對白紙＋拆配方素材。
+
+上期（W0823）快照見 git 歷史；M1 必要項當時 100%。
 
 ---
 
@@ -324,6 +327,7 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 
 | 版 | 日期 | 說明 |
 |----|------|------|
+| **v1.6** | **2026-09-06** | **L1 解鎖已發**（PR #40）；**B1 9/6 切片合入**（PR #43）；§8 09/13 走已解鎖分支；B2 改等 store 模型＋只讀殼開工；C2 重訂順延；W0831 完成率快照 |
 | **v1.5** | **2026-08-31** | **定案**提前 SVG 自建；**L1 最優**覆寫「B1 優先」；L2 **等宣告**閘門；§8 對齊 A0／WEEK_0907；派工 W0831-A0 |
 | v1.4 | 2026-08-31 | §1.6 決策說明；提前開工評估（其後優先序被 v1.5 修正） |
 | v1.3 | 2026-08-30 晚 | 會議改派 MachineCard／工具列 style；佈局提前開工註記 |
