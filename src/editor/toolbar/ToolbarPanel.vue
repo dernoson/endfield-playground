@@ -1,61 +1,49 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import type { EquipmentType } from '@/types/editor';
-import { useEditorStore } from '@/store/editorStore';
 
-/** 藍圖 store：武裝放置模式與記錄目前選取設備類型 */
-const editorStore = useEditorStore();
+/** 定義由上層傳入的 Props */
+const props = defineProps<{
+    /** 目前選取的設備 ID */
+    selectedEquipment?: string | null;
+}>();
+
+/** 定義發送給上層的事件 */
+const emit = defineEmits<{
+    (e: 'equip-click', equipmentId: string): void;
+    (e: 'equip-dragstart', event: DragEvent, equipmentId: string): void;
+}>();
 
 /** 控制底部設備選取列的開關狀態 */
 const bottomBarOpen = ref(true);
 
-/** 記錄目前選取的分類 Tab (預設選擇第一個 '全部') */
+/** 記錄目前選取的分類 Tab */
 const activeCategory = ref('全部');
 
 /** 搜尋關鍵字狀態 */
 const searchQuery = ref('');
 
-/**
- * 切換底部面板的展開/收合
- */
 function toggleBottomBar() {
     bottomBarOpen.value = !bottomBarOpen.value;
 }
 
-/**
- * 監聽鍵盤事件：按下 'Z' 鍵切換底部面板
- */
 function handleKeyDown(event: KeyboardEvent) {
     const target = event.target as HTMLElement;
-    const isEditable =
-        target.tagName === 'INPUT' ||
-        target.tagName === 'TEXTAREA' ||
-        target.isContentEditable;
-    
+    const isEditable = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
     if (isEditable) return;
     if (event.ctrlKey || event.metaKey || event.altKey) return;
-
     if (event.key.toLowerCase() === 'z') {
         toggleBottomBar();
     }
 }
 
-/**
- * 處理滑鼠滾輪橫向滾動
- */
 function handleWheelScroll(event: WheelEvent) {
     const target = event.currentTarget as HTMLElement;
-    // 讀取滑鼠垂直滾動量 (deltaY) 並轉換為容器的水平滾動量 (scrollLeft)
     target.scrollLeft += event.deltaY;
 }
 
-onMounted(() => {
-    window.addEventListener('keydown', handleKeyDown);
-});
+onMounted(() => { window.addEventListener('keydown', handleKeyDown); });
 
-onUnmounted(() => {
-    window.removeEventListener('keydown', handleKeyDown);
-});
+onUnmounted(() => { window.removeEventListener('keydown', handleKeyDown); });
 
 /** 分類 Tab */
 const categoryTabs = ['全部', '物流', '倉儲', '生產', '合成', '電力', '功能'];
@@ -131,44 +119,29 @@ const equipments: Array<{ id: string; category: string; label: string }> = [
  */
 const filteredEquipments = computed(() => {
     let result = equipments;
-    
-    // 1. 根據 Tab 分類進行過濾 (全部則跳過此階段)
     if (activeCategory.value !== '全部') {
         result = result.filter(eq => eq.category === activeCategory.value);
     }
-    
-    // 2. 根據搜尋字串進行過濾
     const query = searchQuery.value.trim().toLowerCase();
     if (query) {
         result = result.filter((eq) => 
-            eq.label.toLowerCase().includes(query) || 
-            eq.id.toLowerCase().includes(query)
+            eq.label.toLowerCase().includes(query) || eq.id.toLowerCase().includes(query)
         );
     }
-    
     return result;
 });
 
-/**
- * 點擊設備按鈕時武裝放置模式
- */
+/** 改為 Emit 事件給上層處理 */
 function handleEquipClick(equipmentId: string) {
-    editorStore.setSelectedEquipment(equipmentId as EquipmentType);
-    editorStore.armPlacement(equipmentId as EquipmentType);
+    emit('equip-click', equipmentId);
 }
 
-/**
- * 開始拖拉設備按鈕時，記錄目前選取設備並將類型寫入 dataTransfer
- */
 function handleEquipDragStart(event: DragEvent, equipmentId: string) {
-    editorStore.setSelectedEquipment(equipmentId as EquipmentType);
-
-    if (!event.dataTransfer) {
-        return;
+    if (event.dataTransfer) {
+        event.dataTransfer.effectAllowed = 'copy';
+        event.dataTransfer.setData('application/x-endfield-equipment', equipmentId);
     }
-
-    event.dataTransfer.effectAllowed = 'copy';
-    event.dataTransfer.setData('application/x-endfield-equipment', equipmentId);
+    emit('equip-dragstart', event, equipmentId);
 }
 </script>
 
@@ -274,13 +247,13 @@ function handleEquipDragStart(event: DragEvent, equipmentId: string) {
                             <!-- 深色背景層 -->
                             <div 
                                 class="absolute left-0 top-[14px] w-full h-[78px] rounded-t-[8px]"
-                                :class="editorStore.selectedEquipment === equipment.id ? 'bg-[#1c1c1c]' : 'bg-[#2b2b2b]'"
+                                :class="props.selectedEquipment === equipment.id ? 'bg-[#1c1c1c]' : 'bg-[#2b2b2b]'"
                             ></div>
                             
                             <!-- 黃色底線層 -->
                             <div 
                                 class="absolute left-0 top-[92px] w-full h-[4px] rounded-b-[8px] bg-[#eefd1c] transition-shadow duration-300"
-                                :class="editorStore.selectedEquipment === equipment.id ? 'shadow-[0_2px_4px_rgba(238,253,28,0.5)]' : 'shadow-none'"
+                                :class="props.selectedEquipment === equipment.id ? 'shadow-[0_2px_4px_rgba(238,253,28,0.5)]' : 'shadow-none'"
                             ></div>
 
                             <!-- 圖片容器：100x100 完整紅色中空方框標示範圍 -->
