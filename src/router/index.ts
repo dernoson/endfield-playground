@@ -43,7 +43,26 @@ const router = createRouter({
                     name: 'dev-validation-test',
                     component: () => import('@/app/dev/ValidationTest.vue'),
                 },
+                {
+                    path: 'placement-demo',
+                    name: 'dev-placement-demo',
+                    component: () => import('@/app/dev/PlacementDemo.vue'),
+                },
+                {
+                    path: 'layout-l1-preview',
+                    name: 'dev-layout-l1-preview',
+                    component: () => import('@/app/dev/LayoutL1Preview.vue'),
+                },
             ],
+        },
+        // 獨立於 DevLayout 之外：不掛在左側 dev 工具導覽列，只能直接切換網址到達
+        {
+            path: '/dev/paper-fig-main-field',
+            name: 'dev-paper-fig-main-field',
+            component: () => import('@/app/dev/PaperFigMainField.vue'),
+            beforeEnter: () => {
+                return import.meta.env.DEV ? true : '/';
+            },
         },
         {
             path: '/:pathMatch(.*)*',

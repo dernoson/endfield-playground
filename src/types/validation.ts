@@ -32,14 +32,15 @@ export interface Alert {
 /**
  * Detector 執行所需上下文
  *
- * 由 useValidationStore.run() 統一組裝後傳入。  \
+ * 由 useValidation.buildContext() 組裝後傳入。空間座標一律為**格子座標**：  \
+ * 像素到格子的換算在組裝時完成，detector 內不需要、也不應該取得 gridSize。  \
  * 不含 graph topology 結構 —— E001~E006 detector 均不需要，  \
  * 若未來新 detector 確實需要 graph，再由 aaaaa 從 useFlowEngine.ts 暴露對應 helper 補入。
  */
 export interface ValidationContext {
-    /** 範圍內所有已部署設備 */
+    /** 範圍內所有已部署設備；`position` 為格子座標 */
     devices: FactoryNode[];
-    /** 範圍內所有已部署管線 */
+    /** 範圍內所有已部署管線；`data.bendPoints` 為格子座標 */
     connections: FactoryEdge[];
     /** 取得設備靜態定義（耗電量、port 配置、tags 等） */
     getDef: (machineType: string) => Machine | undefined;
