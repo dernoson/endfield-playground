@@ -193,7 +193,7 @@ function toggle(id: string) {
     flex: 1;
     min-height: 0;
     width: 100%;
-    margin-bottom: 12px;
+    margin-bottom: 0;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -340,7 +340,7 @@ function toggle(id: string) {
     position: relative;
     margin-top: auto;
     width: 100%;
-    padding-top: 24px;
+    padding-top: 10px;
     padding-bottom: 4px;
 }
 
