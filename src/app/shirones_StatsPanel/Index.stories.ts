@@ -2,8 +2,17 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite';
 import ShironesStatsPanel from './Index.vue';
 
 const meta = {
-    title: 'L3/shirones_StatsPanel/Index',
+    title: 'L3/shirones_StatsPanel',
     component: ShironesStatsPanel,
+    decorators: [
+        () => ({
+            template: `
+                <div style="width: 320px; height: 750px; position: relative; margin: 40px auto; padding-left: 40px;">
+                    <story />
+                </div>
+            `,
+        }),
+    ],
 } satisfies Meta<typeof ShironesStatsPanel>;
 
 export default meta;

@@ -5,7 +5,7 @@
 <style scoped>
 .bar {
     position: absolute;
-    top: 60%;
+    top: 50%;
     left: 0;
     width: 100%;
     height: 1px;
