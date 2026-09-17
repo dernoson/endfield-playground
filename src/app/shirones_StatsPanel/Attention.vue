@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import iconUrl from './Icon.svg';
+import iconUrl from './ErrorIcon.svg';
 
 interface Props {
     errorMessage?: string;
@@ -59,8 +59,8 @@ withDefaults(defineProps<Props>(), {
     font-family: 'HarmonyOS Sans TC', sans-serif;
     font-style: normal;
     font-weight: 400;
-    font-size: 20px;
-    line-height: 23px;
+    font-size: 18px;
+    line-height: 21px;
     color: #ffffff;
 }
 
