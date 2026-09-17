@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted, watch, nextTick } from 'vue';
+import { useScroll, useResizeObserver } from '@vueuse/core';
 import SingleProduction from './SingleProduction.vue';
 import type { PowerStats, ProductionItem } from './types';
 
@@ -39,8 +40,57 @@ const expandedMap = ref<Record<string, boolean>>(
     )
 );
 
+const infoRef = ref<HTMLElement | null>(null);
+const isOverflowing = ref(false);
+
+const { arrivedState, measure } = useScroll(infoRef, {
+    offset: { bottom: 3 },
+});
+
+function updateOverflow() {
+    const el = infoRef.value;
+    if (el) {
+        isOverflowing.value = el.scrollHeight > el.clientHeight;
+    }
+}
+
+useResizeObserver(infoRef, () => {
+    updateOverflow();
+    measure();
+});
+
+onMounted(() => {
+    updateOverflow();
+    measure();
+});
+
+watch(
+    () => props.productions,
+    () => {
+        nextTick(() => {
+            updateOverflow();
+            measure();
+        });
+    },
+    { deep: true }
+);
+
+const canScrollTop = computed(() => {
+    if (!isOverflowing.value) return false;
+    return !arrivedState.top;
+});
+
+const canScrollBottom = computed(() => {
+    if (!isOverflowing.value) return false;
+    return !arrivedState.bottom;
+});
+
 function toggle(id: string) {
     expandedMap.value[id] = !expandedMap.value[id];
+    nextTick(() => {
+        updateOverflow();
+        measure();
+    });
 }
 </script>
 
@@ -57,7 +107,7 @@ function toggle(id: string) {
                     :style="{ width: `${barWidth}%` }"
                 />
                 <div class="overall-value">
-                    {{ power ? `${power.demandKw}kW/${power.supplyKw}kW` : '-' }}
+                    {{ power ? `${power.demandKw}kW/${power.supplyKw}kW` : '' }}
                 </div>
             </div>
 
@@ -65,17 +115,28 @@ function toggle(id: string) {
             <div class="production-estimate">
                 <div class="production-title">產能估算</div>
 
-                <!-- info 容器 (動態配方項目清單，比照 FormulaList) -->
-                <div class="info">
-                    <SingleProduction
-                        v-for="item in productions"
-                        :key="item.id"
-                        :item="item"
-                        :expanded="expandedMap[item.id]"
-                        @toggle="toggle(item.id)"
-                    />
-                    <div v-if="!productions || productions.length === 0" class="empty-placeholder">
-                        -
+                <!-- info 容器 (動態配方項目清單，比照 FormulaList 與 SingleFormula 滾動提示) -->
+                <div class="info-wrapper">
+                    <div ref="infoRef" class="info">
+                        <SingleProduction
+                            v-for="item in productions"
+                            :key="item.id"
+                            :item="item"
+                            :expanded="expandedMap[item.id]"
+                            @toggle="toggle(item.id)"
+                        />
+                    </div>
+
+                    <!-- 上方滾動提示 (有上方滾動空間時顯示) -->
+                    <div v-if="canScrollTop" class="scroll-hint top">
+                        <div class="hint-plate" />
+                        <div class="hint-arrow" />
+                    </div>
+
+                    <!-- 下方滾動提示 (有下方滾動空間時顯示) -->
+                    <div v-if="canScrollBottom" class="scroll-hint bottom">
+                        <div class="hint-plate" />
+                        <div class="hint-arrow" />
                     </div>
                 </div>
             </div>
@@ -84,7 +145,7 @@ function toggle(id: string) {
             <div class="ticket-section">
                 <div class="ticket-title">調度券兌換效率</div>
                 <div class="ticket-value">
-                    {{ ticketPerHour !== undefined ? `≈ ${ticketPerHour.toLocaleString()}/hr` : '-' }}
+                    {{ ticketPerHour !== undefined ? `≈ ${ticketPerHour.toLocaleString()}/hr` : '' }}
                 </div>
             </div>
         </div>
@@ -128,11 +189,21 @@ function toggle(id: string) {
     margin-bottom: 17px;
 }
 
-.info {
+.info-wrapper {
+    position: relative;
     flex: 1;
     min-height: 0;
     width: 100%;
     margin-bottom: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.info {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
 
     /* 超出高度自動滾動，橫向嚴格裁切（仿照 FormulaList.vue） */
     overflow-y: auto;
@@ -149,6 +220,64 @@ function toggle(id: string) {
 
 .info::-webkit-scrollbar {
     display: none;
+}
+
+/* 滾動提示容器 (上下側，仿照 SingleFormula.vue) */
+.scroll-hint {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 14px;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.scroll-hint.top {
+    top: 0;
+}
+
+.scroll-hint.bottom {
+    bottom: 0;
+}
+
+.scroll-hint.top .hint-plate {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 12px;
+    background: linear-gradient(180deg, #4e4e4e 0%, rgba(78, 78, 78, 0) 100%);
+}
+
+.scroll-hint.bottom .hint-plate {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 12px;
+    background: linear-gradient(0deg, #4e4e4e 0%, rgba(78, 78, 78, 0) 100%);
+}
+
+.scroll-hint.top .hint-arrow {
+    position: absolute;
+    top: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 13px;
+    height: 6.5px;
+    background: #ffffff;
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+}
+
+.scroll-hint.bottom .hint-arrow {
+    position: absolute;
+    bottom: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 13px;
+    height: 6.5px;
+    background: #ffffff;
+    clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
 }
 
 .overall-title {
@@ -237,13 +366,5 @@ function toggle(id: string) {
     letter-spacing: 0%;
     color: #cfcfcf;
     white-space: nowrap;
-}
-
-.empty-placeholder {
-    font-family: 'HarmonyOS Sans TC', sans-serif;
-    font-weight: 300;
-    font-size: 16px;
-    color: #cfcfcf;
-    padding-left: 18px;
 }
 </style>

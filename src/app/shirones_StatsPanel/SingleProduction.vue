@@ -70,6 +70,7 @@ const emit = defineEmits<{
     display: flex;
     flex-direction: column;
     gap: 4px;
+    flex-shrink: 0;
 }
 
 .item-header {

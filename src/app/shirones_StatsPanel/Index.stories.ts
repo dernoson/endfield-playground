@@ -63,9 +63,9 @@ export const Default: Story = {
     },
 };
 
-/** 邊界：不傳入 props，驗證所有欄位採用預設 fallback 與 '-' placeholder */
+/** 邊界：不傳入 props，驗證無資料時不使用 placeholder，乾淨呈現 */
 export const MinimalProps: Story = {
-    name: '邊界：最小 props (placeholder -)',
+    name: '邊界：最小 props (無資料狀態)',
     args: {},
 };
 
@@ -166,7 +166,7 @@ export const LongTextOverflow: Story = {
         productions: [
             {
                 id: 'long-1',
-                name: '高純度重結晶超導相轉移複合晶圓材料特級樣品',
+                name: '又想听那个故事了？真是没办法呀',
                 producePerMin: 9999999,
                 consumePerMin: 8888888,
                 expanded: true,
@@ -177,7 +177,7 @@ export const LongTextOverflow: Story = {
             {
                 id: 'long-tip-1',
                 level: 'error',
-                message: '高精密大型裝配基座超出了當前電網的負載範圍並與臨近傳送帶物理空間重疊無法運轉',
+                message: '茈發動前的41秒內，新宿再次響起了五條悟的吟唱。“九綱”“偏光”“烏與聲明”“表裏之間”、宿儺明白自己再也沒有任何機會阻止茈的誕生了，無限制的虛式如同核爆一般在新宿亮起沖天的光芒，魔虛羅的輪盤在茈中灰飛煙滅，廢墟之中，全力護住自己的宿儺無力的靠在殘破的建築上支持身體，他的左手和大腿都被這一擊吞噬殆盡，同樣傷痕累累的五條悟出現在宿儺面前，宿儺立刻強迫自己不再倚靠牆壁，堂堂正正站在五條悟面前，但是在咒力同源的影響下，五條悟所承受的傷害被大大削弱，在反轉術式的治療下五條悟的身體再次恢復，對五條悟來說，決定性的一擊遠距離“茈”只'
             },
         ],
     },
