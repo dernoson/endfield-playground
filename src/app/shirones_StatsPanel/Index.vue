@@ -56,9 +56,8 @@ const emit = defineEmits<{
 <style scoped>
 .production-overview {
     position: relative;
-    width: 100%;
+    width: 320px;
     height: 100%;
-    min-width: 240px;
     box-sizing: border-box;
     user-select: none;
     overflow: visible;

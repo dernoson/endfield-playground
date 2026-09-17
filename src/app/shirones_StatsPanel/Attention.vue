@@ -1,82 +1,163 @@
 <script setup lang="ts">
-import type { AlertTip } from './types';
+import iconUrl from './Icon.svg';
 
-/**
- * Attention 元件
- * 對應 Figma: Production Overview > Detail > Attention (Text, Frame 2 > Error, Warning)
- * 包含 Tips 標題與警報卡片
- */
 interface Props {
-    tips?: AlertTip[];
+    errorMessage?: string;
+    warningMessage?: string;
 }
 
 withDefaults(defineProps<Props>(), {
-    tips: () => [
-        {
-            id: 'tip-1',
-            level: 'error',
-            message: '碎紙機單元*1位置重疊',
-        },
-        {
-            id: 'tip-2',
-            level: 'warning',
-            message: '貓毛貓範圍總sb超載',
-        },
-    ],
+    errorMessage: '碎紙機單元*1位置重疊',
+    warningMessage: '貓毛貓範圍總sb超載',
 });
 </script>
 
 <template>
-    <div class="attention-section space-y-2">
-        <!-- 標題 Text: Tips -->
-        <div class="attention-title text-sm font-medium text-zinc-300">
-            Tips
+    <div class="attention">
+        <!-- 1. Text -->
+        <div class="text">Tips</div>
+
+        <!-- 2. Error = [plate + icon + text + text + text ... ] -->
+        <div class="error">
+            <div class="plate" />
+            <img :src="iconUrl" class="icon" alt="error icon" />
+            <div class="text">
+                <slot name="error">{{ errorMessage }}</slot>
+            </div>
         </div>
 
-        <!-- Frame 2: Error 與 Warning 清單 -->
-        <div class="frame-2 space-y-2">
-            <div
-                v-for="tip in tips"
-                :key="tip.id"
-                class="tip-item relative flex items-center space-x-2.5 overflow-hidden rounded px-3 py-2 text-xs"
-                :class="
-                    tip.level === 'error'
-                        ? 'error-row text-[#ef7878]'
-                        : 'warning-row text-[#f2ce47]'
-                "
-            >
-                <!-- Plate 底板 -->
-                <div
-                    class="plate-bg absolute inset-0 -z-10"
-                    :class="tip.level === 'error' ? 'bg-[#482d33]' : 'bg-[#463e2a]'"
-                />
-
-                <!-- Icon -->
-                <span
-                    v-if="tip.level === 'error'"
-                    class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#e53935] text-white"
-                >
-                    <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </span>
-
-                <span
-                    v-else
-                    class="flex h-5 w-5 shrink-0 items-center justify-center text-[#fbc02d]"
-                >
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            fill-rule="evenodd"
-                            d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                            clip-rule="evenodd"
-                        />
-                    </svg>
-                </span>
-
-                <!-- Text -->
-                <span class="tip-text truncate font-medium">{{ tip.message }}</span>
+        <!-- 3. Warning (Plate, Icon, Text) -->
+        <div class="warning">
+            <div class="plate" />
+            <div class="icon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        fill-rule="evenodd"
+                        d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                        clip-rule="evenodd"
+                    />
+                </svg>
+            </div>
+            <div class="warning-text">
+                <slot name="warning">{{ warningMessage }}</slot>
             </div>
         </div>
     </div>
 </template>
+
+<style scoped>
+.attention {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* 1. Text */
+.text {
+    font-family: 'HarmonyOS Sans TC', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 23px;
+    color: #ffffff;
+}
+
+/* 2. Error = [plate + icon + text + text + text ... ] */
+.error {
+    box-sizing: border-box;
+    position: relative;
+    width: 100%;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    padding-left: 36px;
+    padding-right: 8px;
+    overflow: hidden;
+}
+
+/* Plate */
+.error .plate {
+    box-sizing: border-box;
+    position: absolute;
+    inset: 0;
+    height: 35px;
+    background: rgba(255, 110, 110, 0.1);
+    z-index: 0;
+}
+
+/* Icon */
+.error .icon {
+    position: absolute;
+    top: 7px;
+    left: 7px;
+    width: 23px;
+    height: 23px;
+    z-index: 1;
+}
+
+/* Text inside Error */
+.error .text {
+    position: absolute;
+    left: 42px;
+    top: 7px;
+
+    font-family: 'HarmonyOS Sans TC', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 21px;
+
+    color: #ff6e6e;
+    white-space: nowrap;
+    z-index: 1;
+}
+
+/* 3. Warning */
+.warning {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    gap: 10px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.warning .plate {
+    position: absolute;
+    inset: 0;
+    background: #463e2a;
+    z-index: 0;
+}
+
+.warning .icon {
+    position: relative;
+    z-index: 1;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fbc02d;
+}
+
+.warning .icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.warning .warning-text {
+    position: relative;
+    z-index: 1;
+    font-family: 'HarmonyOS Sans TC', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #f2ce47;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+</style>
