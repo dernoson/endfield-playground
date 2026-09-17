@@ -120,9 +120,11 @@ function toggle(id: string) {
 
 .production-estimate {
     position: relative;
-    width: 100%;
+    width: auto;
+    margin-right: 60px;
     margin-top: 20px;
     padding-top: 40px;
+    box-sizing: border-box;
 }
 
 .production-title {
@@ -147,7 +149,7 @@ function toggle(id: string) {
     -ms-overflow-style: none;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
 }
 
 .info::-webkit-scrollbar {

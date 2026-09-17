@@ -28,11 +28,17 @@ const emit = defineEmits<{
                     <svg
                         class="chevron"
                         :class="{ 'is-collapsed': !expanded }"
-                        viewBox="0 0 16 16"
+                        viewBox="0 0 13 8"
                         fill="none"
-                        stroke="currentColor"
+                        xmlns="http://www.w3.org/2000/svg"
                     >
-                        <path d="M4 6l4 4 4-4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path
+                            d="M1 1.5L6.5 6.5L12 1.5"
+                            stroke="currentColor"
+                            stroke-width="1.6"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
                     </svg>
                 </button>
                 <span class="text-product">{{ item.name }}</span>
@@ -77,7 +83,7 @@ const emit = defineEmits<{
 .header-left {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
 }
 
 .collapse-btn {
@@ -88,13 +94,16 @@ const emit = defineEmits<{
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #a4a4a4;
+    width: 13px;
+    height: 8px;
+    color: #cfcfcf;
     cursor: pointer;
+    flex-shrink: 0;
 }
 
 .chevron {
-    width: 14px;
-    height: 14px;
+    width: 13px;
+    height: 8px;
     transition: transform 0.2s ease;
 }
 
@@ -106,32 +115,36 @@ const emit = defineEmits<{
     font-family: 'HarmonyOS Sans TC', sans-serif;
     font-style: normal;
     font-weight: 400;
-    font-size: 16px;
+    font-size: 18px;
     line-height: 100%;
-    color: #dadada;
+    letter-spacing: 0%;
+    color: #cfcfcf;
 }
 
 .text-balance {
     font-family: 'HarmonyOS Sans TC', sans-serif;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 300;
     font-size: 16px;
     line-height: 100%;
+    letter-spacing: 0%;
+    text-align: right;
 }
 
 .text-balance.positive {
-    color: #7ee14d;
+    color: #a3fd1c;
 }
 
 .text-balance.negative {
-    color: #f87171;
+    color: #ff6e6e;
 }
 
 .item-detail {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding-left: 20px;
+    gap: 5px;
+    padding-left: 18px;
+    margin-top: 8px;
 }
 
 .product-row,
@@ -140,19 +153,27 @@ const emit = defineEmits<{
     justify-content: space-between;
     align-items: center;
     font-family: 'HarmonyOS Sans TC', sans-serif;
-    font-size: 14px;
-    line-height: 18px;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 100%;
+    letter-spacing: 0%;
 }
 
 .product-row .label,
 .consume-row .label {
-    font-weight: 300;
-    color: #a4a4a4;
+    color: #f5f5f5;
 }
 
 .product-row .value,
 .consume-row .value {
+    font-family: 'HarmonyOS Sans TC', sans-serif;
     font-weight: 300;
-    color: #dadada;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    text-align: right;
+    color: #f5f5f5;
 }
 </style>
