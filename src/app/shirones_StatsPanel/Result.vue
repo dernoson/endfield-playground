@@ -119,37 +119,46 @@ function toggle(id: string) {
 }
 
 .production-estimate {
+    flex: 1;
+    min-height: 0;
     position: relative;
     width: auto;
     margin-right: 60px;
     margin-top: 20px;
-    padding-top: 40px;
+    display: flex;
+    flex-direction: column;
     box-sizing: border-box;
 }
 
 .production-title {
-    position: absolute;
-    top: 0px;
-    left: 0px;
+    position: relative;
+    flex-shrink: 0;
     font-family: 'HarmonyOS Sans TC', sans-serif;
     font-weight: 400;
     font-style: normal;
     font-size: 20px;
     line-height: 23px;
     color: #ffffff;
+    margin-bottom: 17px;
 }
 
 .info {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
     margin-bottom: 12px;
-    height: auto;
-    max-height: 240px;
+
+    /* 超出高度自動滾動，橫向嚴格裁切（仿照 FormulaList.vue） */
     overflow-y: auto;
     overflow-x: hidden;
+
+    /* 隱藏滾動條 */
     scrollbar-width: none;
     -ms-overflow-style: none;
+
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 10px;
 }
 
 .info::-webkit-scrollbar {
@@ -206,18 +215,22 @@ function toggle(id: string) {
     color: #a4a4a4;
 }
 
+.detail {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+}
+
 .ticket-section {
-    position: absolute;
-    bottom: 0;
-    left: 0;
+    position: relative;
+    margin-top: auto;
     width: 100%;
-    height: 40px;
+    padding-top: 24px;
+    padding-bottom: 4px;
 }
 
 .ticket-title {
-    position: absolute;
-    bottom: 40px;
-    left: 0px;
     font-family: 'HarmonyOS Sans TC', sans-serif;
     font-style: normal;
     font-weight: 400;
@@ -228,9 +241,8 @@ function toggle(id: string) {
 }
 
 .ticket-value {
-    position: absolute;
-    top: 10px;
-    left: 40px;
+    margin-top: 10px;
+    padding-left: 40px;
     font-family: 'HarmonyOS Sans TC', sans-serif;
     font-weight: 300;
     font-style: normal;

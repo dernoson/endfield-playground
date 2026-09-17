@@ -144,7 +144,7 @@ const emit = defineEmits<{
     flex-direction: column;
     gap: 5px;
     padding-left: 18px;
-    margin-top: 8px;
+    margin-top: 4px;
 }
 
 .product-row,

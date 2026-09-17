@@ -115,7 +115,14 @@ const emit = defineEmits<{
     right: 18px;
     bottom: calc(50% + 18px);
     overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
     box-sizing: border-box;
+}
+
+.result-wrapper::-webkit-scrollbar {
+    display: none;
 }
 
 /* 3. 下半部 Attention：往內 margin 18px，頂部距 50% 白條 18px，底部距 panel 18px */
@@ -126,6 +133,13 @@ const emit = defineEmits<{
     right: 18px;
     bottom: 18px;
     overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
     box-sizing: border-box;
+}
+
+.attention-wrapper::-webkit-scrollbar {
+    display: none;
 }
 </style>

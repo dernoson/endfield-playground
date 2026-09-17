@@ -7,7 +7,7 @@ const meta = {
     decorators: [
         () => ({
             template: `
-                <div style="width: 320px; height: 750px; position: relative; margin: 40px auto; padding-left: 40px;">
+                <div style="width: 320px; height: 1024px; position: relative; margin: 20px auto; padding-left: 40px;">
                     <story />
                 </div>
             `,
