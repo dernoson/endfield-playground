@@ -15,10 +15,12 @@
 
 <style scoped>
 .label-container {
-    position: relative;
-    margin-top: 30px;
+    position: absolute;
+    top: 30px;
+    left: 0;
     height: 50px;
     width: 100%;
+    z-index: 10;
 }
 
 /* 灰條 */
