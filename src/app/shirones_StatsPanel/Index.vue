@@ -1,36 +1,49 @@
+<script lang="ts">
+export * from './types';
+</script>
+
 <script setup lang="ts">
-import PowerSummary from './PowerSummary.vue';
-import ProductionEstimate from './ProductionEstimate.vue';
-import TicketEfficiency from './TicketEfficiency.vue';
-import AlertTips from './AlertTips.vue';
+import CollapseButton from './CollapseButton.vue';
+import Label from './Label.vue';
+import Detail from './Detail.vue';
 import type { ShironeStatsPanelProps } from './types';
 
+/**
+ * Production Overview 元件
+ * 對應 Figma 根圖層: # Production Overview
+ * 子圖層包含:
+ *  - collapse button (側邊黃色收合按鈕)
+ *  - Lable (頂部標籤與底板)
+ *  - Detail (Result, Attention, Bar)
+ */
 defineProps<ShironeStatsPanelProps>();
+
+const emit = defineEmits<{
+    (e: 'toggle-collapse'): void;
+}>();
 </script>
 
 <template>
-    <div class="shirones-stats-panel flex flex-col w-full h-full select-none bg-[#414144] text-white shadow-xl overflow-y-auto">
-        <!-- 頂部標籤 Header Tab -->
-        <div class="bg-[#242426] px-4 py-2.5 shadow-md">
-            <h2 class="text-lg font-medium tracking-wide text-zinc-100">產線總覽</h2>
-        </div>
+    <div class="production-overview relative flex flex-col w-full h-full select-none bg-[#4E4E4E] text-white shadow-xl">
+        <!-- 1. collapse button -->
+        <CollapseButton @toggle="emit('toggle-collapse')" />
 
-        <!-- 內容區域 -->
-        <div class="flex-1 space-y-5 px-4 py-4">
-            <!-- 整體統計 -->
-            <PowerSummary :power="power" />
+        <!-- 2. Lable -->
+        <Label />
 
-            <!-- 產能估算 -->
-            <ProductionEstimate :productions="productions" />
-
-            <!-- 調度券兌換效率 -->
-            <TicketEfficiency :ticket-per-hour="ticketPerHour" />
-
-            <!-- 分隔線 -->
-            <hr class="border-t border-zinc-600/80 my-2" />
-
-            <!-- Tips 警示清單 -->
-            <AlertTips :tips="tips" />
-        </div>
+        <!-- 3. Detail (Result + Attention + Bar) -->
+        <Detail
+            :power="power"
+            :productions="productions"
+            :ticket-per-hour="ticketPerHour"
+            :tips="tips"
+        />
     </div>
 </template>
+
+<style scoped>
+.production-overview {
+    position: relative;
+    min-width: 240px;
+}
+</style>

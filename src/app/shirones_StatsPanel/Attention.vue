@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import type { AlertTip } from './types';
 
+/**
+ * Attention 元件
+ * 對應 Figma: Production Overview > Detail > Attention (Text, Frame 2 > Error, Warning)
+ * 包含 Tips 標題與警報卡片
+ */
 interface Props {
     tips?: AlertTip[];
 }
@@ -22,21 +27,31 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-    <section class="space-y-2">
-        <h3 class="text-base font-medium tracking-wide text-zinc-300">Tips</h3>
+    <div class="attention-section space-y-2">
+        <!-- 標題 Text: Tips -->
+        <div class="attention-title text-sm font-medium text-zinc-300">
+            Tips
+        </div>
 
-        <div class="space-y-2">
+        <!-- Frame 2: Error 與 Warning 清單 -->
+        <div class="frame-2 space-y-2">
             <div
                 v-for="tip in tips"
                 :key="tip.id"
-                class="flex items-center space-x-2.5 rounded px-3 py-2 text-xs"
+                class="tip-item relative flex items-center space-x-2.5 overflow-hidden rounded px-3 py-2 text-xs"
                 :class="
                     tip.level === 'error'
-                        ? 'bg-[#482d33] text-[#ef7878]'
-                        : 'bg-[#463e2a] text-[#f2ce47]'
+                        ? 'error-row text-[#ef7878]'
+                        : 'warning-row text-[#f2ce47]'
                 "
             >
-                <!-- Error Icon: 紅底白叉 -->
+                <!-- Plate 底板 -->
+                <div
+                    class="plate-bg absolute inset-0 -z-10"
+                    :class="tip.level === 'error' ? 'bg-[#482d33]' : 'bg-[#463e2a]'"
+                />
+
+                <!-- Icon -->
                 <span
                     v-if="tip.level === 'error'"
                     class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#e53935] text-white"
@@ -46,7 +61,6 @@ withDefaults(defineProps<Props>(), {
                     </svg>
                 </span>
 
-                <!-- Warning Icon: 黃色三角驚嘆號 -->
                 <span
                     v-else
                     class="flex h-5 w-5 shrink-0 items-center justify-center text-[#fbc02d]"
@@ -60,8 +74,9 @@ withDefaults(defineProps<Props>(), {
                     </svg>
                 </span>
 
-                <span class="truncate font-medium">{{ tip.message }}</span>
+                <!-- Text -->
+                <span class="tip-text truncate font-medium">{{ tip.message }}</span>
             </div>
         </div>
-    </section>
+    </div>
 </template>
