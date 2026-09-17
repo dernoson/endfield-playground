@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import SingleProduction from './SingleProduction.vue';
 import type { PowerStats, ProductionItem } from './types';
 
 /**
@@ -34,9 +35,15 @@ const props = withDefaults(defineProps<Props>(), {
     ticketPerHour: 799325,
 });
 
-const powerPercent = computed(() => {
-    if (!props.power.supplyKw || props.power.supplyKw <= 0) return 0;
-    return Math.min(100, Math.round((props.power.demandKw / props.power.supplyKw) * 100));
+const variable = computed(() => {
+    const supply = props.power?.supplyKw ?? 0;
+    const demand = props.power?.demandKw ?? 0;
+    if (supply <= 0) return 0;
+    return demand / supply;
+});
+
+const barWidth = computed(() => {
+    return Math.min(100, Math.max(0, variable.value * 100));
 });
 
 const expandedMap = ref<Record<string, boolean>>(
@@ -55,69 +62,180 @@ function toggle(id: string) {
 </script>
 
 <template>
-    <div class="result-section space-y-4">
-        <!-- 1. 整體統計 (含 Bar) -->
-        <div class="overall-stats space-y-1.5">
-            <div class="text-sm font-medium text-white">整體統計</div>
-            <div class="text-xs text-zinc-400">總耗電量/供電量</div>
-            <!-- Bar -->
-            <div class="power-bar-track h-2 w-full overflow-hidden rounded-full bg-zinc-950/70">
+    <div class="result-section">
+        <div class="detail">
+            <!-- 1. 整體統計 (含 Bar) -->
+            <div class="overall-stats">
+                <div class="overall-title">整體統計</div>
+                <div class="overall-label">總耗電量/供電量</div>
+                <!-- Bar -->
                 <div
-                    class="h-full rounded-full bg-[#d7e338]"
-                    :style="{ width: `${powerPercent}%` }"
+                    class="bar"
+                    :style="{ width: `${barWidth}%` }"
                 />
-            </div>
-            <div class="text-xs text-zinc-400">
-                {{ power.demandKw }}kW/{{ power.supplyKw }}kW
-            </div>
-        </div>
-
-        <!-- 2. 產能估算 -->
-        <div class="production-estimate space-y-2">
-            <div class="text-sm font-medium text-white">產能估算</div>
-
-            <div class="space-y-2.5">
-                <div
-                    v-for="item in productions"
-                    :key="item.id"
-                    class="space-y-1 text-xs"
-                >
-                    <div
-                        class="flex cursor-pointer items-center justify-between hover:opacity-90"
-                        @click="toggle(item.id)"
-                    >
-                        <div class="flex items-center space-x-1.5 text-zinc-200">
-                            <span class="text-[10px] text-zinc-400">{{ expandedMap[item.id] ? '▼' : '▶' }}</span>
-                            <span>{{ item.name }}</span>
-                        </div>
-                        <div
-                            class="font-mono font-medium"
-                            :class="item.producePerMin - item.consumePerMin >= 0 ? 'text-[#7ee14d]' : 'text-[#f87171]'"
-                        >
-                            收益{{ item.producePerMin - item.consumePerMin >= 0 ? `+${item.producePerMin - item.consumePerMin}` : item.producePerMin - item.consumePerMin }}
-                        </div>
-                    </div>
-
-                    <div v-if="expandedMap[item.id]" class="space-y-0.5 pl-4 text-zinc-300">
-                        <div class="flex justify-between pr-2">
-                            <span class="text-zinc-400">生產</span>
-                            <span class="font-mono">{{ item.producePerMin }}/min</span>
-                        </div>
-                        <div class="flex justify-between pr-2">
-                            <span class="text-zinc-400">消耗</span>
-                            <span class="font-mono">{{ item.consumePerMin }}/min</span>
-                        </div>
-                    </div>
+                <div class="overall-value">
+                    {{ power.demandKw }}kW/{{ power.supplyKw }}kW
                 </div>
             </div>
-        </div>
 
-        <!-- 3. 調度券兌換效率 -->
-        <div class="ticket-section space-y-1">
-            <div class="text-sm font-medium text-white">調度券兌換效率</div>
-            <div class="py-0.5 text-center font-mono text-xs tracking-wide text-zinc-300">
-                ≈ {{ ticketPerHour.toLocaleString() }}/hr
+            <!-- 2. 產能估算 -->
+            <div class="production-estimate">
+                <div class="production-title">產能估算</div>
+
+                <!-- info 容器 (動態配方項目清單，比照 FormulaList) -->
+                <div class="info">
+                    <SingleProduction
+                        v-for="item in productions"
+                        :key="item.id"
+                        :item="item"
+                        :expanded="expandedMap[item.id]"
+                        @toggle="toggle(item.id)"
+                    />
+                </div>
+            </div>
+
+            <!-- 3. 調度券兌換效率 -->
+            <div class="ticket-section">
+                <div class="ticket-title">調度券兌換效率</div>
+                <div class="ticket-value">
+                    ≈ {{ ticketPerHour.toLocaleString() }}/hr
+                </div>
             </div>
         </div>
     </div>
 </template>
+
+<style scoped>
+.result-section {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.overall-stats {
+    position: relative;
+    width: 100%;
+    height: 103px;
+}
+
+.production-estimate {
+    position: relative;
+    width: 100%;
+    margin-top: 20px;
+    padding-top: 40px;
+}
+
+.production-title {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    font-family: 'HarmonyOS Sans TC', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 20px;
+    line-height: 23px;
+    color: #ffffff;
+}
+
+.info {
+    margin-bottom: 12px;
+    height: auto;
+    max-height: 240px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.info::-webkit-scrollbar {
+    display: none;
+}
+
+.overall-title {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    font-family: 'HarmonyOS Sans TC', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 20px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: #ffffff;
+}
+
+.overall-label {
+    position: absolute;
+    top: 40px;
+    left: 0px;
+    font-family: 'HarmonyOS Sans TC', sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 18px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: #cfcfcf;
+}
+
+.bar {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    height: 10px;
+    max-width: 100%;
+    border-radius: 25px;
+    background: #eefd1c;
+    z-index: 1;
+}
+
+.overall-value {
+    position: absolute;
+    top: 86px;
+    left: 0px;
+    font-family: 'HarmonyOS Sans TC', sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 18px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: #a4a4a4;
+}
+
+.ticket-section {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+}
+
+.ticket-title {
+    position: absolute;
+    bottom: 40px;
+    left: 0px;
+    font-family: 'HarmonyOS Sans TC', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 23px;
+    color: #ffffff;
+    white-space: nowrap;
+}
+
+.ticket-value {
+    position: absolute;
+    top: 10px;
+    left: 40px;
+    font-family: 'HarmonyOS Sans TC', sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 18px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: #cfcfcf;
+    white-space: nowrap;
+}
+</style>
