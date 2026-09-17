@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import errorIconUrl from './ErrorIcon.svg';
 import warningIconUrl from './WarningIcon.svg';
+import type { AlertTip } from './types';
 
 interface Props {
+    tips?: AlertTip[];
     errorMessage?: string;
     warningMessage?: string;
 }
 
 withDefaults(defineProps<Props>(), {
-    errorMessage: '碎紙機單元*1位置重疊',
-    warningMessage: '貓毛貓範圍總sb超載',
+    tips: () => [],
+    errorMessage: '',
+    warningMessage: '',
 });
 </script>
 
@@ -18,22 +21,47 @@ withDefaults(defineProps<Props>(), {
         <!-- 1. Text -->
         <div class="text">Tips</div>
 
-        <!-- 2. Error = [plate + icon + text + text + text ... ] -->
-        <div class="error">
-            <div class="plate" />
-            <img :src="errorIconUrl" class="icon" alt="error icon" />
-            <div class="text">
-                <slot name="error">{{ errorMessage }}</slot>
+        <!-- 2. 動態 Tips 列表（若有傳入 tips 陣列） -->
+        <template v-if="tips && tips.length > 0">
+            <div
+                v-for="tip in tips"
+                :key="tip.id"
+                :class="tip.level === 'error' ? 'error' : 'warning'"
+            >
+                <div class="plate" />
+                <img
+                    :src="tip.level === 'error' ? errorIconUrl : warningIconUrl"
+                    class="icon"
+                    :alt="`${tip.level} icon`"
+                />
+                <div class="text">
+                    {{ tip.message || '-' }}
+                </div>
             </div>
-        </div>
+        </template>
 
-        <!-- 3. Warning = [plate + icon + text + text + text ... ] -->
-        <div class="warning">
-            <div class="plate" />
-            <img :src="warningIconUrl" class="icon" alt="warning icon" />
-            <div class="text">
-                <slot name="warning">{{ warningMessage }}</slot>
+        <!-- 3. 單一 errorMessage / warningMessage 或 Slot 兼容模式 -->
+        <template v-else-if="errorMessage || warningMessage">
+            <div v-if="errorMessage" class="error">
+                <div class="plate" />
+                <img :src="errorIconUrl" class="icon" alt="error icon" />
+                <div class="text">
+                    <slot name="error">{{ errorMessage }}</slot>
+                </div>
             </div>
+
+            <div v-if="warningMessage" class="warning">
+                <div class="plate" />
+                <img :src="warningIconUrl" class="icon" alt="warning icon" />
+                <div class="text">
+                    <slot name="warning">{{ warningMessage }}</slot>
+                </div>
+            </div>
+        </template>
+
+        <!-- 4. 無任何資料時顯示 placeholder '-' -->
+        <div v-else class="empty-placeholder">
+            -
         </div>
     </div>
 </template>
@@ -155,5 +183,12 @@ withDefaults(defineProps<Props>(), {
     color: #f7d945;
     white-space: nowrap;
     z-index: 1;
+}
+
+.empty-placeholder {
+    font-family: 'HarmonyOS Sans TC', sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    color: #cfcfcf;
 }
 </style>

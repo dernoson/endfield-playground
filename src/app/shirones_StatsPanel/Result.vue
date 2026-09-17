@@ -15,24 +15,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    power: () => ({ demandKw: 120, supplyKw: 180 }),
-    productions: () => [
-        {
-            id: '1',
-            name: '紫晶纖維',
-            producePerMin: 406,
-            consumePerMin: 0,
-            expanded: true,
-        },
-        {
-            id: '2',
-            name: '紫晶纖維',
-            producePerMin: 0,
-            consumePerMin: 799,
-            expanded: true,
-        },
-    ],
-    ticketPerHour: 799325,
+    productions: () => [],
 });
 
 const variable = computed(() => {
@@ -47,7 +30,7 @@ const barWidth = computed(() => {
 });
 
 const expandedMap = ref<Record<string, boolean>>(
-    props.productions.reduce(
+    (props.productions || []).reduce(
         (acc, item) => {
             acc[item.id] = item.expanded ?? true;
             return acc;
@@ -74,7 +57,7 @@ function toggle(id: string) {
                     :style="{ width: `${barWidth}%` }"
                 />
                 <div class="overall-value">
-                    {{ power.demandKw }}kW/{{ power.supplyKw }}kW
+                    {{ power ? `${power.demandKw}kW/${power.supplyKw}kW` : '-' }}
                 </div>
             </div>
 
@@ -91,6 +74,9 @@ function toggle(id: string) {
                         :expanded="expandedMap[item.id]"
                         @toggle="toggle(item.id)"
                     />
+                    <div v-if="!productions || productions.length === 0" class="empty-placeholder">
+                        -
+                    </div>
                 </div>
             </div>
 
@@ -98,7 +84,7 @@ function toggle(id: string) {
             <div class="ticket-section">
                 <div class="ticket-title">調度券兌換效率</div>
                 <div class="ticket-value">
-                    ≈ {{ ticketPerHour.toLocaleString() }}/hr
+                    {{ ticketPerHour !== undefined ? `≈ ${ticketPerHour.toLocaleString()}/hr` : '-' }}
                 </div>
             </div>
         </div>
@@ -251,5 +237,13 @@ function toggle(id: string) {
     letter-spacing: 0%;
     color: #cfcfcf;
     white-space: nowrap;
+}
+
+.empty-placeholder {
+    font-family: 'HarmonyOS Sans TC', sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    color: #cfcfcf;
+    padding-left: 18px;
 }
 </style>
