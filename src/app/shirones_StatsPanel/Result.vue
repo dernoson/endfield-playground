@@ -36,8 +36,8 @@ const expandedMap = ref<Record<string, boolean>>(
             acc[item.id] = item.expanded ?? true;
             return acc;
         },
-        {} as Record<string, boolean>
-    )
+        {} as Record<string, boolean>,
+    ),
 );
 
 const infoRef = ref<HTMLElement | null>(null);
@@ -72,7 +72,7 @@ watch(
             measure();
         });
     },
-    { deep: true }
+    { deep: true },
 );
 
 const canScrollTop = computed(() => {
@@ -102,10 +102,7 @@ function toggle(id: string) {
                 <div class="overall-title">整體統計</div>
                 <div class="overall-label">總耗電量/供電量</div>
                 <!-- Bar -->
-                <div
-                    class="bar"
-                    :style="{ width: `${barWidth}%` }"
-                />
+                <div class="bar" :style="{ width: `${barWidth}%` }" />
                 <div class="overall-value">
                     {{ power ? `${power.demandKw}kW/${power.supplyKw}kW` : '' }}
                 </div>
@@ -145,7 +142,9 @@ function toggle(id: string) {
             <div class="ticket-section">
                 <div class="ticket-title">調度券兌換效率</div>
                 <div class="ticket-value">
-                    {{ ticketPerHour !== undefined ? `≈ ${ticketPerHour.toLocaleString()}/hr` : '' }}
+                    {{
+                        ticketPerHour !== undefined ? `≈ ${ticketPerHour.toLocaleString()}/hr` : ''
+                    }}
                 </div>
             </div>
         </div>

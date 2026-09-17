@@ -49,7 +49,7 @@ watch(
             measure();
         });
     },
-    { deep: true }
+    { deep: true },
 );
 
 const canScrollTop = computed(() => {
@@ -270,7 +270,7 @@ const canScrollBottom = computed(() => {
     font-weight: 400;
     font-size: 18px;
     line-height: 21px;
-    
+
     position: absolute;
     left: 42px;
     top: 7px;

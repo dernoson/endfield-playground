@@ -11,7 +11,7 @@ const props = withDefaults(
     }>(),
     {
         expanded: true,
-    }
+    },
 );
 
 const emit = defineEmits<{
@@ -47,7 +47,11 @@ const emit = defineEmits<{
                 class="text-balance"
                 :class="item.producePerMin - item.consumePerMin >= 0 ? 'positive' : 'negative'"
             >
-                收益{{ item.producePerMin - item.consumePerMin >= 0 ? `+${item.producePerMin - item.consumePerMin}` : item.producePerMin - item.consumePerMin }}
+                收益{{
+                    item.producePerMin - item.consumePerMin >= 0
+                        ? `+${item.producePerMin - item.consumePerMin}`
+                        : item.producePerMin - item.consumePerMin
+                }}
             </div>
         </div>
 

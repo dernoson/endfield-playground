@@ -35,11 +35,7 @@ const emit = defineEmits<{
 
         <!-- 2. 卡片核心主要內容 (固定大物件) -->
         <div class="result-wrapper">
-            <Result
-                :power="power"
-                :productions="productions"
-                :ticket-per-hour="ticketPerHour"
-            />
+            <Result :power="power" :productions="productions" :ticket-per-hour="ticketPerHour" />
         </div>
 
         <div class="attention-wrapper">
@@ -103,7 +99,7 @@ const emit = defineEmits<{
     box-sizing: border-box;
     position: absolute;
     inset: 0;
-    background: #4E4E4E;
+    background: #4e4e4e;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
 }
 
