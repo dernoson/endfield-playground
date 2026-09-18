@@ -101,8 +101,14 @@ function toggle(id: string) {
             <div class="overall-stats">
                 <div class="overall-title">整體統計</div>
                 <div class="overall-label">總耗電量/供電量</div>
-                <!-- Bar -->
-                <div class="bar" :style="{ width: `${barWidth}%` }" />
+                <!-- Bar (空條 #3C3C3C + 進度條 #EEFD1C) -->
+                <div class="bar">
+                    <div
+                        v-if="barWidth > 0"
+                        class="bar-fill"
+                        :style="{ width: `${barWidth}%` }"
+                    />
+                </div>
                 <div class="overall-value">
                     {{ power ? `${power.demandKw}kW/${power.supplyKw}kW` : '' }}
                 </div>
@@ -309,11 +315,18 @@ function toggle(id: string) {
     position: absolute;
     top: 70px;
     left: 0;
+    width: 100%;
     height: 10px;
+    border-radius: 25px;
+    background: #3c3c3c;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
     max-width: 100%;
     border-radius: 25px;
     background: #eefd1c;
-    z-index: 1;
 }
 
 .overall-value {

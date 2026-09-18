@@ -12,7 +12,7 @@
 </template>
 
 <style scoped>
-/* 按鈕位置定位層（位於 panel 外面，right 距離 panel left 12px） */
+/* 按鈕位置定位層（固定於 50% 側邊，right 距離 panel left 12px） */
 .button {
     position: absolute;
     top: 50%;
