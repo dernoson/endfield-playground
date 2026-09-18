@@ -21,7 +21,7 @@ const emit = defineEmits<{
 <style scoped>
 .bar-handle {
     position: absolute;
-    top: var(--split-percent, 60%);
+    top: var(--split-percent, 70%);
     left: 0;
     width: 100%;
     height: 12px;

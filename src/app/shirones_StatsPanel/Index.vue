@@ -29,7 +29,7 @@ const emit = defineEmits<{
 }>();
 
 const panelRef = ref<HTMLElement | null>(null);
-const splitPercent = ref(60);
+const splitPercent = ref(70);
 const isDragging = ref(false);
 
 function onStartDrag(e: PointerEvent) {
@@ -50,8 +50,8 @@ function onPointerMove(e: PointerEvent) {
     const offsetY = e.clientY - rect.top;
     const percent = (offsetY / rect.height) * 100;
 
-    // 限制拖曳範圍在 30% ~ 80% 之間
-    splitPercent.value = Math.min(Math.max(percent, 30), 80);
+    // 限制拖曳範圍在 40% ~ 85% 之間
+    splitPercent.value = Math.min(Math.max(percent, 40), 85);
 }
 
 function onPointerUp() {
@@ -159,7 +159,7 @@ onUnmounted(() => {
     top: 98px;
     left: 18px;
     right: 18px;
-    bottom: calc(100% - var(--split-percent, 60%) + 18px);
+    bottom: calc(100% - var(--split-percent, 70%) + 18px);
     overflow: hidden;
     box-sizing: border-box;
 }
@@ -167,7 +167,7 @@ onUnmounted(() => {
 /* 3. 下半部 Attention：往內 margin 18px，頂部距分界白條 18px，底部距 panel 18px */
 .attention-wrapper {
     position: absolute;
-    top: calc(var(--split-percent, 60%) + 18px);
+    top: calc(var(--split-percent, 70%) + 18px);
     left: 18px;
     right: 18px;
     bottom: 18px;

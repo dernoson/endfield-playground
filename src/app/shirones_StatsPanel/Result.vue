@@ -331,7 +331,7 @@ function toggle(id: string) {
 
 .overall-value {
     position: absolute;
-    top: 86px;
+    top: 88px;
     left: 0px;
     font-family: 'HarmonyOS Sans TC', sans-serif;
     font-weight: 300;
