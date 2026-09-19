@@ -39,7 +39,9 @@ const emit = defineEmits<{
     height: 1px;
     background-color: #dadada;
     pointer-events: none;
-    transition: background-color 0.15s ease, height 0.15s ease;
+    transition:
+        background-color 0.15s ease,
+        height 0.15s ease;
 }
 
 .bar-handle:hover .bar-line,

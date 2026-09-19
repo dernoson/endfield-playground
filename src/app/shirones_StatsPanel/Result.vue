@@ -103,11 +103,7 @@ function toggle(id: string) {
                 <div class="overall-label">總耗電量/供電量</div>
                 <!-- Bar (空條 #3C3C3C + 進度條 #EEFD1C) -->
                 <div class="bar">
-                    <div
-                        v-if="barWidth > 0"
-                        class="bar-fill"
-                        :style="{ width: `${barWidth}%` }"
-                    />
+                    <div v-if="barWidth > 0" class="bar-fill" :style="{ width: `${barWidth}%` }" />
                 </div>
                 <div class="overall-value">
                     {{ power ? `${power.demandKw}kW/${power.supplyKw}kW` : '' }}
