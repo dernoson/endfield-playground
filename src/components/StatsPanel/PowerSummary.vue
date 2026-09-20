@@ -21,7 +21,7 @@ const demandRatio = computed(() => {
 <template>
     <section class="relative overflow-hidden bg-transparent p-0 text-sm text-[#DADADA]">
         <div
-            class="absolute top-6 left-0 flex h-5.75 w-20 items-center text-base font-normal text-[#FFFFFF]"
+            class="absolute top-6 left-0 flex h-5.75 w-20 items-center text-base font-normal text-[20px] text-[#FFFFFF]"
         >
             <h3>整體統計</h3>
         </div>
