@@ -1,13 +1,17 @@
 <template>
-    <div class="stats-panel relative overflow-hidden rounded-xl bg-[#4E4E4E] text-[#DADADA]">
-        <div class="bg-[#2B2B2B] px-4 py-2 text-lg font-semibold text-[#DADADA]">
+    <div class="stats-panel relative h-full w-[320px] overflow-visible bg-[#4E4E4E] text-[#DADADA]">
+        <div class="absolute top-[28px] left-[-13px] h-[53px] w-[333px] bg-[#2B2B2B]" />
+        <div class="absolute top-[28px] left-[-13px] z-10 h-[53px] w-[6px] bg-[#DADADA]" />
+        <div
+            class="absolute top-[41px] left-[18px] z-20 flex  items-center text-2xl font-normal text-[#FFFFFF]"
+        >
             產線總覽
         </div>
 
-        <div class="space-y-4 px-3 pb-3 pt-3">
+        <div class="space-y-4 px-[18px] pb-3 pt-[76px]">
             <PowerSummary
-                :total-demand-kw="0"
-                :total-supply-kw="0"
+                :total-demand-kw="50"
+                :total-supply-kw="100"
                 :device-count="0"
                 :device-error-count="0"
                 :connection-count="0"

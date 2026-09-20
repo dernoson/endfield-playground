@@ -31,7 +31,7 @@ function handleCapacityChange(event: Event) {
 
 <template>
     <div class="warehouse-estimate bg-transparent p-0 text-[#DADADA]">
-        <h3 class="text-[#DADADA]">倉庫預估 WarehouseEstimate</h3>
+        <h3 class="font-normal text-[#DADADA]">倉庫預估 WarehouseEstimate</h3>
 
         <!-- 容量輸入框：綁定 value，並在輸入時發射 emit -->
         <div class="my-3">

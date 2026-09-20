@@ -26,7 +26,7 @@ function getEfficiencyClass(efficiency: number) {
 
 <template>
     <div class="space-y-3 bg-transparent p-0 text-[#DADADA]">
-        <h3 class="text-base font-bold text-[#DADADA]">項目統計表格 ItemSummaryTable</h3>
+        <h3 class="text-base font-normal text-[#DADADA]">項目統計表格 ItemSummaryTable</h3>
 
         <!-- 情況 A：有資料時顯示表格 -->
         <div v-if="rows && rows.length > 0" class="overflow-x-auto">
