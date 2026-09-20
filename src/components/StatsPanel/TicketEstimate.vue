@@ -15,16 +15,16 @@ defineProps<Props>();
 </script>
 
 <template>
-    <div class="space-y-3 rounded-lg bg-zinc-950 p-4 text-white">
+    <div class="space-y-3 bg-transparent p-0 text-[#DADADA]">
         <div class="flex items-center justify-between">
-            <h3 class="text-base font-bold text-white">工單預估 TicketEstimate</h3>
+            <h3 class="text-base font-bold text-[#DADADA]">工單預估 TicketEstimate</h3>
         </div>
 
         <!-- 總計數據區塊 -->
-        <div class="rounded-md bg-zinc-900 p-3">
-            <p class="text-sm font-medium text-gray-200">
+        <div class="rounded-md bg-[#3C3C3C] p-3">
+            <p class="text-sm font-medium text-[#DADADA]">
                 每小時總工單數：
-                <span class="text-base font-bold text-white">{{ totalTicketPerHour }}</span>
+                <span class="text-base font-bold text-[#DADADA]">{{ totalTicketPerHour }}</span>
                 張/小時
             </p>
         </div>
@@ -33,7 +33,7 @@ defineProps<Props>();
             <table class="w-full border-collapse text-left">
                 <thead>
                     <tr
-                        class="border-b border-zinc-700 text-xs tracking-wider text-zinc-400 uppercase"
+                        class="border-b border-[#3C3C3C] text-xs tracking-wider uppercase text-[#DADADA]/70"
                     >
                         <th class="pb-2 font-medium">項目名稱</th>
                         <th class="pb-2 text-right font-medium">每分鐘速率 (/min)</th>
@@ -41,11 +41,11 @@ defineProps<Props>();
                     </tr>
                 </thead>
 
-                <tbody class="divide-y divide-zinc-800 text-sm text-gray-200">
-                    <tr v-for="row in rows" :key="row.itemId" class="hover:bg-zinc-900">
-                        <td class="py-2.5 font-medium text-gray-900">{{ row.name }}</td>
-                        <td class="py-2.5 text-right font-mono">{{ row.ratePerMin }}</td>
-                        <td class="py-2.5 text-right font-mono font-semibold text-gray-900">
+                <tbody class="divide-y divide-[#4E4E4E] text-sm text-[#DADADA]">
+                    <tr v-for="row in rows" :key="row.itemId" class="hover:bg-[#4E4E4E]/20">
+                        <td class="py-2.5 font-medium text-[#DADADA]">{{ row.name }}</td>
+                        <td class="py-2.5 text-right font-mono text-[#DADADA]">{{ row.ratePerMin }}</td>
+                        <td class="py-2.5 text-right font-mono font-semibold text-[#DADADA]">
                             {{ row.ticketPerHour }}
                         </td>
                     </tr>

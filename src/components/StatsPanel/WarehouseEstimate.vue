@@ -30,36 +30,36 @@ function handleCapacityChange(event: Event) {
 </script>
 
 <template>
-    <div class="warehouse-estimate rounded-lg bg-zinc-950 p-4 text-white">
-        <h3 class="text-white">倉庫預估 WarehouseEstimate</h3>
+    <div class="warehouse-estimate bg-transparent p-0 text-[#DADADA]">
+        <h3 class="text-[#DADADA]">倉庫預估 WarehouseEstimate</h3>
 
         <!-- 容量輸入框：綁定 value，並在輸入時發射 emit -->
         <div class="my-3">
-            <label>倉庫容量格數：</label>
+            <label class="text-[#DADADA]/80">倉庫容量格數：</label>
             <input
                 type="number"
                 :value="capacityCells"
                 @input="handleCapacityChange"
-                class="rounded border px-2 py-1"
+                class="ml-2 rounded border border-[#3C3C3C] bg-[#2B2B2B] px-2 py-1 text-[#DADADA]"
             />
         </div>
 
         <!-- 列表呈現 -->
-        <table class="mt-2 w-full text-left">
+        <table class="mt-2 w-full text-left text-[#DADADA]">
             <thead>
-                <tr>
-                    <th>品項名稱</th>
-                    <th>預估滿載時間</th>
+                    <tr class="border-b border-[#3C3C3C]">
+                    <th class="pb-2">品項名稱</th>
+                    <th class="pb-2">預估滿載時間</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="item in rows" :key="item.itemId">
-                    <td>{{ item.name }}</td>
-                    <td>
+                <tr v-for="item in rows" :key="item.itemId" class="border-b border-[#3C3C3C]/70">
+                    <td class="py-2">{{ item.name }}</td>
+                    <td class="py-2">
                         <span v-if="item.hoursToFull !== null">
                             {{ item.hoursToFull }} 小時後滿載
                         </span>
-                        <span v-else class="text-gray-400">（產出為負，不會滿載）</span>
+                        <span v-else class="text-[#DADADA]/60">（產出為負，不會滿載）</span>
                     </td>
                 </tr>
             </tbody>

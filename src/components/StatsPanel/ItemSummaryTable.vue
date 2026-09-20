@@ -25,15 +25,15 @@ function getEfficiencyClass(efficiency: number) {
 </script>
 
 <template>
-    <div class="space-y-3 rounded-lg bg-zinc-950 p-4 text-white">
-        <h3 class="text-base font-bold text-white">項目統計表格 ItemSummaryTable</h3>
+    <div class="space-y-3 bg-transparent p-0 text-[#DADADA]">
+        <h3 class="text-base font-bold text-[#DADADA]">項目統計表格 ItemSummaryTable</h3>
 
         <!-- 情況 A：有資料時顯示表格 -->
         <div v-if="rows && rows.length > 0" class="overflow-x-auto">
             <table class="w-full border-collapse text-left">
                 <thead>
                     <tr
-                        class="border-b border-zinc-700 text-xs tracking-wider text-zinc-400 uppercase"
+                        class="border-b border-[#3C3C3C] text-xs tracking-wider uppercase text-[#DADADA]/70"
                     >
                         <th class="pb-2 font-medium">項目</th>
                         <th class="pb-2 text-right font-medium">生產 (/min)</th>
@@ -42,8 +42,8 @@ function getEfficiencyClass(efficiency: number) {
                         <th class="pb-2 text-center font-medium">效率</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-zinc-800 text-sm text-gray-200">
-                    <tr v-for="row in rows" :key="row.itemId" class="hover:bg-zinc-900">
+                <tbody class="divide-y divide-[#4E4E4E] text-sm text-[#DADADA]">
+                    <tr v-for="row in rows" :key="row.itemId" class="hover:bg-[#4E4E4E]/20">
                         <!-- 項目名稱與圖示 -->
                         <td class="flex items-center space-x-2 py-2.5">
                             <img :src="row.iconUrl" class="h-5 w-5 object-contain" alt="icon" />
