@@ -36,7 +36,7 @@ const demandRatio = computed(() => {
                     :style="{ width: `${demandRatio}%` }"
                 />
             </div>
-            <div class="text-lg text-[#CFCFCF]">{{ totalDemandKw }}kW / {{ totalSupplyKw }}kW</div>
+            <div class="text-[16px] text-[#CFCFCF]">{{ totalDemandKw }}kW / {{ totalSupplyKw }}kW</div>
         </div>
 
         <div class="mt-3 text-lg text-[#CFCFCF]">

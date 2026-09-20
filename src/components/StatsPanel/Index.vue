@@ -3,7 +3,7 @@
         <div class="absolute top-[28px] left-[-13px] h-[53px] w-[333px] bg-[#2B2B2B]" />
         <div class="absolute top-[28px] left-[-13px] z-10 h-[53px] w-[6px] bg-[#DADADA]" />
         <div
-            class="absolute top-[41px] left-[18px] z-20 flex  items-center text-2xl font-normal text-[#FFFFFF]"
+            class="absolute top-[41px] right-[206px] z-20 flex h-[28px] w-[96px] items-center font-['HarmonyOS_Sans_TC'] text-[24px] leading-[28px] font-light text-white"
         >
             產線總覽
         </div>
