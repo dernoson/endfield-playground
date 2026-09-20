@@ -25,7 +25,7 @@ function getEfficiencyClass(efficiency: number) {
 </script>
 
 <template>
-    <div class="space-y-3 rounded-lg border border-zinc-700 bg-zinc-950 p-4 text-white">
+    <div class="space-y-3 rounded-lg bg-zinc-950 p-4 text-white">
         <h3 class="text-base font-bold text-white">項目統計表格 ItemSummaryTable</h3>
 
         <!-- 情況 A：有資料時顯示表格 -->
