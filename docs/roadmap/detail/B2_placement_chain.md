@@ -139,3 +139,21 @@ L1 從 5–6 月就大量提交，`editorStore` 的八個高階 action 早已可
 ### 2026-08-30
 - **進度盤點：** `src/utils/layout/` 已有 `deviceOccupancy`／`pipelineGeometry`／`overlapDetection`／`portAnchor`（4／6）。**仍缺** `resolveConnections`、`toTopology`（及 `types/layout`）與 store 模型改寫 → **維持 `[!]`**
 - W0823-T1 已改指向 B4，本項本週無直接產出；9/6 起若純函式未補齊，依大綱 §11 不把門檻必要項押在本項
+
+### 2026-09-21（W0914 結算）
+
+**封鎖性質改變：由「等前置」改為「等裁決」。** 本項的技術前提在本週全部到齊：
+
+| 前提 | 狀態 |
+|------|------|
+| `types/layout`＋`resolveConnections`＋`toTopology` | **已合入** PR #40（9/1） |
+| 只讀殼 `GridCanvas` | **已合入** PR #46（9/13） |
+| `layoutStore`（含 `placeDevice`／`PlacementResult`） | **已合入** PR #45（09-14T17:12Z） |
+| 平移縮放 `useGridViewport` | **已合入** PR #47（09-14T17:34Z） |
+| 主畫面接入（`MainLayout` → `LayoutView` → `GridCanvas`，資料來自 store） | **已合入** PR #50（09-20T12:57Z） |
+
+**§8 的封鎖解除條件因此要改寫。** 原條件是「切分原則二選一已確定」與純函式補齊，兩者都已滿足；**現在唯一擋著的是主編對「互動解鎖」的當週裁示**——大綱 §11 已補明「底層就緒不等於自動解鎖」，不得由依賴已清推論而自行開工。
+
+**§5 檔案計畫需在解鎖時一併重訂。** 原計畫寫的是改 `FactoryCanvas.vue`；落子鏈現在應落在 `LayoutView.vue`（容器）與 `layoutStore.placeDevice`，**舊 `FactoryCanvas` 依大綱 §11 只維護不加深**。§10 的「同週只允許一人動 `FactoryCanvas.vue`」對應改為 `LayoutView.vue`，owner 為 toby。
+
+**§10 的未交頂替維持：** 9/27 仍可用現有放置流程＋A2 修正後的資料演示。**但本項未列 M2 硬綁**（9/15 撤回擴大後維持），且本月只剩一週、落子鏈未開工 → **改列 M3 前置**，最遲 10/04 開工，否則 C1 連帶延期。
