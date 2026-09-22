@@ -135,3 +135,31 @@ FlowEngine 完整、`flowStore` 完整、`ItemSummaryTable.vue` 存在、`MainLa
 ### 2026-08-30
 - W0823-M1（MBD）PR #37 合入：`ItemSummaryTable` 空陣列顯示「目前沒有產耗資料」；元件維持只吃 `rows` props
 - **狀態改 `[~]`。** 11/01 切片仍須接 `flowStore.itemSummary` 並對齊 §4.2 四種空狀態文案
+
+### 2026-09-21（W0914 結算）
+
+**本項的殼（StatsPanel）本週被派了一次遷移，未完成，且衍生出一個新封鎖。**
+
+W0914-S1 要的只有一件事：`src/components/StatsPanel/` → `src/app/StatsPanel/`，零 store、零 `src/data`。實際交回來的是三塊：
+
+| # | 產出 | 狀態 |
+|---|------|------|
+| ① | 10 檔純 rename 到 `src/app/StatsPanel/`（0 行變更） | **標的達成** |
+| ② | `src/app/shirones_StatsPanel/`——依 Figma 1:1 重寫的第二套（約 1,400 行） | 工單未要求 |
+| ③ | `src/app/test_StatsPanel/`——第三套，與 ② 高度重疊（約 1,400 行） | 工單未要求 |
+
+並把 `MainLayout.vue` 的右側 import 指向 ②。分支 `dev/shirone0918` **未開 PR**，且基底早於 #50 → 與主畫面接入必定衝突。
+
+**硬約束守住了**：三個目錄全域搜尋 `store`／`src/data` 皆零命中，§4.3 的分層規則無違反。
+
+**新增封鎖（已回寫大綱 §9）：** 本項要接 `flowStore.itemSummary`，前提是**先知道要接哪一套面板**。目前 master 上是原 `src/components/StatsPanel/`，分支上有三套候選，`MainLayout` 指向其中一套。**收斂為單一套並進 master 之前，11/01 的切片無從開工。**
+
+**§8 依賴表因此要加一列：**
+
+| 依賴 | 為什麼 |
+|------|--------|
+| **StatsPanel 版本收斂（新）** | 三套平行面板未裁決前，不知道 `itemSummary` 要接到哪個元件的 props |
+
+另記一筆與 MBD 的碰撞：其於 9/20 在 `dev/MBD` 改了 `src/components/StatsPanel/` 五檔樣式——**正是 shirone 同週要搬走的目錄**。兩人互不知情、都沒開 PR。**成因在派工端**（暫停者不在檔案鎖的送達範圍內），處置見 [E2 §11](./E2_layer_guard_pr_rules.md) 2026-09-21 條目。0921 起 StatsPanel 只能有一個 owner；若仍要兩人共做，須切成「元件」與「文案／空狀態」並寫進鎖表。
+
+**§4.2 的四種空狀態文案**正好是 MBD 單步發工的下一步標的，但**必須等版本收斂後再派**，否則會第三次改到被廢棄的那一套。
