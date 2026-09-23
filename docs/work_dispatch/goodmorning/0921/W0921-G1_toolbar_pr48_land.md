@@ -1,80 +1,79 @@
-﻿# W0921-G1｜goodmorning｜#48 擱置：本週不合、不關、不催
+﻿# W0921-G1｜goodmorning｜本週必須把 #48 修完合入
 
 | meta | value |
 |------|-------|
 | 週次 | 2026-09-21 → 2026-09-27 |
-| 等級 | **無確定交付**（本週不下死線） |
-| 擋門檻 | **否**。原先寫「在門檻路徑上」，9/23 主編裁決後已不成立——見 §1 |
-| 交期 | **無** |
-| 產能參考 | 自報 ≤2h。病後第一週不加量 |
-| 上游 | [WEEK_20260921](../../WEEK_20260921.md) §2.1 R-3、[PR #48](https://github.com/dernoson/endfield-playground/pull/48) |
-| 版本 | v1.1（2026-09-23 依主編裁決全面改寫；原「9/24 前收尾合入」作廢） |
+| 等級 | **確定・單一件事** |
+| 擋門檻 | **否**（T1 已改在 master 接落子，不擋門檻演示） |
+| 交期 | **9/26（五）前**推可審版；**9/27 門檻日前**合入或明寫卡點 |
+| 產能參考 | 自報 ≤2h。**只給這一件**，不加派設備樣式 |
+| 上游 | [WEEK_20260921](../../WEEK_20260921.md) v1.2、[PR #48](https://github.com/dernoson/endfield-playground/pull/48) |
+| 版本 | **v1.2（2026-09-24）**。v1.1「擱置、本週無交付」**作廢**——主編改裁：拖太久了，本週修完 |
 
 ---
 
 ## 0. 先說一句
 
-上週你掛病號，工單沒開工。**這不算在你頭上**——W0914-G1 是整份 0914 派工裡唯一為你鬆綁的工單（`ToolbarPanel.vue` 對你限視覺解鎖、踩鎖爭議結案），結果沒用上，成因與能力、工單清不清楚、檔案鎖都無關。
+上週病假那週不算在你頭上。但 #48 從 9/13 開到現在，**已經兩週多沒動**——主編 9/24 改裁：**本週一定要把工具列這支收乾淨**。
 
-**限視覺解鎖的狀態維持，不因上週零產出收回。** 鎖的收放看規則不看產能。
-
----
-
-## 1. 這單本來是「9/24 前把 #48 合入」，主編改了
-
-原本的設計是：`ToolbarPanel.vue` 是落子鏈的一環，toby 這週要在那個檔的 `<script>` 區接「點工具列真機器 → 放到畫布」，所以 #48 得先結，9/24 是硬期限。
-
-**主編 2026-09-23 裁示：#48 維持現狀，不合也不關；toby 直接在 master 版的 `ToolbarPanel.vue` 上接落子。**
-
-意思是這條依賴解開了——**沒有人在等你，9/24 那個日期取消。** 你身體還在恢復，不需要在這週處理任何事。
+限視覺解鎖維持。**仍然只給這一件事**，不會同時塞「佈局設備樣式」。
 
 ---
 
-## 2. #48 為什麼不合
+## 1. 一句話驗收
 
-不是品質問題，是它現在合進去會**退回一塊已經在 master 上的功能**。
-
-分支上的 `ToolbarPanel.vue` 是整個重寫的，過程中把資料來源換成了寫死的陣列：
-
-| master 現況（PR #43 已合） | #48 分支 |
-|----------------------------|----------|
-| `listToolbarMachines(activeTag)` 從 `src/data/machines` 讀真實機器 | `const equipments = [ … ]` 硬編碼 |
-| `MACHINE_TAGS` 產生分類 Tab | `const categoryTabs = ['全部', '物流', …]` 硬編碼 |
-| `useEditorStore()`＋`armPlacement` | 移除，改為 `defineEmits` |
-
-`listToolbarMachines` 那條線是 [B1](../../../roadmap/detail/B1_toolbar_real_machines.md) 九月的交付，也是 **9/27 門檻句「從下方選單拉多種真機器放到畫布」的資料側**。換成 hardcode 陣列等於把它退回去。
-
-**這大概率是重寫元件時為了先把版面做出來而暫時代入的假資料**，不是刻意移除——但不論成因，合入的效果一樣。
+**#48 合入 master：工具列看起來是你的視覺，資料來源仍是真實機器（`listToolbarMachines`），Tab／列表／舊五顆按鈕的點擊與拖拉都沒壞；toby 若已接上的落子意圖（`arm`）還在。**
 
 ---
 
-## 3. 日後要合的話，兩個條件
+## 2. 為什麼現在又要合了
 
-沒有時限，你想什麼時候做都行，也可以不做。
+9/23 曾裁「維持現狀不合不關」，是為了不擋 T1。**T1 已經解鎖、可以直接改 master**，所以這條依賴不在了——但 #48 本身不能再無限期掛著。
 
-| # | 條件 |
-|---|------|
-| 1 | **自己 rebase 到最新 master。** 期間 master 進了 #45／#46／#47／#50／#51，`ToolbarPanel.vue` 所在的整個 `src/editor/` 都變過 |
-| 2 | **把寫死的清單換回真實機器資料**：`categoryTabs` 改回 `MACHINE_TAGS`，`equipments` 改回 `listToolbarMachines(activeTag)` |
+合進去之前必須先修一件事，否則會**退回 B1 已交付的資料側**（#43）：
 
-視覺（CSS、class、間距、顏色、stories）那部分**完全沒有問題，主編要的就是那些**。要處理的只有資料來源這一項。
+| master（要保留） | 你分支上現在（要改掉） |
+|------------------|------------------------|
+| `listToolbarMachines(activeTag)` | 寫死的 `equipments = [ … ]` |
+| `MACHINE_TAGS`／`TOOLBAR_MACHINE_TAGS` | 寫死的 `categoryTabs` |
+| toby 可能已加的 `arm(row.id)`（落子意圖） | 若 rebase 後出現，**不要刪** |
 
-**rebase 之後 `<script>` 區會長得跟你分支上的不一樣**——toby 這週會在那裡加落子意圖（見 [T1](../../toby/0921/W0921-T1_placement_chain.md)）。到時候以 master 為準，把你的 template／style 套上去，不要反過來覆蓋。
-
-> 開工前在 Discord 講一句，我把當時 master 的 `<script>` 現況貼給你，省得你自己對。
+視覺（CSS、class、間距、顏色、stories）**就是主編要的**，那部分留著。
 
 ---
 
-## 4. 本週如果你想做點什麼
+## 3. 你要做的事（四步）
 
-**沒有必須做的事。** 以下純屬可選，不做不計、不影響任何評估：
+| # | 做什麼 |
+|---|--------|
+| 1 | Discord 回一句「開始修 #48」——讓人知道你在線上 |
+| 2 | 把 **最新 master** merge／rebase 進 `dev/goodmorning`（期間進了 #45／#47／#50／#51，而且 **toby 可能已改過同一個檔的 `<script>`**） |
+| 3 | **資料來源換回真實機器**；**template／style／stories 保留你的視覺** |
+| 4 | PR 回一則「已 rebase、資料來源已換回、可再審」 |
 
-| 可選 | 說明 |
+### 3.1 跟 toby 撞檔時怎麼辦
+
+同一個 `ToolbarPanel.vue`：
+
+| 區 | 誰的 |
+|----|------|
+| `<script>` 裡的落子意圖（`usePlacementIntent`／`arm`） | **toby，不要動、不要刪** |
+| `<script>` 裡把 hardcode 換回 `listToolbarMachines` | **你要做的**（僅此一項 script 例外） |
+| `<template>`／`<style>`／`*.stories.ts` | **你的** |
+
+**順序建議：** 先看 master／toby 的 PR 有沒有合。有的話以那一版 `<script>` 為底，把你的 template／style 套上去，再把資料來源接回真實機器。**不要用你分支上的整份 `.vue` 覆蓋 master。**
+
+衝突解不動 → **當天找 dernoson**，不要硬解。
+
+---
+
+## 4. 交哪個檔
+
+| 動作 | 檔案 |
 |------|------|
-| 在 #48 留一則現況說明 | 寫一句「先擱著，之後會 rebase 並換回真實資料」，讓後面的人看得懂這支為什麼開著不動 |
-| 什麼都不做 | **完全可以。** 病後第一週，這是預設選項 |
-
-**不要提前開始下週的東西**（§7）。這週的目標是身體好起來。
+| 修改 | `src/editor/toolbar/ToolbarPanel.vue` |
+| 修改／保留 | `src/editor/toolbar/ToolbarPanel.stories.ts` |
+| 可改 | `.storybook/main.ts`（若你分支已有、且為掛上 stories 所需） |
 
 ---
 
@@ -82,28 +81,45 @@
 
 | 不要 | 為什麼 |
 |------|--------|
-| master 版的 `ToolbarPanel.vue` | toby 這週在改 `<script>`，門檻線上。**你分支上的那份隨你改，那不影響別人** |
-| `src/editor/layout/*` | toby 的落子鏈 |
-| `src/app/StatsPanel/*`、`src/components/StatsPanel/*` | shirone（搬家＋樣式，整區歸他） |
-| `src/app/layouts/MainLayout.vue` | toby 的鎖 |
-| `src/utils/layout/*`、`src/store/*` | aaaaa 的預檢重構 |
+| `src/editor/layout/*` | toby 落子鏈，門檻線 |
+| 刪掉 `arm`／`usePlacementIntent` 相關呼叫 | 那是 T1 |
+| `src/app/StatsPanel/*`、`MainLayout.vue` | shirone／toby |
+| 新開平行目錄、改檔名 | 沿用 #48 |
+| 同時開「設備方塊視覺」 | 下週再說 |
 
 ---
 
-## 6. 卡住找誰
+## 6. DoD
+
+- [ ] `dev/goodmorning` 已含最新 master（含 toby 若已合入的 script）
+- [ ] 真實機器列表仍走 `listToolbarMachines`／既有 tag，**沒有**寫死的機器陣列當正式資料源
+- [ ] `pnpm dev`：Tab、真機器列表、舊五顆按鈕點擊／拖拉未壞
+- [ ] 若 master 已有落子意圖：點真機器後畫布側仍讀得到 armed id（或 PR 寫明「等 T1 合入後再驗」）
+- [ ] stories 仍可開（`pnpm storybook`）
+- [ ] `pnpm type-check`／`lint-check`／`format-check`／`test` 綠
+- [ ] **9/26 前** PR 可再審；**9/27 前**合入或 Discord 明寫卡點
+
+---
+
+## 7. 卡住找誰
 
 | 狀況 | 找誰 |
 |------|------|
-| 想 rebase 但衝突解不動 | dernoson，**當天講**，不要自己硬解 |
-| 不確定某個改動算不算「視覺」 | PR 上問一句 |
-| 身體還沒好 | 直接講。**這不是失分**，本週本來就沒有交付要求 |
+| rebase／衝突 | dernoson，**當天** |
+| 不確定算不算「視覺」 | PR 上問一句 |
+| 身體還沒好、做不完 | **立刻講**。主編會裁：是否改由他人代修資料來源後合視覺 |
 
-> 主編週中會 ping 你一次。**那次 ping 是問人不是問進度**，不用有壓力。
+> 主編週中會 ping。**這次 ping 是問進度**——因為有交期了。
 
 ---
 
-## 7. 下週預告（不是本週工項）
+## 8. 未交頂替
 
-你週報寫下週想接「畫面 mock（L3）」。**佈局視角的設備方塊正式視覺是留給你的**——那是新畫布上第一塊真正的美術工作。
+9/26 無動靜：主編或他人**代為**把 hardcode 換回真實資料、保留可用的 stories／視覺後合入或關閉。  
+連續擱置不會再延長第三週。
 
-原本說「#48 落地後才發」，現在 #48 不擋了，所以它的前提改成 **toby 的落子鏈進 master**（畫布上要先放得出東西，才有方塊可以套視覺）。順利的話 9/28 的工單會發。
+---
+
+## 9. 下週預告（不是本週）
+
+#48 落地後，佈局視角設備方塊視覺才發。前提改回「工具列視覺進 master」＋「畫布上已能落子」。
