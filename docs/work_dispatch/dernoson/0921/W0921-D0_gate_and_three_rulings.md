@@ -1,65 +1,66 @@
-﻿# W0921-D0｜dernoson｜門檻週：三項裁決在前，守閘在後
+﻿# W0921-D0｜dernoson｜門檻週：裁決已出，本週只剩守閘
 
 | meta | value |
 |------|-------|
 | 週次 | 2026-09-21 → 2026-09-27（**M2 門檻日 9/27**） |
 | 等級 | **確定**（決策／合入，不兼功能） |
-| 擋門檻 | 否，**但延遲會擋**——§1 三項不裁，S1／G1／M1 三條線同時停擺 |
-| 上游 | [WEEK_20260921](../../WEEK_20260921.md) v1.0；三項裁決的完整背景在決策層待確認清單（未公開） |
-| 產能參考 | 自報 ≤2h，**連續三期**。本單刻意只有裁決與合入，沒有任何要你寫的東西 |
-| 待審上限 | ≤3（期初 1） |
+| 擋門檻 | 否 |
+| 上游 | [WEEK_20260921](../../WEEK_20260921.md) v1.1 |
+| 產能參考 | 自報 ≤2h，**連續三期**。本單刻意只有合入與守閘，沒有任何要你寫的東西 |
+| 待審上限 | ≤3（期初 1，且 #48 已排除計數——見 §1） |
+| 版本 | v1.1（2026-09-23 裁決回寫。原 §1「三項待裁」改為裁決紀錄；原 §3 第 3 條刪除） |
 
 ---
 
-## 1. 先裁這三件（建議 9/22 當天，越早越好）
+## 1. 裁決紀錄（2026-09-23 已出，本節僅存查）
 
-這三項都不是你的工項，但**三個人在等**。本週派工已依建議選項先發，你覆寫哪一項都可以，覆寫後我改 WEEK 版本號。
+原單列了三項待裁＋一項 B2 解鎖，本週派工先按建議選項發。**你的實際裁示如下，與預設有三處不同**，工單與 roadmap 已全數改完。
 
-| # | 要裁什麼 | 本版採用的預設 | 誰在等 |
-|---|----------|----------------|--------|
-| **R-1** | shirone 分支上三套 StatsPanel 留哪套 | **本週先不裁。** 只放行純搬家那一筆（`components/StatsPanel` → `app/StatsPanel`，10 檔 rename、0 行變更），兩套新視覺留在分支另案 | shirone、MBD、R-D1 |
-| **R-2** | MBD 暫停週那 6 筆怎麼處置 | **面板樣式收、`MainLayout.vue` 的刪除不收。** 由他自己重推一支乾淨分支，不要求 rebase | MBD |
-| **R-3** | #48 合入還是關閉 | **裁掉非視覺 diff 後合入**，9/24 前給結論 | goodmorning、paper、**toby** |
+| # | 你的裁示 | 與原預設的差異 | 已改的檔 |
+|---|----------|----------------|----------|
+| **R-1** | **駁回。** `shirones_StatsPanel`／`test_StatsPanel` 只在 `dev/shirone0918`，沒開 PR、不在 master；master 上只有一套，**不存在「三套要選」** | 原預設是「本週先不裁，留待另案」——問題本身不成立 | [S1](../../shirone/0921/W0921-S1_stats_panel_split_pr.md) §4 |
+| **R-D1 封鎖** | **撤銷。** 理由同上 | 原本開了一條 roadmap 封鎖 | [大綱 §9](../../../roadmap/ROADMAP_OUTLINE.md)、[D1](../../../roadmap/detail/D1_stats_item_summary.md) |
+| **R-2** | **不合，M1 作廢。** MBD 的 StatsPanel 樣式工作已由 shirone 接手 | 原預設是「面板樣式收、由他重推乾淨分支」 | [M0](../../MBD/0921/W0921-M0_pause.md)（取代 M1）、[B4](../../../roadmap/detail/B4_selection_inspector.md) |
+| **S1 範圍** | **擴大：** shirone 負責搬家 ＋ MBD 原本的樣式設計，兩件都要做完 | 原單只有搬家 | [S1](../../shirone/0921/W0921-S1_stats_panel_split_pr.md) v1.1 |
+| **R-3** | **#48 維持現狀，不合也不關。** G1 不再擋 T1 | 原預設是「裁掉非視覺 diff 後 9/24 前合入」 | [G1](../../goodmorning/0921/W0921-G1_toolbar_pr48_land.md) v1.1、[T1](../../toby/0921/W0921-T1_placement_chain.md)、[B1](../../../roadmap/detail/B1_toolbar_real_machines.md) |
+| **R-4（B2 解鎖）** | **同意開放點擊落子。** 選取／旋轉／刪除不開 | 與預設相同 | [大綱 §4／§9](../../../roadmap/ROADMAP_OUTLINE.md)、[B2](../../../roadmap/detail/B2_placement_chain.md) |
+| **§4 第 3 條** | **不採納**（待審停滯 3 天點名） | 原列為新規則 | [WEEK §3](../../WEEK_20260921.md)、[E2](../../../roadmap/detail/E2_layer_guard_pr_rules.md) |
 
-**R-3 的性質本週變了。** 前兩週它只是 goodmorning 的交付問題；本週 `ToolbarPanel.vue` 是落子鏈的一環，#48 不結，[T1](../../toby/0921/W0921-T1_placement_chain.md) 的第 2 刀動不了。**它現在在門檻路徑上。**
+### 1.1 兩項連帶後果，本週要留意
 
-### 1.1 順帶要裁的第四項（B2 解鎖）
+**① MBD 與 goodmorning 本週都沒有交付項。** M1 作廢後 MBD 只剩暫停單；#48 不合之後 G1 也沒有東西要交。兩人本週的完成率**不列分母**。是否要補派，見 [WEEK §2.0 後記](../../WEEK_20260921.md)——**這題還在你手上，本週不補也不影響門檻。**
 
-[ROADMAP §11](../../../roadmap/ROADMAP_OUTLINE.md) 寫明「底層就緒不等於自動解鎖」，擺放放行是你的當週裁示。
-
-**本版採用的預設：放行落子（點擊落子），不放行選取／旋轉／刪除。** 理由：9/27 硬綁 B1，而 B1 的門檻句就是「拉真機器放到畫布」——不放行等於門檻當日直接降級。
-
-L1 側的預檢（[A0](../../aaaaa/0921/W0921-A0_placement_precheck.md)）**不需要這道放行**，那是純函式重構，即使你否決 L2 落子它也該做。
+**② #48 從待審計數移除。** 既然裁定不合也不關，它就不該再佔「待審 ≤3」的壓力，也不進任何一週的合入序。期初待審實質為 0。
 
 ---
 
 ## 2. 合入序
 
-**#48 → S1 搬家 PR → A0 → T1 → H1 → A1 → MBD。** 待審 ≤3。
+**S1 搬家 PR → A0 → T1 → H1 → A1。** 待審 ≤3。
 
 | PR | 誰 | 你要做的 |
 |----|----|----------|
-| #48 | goodmorning | **9/24 前結案。** 技術你審；「paper 過」改事後補審，不再當合入前提（§3） |
-| S1 搬家 | shirone | 只看「是不是純 rename」。**含新面板就退回重拆**；`MainLayout.vue` 只准動 StatsPanel 那一行 |
+| S1 搬家 | shirone | 只看「是不是純 rename」。**含新面板或樣式就退回重拆**；`MainLayout.vue` 只准動 StatsPanel 那一行 |
 | A0 | aaaaa | 看 `layoutStore.test.ts` 有沒有被改——**沒改且全綠**才是行為不變的證據 |
-| T1 | toby | 擋門檻。看 §4 的退回清單；`ToolbarPanel.vue` 的 diff 只准在 script 區 |
+| T1 | toby | **擋門檻。** 看 §4 的退回清單；`ToolbarPanel.vue` 的 diff 只准在 script 區 |
 | H1 | harry | 純函式＋dev 頁，加分項，有空再審 |
 | A1 | aaaaa | 提前量，交了就審，不急 |
-| MBD | MBD | 只看「有沒有 `MainLayout.vue`」。有就退回，不必看內容 |
+| S1 樣式 | shirone | **無死線**，交多少審多少。看有沒有第三個目錄、`ItemSummaryTable` 的 props 在不在 |
+| ~~#48~~ | ~~goodmorning~~ | **不在序列內**（R-3） |
+| ~~MBD~~ | ~~MBD~~ | **不在序列內**（R-2，M1 作廢） |
 
 ---
 
-## 3. 本週生效的三條流程改動
+## 3. 本週生效的兩條流程改動
 
 都來自上期暴露的缺口（[ROADMAP §9.2](../../../roadmap/ROADMAP_OUTLINE.md)），本單是它們第一次進工單。
 
 | # | 改動 | 要你做什麼 |
 |---|------|-----------|
 | 1 | **鎖表同步公告 Discord，暫停者也要收到** | [WEEK §3](../../WEEK_20260921.md) 的鎖表整段貼進 Discord；avery、azure、MBD 的暫停單本週都附了鎖清單 |
-| 2 | **簽核前提不得綁在無法履行的人身上** | 「paper 過」從 #48 的合入前提改為**事後補審**。低時數成員的簽核一律比照 |
-| 3 | **待審 PR 超過 3 天無活動即 Discord 點名** | 新規則。#48 自 9/14 起已 8 天無動靜、#50 送審後零 review，「待審 ≤3」只管數量管不了停滯 |
+| 2 | **簽核前提不得綁在無法履行的人身上** | 「paper 過」不再是任何 PR 的合入前提，一律改**事後補審**。低時數成員的簽核比照 |
 
-第 3 條若你採用，我回寫 [R-E2](../../../roadmap/detail/E2_layer_guard_pr_rules.md)；不採用就從 WEEK §3 拿掉。
+> 原第 3 條「待審停滯 3 天即 Discord 點名」**你已否決**，[R-E2](../../../roadmap/detail/E2_layer_guard_pr_rules.md) 未新增該條，十條清單不動。
 
 ---
 
@@ -67,17 +68,19 @@ L1 側的預檢（[A0](../../aaaaa/0921/W0921-A0_placement_precheck.md)）**不�
 
 | PR 內容 | 處置 |
 |---------|------|
-| 落子鏈（點擊落子、預檢、意圖層） | **可審**（本週放行範圍） |
+| 落子鏈（點擊落子、預檢、意圖層） | **可審**（R-4 放行範圍） |
 | 落子前預檢純函式、C2 規則純函式、C3 折線純函式 | 可審 |
 | StatsPanel **純 rename** | 可審 |
-| 工具列只改視覺（goodmorning） | 可審 |
-| **選取、旋轉、刪除、拖移既有設備** | **退回**（B3／B4／B5 本週未放行） |
+| StatsPanel 樣式（改既有五檔的 template／style） | 可審，無死線 |
+| **選取、旋轉、刪除、拖移既有設備** | **退回**（B3／B4／B5 未放行） |
 | 擴充 `EquipmentType` 聯集或改 `editorStore` 簽名 | **退回**（會把新模型綁回舊藍圖世界） |
 | L2 自己 import `detectOverlaps` 重算佔格 | **退回**（兩套判定） |
 | `GridCanvas` 內 store import | 退回 |
 | 刪 `InspectorSidebar` 或 `FactoryCanvas` | **退回**（B4 入口與舊殼退路） |
-| 同一支 PR 同時含 rename 與新面板 | **退回重拆** |
+| 新開第三個 StatsPanel 目錄 | **退回**（單一 owner ＝ shirone，單一路徑 ＝ `src/app/StatsPanel/`） |
+| 同一支 PR 同時含 rename 與樣式 | **退回重拆** |
 | 非 owner 改 `MainLayout.vue`（shirone 的 StatsPanel import 那一行除外） | 退回 |
+| 把既有真實資料來源換成 hardcode 陣列 | **退回**（#48 的前車之鑑，見 [B1](../../../roadmap/detail/B1_toolbar_real_machines.md)） |
 | `docs/paper/` 的 gitlink | 你清掉（§5），並加入 PR 檢查項 |
 | 網頁 Upload、檔名當版本、不可見字元 | 退回 |
 
@@ -90,7 +93,8 @@ L1 側的預檢（[A0](../../aaaaa/0921/W0921-A0_placement_precheck.md)）**不�
 | A | 清掉 `docs/paper/` 誤入的 gitlink（`160000 commit …/endfield-playground`，無 `.gitmodules`）。**口頭跟 paper 說一次即可，不列為他的扣分項** | 本週 |
 | B | 裁 azure9572 舊分支 `dev/azure9572` 上 E004／E005 的去留。**已掛超過三週，R-D3 右側接線要到 11/15**；若備賽延到 11 月，10 月前要決定移交或作廢 | 10 月前 |
 | C | `dev/Avery` 標記作廢（`FactoryLayout.vue` 的 U+2060 殘留、已與 master 分歧三個月），回歸時重開 | 本週 |
-| D | **9/27 門檻記錄**：B1 過或降級，兩種都要寫進 [ROADMAP §9.1](../../../roadmap/ROADMAP_OUTLINE.md) 當日快照 |
+| D | **MBD／goodmorning 是否補派**（§1.1 ①）。不補也可以，但要有個結論寫進 0928 | 9/27 前 |
+| E | **9/27 門檻記錄**：B1 過或降級，兩種都要寫進 [ROADMAP §9.1](../../../roadmap/ROADMAP_OUTLINE.md) 當日快照 |
 
 ---
 
@@ -104,13 +108,13 @@ L1 側的預檢（[A0](../../aaaaa/0921/W0921-A0_placement_precheck.md)）**不�
 
 ## 7. DoD
 
-- [ ] §1 三項裁決在 9/22 給出（Discord 一則訊息即可，不必寫文件）
-- [ ] B2 解鎖範圍明確宣告（放行落子／不放行選取旋轉刪除）
-- [ ] #48 於 9/24 前合入或關閉
+- [x] §1 裁決已給出（2026-09-23）
+- [x] B2 解鎖範圍明確宣告（放行點擊落子／不放行選取旋轉刪除）
 - [ ] S1 搬家 PR 合入，`src/app/StatsPanel/` 進 master
 - [ ] A0 合入且 `layoutStore.test.ts` 未被修改
 - [ ] T1 若開：無 `editorStore` 簽名變更、無自算重疊、`ToolbarPanel` diff 只在 script 區
 - [ ] 鎖表已貼 Discord（含三位暫停者）
+- [ ] MBD／goodmorning 補派與否有結論
 - [ ] 待審 ≤3
 - [ ] 9/27 門檻結果已記錄
 - [ ] 自己的 diff 不含落子鏈／預檢／StatsPanel 實作
