@@ -136,6 +136,24 @@
 ### 2026-08-22
 - 建檔。tag 分頁作法確認可沿用 V9 `MachineCatalogPanel.vue`，不重新設計
 
+### 2026-09-23（主編裁決：#48 的合入硬條件）
+
+**PR [#48](https://github.com/dernoson/endfield-playground/pull/48)（工具列視覺）現況會回退本項已交付的資料側。**
+
+該分支把 `ToolbarPanel.vue` 改寫為 props／emit 元件，過程中拿掉了 `listToolbarMachines` 的 import，改用寫死的陣列：
+
+| 現況（master，#43 已合） | #48 分支 |
+|--------------------------|----------|
+| `listToolbarMachines(activeTag)` 讀 `src/data/machines` | `const equipments: Array<{ id: string; category: string; label: string }> = [...]` 硬編碼 |
+| `MACHINE_TAGS` 產生分類 Tab | `const categoryTabs = ['全部', '物流', …]` 硬編碼 |
+| `useEditorStore()`＋`armPlacement`＋`dataTransfer` | 移除，改為 `defineEmits` |
+
+**主編裁示（2026-09-23）：#48 維持現狀，不合也不關。** 日後要合時由 goodmorning 自行 rebase，且**必須把寫死的機器清單換回真實機器資料**——否則等於把本項 9/6 的切片（#43）退回去。
+
+**對本項的影響：** 無退步。#43 仍在 master，9/6 切片狀態不變。本條是**合入前的守門條件**，不是新缺口。
+
+**連帶：** 落子鏈（[B2](./B2_placement_chain.md)／W0921-T1）因此不再等 #48，直接在 master 版的 `ToolbarPanel.vue` 上接意圖——`<script>` 區本週歸 toby。
+
 ### 2026-08-30（09/06 切片派工前檢修）
 
 - **欄位名勘誤：** §4.3／§9 的 `machine.size`／`machine.tag` 改為 `width`／`height` 與 `tags`（codegen 現況）。原文會導致工單抄到不存在的欄位。
