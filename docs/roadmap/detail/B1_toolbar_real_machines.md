@@ -136,6 +136,10 @@
 ### 2026-08-22
 - 建檔。tag 分頁作法確認可沿用 V9 `MachineCatalogPanel.vue`，不重新設計
 
+### 2026-09-24（追加：#48 本週必須收完）
+
+**主編改裁：** [#48](https://github.com/dernoson/endfield-playground/pull/48) 不得再無限期擱置——goodmorning **本週修完合入**（[W0921-G1](../../work_dispatch/goodmorning/0921/W0921-G1_toolbar_pr48_land.md) v1.2）。硬條件不變：rebase ＋ 寫死清單換回 `listToolbarMachines`。T1 仍不依賴 #48；兩邊同週改 `ToolbarPanel.vue`，意圖層歸 toby、視覺＋資料來源復原歸 goodmorning。
+
 ### 2026-09-23（主編裁決：#48 的合入硬條件）
 
 **PR [#48](https://github.com/dernoson/endfield-playground/pull/48)（工具列視覺）現況會回退本項已交付的資料側。**
@@ -148,11 +152,7 @@
 | `MACHINE_TAGS` 產生分類 Tab | `const categoryTabs = ['全部', '物流', …]` 硬編碼 |
 | `useEditorStore()`＋`armPlacement`＋`dataTransfer` | 移除，改為 `defineEmits` |
 
-**主編裁示（2026-09-23）：#48 維持現狀，不合也不關。** 日後要合時由 goodmorning 自行 rebase，且**必須把寫死的機器清單換回真實機器資料**——否則等於把本項 9/6 的切片（#43）退回去。
-
-**對本項的影響：** 無退步。#43 仍在 master，9/6 切片狀態不變。本條是**合入前的守門條件**，不是新缺口。
-
-**連帶：** 落子鏈（[B2](./B2_placement_chain.md)／W0921-T1）因此不再等 #48，直接在 master 版的 `ToolbarPanel.vue` 上接意圖——`<script>` 區本週歸 toby。
+**9/23 原裁：** 維持現狀不合不關。**9/24 覆寫：** 本週必須收完（見上）。落子鏈（[B2](./B2_placement_chain.md)／W0921-T1）仍直接在 master 版接意圖——`<script>` 意圖層歸 toby。
 
 ### 2026-08-30（09/06 切片派工前檢修）
 
