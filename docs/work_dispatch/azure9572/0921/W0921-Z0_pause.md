@@ -33,7 +33,7 @@
 | `src/editor/layout/*`、`src/editor/toolbar/*` | toby | **9/27 門檻線上** |
 | `src/app/layouts/MainLayout.vue` | toby | 全檔 |
 | `src/utils/layout/*`、`src/store/*` | aaaaa | 門檻前置 |
-| `src/app/StatsPanel/*`、`src/components/StatsPanel/*` | shirone | 本週搬家中 |
+| `src/app/StatsPanel/*`、`src/components/StatsPanel/*` | shirone | 本週搬家＋改樣式，**整區單一 owner** |
 | `src/editor/inspector/*`、`InspectorSidebar` | — | **凍結：誰都不能刪** |
 | `FactoryCanvas.vue`、`FlowNodeOverlay.vue` | — | 凍結：保留、不加深、不刪 |
 
