@@ -63,9 +63,11 @@ function handleRealMachineClick(row: ToolbarMachineRow) {
 }
 ```
 
-**就這樣。** template 一個字都不要動——那是 goodmorning 的視覺，而且 #48 正在改同一個檔。
+**就這樣。** template 一個字都不要動——那是 goodmorning 的視覺。
 
-`selectedRealMachineId` 這個本地 highlight 保留不動，先不要順手把它換成 `armedMachineId`；等 #48 合入、視覺穩定之後再說。
+`selectedRealMachineId` 這個本地 highlight 保留不動，先不要順手把它換成 `armedMachineId`；那是視覺的事，等工具列的樣式定下來再說。
+
+> #48 也在改這個檔，但它 2026-09-23 已裁定維持現狀、不合也不關，**日後由 goodmorning 自行 rebase 到你這一版之上**。所以你直接改 master，不用避讓。
 
 ---
 

@@ -7,7 +7,7 @@
 | 擋門檻 | **是**（9/27 硬綁 B1：「從下方選單拉真機器放到畫布」） |
 | 前置 | 殼與 store 全在 master（#45／#46／#47／#50）。預檢 `canPlaceDevice` 由 aaaaa **9/24 交**（[A0](../../aaaaa/0921/W0921-A0_placement_precheck.md)） |
 | 教學檔 | [GUIDE_placement_chain.md](./GUIDE_placement_chain.md) |
-| 你的檔 | `src/editor/toolbar/usePlacementIntent.ts`（新）、`src/editor/layout/LayoutView.vue`、`src/editor/layout/GridCanvas.vue`、`src/editor/toolbar/ToolbarPanel.vue`（**僅 script 區，且須 #48 先合入**） |
+| 你的檔 | `src/editor/toolbar/usePlacementIntent.ts`（新）、`src/editor/layout/LayoutView.vue`、`src/editor/layout/GridCanvas.vue`、`src/editor/toolbar/ToolbarPanel.vue`（**僅 script 區**） |
 | 配對窗口 | **有（本週名額給你）**；dernoson 或 aaaaa |
 | 產能參考 | 自報 3–5h。上週你一週內走完等閘→開工→收尾，本週範圍相當 |
 
@@ -44,12 +44,12 @@
 | # | 刀 | 依賴 | 建議日 |
 |---|----|------|--------|
 | 1 | `usePlacementIntent.ts`：一個 module-scope 的 `armedMachineId`，附 `arm`／`disarm` | 無 | 9/22–9/23 |
-| 2 | `ToolbarPanel.vue` 的 `handleRealMachineClick` 從 `console.info` 改成 `arm(row.id)` | **#48 先合入** | #48 合入當天 |
+| 2 | `ToolbarPanel.vue` 的 `handleRealMachineClick` 從 `console.info` 改成 `arm(row.id)` | 無 | 9/23 |
 | 3 | `LayoutView` 接住畫布點擊 → 預檢 → `layoutStore.addDevice` | A0（9/24） | 9/24–9/27 |
 
-**第 1 刀不依賴任何人，先做。** 第 3 刀在 A0 交件前可以先寫「不預檢、直接 addDevice」的版本跑通，A0 一到再把預檢插進去——這兩者差三行。
+**第 1、2 刀不依賴任何人，先做。** 第 3 刀在 A0 交件前可以先寫「不預檢、直接 addDevice」的版本跑通，A0 一到再把預檢插進去——這兩者差三行。
 
-**#48 若到 9/24 還沒合入：** 主編會直接裁決（見 [D0](../../dernoson/0921/W0921-D0_gate_and_three_rulings.md)）。你不必等、也不要自己去改 #48 的內容。
+**第 2 刀直接改 master 上的版本，不要等 #48。** 那支 PR 2026-09-23 已裁定維持現狀、不合也不關（見 [G1](../../goodmorning/0921/W0921-G1_toolbar_pr48_land.md)），它日後要合時由 goodmorning 自行 rebase，屆時以 master 為準。**你不必等、也不要去改 #48 的內容。**
 
 ---
 
@@ -93,7 +93,7 @@ layoutStore.addDevice({ id: crypto.randomUUID(), ... });
 |------|------|
 | 新建 `usePlacementIntent.ts` | 擴充 `EquipmentType` 聯集 |
 | 改 `LayoutView.vue`、`GridCanvas.vue` | 改 `editorStore` 任何簽名 |
-| 改 `ToolbarPanel.vue` 的 **script 區**（#48 合入後） | 改 `ToolbarPanel.vue` 的 template／style（goodmorning 的視覺） |
+| 改 `ToolbarPanel.vue` 的 **script 區** | 改 `ToolbarPanel.vue` 的 template／style（goodmorning 的視覺） |
 | 在 `GridCanvas` 加預覽用的 props | 在 `GridCanvas` 裡 import store |
 | import `canPlaceDevice` | 自己重算佔格重疊 |
 | — | 選取、刪除、旋轉、拖移既有設備（B3／B4／B5，本週全不開） |
@@ -143,7 +143,7 @@ layoutStore.addDevice({ id: crypto.randomUUID(), ... });
 | 狀況 | 找誰 |
 |------|------|
 | `canPlaceDevice` 的簽章、`DRAFT_ID` | aaaaa |
-| #48 卡住讓你動不了 ToolbarPanel | **dernoson，當天講**，不要繞路自己改 |
+| `ToolbarPanel.vue` 的 script 區改完 template 壞了 | **dernoson，當天講**；template／style 是 goodmorning 的區 |
 | 想擴大到拖曳／旋轉／選取 | **先回報**，不要自己開 |
 
 > 超過一天沒進展講一聲。本週只有這一塊。
