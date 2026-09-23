@@ -162,3 +162,9 @@ W0914 的右側工單是**產線總覽 StatsPanel**（[S1](../../work_dispatch/s
 **前置狀態更新：** 主畫面已於 9/20 換成 `MainLayout` → `LayoutView` → `GridCanvas`（PR #50）。§4.1 攤平契約要接的「新選取契約」，其載體從此是 `LayoutView.vue` 與 `layoutStore`，**不再是 `FactoryCanvas` 的 Vue Flow 選取**。§5 檔案計畫在本項重啟時需依此重訂。
 
 本項仍等 [B2](./B2_placement_chain.md) 的落子鏈，且 B2 已由「等前置」改為「等裁決」。**本項不列 M2 硬綁**（9/15 撤回擴大後維持），改列 M3 前置。
+
+### 2026-09-23（主編裁決）
+
+**風險關閉：主編裁定 `dev/MBD` 不合入**（該分支 6 筆 commit 整批不進 master，MBD 原本的 StatsPanel 樣式工作轉由 shirone 承接）。移除 `InspectorSidebar` 的那份 diff 不會再有合入路徑，上一條目的 ⚠ 解除。
+
+**本項續鎖。** 同日 B2 解鎖的範圍只有**點擊落子**；**選取／旋轉／刪除未放行**，本項送審一律退回。前置不變：等 B2 落子鏈進 master。
