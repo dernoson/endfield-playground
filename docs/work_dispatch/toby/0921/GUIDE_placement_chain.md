@@ -67,7 +67,7 @@ function handleRealMachineClick(row: ToolbarMachineRow) {
 
 `selectedRealMachineId` 這個本地 highlight 保留不動，先不要順手把它換成 `armedMachineId`；那是視覺的事，等工具列的樣式定下來再說。
 
-> #48 也在改這個檔，但它 2026-09-23 已裁定維持現狀、不合也不關，**日後由 goodmorning 自行 rebase 到你這一版之上**。所以你直接改 master，不用避讓。
+> #48 也在改這個檔（goodmorning 本週必須收尾）。**你先推意圖層即可。** 他 rebase 時要以你的 `<script>` 為底套視覺，不得刪 `arm`。
 
 ---
 

@@ -49,7 +49,7 @@
 
 **第 1、2 刀不依賴任何人，先做。** 第 3 刀在 A0 交件前可以先寫「不預檢、直接 addDevice」的版本跑通，A0 一到再把預檢插進去——這兩者差三行。
 
-**第 2 刀直接改 master 上的版本，不要等 #48。** 那支 PR 2026-09-23 已裁定維持現狀、不合也不關（見 [G1](../../goodmorning/0921/W0921-G1_toolbar_pr48_land.md)），它日後要合時由 goodmorning 自行 rebase，屆時以 master 為準。**你不必等、也不要去改 #48 的內容。**
+**第 2 刀直接改 master 上的版本。** #48 已改裁為本週由 goodmorning 收尾（[G1](../../goodmorning/0921/W0921-G1_toolbar_pr48_land.md)），但他與你**同週會改同一個檔**——你負責意圖層（`arm`），他負責視覺＋把 hardcode 換回真實資料。**你的 PR 先合／先推即可**；他 rebase 時不得刪你的 `arm`。衝突找 dernoson，不要自己跟他搶整份檔。
 
 ---
 
