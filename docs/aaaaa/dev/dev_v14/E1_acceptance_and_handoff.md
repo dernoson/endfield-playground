@@ -27,7 +27,7 @@ V11 發過 `layout-L1`，V12 發過 `layout-store`。**V14 不發。**
 
 因後期 `addPipeline` 亦動 `layoutStore.ts`，**定案：單 PR、body 分兩節**（負責人 2026-09-27 確認）。
 
-**PR：** （開出後填編號）
+**PR：** [#54](https://github.com/dernoson/endfield-playground/pull/54)（單支；body 分 A0／A1）
 
 **A0（主線／公開 V2）：**
 

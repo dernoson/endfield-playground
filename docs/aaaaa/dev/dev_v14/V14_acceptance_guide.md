@@ -16,9 +16,9 @@
 
 | 工項 | 內容 | PR | 分支 |
 |------|------|-----|------|
-| A0 落子前預檢 | `canPlaceDevice`／`canMoveDevice` 提共用 | **待開**（確認後） | `dev/aaaaa0921` |
-| A1 連線規則（次優） | `canConnect`＋錨點共用 | **待開**（分開） | 同上 |
-| 週會演示 | 綠／紅卡純函式頁 | 隨 A0 或獨立 commit | 同上 |
+| A0 落子前預檢 | `canPlaceDevice`／`canMoveDevice` 提共用 | [#54](https://github.com/dernoson/endfield-playground/pull/54) | `dev/aaaaa0921` |
+| A1 連線規則（次優） | `canConnect`＋錨點共用＋addPipeline 防線 | 同上（body 第二節） | 同上 |
+| 週會演示 | 綠／紅卡純函式頁 | 同上 | 同上 |
 
 **A1 不在 WEEK V1–V8 之列**——次優、不擋門檻。公開對應項只有 **V2**。
 
@@ -109,6 +109,10 @@ pnpm test         → 45 files／847 tests 綠
 ---
 
 ## 7. 日誌
+
+### 2026-09-27｜開 PR
+
+- [#54](https://github.com/dernoson/endfield-playground/pull/54)；單支分節；合入前公開 V2 仍記未達
 
 ### 2026-09-27｜收斂盤點
 

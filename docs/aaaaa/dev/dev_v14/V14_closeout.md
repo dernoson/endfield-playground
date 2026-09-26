@@ -27,7 +27,7 @@
 | C1 A0 | `[x]` | |
 | D1 A1 | `[x]` | 含方向修正＋store 防線 |
 | E1 驗收／說明／演示 | `[x]` | |
-| E1 開 PR | `[x]`／開出後填編號 | **定案：單 PR 分節**（2026-09-27 負責人確認） |
+| E1 開 PR | `[x]` [#54](https://github.com/dernoson/endfield-playground/pull/54) | 單 PR 分節 |
 | E1 合入／上游回寫 | `[ ]` | 合入後做 P5 |
 
 ---

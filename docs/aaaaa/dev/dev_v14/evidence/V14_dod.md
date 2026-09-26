@@ -5,7 +5,7 @@
 **查證時間：** 2026-09-27
 **分支：** `dev/aaaaa0921`（相對 `origin/master`）
 **工單：** [W0921-A0](../../../../work_dispatch/aaaaa/0921/W0921-A0_placement_precheck.md)、[W0921-A1](../../../../work_dispatch/aaaaa/0921/W0921-A1_connect_rules.md)
-**結論：** **兩張工單程式 DoD 全部成立**；另提前 `addPipeline`←`canConnect`、方向收成有序 output→input。**PR 尚未開**（見 [V14_closeout](../V14_closeout.md)）。
+**結論：** **兩張工單程式 DoD 全部成立**；另提前 `addPipeline`←`canConnect`、方向＝有序 output→input。**PR [#54](https://github.com/dernoson/endfield-playground/pull/54)**（單支分節）。
 
 > 判定一律以 `git`／本機品質閘實查為準，不以文件宣稱為準。
 
@@ -22,7 +22,7 @@
 | 5 | JSDoc 含約 200 台效能句 | `collectLayoutIssues`／`canPlaceDevice` 註解 | **成立** |
 | 6 | 未 import `editorStore`；diff 不含 `src/editor/*` | grep 零命中；`git diff --name-only` 無 `src/editor` | **成立** |
 | 7 | 品質閘綠 | 見 §3 | **成立** |
-| 8 | PR body 宣告 `DRAFT_ID` | **尚未開 PR** | **待開** |
+| 8 | PR body 宣告 `DRAFT_ID` | [#54](https://github.com/dernoson/endfield-playground/pull/54) body | **已開** |
 
 ---
 
@@ -36,7 +36,7 @@
 | 4 | 媒質與 FlowEngine 共用 | `portMedia.ts`／`getMachinePortMedia`；`useFlowEngine` 改呼叫 | **成立** |
 | 5 | 與 A0 分開 commit | 初版分開；其後防線提前再動 `layoutStore.addPipeline` | **程式成立**；開 PR 見 closeout P1 |
 | 5b | （提前）`addPipeline` 呼叫 `canConnect` | `layoutStore.ts`＋`layoutStore.canConnect.test.ts` | **已做**（超工單「本週不做」） |
-| 6 | PR 標題帶 `W0921-A1` | **尚未開 PR** | **待開** |
+| 6 | PR 標題／body 帶 `W0921-A1` | [#54](https://github.com/dernoson/endfield-playground/pull/54) 第二節 | **已開** |
 
 ---
 

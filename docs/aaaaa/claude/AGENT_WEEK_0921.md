@@ -7,6 +7,7 @@
 | 公開 | [WEEK_0921](../../work_dispatch/WEEK_20260921.md) v1.2、[W0921-A0](../../work_dispatch/aaaaa/0921/W0921-A0_placement_precheck.md)、[W0921-A1](../../work_dispatch/aaaaa/0921/W0921-A1_connect_rules.md) |
 | 執行計畫 | [todolist_v14](../dev/todolist_v14.md)、[dev_v14/](../dev/dev_v14/) |
 | 收斂盤點 | [V14_closeout](../dev/dev_v14/V14_closeout.md) |
+| PR | [#54](https://github.com/dernoson/endfield-playground/pull/54) |
 | 決策層 | [0921/REVIEW](../collaborator_survey/dispatch_private/0921/REVIEW_20260921.md)、[0921/E3](../collaborator_survey/dispatch_private/0921/E3_risk_backup_staffing.md)、[0921/PENDING](../collaborator_survey/dispatch_private/0921/PENDING_DECISIONS_20260927.md) |
 | 操作總則 | [AGENT_ROADMAP](./AGENT_ROADMAP.md)（v1.6；檔案地圖仍指 0907，已知過期） |
 | 撰寫 | aaaaa |
@@ -34,7 +35,7 @@
 | ~~1~~ | ~~A0 落子前預檢（擋門檻）~~ | **已完成**；[V14-C1](../dev/dev_v14/C1_placement_precheck.md)；待開 PR |
 | ~~2~~ | ~~A1 連線規則純函式（次優）~~ | **已完成**；[V14-D1](../dev/dev_v14/D1_connect_rules.md)；待開 PR |
 | ~~3~~ | ~~驗收＋說明／演示~~ | **已完成（PR 除外）**；[V14-E1](../dev/dev_v14/E1_acceptance_and_handoff.md) `[~]` |
-| ~~4~~ | ~~開 PR（單支分節）~~ | **進行中／開出後填編號**；[E1 §2.1](../dev/dev_v14/E1_acceptance_and_handoff.md) |
+| ~~4~~ | ~~開 PR（單支分節）~~ | **已開** [#54](https://github.com/dernoson/endfield-playground/pull/54) |
 | 5 | 合入後上游回寫（P5） | closeout P5 |
 | — | **禁止**選取／旋轉／刪除接線 | WEEK §2.1 |
 | — | **禁止**替 toby 寫落子鏈或改其檔 | 規則 17 |

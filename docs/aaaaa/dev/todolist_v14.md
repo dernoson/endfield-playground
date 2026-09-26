@@ -12,7 +12,7 @@
 **狀態總覽：** **`[~]` 單 PR 分節交審中**（2026-09-27；程式／驗收 `[x]`；合入後全版結案）
 **驗收指南：** [dev_v14/V14_acceptance_guide.md](./dev_v14/V14_acceptance_guide.md)
 **收斂盤點：** [dev_v14/V14_closeout.md](./dev_v14/V14_closeout.md)
-**PR：** （開出後填）
+**PR：** [#54](https://github.com/dernoson/endfield-playground/pull/54)
 **證據／週報／用法：** [evidence/V14_dod.md](./dev_v14/evidence/V14_dod.md)、[V14_week_report.md](./dev_v14/V14_week_report.md)、[USAGE](./dev_v14/USAGE_l2_placement_and_connect.md)
 **待確認問題：** [dispatch_private/0921/PENDING_DECISIONS_20260927.md](../collaborator_survey/dispatch_private/0921/PENDING_DECISIONS_20260927.md)
 
@@ -209,8 +209,8 @@ layoutStore.test.ts 未改且全綠。不發解鎖句；選取／旋轉／刪除
 
 | 工項 | 工單要求 | V14 狀態 | 備註 |
 |------|----------|----------|------|
-| A0 | `canPlaceDevice` 提共用＋測試 | 程式 `[x]`／PR `[ ]` | 公開 V2 待合入 |
-| A1 | `canConnect`＋錨點共用 | 程式 `[x]`／PR `[ ]` | 含方向＋addPipeline 提前 |
+| A0 | `canPlaceDevice` 提共用＋測試 | 程式 `[x]`／PR [#54](https://github.com/dernoson/endfield-playground/pull/54) | 公開 V2 待合入 |
+| A1 | `canConnect`＋錨點共用 | 同上（同 PR 第二節） | 含方向＋addPipeline 提前 |
 
 ---
 

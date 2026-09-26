@@ -3,7 +3,7 @@
 **週次：** 2026-09-21 → 2026-09-27（M2 門檻週）
 **負責人：** aaaaa
 **分支：** `dev/aaaaa0921`
-**狀態：** **單 PR 分節交審**（A0＋A1；合入前公開 V2 未達）
+**狀態：** **PR [#54](https://github.com/dernoson/endfield-playground/pull/54) 交審中**（單支分節；合入前公開 V2 未達）
 **撰寫：** 2026-09-27
 **收斂：** [V14_closeout](./V14_closeout.md)
 
@@ -13,8 +13,8 @@
 
 | 工項 | 公開對應 | 產物 | 狀態 |
 |------|----------|------|------|
-| A0 落子前預檢 | WEEK **V2** | `placementCheck.ts`；store 提共用 | 程式 `[x]`；PR `[ ]` |
-| A1 連線規則 | 次優 | `connectRules`＋錨點／媒質共用；**addPipeline 已接 canConnect**（提前） | 程式 `[x]`；PR `[ ]` |
+| A0 落子前預檢 | WEEK **V2** | `placementCheck.ts`；store 提共用 | 程式 `[x]`；[#54](https://github.com/dernoson/endfield-playground/pull/54) |
+| A1 連線規則 | 次優 | `connectRules`＋錨點／媒質共用；**addPipeline**←`canConnect` | 同上（PR 第二節） |
 | 週會演示 | — | `/dev/placement-connect-check.html` | `[x]` |
 
 **不發解鎖句。** 選取／旋轉／刪除仍鎖。
