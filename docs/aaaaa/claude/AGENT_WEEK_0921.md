@@ -2,10 +2,11 @@
 
 | meta | value |
 |------|-------|
-| version | **v1.4（2026-09-27；E1 驗收＋說明／演示齊；PR 暫緩）** |
+| version | **v1.5（2026-09-27；程式收斂盤點；PR 未開）** |
 | 用途 | 供 Agent 執行本週派工／改工單時的**強制約束**；細節以公開 WEEK 與個人工單為準 |
 | 公開 | [WEEK_0921](../../work_dispatch/WEEK_20260921.md) v1.2、[W0921-A0](../../work_dispatch/aaaaa/0921/W0921-A0_placement_precheck.md)、[W0921-A1](../../work_dispatch/aaaaa/0921/W0921-A1_connect_rules.md) |
 | 執行計畫 | [todolist_v14](../dev/todolist_v14.md)、[dev_v14/](../dev/dev_v14/) |
+| 收斂盤點 | [V14_closeout](../dev/dev_v14/V14_closeout.md) |
 | 決策層 | [0921/REVIEW](../collaborator_survey/dispatch_private/0921/REVIEW_20260921.md)、[0921/E3](../collaborator_survey/dispatch_private/0921/E3_risk_backup_staffing.md)、[0921/PENDING](../collaborator_survey/dispatch_private/0921/PENDING_DECISIONS_20260927.md) |
 | 操作總則 | [AGENT_ROADMAP](./AGENT_ROADMAP.md)（v1.6；檔案地圖仍指 0907，已知過期） |
 | 撰寫 | aaaaa |
@@ -15,14 +16,15 @@
 
 ## 0. 三十秒結論
 
-**A0／A1 程式已驗收通過；週會說明與演示頁已齊。**  
-- 證據：[evidence/V14_dod.md](../dev/dev_v14/evidence/V14_dod.md)  
+**V14 程式已收斂；公開 V2 未達（無 PR）。**  
+- 證據／盤點：[evidence/V14_dod.md](../dev/dev_v14/evidence/V14_dod.md)、[V14_closeout](../dev/dev_v14/V14_closeout.md)（P1–P6）  
 - 演示：`pnpm dev` → `/dev/placement-connect-check.html`  
-- 用法／週報：[USAGE](../dev/dev_v14/USAGE_l2_placement_and_connect.md)、[V14_week_report](../dev/dev_v14/V14_week_report.md)
+- 用法／週報：[USAGE](../dev/dev_v14/USAGE_l2_placement_and_connect.md)、[V14_week_report](../dev/dev_v14/V14_week_report.md)  
+- **提前量：** `addPipeline` 已接 `canConnect`；方向＝有序 output→input
 
-**PR 暫不開**（等負責人確認；建議 A0／A1 分開）。不發解鎖句。門檻鏈仍缺 **T1 落子**（公開 V1）。
+**下一優先＝開 PR**（建議單 PR 分節；見 closeout P1）。不發解鎖句。門檻鏈仍缺 **T1 落子**（公開 V1）。
 
-**本週不做：** `addPipeline` 內部防線（10/11）、選取／旋轉／刪除。
+**仍不做：** 選取／旋轉／刪除；L2 highlight（10/18）。
 
 
 ---
@@ -35,12 +37,11 @@
 | ~~1~~ | ~~A0 落子前預檢（擋門檻）~~ | **已完成**；[V14-C1](../dev/dev_v14/C1_placement_precheck.md)；待開 PR |
 | ~~2~~ | ~~A1 連線規則純函式（次優）~~ | **已完成**；[V14-D1](../dev/dev_v14/D1_connect_rules.md)；待開 PR |
 | ~~3~~ | ~~驗收＋說明／演示~~ | **已完成（PR 除外）**；[V14-E1](../dev/dev_v14/E1_acceptance_and_handoff.md) `[~]` |
-| 4 | 開 PR（確認後；不發解鎖句） | E1 §2.1；A0／A1 分開 |
+| 4 | **開 PR**（確認後；不發解鎖句） | E1 §2.1；[closeout P1](../dev/dev_v14/V14_closeout.md)（建議單 PR 分節） |
 | — | **禁止**選取／旋轉／刪除接線 | WEEK §2.1 |
 | — | **禁止**替 toby 寫落子鏈或改其檔 | 規則 17 |
-| — | **禁止**本週改 `layoutStore` 接 `canConnect` | 排 10/11 |
 
-時數衝突時：**C1（A0）＞ D1（A1）**。A1 未交零影響。
+（原「禁止本週 addPipeline 接 canConnect」已因預覽誤寫入而**提前解除並完成**。）
 
 ---
 
@@ -100,7 +101,7 @@
 | 項 | 對象 | 本週實況（截至 2026-09-27，`gh`／`origin/master`） |
 |----|------|------------------------------------------------------|
 | **V1** | toby T1 | **未達**；未見 W0921-T1 PR；`usePlacementIntent.ts` 不在 master |
-| **V2** | aaaaa A0 | **程式已達**（本分支）；待 PR 合入 master 後公開驗收改達成 |
+| **V2** | aaaaa A0 | **程式已達本分支**；**PR／master 未達**（見 closeout） |
 | V3 | goodmorning G1 | **未達**；#48 仍 OPEN，最後活動 2026-09-14T17:37Z |
 | V4 | shirone S1 | **達成**；#53 於 09-24 合入（10×R100 rename＋`MainLayout` 一行） |
 | V5 | dernoson D0 | 觀察中（待審僅 #48；選取／旋轉／刪除未見放行） |
@@ -112,6 +113,11 @@
 ---
 
 ## 6. 日誌
+
+### 2026-09-27（v1.5）
+
+- 收斂盤點：[V14_closeout](../dev/dev_v14/V14_closeout.md)；程式齊、PR 未開；P1–P6
+- addPipeline 防線已提前；§0／§1 改寫；下一優先＝開 PR
 
 ### 2026-09-27（v1.4）
 

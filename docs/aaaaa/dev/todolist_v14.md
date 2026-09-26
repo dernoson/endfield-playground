@@ -9,8 +9,9 @@
 **上游：** [WEEK_20260921](../../work_dispatch/WEEK_20260921.md) v1.2、[ROADMAP_OUTLINE](../../roadmap/ROADMAP_OUTLINE.md) **v1.13**、[AGENT_WEEK_0921](../claude/AGENT_WEEK_0921.md)
 **門檻週：** 2026-09-21 → 2026-09-27（**9/27＝M2 硬綁 B1**）
 **開發分支：** `dev/aaaaa0921`
-**狀態總覽：** **`[~]` 驗收通過、說明／演示齊；PR 待確認後開**（2026-09-27；A1／B1／C1／D1 `[x]`；E1 `[~]`）
+**狀態總覽：** **`[~]` 程式／驗收已收斂；PR／合入未閉**（2026-09-27；A–D `[x]`；E1 流程項待開 PR）
 **驗收指南：** [dev_v14/V14_acceptance_guide.md](./dev_v14/V14_acceptance_guide.md)
+**收斂盤點：** [dev_v14/V14_closeout.md](./dev_v14/V14_closeout.md)（公開工單對照＋待處理 P1–P6）
 **證據／週報／用法：** [evidence/V14_dod.md](./dev_v14/evidence/V14_dod.md)、[V14_week_report.md](./dev_v14/V14_week_report.md)、[USAGE](./dev_v14/USAGE_l2_placement_and_connect.md)
 **待確認問題：** [dispatch_private/0921/PENDING_DECISIONS_20260927.md](../collaborator_survey/dispatch_private/0921/PENDING_DECISIONS_20260927.md)
 
@@ -26,9 +27,9 @@
 ### 目標
 
 1. **A0 落子前預檢：** 把 `layoutStore` 私有的 `collectLayoutIssues`／`assessInvolving` 提到 `placementCheck.ts`，匯出 `canPlaceDevice`／`canMoveDevice`；store 對外行為不變
-2. **A1 連線規則（次優）：** 先提 `resolveConnections` 錨點共用，再寫 `canConnect`＋`describeConnectFailure`；**本週不做** `addPipeline` 內部防線
-3. **不擋合入帶寬：** 不碰 toby／goodmorning／shirone／harry 的鎖檔；A0／A1 **分開 PR**
-4. **不發解鎖句：** PR body 只宣告預檢可供 T1 呼叫
+2. **A1 連線規則（次優）：** 先提 `resolveConnections` 錨點共用，再寫 `canConnect`＋`describeConnectFailure`；**後續提前**接入 `addPipeline` 防線（原排 10/11）
+3. **不擋合入帶寬：** 不碰 toby／goodmorning／shirone／harry 的鎖檔
+4. **不發解鎖句：** PR body 只宣告預檢／連線規則可供下游呼叫
 
 ### 已定案（2026-09-27｜負責人確認）
 
@@ -39,7 +40,7 @@
 | 3 | A0 作法 | **提共用、非另寫一份**；`layoutStore.test.ts` 未修改且全綠 |
 | 4 | A0 交期 | **維持工單原文 9/24**（本檔為執行計畫；立刻開工） |
 | 5 | A1 | 進 todolist 為正式次優項；A0 交完且有餘裕才開；未交＝回 10/04 |
-| 6 | A1 本週不做 | `layoutStore.addPipeline` 內部防線；L2 呼叫端 |
+| 6 | A1 本週不做 `addPipeline` 防線；L2 呼叫端 | **開版定案**；後因預覽誤寫入，**已提前**做 store 防線（見 [closeout P2](./dev_v14/V14_closeout.md)） |
 | 7 | 解鎖句 | **不發** |
 | 8 | 工廠／旋轉／選取 | 本週不做（WEEK §2.1） |
 | 9 | 分支 | `dev/aaaaa0921` |
@@ -51,9 +52,9 @@
 - 寫落子鏈 L2（toby T1）；改 `LayoutView`／`GridCanvas`／`usePlacementIntent`／`ToolbarPanel` 意圖層
 - 改 `MainLayout.vue`、`editorStore` 簽名
 - `createPlacedDevice` 工廠、`rotateDevice`、選取面、belt 佈線升格
-- A1 的 `addPipeline` 內部防線（排 10/11）與 L2 highlight（toby／10/18）
-- 環路偵測；另寫一份佔格或錨點判定
+- A1 的 L2 highlight（toby／10/18）；環路偵測；另寫一份佔格或錨點判定
 - 發解鎖句；放行選取／旋轉／刪除
+- ~~`addPipeline` 內部防線~~ → **已提前完成**（不再列為非目標）
 
 ### 流程大綱
 
@@ -79,7 +80,7 @@ A 定案 → B V13 收斂（前置）
 ```text
 下游消費者：
 - R-B2／toby T1：呼叫 canPlaceDevice 做落子前預檢（與 addDevice 同一套 PlacementResult）
-- R-C2（10/04）：若本版 A1 已交，10/04 改排 addPipeline 內部防線；未交則仍從錨點共用起做
+- R-C2（10/04）：錨點共用與 addPipeline 防線已提前；改排其餘切片／L2 highlight（10/18）
 - L2／L3：本版不改 editor／toolbar／MainLayout；對 #48、T1 零檔案衝突（不同檔）
 ```
 
@@ -117,16 +118,16 @@ layoutStore.test.ts 未改且全綠。不發解鎖句；選取／旋轉／刪除
 
 ## V14-D｜連線規則純函式（W0921-A1・次優）
 
-- [x] **V14-D1** 錨點判定提共用 → `connectRules.ts`（`canConnect`＋`describeConnectFailure`）＋測試；**不動** `layoutStore`
+- [x] **V14-D1** 錨點判定提共用 → `connectRules.ts`＋測試；後續含方向＝output→input、`addPipeline` 接 `canConnect`
   - 細項：[dev_v14/D1_connect_rules.md](./dev_v14/D1_connect_rules.md)
-  - 產物：`portAnchorIndex.ts`、`portMedia.ts`、`connectRules.ts`、測試；重構 `resolveConnections.ts`／`useFlowEngine.ts`
-  - 依賴：C1 已交；**與 C1 分開 commit**
+  - 產物：`portAnchorIndex.ts`、`portMedia.ts`、`connectRules.ts`、測試；重構 `resolveConnections`／`useFlowEngine`／`layoutStore.addPipeline`
+  - 依賴：C1 已交
 
 ---
 
 ## V14-E｜驗收、PR、交接
 
-- [~] **V14-E1** 對照 W0921-A0／A1 DoD（程式已過）；說明／演示已寫；**PR 待確認後開**；0928 交接摘要草稿見 E1 §4
+- [~] **V14-E1** 驗收／說明／演示 `[x]`；**PR／合入／上游回寫 `[ ]`** — 詳 [V14_closeout](./dev_v14/V14_closeout.md) P1–P6
   - 細項：[dev_v14/E1_acceptance_and_handoff.md](./dev_v14/E1_acceptance_and_handoff.md)
   - 驗收：[dev_v14/V14_acceptance_guide.md](./dev_v14/V14_acceptance_guide.md)
   - 演示：`dev/placement-connect-check.html`
@@ -166,13 +167,29 @@ layoutStore.test.ts 未改且全綠。不發解鎖句；選取／旋轉／刪除
 - [x] `canConnect` 回傳 discriminated union；`message` 不在 union 內
 - [x] 規則 7（斷線放行）有專門測試
 - [x] 媒質判定與 `useFlowEngine` 共用同一函式（`getMachinePortMedia`）
-- [x] 與 A0 **分開 commit**；未動 `layoutStore.ts`
-- [ ] PR 標題帶 `W0921-A1`（開 PR 時）
+- [x] 與 A0 **分開 commit**（其後因防線提前再動 `layoutStore.addPipeline`——開 PR 時見 [closeout P1](./dev_v14/V14_closeout.md)）
+- [x] `addPipeline` 已呼叫 `canConnect`（提前量；新測 `layoutStore.canConnect.test.ts`）
+- [ ] PR 標題帶 `W0921-A1`（開 PR 時；可與 A0 同 PR 分節）
 
 ### 品質閘
 
-- [ ] diff 不含選取／旋轉／刪除接線、不含 `editorStore` 簽名變更
-- [ ] 主線 PR 標題帶 `W0921-A0`；次優帶 `W0921-A1`
+- [x] diff 不含選取／旋轉／刪除接線、不含 `editorStore` 簽名變更（實查 `src/editor` 零命中）
+- [ ] 主線 PR 標題帶 `W0921-A0`；次優帶 `W0921-A1`（開 PR 時）
+
+---
+
+## 待處理（收斂後仍開）
+
+詳 [V14_closeout §3](./dev_v14/V14_closeout.md)。摘要：
+
+| ID | 問題 | 擋程式？ |
+|----|------|----------|
+| P1 | 開 PR（建議單 PR 分節） | 擋公開 V2 |
+| P2 | 工單寫不做 addPipeline、已提前做 | 否（說明） |
+| P3 | 方向比 C2 改寫句更嚴 | 否（PR 對齊） |
+| P4 | T1／V1 未達 | 非本版 |
+| P5 | 合入後上游回寫 | 待合入 |
+| P6 | 勿誤標選取／解鎖完成 | 否 |
 
 ---
 
@@ -180,9 +197,10 @@ layoutStore.test.ts 未改且全綠。不發解鎖句；選取／旋轉／刪除
 
 | 工項 | 未交影響 |
 |------|----------|
-| C1 A0 | T1 退為「放下去才知道」（直接 `addDevice`）；**V1 門檻仍可能成立**，但拖曳體驗降級，且 L2 有動機自算重疊——寧可早交 |
-| D1 A1 | 回到原排 10/04，**零影響** |
+| C1 A0 | T1 退為「放下去才知道」；**V1 門檻仍可能成立**，但體驗降級且有兩套判定風險 |
+| D1 A1 | 原排 10/04 零影響；**本版已交**（含提前防線） |
 | B1 V13 收斂 | **不可未交**；未收斂則簽章依據不明 |
+| E1 PR | **擋公開 V2**；程式已齊 |
 
 ---
 
@@ -190,23 +208,27 @@ layoutStore.test.ts 未改且全綠。不發解鎖句；選取／旋轉／刪除
 
 | 工項 | 工單要求 | V14 狀態 | 備註 |
 |------|----------|----------|------|
-| A0 | `canPlaceDevice` 提共用＋測試 | `[x]` | 擋門檻；公開 V2；待開 PR |
-| A1 | `canConnect`＋錨點共用 | `[x]` | 次優；程式已達；待開 PR |
+| A0 | `canPlaceDevice` 提共用＋測試 | 程式 `[x]`／PR `[ ]` | 公開 V2 待合入 |
+| A1 | `canConnect`＋錨點共用 | 程式 `[x]`／PR `[ ]` | 含方向＋addPipeline 提前 |
 
 ---
 
 ## 開發日誌
 
+### 2026-09-27｜收斂盤點
+
+- 公開工單程式 DoD 齊；流程未閉（無 PR）
+- 產物：[V14_closeout](./dev_v14/V14_closeout.md)；更新 E1／開箱敘述
+
 ### 2026-09-27｜E1 驗收＋說明（PR 暫緩）
 
-- **驗收通過：** type-check／lint／847 tests；DoD 證據見 `evidence/V14_dod.md`
+- **驗收通過：** type-check／lint／測試；DoD 證據見 `evidence/V14_dod.md`
 - **說明文件：** 週報、USAGE、INTRO；演示頁 `/dev/placement-connect-check.html`
-- **PR 不開**直到負責人確認；建議 A0（＋演示）與 A1 分開
+- 其後：方向語意；`addPipeline`←`canConnect`
 
 ### 2026-09-27｜D1 完成
 
-- **V14-D1 完成：** `canConnect`＋錨點／媒質共用；`resolveConnections.test.ts`／`layoutStore.ts` 未改
-- 下一刀＝E1／開 PR（A0 與 A1 宜分開 PR）
+- **V14-D1 完成：** `canConnect`＋錨點／媒質共用；其後再提前接 `addPipeline`
 
 ### 2026-09-27｜C1 完成
 

@@ -2,10 +2,11 @@
 
 **週次：** 2026-09-21 → 2026-09-27
 **負責人：** aaaaa
-**最後更新：** 2026-09-27（驗收實跑完成；PR 待開）
+**最後更新：** 2026-09-27（收斂盤點；PR 待開）
 **工單：** [W0921-A0](../../../work_dispatch/aaaaa/0921/W0921-A0_placement_precheck.md)、[W0921-A1](../../../work_dispatch/aaaaa/0921/W0921-A1_connect_rules.md)
 **對照公開驗收：** [WEEK_20260921 §0.1](../../../work_dispatch/WEEK_20260921.md)（aaaaa＝**V2**）
 **執行計畫：** [todolist_v14](../todolist_v14.md)＋本目錄
+**收斂盤點：** [V14_closeout.md](./V14_closeout.md)
 **DoD 逐條證據：** [evidence/V14_dod.md](./evidence/V14_dod.md)
 **週報／用法：** [V14_week_report.md](./V14_week_report.md)、[USAGE_l2_placement_and_connect.md](./USAGE_l2_placement_and_connect.md)
 
@@ -108,6 +109,10 @@ pnpm test         → 45 files／847 tests 綠
 ---
 
 ## 7. 日誌
+
+### 2026-09-27｜收斂盤點
+
+- 程式齊（含方向＋addPipeline 提前）；[V14_closeout](./V14_closeout.md) 列 P1–P6；**PR 仍待開**
 
 ### 2026-09-27｜驗收
 

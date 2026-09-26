@@ -5,7 +5,7 @@
 **查證時間：** 2026-09-27
 **分支：** `dev/aaaaa0921`（相對 `origin/master`）
 **工單：** [W0921-A0](../../../../work_dispatch/aaaaa/0921/W0921-A0_placement_precheck.md)、[W0921-A1](../../../../work_dispatch/aaaaa/0921/W0921-A1_connect_rules.md)
-**結論：** **兩張工單程式 DoD 全部成立**；**PR 尚未開**（等負責人確認後再開，且 A0／A1 宜分開）。
+**結論：** **兩張工單程式 DoD 全部成立**；另提前 `addPipeline`←`canConnect`、方向收成有序 output→input。**PR 尚未開**（見 [V14_closeout](../V14_closeout.md)）。
 
 > 判定一律以 `git`／本機品質閘實查為準，不以文件宣稱為準。
 
@@ -34,7 +34,8 @@
 | 2 | `canConnect` discriminated union；無 `message` | `ConnectResult` 型別；失敗走 `describeConnectFailure` | **成立** |
 | 3 | 規則 7（斷線放行）有測 | `connectRules.test.ts` | **成立** |
 | 4 | 媒質與 FlowEngine 共用 | `portMedia.ts`／`getMachinePortMedia`；`useFlowEngine` 改呼叫 | **成立** |
-| 5 | 與 A0 分開；未動 `layoutStore`（A1 commits） | A1 commits 在 C1 之後；A1 路徑不含 layoutStore 行為變更意圖 | **成立**（實作 commit 分離；開 PR 時仍宜兩支） |
+| 5 | 與 A0 分開 commit | 初版分開；其後防線提前再動 `layoutStore.addPipeline` | **程式成立**；開 PR 見 closeout P1 |
+| 5b | （提前）`addPipeline` 呼叫 `canConnect` | `layoutStore.ts`＋`layoutStore.canConnect.test.ts` | **已做**（超工單「本週不做」） |
 | 6 | PR 標題帶 `W0921-A1` | **尚未開 PR** | **待開** |
 
 ---
@@ -45,7 +46,7 @@
 |------|------|
 | `pnpm type-check` | 綠 |
 | `pnpm lint-check` | 綠（既有 warn 不擋） |
-| `pnpm test` | **45 files／847 tests** 全綠 |
+| `pnpm test` | **46 files／854 tests** 全綠 |
 | 焦點測 | `placementCheck`＋`connectRules`＋`layoutStore`＋`resolveConnections`＝62 綠 |
 
 ---

@@ -1,18 +1,19 @@
 # V14-E1 — 驗收、PR、0928 交接
 
 **對應工項：** V14-E1
-**狀態：** `[~]` 驗收／文件已齊；**PR 待負責人確認後再開**
+**狀態：** `[~]` **程式／驗收／說明已收斂**；**PR／合入／上游回寫未閉**（見 [V14_closeout](./V14_closeout.md)）
 **日期：** 2026-09-27
 **依賴：** [C1](./C1_placement_precheck.md) `[x]`；[D1](./D1_connect_rules.md) `[x]`
 **驗收集：** [V14_acceptance_guide.md](./V14_acceptance_guide.md)
 **證據：** [evidence/V14_dod.md](./evidence/V14_dod.md)
+**收斂盤點：** [V14_closeout.md](./V14_closeout.md)
 **週報／用法／口頭：** [V14_week_report.md](./V14_week_report.md)、[USAGE](./USAGE_l2_placement_and_connect.md)、[INTRO](../../collaborator_survey/dispatch_private/0921/INTRO_A0_placement_precheck.md)
 
 ---
 
 ## 1. 目標
 
-個人與 review_gate 可依同一清單過關；PR body 講清楚這是 **L1 預檢提共用**，不是再解一層互動。
+個人與 review_gate 可依同一清單過關；PR body 講清楚這是 **L1 預檢提共用＋連線規則純函式（含 store 防線提前量）**，不是再解一層互動。
 
 ---
 
@@ -20,11 +21,13 @@
 
 V11 發過 `layout-L1`，V12 發過 `layout-store`。**V14 不發。**
 
-理由：點擊落子已於 9/23 放行；本版只交預檢純函式。選取／旋轉／刪除仍鎖（WEEK §2.1）。
+理由：點擊落子已於 9/23 放行；本版只交預檢／連線純函式。選取／旋轉／刪除仍鎖（WEEK §2.1）。
 
 ### 2.1 PR body 用的範圍宣告（可複製）
 
-**A0（主線）：**
+因後期 `addPipeline` 亦動 `layoutStore.ts`，**建議單 PR、body 分兩節**（或兩 PR 且 A1 疊在 A0 之上）。
+
+**A0（主線／公開 V2）：**
 
 ```text
 W0921-A0：canPlaceDevice／canMoveDevice（提共用，非另寫）。
@@ -32,18 +35,20 @@ layoutStore.test.ts 未改且全綠。DRAFT_ID='__draft__'。
 不發解鎖句；選取／旋轉／刪除仍鎖。toby 可從 conflicts 用 __draft__ 認出預檢對象。
 ```
 
-**A1（次優，若交）：**
+**A1（次優＋提前量）：**
 
 ```text
-W0921-A1：canConnect＋describeConnectFailure；錨點判定與 resolveConnections 共用。
-未動 layoutStore／addPipeline 防線（排 10/11）。與 A0 分開 PR。
+W0921-A1：canConnect＋describeConnectFailure；錨點與 resolveConnections 共用；媒質與 FlowEngine 共用。
+方向＝有序 output→input（反向亦拒）。
+提前：addPipeline 已呼叫 canConnect（原排 10/11）；失敗→PlacementResult invalid。
+斷線管線（規則 7）仍可寫入。L2 highlight 仍排 10/18。
 ```
 
 ### 2.2 禁止
 
 - 寫成「擺放已完成」——完成的是預檢入口，落子鏈是 T1
 - 暗示選取／旋轉／刪除已開
-- 把 A1 與 A0 捆成同一 PR
+- 把方向誤寫成「只擋同向、反向也算連上」
 
 ---
 
@@ -51,24 +56,27 @@ W0921-A1：canConnect＋describeConnectFailure；錨點判定與 resolveConnecti
 
 | # | 檔 | 動作 | 狀態 |
 |---|----|------|------|
-| 1 | [todolist_v14](../todolist_v14.md) | C1／D1／E1 狀態勾選 | `[ ]` |
-| 2 | [ROADMAP detail/B2](../../../roadmap/detail/B2_placement_chain.md) | 若 A0 合入，補開發日誌一句（L1 預檢已交） | `[ ]` |
-| 3 | [ROADMAP_OUTLINE](../../../roadmap/ROADMAP_OUTLINE.md) §9.1 | 9/27 門檻結算（主編／aaaaa；非本 PR 單獨完成） | 結算時 |
-| 4 | 決策層 REVIEW／PENDING | 補交付一行 | `[ ]` |
+| 1 | [todolist_v14](../todolist_v14.md) | 狀態／待處理回寫 | `[x]` 盤點時 |
+| 2 | [V14_closeout](./V14_closeout.md) | 收斂盤點 | `[x]` |
+| 3 | [ROADMAP detail/B2](../../../roadmap/detail/B2_placement_chain.md) | A0 **合入後**補開發日誌 | `[ ]` 待合入 |
+| 4 | [ROADMAP_OUTLINE](../../../roadmap/ROADMAP_OUTLINE.md) §9.1 | 9/27 門檻結算 | 結算時 |
+| 5 | 公開 W0921-A0／A1 DoD | 合入後勾選 | `[ ]` |
+| 6 | 決策層 REVIEW／PENDING | 補交付一行 | `[ ]` 見 closeout P5 |
 
 ---
 
 ## 4. 0928 交接摘要（PR body 或 Discord）
 
 ```text
-0921 L1：
-  - A0：placementCheck.ts（canPlaceDevice／canMoveDevice）；提共用；DRAFT_ID=__draft__
-  - A1：若已交＝connectRules 提前量；未交＝10/04 從錨點共用起做
+0921 L1（V14 程式已收斂，PR 待開）：
+  - A0：placementCheck.ts；DRAFT_ID=__draft__；layoutStore.test.ts 未改
+  - A1：connectRules＋錨點／媒質共用；方向 output→input；addPipeline 已接 canConnect
+  - 演示：/dev/placement-connect-check.html
   - 不發解鎖句；選取仍鎖
 
 下游：
   - toby：落子鏈呼叫 canPlaceDevice；勿自算 detectOverlaps
-  - 10/04：C2 純函式門檻（視 A1 是否已交調整切片）
+  - 10/04：錨點共用與 addPipeline 防線已提前；改排 L2 highlight／其餘 C2 切片
 ```
 
 ---
@@ -76,21 +84,26 @@ W0921-A1：canConnect＋describeConnectFailure；錨點判定與 resolveConnecti
 ## 5. DoD
 
 - [x] C1 DoD 全勾（見 evidence）
-- [x] D1 DoD 全勾（程式）；**分開 PR** 待開時遵守
+- [x] D1 DoD 全勾（含方向修正＋addPipeline 提前）
 - [ ] PR body 含 §2.1 範圍宣告（開 PR 時）
 - [x] 未發解鎖句
-- [x] todolist_v14 狀態已回寫（E1=`[~]`；驗收文件齊）
+- [x] todolist_v14／closeout 已回寫
 - [x] 週會演示頁＋USAGE／INTRO／週報
+- [ ] PR 開出並合入 master（公開 V2）
 
 ---
 
 ## 6. 開發日誌
 
+### 2026-09-27｜收斂盤點
+
+- 寫 [V14_closeout](./V14_closeout.md)：程式齊、PR 未開；提出 P1–P6
+- 更新 §2.1（A1 含 addPipeline 提前量；建議單 PR）
+
 ### 2026-09-27｜驗收＋說明文件
 
-- 品質閘：type-check／lint／847 tests 綠；`layoutStore.test.ts`／`resolveConnections.test.ts` 未改
-- 產物：`evidence/V14_dod.md`、USAGE、週報、INTRO 更新、`/dev/placement-connect-check.html`
-- **下一步：** 負責人確認後開 PR（建議 A0＋演示一支、A1 一支）；本檔 §2.1 貼進 body
+- 品質閘綠；DoD 證據；USAGE／週報／演示頁
+- 其後：方向語意修正；`addPipeline` 接 `canConnect`
 
 ### 2026-09-27
 

@@ -37,7 +37,7 @@ C2 契約已於 #51 凍結。10/04 第一件事是錨點提共用——能本週
 | 3 | A0＝提共用、非另寫；`layoutStore.test.ts` 未改且全綠 | C1 |
 | 4 | A0 交期維持工單 **9/24**；本檔為執行計畫、立刻開工 | todolist 週切片 |
 | 5 | A1 進 todolist 正式次優；未交＝回 10/04、零影響 | [D1](./D1_connect_rules.md) |
-| 6 | A1 本週不做 `addPipeline` 防線、不碰 `layoutStore` | D1 |
+| 6 | A1 本週不做 `addPipeline` 防線、不碰 `layoutStore` | **開版定案**；後因非法管線可寫入，**已提前**做 store 防線（[closeout P2](./V14_closeout.md)） |
 | 7 | **不發**解鎖句 | [E1](./E1_acceptance_and_handoff.md) |
 | 8 | 工廠／旋轉／選取本週不做 | WEEK §2.1 |
 | 9 | 分支 `dev/aaaaa0921` | meta |
@@ -58,7 +58,7 @@ WEEK §2.1：`createPlacedDevice` 預設值屬呈現決策，排 10 月；本週
 |------|------|
 | V13 | 已結案（#51）；本版 B1 收斂文件狀態；簽章依據＝D1 |
 | W0921-A0 | 本版 C1＝其全部 DoD；對應公開 **V2** |
-| W0921-A1 | 本版 D1＝其本週範圍；**不含** addPipeline 防線 |
+| W0921-A1 | 本版 D1＝其本週範圍；**另提前** addPipeline 防線（工單原排 10/11） |
 | W0921-T1（toby） | **零檔案交集**；預檢呼叫端是他；用錯讀取面則 PR comment |
 | W0921-G1（#48） | 零交集；`ToolbarPanel` 分區鎖與本版無關 |
 | R-B2 | 本版交 L1 預檢；落子鏈仍是 toby |
@@ -81,6 +81,10 @@ WEEK §2.1：`createPlacedDevice` 預設值屬呈現決策，排 10 月；本週
 ---
 
 ## 6. 開發日誌
+
+### 2026-09-27｜收斂
+
+- 決策 #6 覆寫說明：addPipeline 防線已提前；邊界表與 [V14_closeout](./V14_closeout.md) 對齊
 
 ### 2026-09-27
 
