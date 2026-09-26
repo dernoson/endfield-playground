@@ -2,7 +2,7 @@
 
 | meta | value |
 |------|-------|
-| version | **v1.5（2026-09-27；程式收斂盤點；PR 未開）** |
+| version | **v1.6（2026-09-27；開 PR 單支分節）** |
 | 用途 | 供 Agent 執行本週派工／改工單時的**強制約束**；細節以公開 WEEK 與個人工單為準 |
 | 公開 | [WEEK_0921](../../work_dispatch/WEEK_20260921.md) v1.2、[W0921-A0](../../work_dispatch/aaaaa/0921/W0921-A0_placement_precheck.md)、[W0921-A1](../../work_dispatch/aaaaa/0921/W0921-A1_connect_rules.md) |
 | 執行計畫 | [todolist_v14](../dev/todolist_v14.md)、[dev_v14/](../dev/dev_v14/) |
@@ -16,15 +16,12 @@
 
 ## 0. 三十秒結論
 
-**V14 程式已收斂；公開 V2 未達（無 PR）。**  
-- 證據／盤點：[evidence/V14_dod.md](../dev/dev_v14/evidence/V14_dod.md)、[V14_closeout](../dev/dev_v14/V14_closeout.md)（P1–P6）  
-- 演示：`pnpm dev` → `/dev/placement-connect-check.html`  
-- 用法／週報：[USAGE](../dev/dev_v14/USAGE_l2_placement_and_connect.md)、[V14_week_report](../dev/dev_v14/V14_week_report.md)  
-- **提前量：** `addPipeline` 已接 `canConnect`；方向＝有序 output→input
+**V14 程式已收斂；單 PR 分節交審（A0＋A1）。**  
+- 證據／盤點：[evidence/V14_dod.md](../dev/dev_v14/evidence/V14_dod.md)、[V14_closeout](../dev/dev_v14/V14_closeout.md)  
+- 演示：`/dev/placement-connect-check.html`  
+- **提前量：** `addPipeline`←`canConnect`；方向＝有序 output→input
 
-**下一優先＝開 PR**（建議單 PR 分節；見 closeout P1）。不發解鎖句。門檻鏈仍缺 **T1 落子**（公開 V1）。
-
-**仍不做：** 選取／旋轉／刪除；L2 highlight（10/18）。
+不發解鎖句。門檻鏈仍缺 **T1**（V1）。合入後做 closeout P5。
 
 
 ---
@@ -37,11 +34,12 @@
 | ~~1~~ | ~~A0 落子前預檢（擋門檻）~~ | **已完成**；[V14-C1](../dev/dev_v14/C1_placement_precheck.md)；待開 PR |
 | ~~2~~ | ~~A1 連線規則純函式（次優）~~ | **已完成**；[V14-D1](../dev/dev_v14/D1_connect_rules.md)；待開 PR |
 | ~~3~~ | ~~驗收＋說明／演示~~ | **已完成（PR 除外）**；[V14-E1](../dev/dev_v14/E1_acceptance_and_handoff.md) `[~]` |
-| 4 | **開 PR**（確認後；不發解鎖句） | E1 §2.1；[closeout P1](../dev/dev_v14/V14_closeout.md)（建議單 PR 分節） |
+| ~~4~~ | ~~開 PR（單支分節）~~ | **進行中／開出後填編號**；[E1 §2.1](../dev/dev_v14/E1_acceptance_and_handoff.md) |
+| 5 | 合入後上游回寫（P5） | closeout P5 |
 | — | **禁止**選取／旋轉／刪除接線 | WEEK §2.1 |
 | — | **禁止**替 toby 寫落子鏈或改其檔 | 規則 17 |
 
-（原「禁止本週 addPipeline 接 canConnect」已因預覽誤寫入而**提前解除並完成**。）
+（原「禁止本週 addPipeline 接 canConnect」已提前解除並完成。）
 
 ---
 
@@ -114,10 +112,14 @@
 
 ## 6. 日誌
 
+### 2026-09-27（v1.6）
+
+- 負責人確認開 PR；定案單 PR 分節（A0＋A1）；下一＝合入後 P5
+
 ### 2026-09-27（v1.5）
 
 - 收斂盤點：[V14_closeout](../dev/dev_v14/V14_closeout.md)；程式齊、PR 未開；P1–P6
-- addPipeline 防線已提前；§0／§1 改寫；下一優先＝開 PR
+- addPipeline 防線已提前；§0／§1 改寫
 
 ### 2026-09-27（v1.4）
 
