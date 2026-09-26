@@ -2,7 +2,7 @@
 
 | meta | value |
 |------|-------|
-| version | **v1.1（2026-09-27；V13 殘項收斂完成，下一刀＝A0）** |
+| version | **v1.2（2026-09-27；V14-C1／A0 實作完成）** |
 | 用途 | 供 Agent 執行本週派工／改工單時的**強制約束**；細節以公開 WEEK 與個人工單為準 |
 | 公開 | [WEEK_0921](../../work_dispatch/WEEK_20260921.md) v1.2、[W0921-A0](../../work_dispatch/aaaaa/0921/W0921-A0_placement_precheck.md)、[W0921-A1](../../work_dispatch/aaaaa/0921/W0921-A1_connect_rules.md) |
 | 執行計畫 | [todolist_v14](../dev/todolist_v14.md)、[dev_v14/](../dev/dev_v14/) |
@@ -15,11 +15,11 @@
 
 ## 0. 三十秒結論
 
-**V13 殘項已收斂（V14-B1）；前置成立。** 下一刀＝**A0：`canPlaceDevice`／`canMoveDevice` 提共用**（[W0921-A0](../../work_dispatch/aaaaa/0921/W0921-A0_placement_precheck.md)），交期維持工單 **9/24**，分支 `dev/aaaaa0921`。
+**A0 預檢已實作完成（V14-C1）。** `canPlaceDevice`／`canMoveDevice` 在 `src/utils/layout/placementCheck.ts`；store 提共用；`layoutStore.test.ts` 未改且全綠。待開 PR（標題帶 `W0921-A0`）。
 
-本週門檻鏈：**工具列真機器 → 點畫布 → 機器出現**（9/27＝M2 硬綁 B1）。aaaaa 在鏈上的位置是 L1 預檢；簽章唯一依據＝[V13-D1 §3](../dev/dev_v13/D1_placement_precheck_gap.md)。
+本週門檻鏈仍缺 **T1 落子**（公開 V1）；aaaaa 側公開 **V2** 程式條件已達。
 
-次優 **A1：`canConnect`**——A0 交完且有餘裕才開；**未交不算未交付**。
+次優 **A1：`canConnect`**——有餘裕才開；**未交不算未交付**。
 
 **不發新解鎖句。** 點擊落子已於 9/23 放行。
 
@@ -30,7 +30,7 @@
 | 序 | 內容 | 工單／文件 |
 |----|------|------------|
 | ~~0~~ | ~~V13 文件收斂（前置）~~ | **已完成**；[V14-B1](../dev/dev_v14/B1_v13_residue_close.md) |
-| 1 | **A0 落子前預檢**（擋門檻） | [W0921-A0](../../work_dispatch/aaaaa/0921/W0921-A0_placement_precheck.md)、[V14-C1](../dev/dev_v14/C1_placement_precheck.md) |
+| ~~1~~ | ~~A0 落子前預檢（擋門檻）~~ | **已完成**；[V14-C1](../dev/dev_v14/C1_placement_precheck.md)；待開 PR |
 | 2 | **A1 連線規則純函式**（次優） | [W0921-A1](../../work_dispatch/aaaaa/0921/W0921-A1_connect_rules.md)、[V14-D1](../dev/dev_v14/D1_connect_rules.md) |
 | 3 | 驗收＋PR＋交接（不發解鎖句） | [V14-E1](../dev/dev_v14/E1_acceptance_and_handoff.md) |
 | — | **禁止**選取／旋轉／刪除接線 | WEEK §2.1 |
@@ -96,7 +96,7 @@
 | 項 | 對象 | 本週實況（截至 2026-09-27，`gh`／`origin/master`） |
 |----|------|------------------------------------------------------|
 | **V1** | toby T1 | **未達**；未見 W0921-T1 PR；`usePlacementIntent.ts` 不在 master |
-| **V2** | aaaaa A0 | **未達**；`placementCheck.ts` 不存在、無對應 PR |
+| **V2** | aaaaa A0 | **程式已達**（本分支）；待 PR 合入 master 後公開驗收改達成 |
 | V3 | goodmorning G1 | **未達**；#48 仍 OPEN，最後活動 2026-09-14T17:37Z |
 | V4 | shirone S1 | **達成**；#53 於 09-24 合入（10×R100 rename＋`MainLayout` 一行） |
 | V5 | dernoson D0 | 觀察中（待審僅 #48；選取／旋轉／刪除未見放行） |
@@ -108,6 +108,11 @@
 ---
 
 ## 6. 日誌
+
+### 2026-09-27（v1.2）
+
+- V14-C1 實作完成：`placementCheck.ts`＋store 提共用＋測試；不發解鎖句
+- §0／§1／§5 改寫；下一優先＝開 PR 或（有餘裕）D1
 
 ### 2026-09-27（v1.1）
 

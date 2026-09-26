@@ -9,7 +9,7 @@
 **上游：** [WEEK_20260921](../../work_dispatch/WEEK_20260921.md) v1.2、[ROADMAP_OUTLINE](../../roadmap/ROADMAP_OUTLINE.md) **v1.13**、[AGENT_WEEK_0921](../claude/AGENT_WEEK_0921.md)
 **門檻週：** 2026-09-21 → 2026-09-27（**9/27＝M2 硬綁 B1**）
 **開發分支：** `dev/aaaaa0921`
-**狀態總覽：** **`[~]` 前置完成、主線待開**（2026-09-27；A1／B1 `[x]`；C1 起為下一刀；交期維持工單原文）
+**狀態總覽：** **`[~]` C1 已交、次優／驗收待開**（2026-09-27；A1／B1／C1 `[x]`；D1 有餘裕才開）
 **驗收指南：** [dev_v14/V14_acceptance_guide.md](./dev_v14/V14_acceptance_guide.md)
 **待確認問題：** [dispatch_private/0921/PENDING_DECISIONS_20260927.md](../collaborator_survey/dispatch_private/0921/PENDING_DECISIONS_20260927.md)
 
@@ -107,7 +107,7 @@ layoutStore.test.ts 未改且全綠。不發解鎖句；選取／旋轉／刪除
 
 ## V14-C｜落子前預檢（W0921-A0・擋門檻）
 
-- [ ] **V14-C1** `placementCheck.ts`：匯出 `canPlaceDevice`／`canMoveDevice`／`DRAFT_ID`／`DeviceDraft`／`LayoutView`；store 提共用；測試＋品質閘
+- [x] **V14-C1** `placementCheck.ts`：匯出 `canPlaceDevice`／`canMoveDevice`／`DRAFT_ID`／`DeviceDraft`／`LayoutView`；store 提共用；測試＋品質閘
   - 細項：[dev_v14/C1_placement_precheck.md](./dev_v14/C1_placement_precheck.md)
   - 產物：`src/utils/layout/placementCheck.ts`、`src/__tests__/utils/layout/placementCheck.test.ts`；重構 `layoutStore.ts`
   - 對照公開驗收：**V2**
@@ -149,13 +149,13 @@ layoutStore.test.ts 未改且全綠。不發解鎖句；選取／旋轉／刪除
 
 ### 主線（對照 [W0921-A0 §5](../../work_dispatch/aaaaa/0921/W0921-A0_placement_precheck.md)）
 
-- [ ] `placementCheck.ts` 匯出 `canPlaceDevice`／`canMoveDevice`／`DRAFT_ID`／`DeviceDraft`／`LayoutView`
-- [ ] `collectLayoutIssues`／`assessInvolving` 已**移出**（非複製）；`addDevice`／`moveDevice` 改呼叫共用版
-- [ ] `src/__tests__/store/layoutStore.test.ts` **未修改**且全綠
-- [ ] 新測試涵蓋：空地可放／重疊拒絕且 conflicts 含 `__draft__`／未知機型／非有限座標／移動原位可放
-- [ ] `canPlaceDevice` JSDoc 含效能門檻句（約 200 台）
-- [ ] 未 import `editorStore`、未改 `src/editor/*`
-- [ ] `pnpm type-check`／`lint-check`／`format-check`／`test` 綠
+- [x] `placementCheck.ts` 匯出 `canPlaceDevice`／`canMoveDevice`／`DRAFT_ID`／`DeviceDraft`／`LayoutView`
+- [x] `collectLayoutIssues`／`assessInvolving` 已**移出**（非複製）；`addDevice`／`moveDevice` 改呼叫共用版
+- [x] `src/__tests__/store/layoutStore.test.ts` **未修改**且全綠
+- [x] 新測試涵蓋：空地可放／重疊拒絕且 conflicts 含 `__draft__`／未知機型／非有限座標／移動原位可放
+- [x] `canPlaceDevice` JSDoc 含效能門檻句（約 200 台）
+- [x] 未 import `editorStore`、未改 `src/editor/*`
+- [x] `pnpm type-check`／本檔 lint／format／相關 `test` 綠
 - [ ] PR body 一行說明 `DRAFT_ID` 與 toby 如何從 conflicts 認出自己
 
 ### 次優（對照 [W0921-A1 §4](../../work_dispatch/aaaaa/0921/W0921-A1_connect_rules.md)；未交可整段略過）
@@ -187,12 +187,18 @@ layoutStore.test.ts 未改且全綠。不發解鎖句；選取／旋轉／刪除
 
 | 工項 | 工單要求 | V14 狀態 | 備註 |
 |------|----------|----------|------|
-| A0 | `canPlaceDevice` 提共用＋測試 | `[ ]` | 擋門檻；公開 V2 |
+| A0 | `canPlaceDevice` 提共用＋測試 | `[x]` | 擋門檻；公開 V2；待開 PR |
 | A1 | `canConnect`＋錨點共用 | `[ ]` | 次優；不在公開 V 表 |
 
 ---
 
 ## 開發日誌
+
+### 2026-09-27｜C1 完成
+
+- **V14-C1 完成：** `placementCheck.ts` 提共用；`layoutStore.test.ts` 未改且全綠；新測 6 條
+- 公開 V2 程式條件已達；剩 PR 宣告（`DRAFT_ID='__draft__'`）
+- **下一刀選項：** D1（A1 次優，有餘裕）或 E1／開 PR
 
 ### 2026-09-27｜B1 完成；開工指向 C1
 

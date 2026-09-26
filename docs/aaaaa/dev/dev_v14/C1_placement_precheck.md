@@ -1,7 +1,7 @@
 # V14-C1 — 落子前預檢（`placementCheck`｜W0921-A0）
 
 **對應工項：** V14-C1
-**狀態：** `[ ]` 未開始（**前置 A1／B1 已完成；可開工**）
+**狀態：** `[x]` 完成（2026-09-27）
 **日期：** 2026-09-27
 **依賴：** [A1](./A1_scope_decision.md) `[x]`、[B1](./B1_v13_residue_close.md) `[x]`
 **正式工單：** [W0921-A0](../../../work_dispatch/aaaaa/0921/W0921-A0_placement_precheck.md)
@@ -9,6 +9,7 @@
 **交期：** **9/24**（工單原文）
 **對照公開驗收：** WEEK §0.1 **V2**
 **開發分支：** `dev/aaaaa0921`
+**產物：** `src/utils/layout/placementCheck.ts`、`src/__tests__/utils/layout/placementCheck.test.ts`；重構 `src/store/layoutStore.ts`
 
 ---
 
@@ -64,15 +65,15 @@
 
 對照 [W0921-A0 §5](../../../work_dispatch/aaaaa/0921/W0921-A0_placement_precheck.md)：
 
-- [ ] 匯出 `canPlaceDevice`／`canMoveDevice`／`DRAFT_ID`／`DeviceDraft`／`LayoutView`
-- [ ] 私有函式已**移出**（非複製）
-- [ ] `layoutStore.test.ts` 未修改且全綠
-- [ ] §4 五類測試覆蓋
-- [ ] JSDoc 含「約 200 台」效能句
-- [ ] `grep editorStore` 於 `placementCheck.ts` 零命中；diff 不含 `src/editor/*`
-- [ ] 品質閘全綠
-- [ ] PR body 一行：`DRAFT_ID` 值與 toby 如何從 conflicts 認出自己
-- [ ] PR 標題帶 `W0921-A0`；分支 `dev/aaaaa0921`
+- [x] 匯出 `canPlaceDevice`／`canMoveDevice`／`DRAFT_ID`／`DeviceDraft`／`LayoutView`
+- [x] 私有函式已**移出**（非複製）
+- [x] `layoutStore.test.ts` 未修改且全綠
+- [x] §4 五類測試覆蓋
+- [x] JSDoc 含「約 200 台」效能句
+- [x] `grep editorStore` 於 `placementCheck.ts` 零命中；diff 不含 `src/editor/*`
+- [x] 品質閘全綠（type-check／eslint 本檔／prettier 本檔／相關 test）
+- [ ] PR body 一行：`DRAFT_ID` 值與 toby 如何從 conflicts 認出自己（開 PR 時）
+- [ ] PR 標題帶 `W0921-A0`；分支 `dev/aaaaa0921`（開 PR 時）
 
 ### 公開驗收速查（WEEK §0.2 A0）
 
@@ -93,7 +94,14 @@ T1 改用直接 `addDevice`（失敗不落子）。V1 門檻句仍可能成立�
 
 ## 7. 開發日誌
 
-### 2026-09-27
+### 2026-09-27（實作）
+
+- 新建 `placementCheck.ts`：移出 `collectLayoutIssues`／`assessInvolving`／`positionFinite`／`pipelineWaypointsValid`；匯出 `canPlaceDevice`／`canMoveDevice`／`DRAFT_ID`
+- `layoutStore` 改 import 共用版；`layoutStore.test.ts` **未改**且 36 條全綠；新測 6 條全綠
+- JSDoc 含「約 200 台」效能句（`canPlaceDevice`／`canMoveDevice`／`collectLayoutIssues`）
+- 品質閘：type-check 過；本檔 prettier／eslint 過
+
+### 2026-09-27（開版）
 
 - 開版；簽章不重述，指向 V13-D1 §3
 - 現況：`placementCheck.ts` 不存在於 master
