@@ -91,7 +91,8 @@ export function canConnect(
         return { ok: false, reason: 'self_loop', deviceId: from.deviceId };
     }
 
-    if (from.portType === to.portType) {
+    /** 有序：必須 output → input（同向或反向皆拒絕） */
+    if (from.portType !== 'output' || to.portType !== 'input') {
         return { ok: false, reason: 'direction', ports: [from, to] };
     }
 
@@ -147,7 +148,7 @@ export function describeConnectFailure(result: ConnectResult): string | null {
         case 'malformed':
             return '管線路徑不良構（須至少兩點、座標有限、逐段軸對齊）';
         case 'direction':
-            return '兩端埠方向相同，無法連線';
+            return '須由輸出埠接到輸入埠';
         case 'self_loop':
             return `不可連接同一台設備（${result.deviceId}）`;
         case 'media':

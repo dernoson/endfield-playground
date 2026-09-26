@@ -198,10 +198,46 @@ describe('canConnect — 方向', () => {
 
         /**
          * 終點偏好 input，但 b 的 output 錨若無 input 同格，會落到 output。
-         * 起點亦為 output → 兩端同向。
+         * 起點亦為 output → 非 output→input。
          */
         expect(result.ok).toBe(false);
         if (!result.ok) expect(result.reason).toBe('direction');
+    });
+
+    it('兩端皆 input → direction', () => {
+        const a = deviceAt('a', 'stub_belt', 0, 0);
+        const b = deviceAt('b', 'stub_belt', 4, 0);
+        const start = portAnchor(a, belt, 'input', 0, 0);
+        const end = portAnchor(b, belt, 'input', 0, 0);
+
+        const result = canConnect(
+            { media: 'belt', waypoints: [start, { x: 2, y: 0, z: 0 }, end] },
+            { devices: [a, b], pipelines: [] },
+            getMachine,
+        );
+
+        expect(result.ok).toBe(false);
+        if (!result.ok) expect(result.reason).toBe('direction');
+    });
+
+    it('起點 input、終點 output（反向）→ direction', () => {
+        const src = deviceAt('src', 'stub_belt', 0, 0);
+        const dst = deviceAt('dst', 'stub_belt', 4, 0);
+        /** waypoints 反過來：起點在 dst 的 input、終點在 src 的 output */
+        const start = portAnchor(dst, belt, 'input', 0, 0);
+        const end = portAnchor(src, belt, 'output', 0, 0);
+
+        const result = canConnect(
+            { media: 'belt', waypoints: [start, { x: 2, y: 0, z: 0 }, end] },
+            { devices: [src, dst], pipelines: [] },
+            getMachine,
+        );
+
+        expect(result.ok).toBe(false);
+        if (!result.ok) {
+            expect(result.reason).toBe('direction');
+            expect(describeConnectFailure(result)).toBe('須由輸出埠接到輸入埠');
+        }
     });
 });
 
