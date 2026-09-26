@@ -9,9 +9,10 @@
 **上游：** [WEEK_20260921](../../work_dispatch/WEEK_20260921.md) v1.2、[ROADMAP_OUTLINE](../../roadmap/ROADMAP_OUTLINE.md) **v1.13**、[AGENT_WEEK_0921](../claude/AGENT_WEEK_0921.md)
 **門檻週：** 2026-09-21 → 2026-09-27（**9/27＝M2 硬綁 B1**）
 **開發分支：** `dev/aaaaa0921`
-**狀態總覽：** **`[~]` 程式／驗收已收斂；PR／合入未閉**（2026-09-27；A–D `[x]`；E1 流程項待開 PR）
+**狀態總覽：** **`[~]` 單 PR 分節交審中**（2026-09-27；程式／驗收 `[x]`；合入後全版結案）
 **驗收指南：** [dev_v14/V14_acceptance_guide.md](./dev_v14/V14_acceptance_guide.md)
-**收斂盤點：** [dev_v14/V14_closeout.md](./dev_v14/V14_closeout.md)（公開工單對照＋待處理 P1–P6）
+**收斂盤點：** [dev_v14/V14_closeout.md](./dev_v14/V14_closeout.md)
+**PR：** （開出後填）
 **證據／週報／用法：** [evidence/V14_dod.md](./dev_v14/evidence/V14_dod.md)、[V14_week_report.md](./dev_v14/V14_week_report.md)、[USAGE](./dev_v14/USAGE_l2_placement_and_connect.md)
 **待確認問題：** [dispatch_private/0921/PENDING_DECISIONS_20260927.md](../collaborator_survey/dispatch_private/0921/PENDING_DECISIONS_20260927.md)
 
@@ -127,9 +128,9 @@ layoutStore.test.ts 未改且全綠。不發解鎖句；選取／旋轉／刪除
 
 ## V14-E｜驗收、PR、交接
 
-- [~] **V14-E1** 驗收／說明／演示 `[x]`；**PR／合入／上游回寫 `[ ]`** — 詳 [V14_closeout](./dev_v14/V14_closeout.md) P1–P6
+- [~] **V14-E1** 驗收／說明／演示 `[x]`；**PR 單支分節交審**；合入／上游回寫 `[ ]`
   - 細項：[dev_v14/E1_acceptance_and_handoff.md](./dev_v14/E1_acceptance_and_handoff.md)
-  - 驗收：[dev_v14/V14_acceptance_guide.md](./dev_v14/V14_acceptance_guide.md)
+  - 收斂：[dev_v14/V14_closeout.md](./dev_v14/V14_closeout.md)（P1 已定案）
   - 演示：`dev/placement-connect-check.html`
 
 ---
@@ -184,8 +185,8 @@ layoutStore.test.ts 未改且全綠。不發解鎖句；選取／旋轉／刪除
 
 | ID | 問題 | 擋程式？ |
 |----|------|----------|
-| P1 | 開 PR（建議單 PR 分節） | 擋公開 V2 |
-| P2 | 工單寫不做 addPipeline、已提前做 | 否（說明） |
+| P1 | 開 PR（單 PR 分節） | **已定案／交審中** |
+| P2 | 工單寫不做 addPipeline、已提前做 | 否（PR 說明） |
 | P3 | 方向比 C2 改寫句更嚴 | 否（PR 對齊） |
 | P4 | T1／V1 未達 | 非本版 |
 | P5 | 合入後上游回寫 | 待合入 |
@@ -215,10 +216,13 @@ layoutStore.test.ts 未改且全綠。不發解鎖句；選取／旋轉／刪除
 
 ## 開發日誌
 
+### 2026-09-27｜開 PR（單支分節）
+
+- 負責人確認；P1 定案單 PR（A0＋A1 兩節）；合入後再做 P5
+
 ### 2026-09-27｜收斂盤點
 
-- 公開工單程式 DoD 齊；流程未閉（無 PR）
-- 產物：[V14_closeout](./dev_v14/V14_closeout.md)；更新 E1／開箱敘述
+- 公開工單程式 DoD 齊；產物 [V14_closeout](./dev_v14/V14_closeout.md)
 
 ### 2026-09-27｜E1 驗收＋說明（PR 暫緩）
 

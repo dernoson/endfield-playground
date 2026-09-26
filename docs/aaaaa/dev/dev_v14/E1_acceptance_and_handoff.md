@@ -1,7 +1,7 @@
 # V14-E1 — 驗收、PR、0928 交接
 
 **對應工項：** V14-E1
-**狀態：** `[~]` **程式／驗收／說明已收斂**；**PR／合入／上游回寫未閉**（見 [V14_closeout](./V14_closeout.md)）
+**狀態：** `[~]` **PR 已確認開出（單 PR 分節）**；合入／上游回寫仍待
 **日期：** 2026-09-27
 **依賴：** [C1](./C1_placement_precheck.md) `[x]`；[D1](./D1_connect_rules.md) `[x]`
 **驗收集：** [V14_acceptance_guide.md](./V14_acceptance_guide.md)
@@ -25,7 +25,9 @@ V11 發過 `layout-L1`，V12 發過 `layout-store`。**V14 不發。**
 
 ### 2.1 PR body 用的範圍宣告（可複製）
 
-因後期 `addPipeline` 亦動 `layoutStore.ts`，**建議單 PR、body 分兩節**（或兩 PR 且 A1 疊在 A0 之上）。
+因後期 `addPipeline` 亦動 `layoutStore.ts`，**定案：單 PR、body 分兩節**（負責人 2026-09-27 確認）。
+
+**PR：** （開出後填編號）
 
 **A0（主線／公開 V2）：**
 
@@ -68,7 +70,7 @@ W0921-A1：canConnect＋describeConnectFailure；錨點與 resolveConnections �
 ## 4. 0928 交接摘要（PR body 或 Discord）
 
 ```text
-0921 L1（V14 程式已收斂，PR 待開）：
+0921 L1（V14；單 PR 分節交審）：
   - A0：placementCheck.ts；DRAFT_ID=__draft__；layoutStore.test.ts 未改
   - A1：connectRules＋錨點／媒質共用；方向 output→input；addPipeline 已接 canConnect
   - 演示：/dev/placement-connect-check.html
@@ -85,20 +87,24 @@ W0921-A1：canConnect＋describeConnectFailure；錨點與 resolveConnections �
 
 - [x] C1 DoD 全勾（見 evidence）
 - [x] D1 DoD 全勾（含方向修正＋addPipeline 提前）
-- [ ] PR body 含 §2.1 範圍宣告（開 PR 時）
+- [x] PR body 含 §2.1 範圍宣告（開 PR 時貼上）
 - [x] 未發解鎖句
 - [x] todolist_v14／closeout 已回寫
 - [x] 週會演示頁＋USAGE／INTRO／週報
-- [ ] PR 開出並合入 master（公開 V2）
+- [ ] PR 合入 master（公開 V2）
 
 ---
 
 ## 6. 開發日誌
 
+### 2026-09-27｜開 PR
+
+- 負責人確認；定案單 PR 分節（A0＋A1）；P1 關閉為進行中
+
 ### 2026-09-27｜收斂盤點
 
 - 寫 [V14_closeout](./V14_closeout.md)：程式齊、PR 未開；提出 P1–P6
-- 更新 §2.1（A1 含 addPipeline 提前量；建議單 PR）
+- 更新 §2.1（A1 含 addPipeline 提前量）
 
 ### 2026-09-27｜驗收＋說明文件
 

@@ -3,8 +3,9 @@
 **週次：** 2026-09-21 → 2026-09-27（M2 門檻週）
 **負責人：** aaaaa
 **分支：** `dev/aaaaa0921`
-**狀態：** **程式／驗收已收斂**；**PR 未開 → 公開 V2 未達**（詳 [V14_closeout](./V14_closeout.md)）
+**狀態：** **單 PR 分節交審**（A0＋A1；合入前公開 V2 未達）
 **撰寫：** 2026-09-27
+**收斂：** [V14_closeout](./V14_closeout.md)
 
 ---
 
@@ -57,7 +58,8 @@
 ```text
 toby：canPlaceDevice；conflicts 認 __draft__
 10/04：錨點共用與 addPipeline 防線已提前 → 改排其餘 C2／L2 highlight
-P1：開 PR（建議單 PR 分節）← 擋公開 V2
+P1：單 PR 分節交審（A0＋A1）← 負責人已確認
+合入後：ROADMAP B2／公開 DoD（closeout P5）
 ```
 
 範圍宣告見 [E1 §2.1](./E1_acceptance_and_handoff.md)。
