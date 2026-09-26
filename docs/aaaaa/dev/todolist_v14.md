@@ -9,7 +9,7 @@
 **上游：** [WEEK_20260921](../../work_dispatch/WEEK_20260921.md) v1.2、[ROADMAP_OUTLINE](../../roadmap/ROADMAP_OUTLINE.md) **v1.13**、[AGENT_WEEK_0921](../claude/AGENT_WEEK_0921.md)
 **門檻週：** 2026-09-21 → 2026-09-27（**9/27＝M2 硬綁 B1**）
 **開發分支：** `dev/aaaaa0921`
-**狀態總覽：** **`[~]` C1 已交、次優／驗收待開**（2026-09-27；A1／B1／C1 `[x]`；D1 有餘裕才開）
+**狀態總覽：** **`[~]` C1／D1 已交、驗收／PR 待開**（2026-09-27；A1／B1／C1／D1 `[x]`）
 **驗收指南：** [dev_v14/V14_acceptance_guide.md](./dev_v14/V14_acceptance_guide.md)
 **待確認問題：** [dispatch_private/0921/PENDING_DECISIONS_20260927.md](../collaborator_survey/dispatch_private/0921/PENDING_DECISIONS_20260927.md)
 
@@ -116,10 +116,10 @@ layoutStore.test.ts 未改且全綠。不發解鎖句；選取／旋轉／刪除
 
 ## V14-D｜連線規則純函式（W0921-A1・次優）
 
-- [ ] **V14-D1** 錨點判定提共用 → `connectRules.ts`（`canConnect`＋`describeConnectFailure`）＋測試；**不動** `layoutStore`
+- [x] **V14-D1** 錨點判定提共用 → `connectRules.ts`（`canConnect`＋`describeConnectFailure`）＋測試；**不動** `layoutStore`
   - 細項：[dev_v14/D1_connect_rules.md](./dev_v14/D1_connect_rules.md)
-  - 產物：`src/utils/layout/connectRules.ts`、測試；重構 `resolveConnections.ts`（行為不變）
-  - 依賴：C1 已交且有餘裕；**與 C1 分開 PR**
+  - 產物：`portAnchorIndex.ts`、`portMedia.ts`、`connectRules.ts`、測試；重構 `resolveConnections.ts`／`useFlowEngine.ts`
+  - 依賴：C1 已交；**與 C1 分開 commit**
 
 ---
 
@@ -158,13 +158,14 @@ layoutStore.test.ts 未改且全綠。不發解鎖句；選取／旋轉／刪除
 - [x] `pnpm type-check`／本檔 lint／format／相關 `test` 綠
 - [ ] PR body 一行說明 `DRAFT_ID` 與 toby 如何從 conflicts 認出自己
 
-### 次優（對照 [W0921-A1 §4](../../work_dispatch/aaaaa/0921/W0921-A1_connect_rules.md)；未交可整段略過）
+### 次優（對照 [W0921-A1 §4](../../work_dispatch/aaaaa/0921/W0921-A1_connect_rules.md)）
 
-- [ ] 錨點展開／命中已提共用；`resolveConnections` 既有測試未修改且全綠
-- [ ] `canConnect` 回傳 discriminated union；`message` 不在 union 內
-- [ ] 規則 7（斷線放行）有專門測試
-- [ ] 媒質判定與 `useFlowEngine` 共用同一函式
-- [ ] 與 A0 **分開 PR**；未動 `layoutStore.ts`
+- [x] 錨點展開／命中已提共用；`resolveConnections` 既有測試未修改且全綠
+- [x] `canConnect` 回傳 discriminated union；`message` 不在 union 內
+- [x] 規則 7（斷線放行）有專門測試
+- [x] 媒質判定與 `useFlowEngine` 共用同一函式（`getMachinePortMedia`）
+- [x] 與 A0 **分開 commit**；未動 `layoutStore.ts`
+- [ ] PR 標題帶 `W0921-A1`（開 PR 時）
 
 ### 品質閘
 
@@ -188,11 +189,16 @@ layoutStore.test.ts 未改且全綠。不發解鎖句；選取／旋轉／刪除
 | 工項 | 工單要求 | V14 狀態 | 備註 |
 |------|----------|----------|------|
 | A0 | `canPlaceDevice` 提共用＋測試 | `[x]` | 擋門檻；公開 V2；待開 PR |
-| A1 | `canConnect`＋錨點共用 | `[ ]` | 次優；不在公開 V 表 |
+| A1 | `canConnect`＋錨點共用 | `[x]` | 次優；程式已達；待開 PR |
 
 ---
 
 ## 開發日誌
+
+### 2026-09-27｜D1 完成
+
+- **V14-D1 完成：** `canConnect`＋錨點／媒質共用；`resolveConnections.test.ts`／`layoutStore.ts` 未改
+- 下一刀＝E1／開 PR（A0 與 A1 宜分開 PR）
 
 ### 2026-09-27｜C1 完成
 

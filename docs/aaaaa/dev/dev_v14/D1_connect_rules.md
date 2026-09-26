@@ -1,12 +1,14 @@
 # V14-D1 — 連線規則純函式（`connectRules`｜W0921-A1・次優）
 
 **對應工項：** V14-D1
-**狀態：** `[ ]` 未開始
+**狀態：** `[x]` 完成（2026-09-27）
 **日期：** 2026-09-27
-**依賴：** [C1](./C1_placement_precheck.md) 已交且有餘裕
+**依賴：** [C1](./C1_placement_precheck.md) `[x]`
 **正式工單：** [W0921-A1](../../../work_dispatch/aaaaa/0921/W0921-A1_connect_rules.md)
 **契約依據：** [roadmap/detail/C2 §4.1／§4.3／§4.4](../../../roadmap/detail/C2_add_connection_contract.md)
 **擋門檻：** 否（原排 10/04；未交零影響）
+**開發分支：** `dev/aaaaa0921`
+**產物：** `portAnchorIndex.ts`、`portMedia.ts`、`connectRules.ts`、測試；重構 `resolveConnections.ts`、`useFlowEngine.ts`（媒質查表共用）
 
 ---
 
@@ -23,12 +25,13 @@ C2 規則表與 `ConnectResult` 形狀已於 V13／#51 凍結。本項**不做�
 | 決定 | 理由 |
 |------|------|
 | **順序：先提共用，再寫 `canConnect`** | 反過來＝兩份錨點判定 |
+| 錨點落點＝`portAnchorIndex.ts` | `collectPortAnchors`／`findPortAt` 匯出；`resolveConnections` 改呼叫 |
+| 埠媒質＝`getMachinePortMedia` | 與 FlowEngine `resolvePortMedia` 共用；權威＝`PortDef.media` |
 | 回傳＝detail/C2 的 discriminated union | 與 `PlacementResult` 同形；`message` 不進 union |
 | `describeConnectFailure` 另出 | L3 不組文案；L2 呼叫描述函式 |
 | 規則 7 斷線放行必測 | 最容易被實作者照舊直覺擋掉 |
-| 媒質判定共用引擎函式 | 禁止與 `useFlowEngine` 各寫一份 |
-| **本週不動 `layoutStore`** | A0 同週在動；`addPipeline` 防線排 10/11 |
-| **與 A0 分開 PR** | 標題帶 `W0921-A1` |
+| **本週不動 `layoutStore`** | `addPipeline` 防線排 10/11 |
+| **與 A0 分開 commit／PR** | 標題帶 `W0921-A1` |
 
 ### 2.1 本週不做
 
@@ -41,20 +44,21 @@ C2 規則表與 `ConnectResult` 形狀已於 V13／#51 凍結。本項**不做�
 
 ---
 
-## 3. 檔案修改計畫
+## 3. 檔案修改計畫（已落地）
 
 | 動作 | 檔案 | 說明 |
 |------|------|------|
-| 重構 | `src/utils/layout/resolveConnections.ts` | **先做**；錨點展開／命中提共用；對外行為不變 |
+| 新建 | `src/utils/layout/portAnchorIndex.ts` | 錨點展開／命中共用 |
+| 新建 | `src/utils/layout/portMedia.ts` | `getMachinePortMedia` |
+| 重構 | `src/utils/layout/resolveConnections.ts` | 改呼叫共用錨點；對外行為不變 |
+| 重構 | `src/composables/useFlowEngine.ts` | `resolvePortMedia` 改呼叫 `getMachinePortMedia` |
 | 新建 | `src/utils/layout/connectRules.ts` | `canConnect`＋`describeConnectFailure` |
 | 新建 | `src/__tests__/utils/layout/connectRules.test.ts` | 四條規則各一正一反、斷線放行、`malformed` |
-| **不碰** | `src/store/layoutStore.ts`、`editorStore`、`src/editor/*` | |
-
-型別可隨實作落在 `connectRules.ts` 或 `types/layout.ts`；以 detail/C2 §4.3 為準，不另開契約討論。
+| **未碰** | `src/store/layoutStore.ts`、`resolveConnections.test.ts`、`src/editor/*` | |
 
 ---
 
-## 4. 測試計畫
+## 4. 測試計畫（已覆蓋）
 
 - 方向／媒質／單埠單線／自連：各一正一反
 - 規則 7：`from`／`to` 為 `null` → `ok: true`
@@ -67,12 +71,13 @@ C2 規則表與 `ConnectResult` 形狀已於 V13／#51 凍結。本項**不做�
 
 對照 [W0921-A1 §4](../../../work_dispatch/aaaaa/0921/W0921-A1_connect_rules.md)：
 
-- [ ] 錨點共用已提；`resolveConnections` 測試未改且全綠
-- [ ] `canConnect` 回傳 union；無 `message` 欄
-- [ ] 規則 7 專門測試
-- [ ] 媒質判定與引擎共用（review 確認無複製）
-- [ ] 品質閘全綠
-- [ ] 與 A0 分開 PR；diff 不含 `layoutStore.ts`
+- [x] 錨點共用已提；`resolveConnections` 測試未改且全綠
+- [x] `canConnect` 回傳 union；無 `message` 欄
+- [x] 規則 7 專門測試
+- [x] 媒質判定與引擎共用（`getMachinePortMedia`）
+- [x] 品質閘：type-check／本檔 prettier／eslint／相關 test 綠
+- [x] diff 不含 `layoutStore.ts`
+- [ ] PR 標題帶 `W0921-A1`（開 PR 時）
 
 ---
 
@@ -84,7 +89,13 @@ C2 規則表與 `ConnectResult` 形狀已於 V13／#51 凍結。本項**不做�
 
 ## 7. 開發日誌
 
-### 2026-09-27
+### 2026-09-27（實作）
+
+- 提 `portAnchorIndex`／`portMedia`；`resolveConnections` 與 FlowEngine 改共用
+- `connectRules.ts`：四條有效規則＋規則 7；`describeConnectFailure`
+- 測試 14 條全綠；`resolveConnections` 既有 6 條未改且全綠；未動 `layoutStore`
+
+### 2026-09-27（開版）
 
 - 開版；列為正式次優項；契約指向 detail/C2，不重寫規則表
 - 現況：`connectRules.ts` 不存在於 master
