@@ -34,6 +34,7 @@ import {
     pipelineWaypointsValid,
     positionFinite,
 } from '@/utils/layout/placementCheck';
+import { canConnect } from '@/utils/layout/connectRules';
 import { useHistoryStore } from '@/store/historyStore';
 
 /**
@@ -242,6 +243,7 @@ export const useLayoutStore = defineStore('layout', () => {
 
     /**
      * 新增管線；waypoints 須 ≥2 點、座標有限且逐段軸對齊；  \
+     * 連線語意依 {@link canConnect}（方向／媒質／單埠單線／自連）；  \
      * 僅當「本管線」引入 overlap 時失敗
      *
      * @param pipeline 待加入管線
@@ -255,6 +257,14 @@ export const useLayoutStore = defineStore('layout', () => {
             };
         }
         if (!pipelineWaypointsValid(pipeline)) {
+            return { ok: false, reason: 'invalid', invalidIds: [pipeline.id] };
+        }
+
+        const connectCheck = canConnect(
+            { media: pipeline.media, waypoints: pipeline.waypoints },
+            { devices: devices.value, pipelines: pipelines.value },
+        );
+        if (!connectCheck.ok) {
             return { ok: false, reason: 'invalid', invalidIds: [pipeline.id] };
         }
 

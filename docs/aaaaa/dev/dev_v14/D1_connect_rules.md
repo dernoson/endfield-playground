@@ -22,39 +22,39 @@ C2 規則表與 `ConnectResult` 形狀已於 V13／#51 凍結。本項**不做�
 
 ## 2. 技術決策
 
-| 決定 | 理由 |
-|------|------|
-| **順序：先提共用，再寫 `canConnect`** | 反過來＝兩份錨點判定 |
-| 錨點落點＝`portAnchorIndex.ts` | `collectPortAnchors`／`findPortAt` 匯出；`resolveConnections` 改呼叫 |
-| 埠媒質＝`getMachinePortMedia` | 與 FlowEngine `resolvePortMedia` 共用；權威＝`PortDef.media` |
-| 回傳＝detail/C2 的 discriminated union | 與 `PlacementResult` 同形；`message` 不進 union |
-| `describeConnectFailure` 另出 | L3 不組文案；L2 呼叫描述函式 |
-| 規則 7 斷線放行必測 | 最容易被實作者照舊直覺擋掉 |
-| **本週不動 `layoutStore`** | `addPipeline` 防線排 10/11 |
-| **與 A0 分開 commit／PR** | 標題帶 `W0921-A1` |
+| 決定                                         | 理由                                                                 |
+| -------------------------------------------- | -------------------------------------------------------------------- |
+| **順序：先提共用，再寫 `canConnect`**        | 反過來＝兩份錨點判定                                                 |
+| 錨點落點＝`portAnchorIndex.ts`               | `collectPortAnchors`／`findPortAt` 匯出；`resolveConnections` 改呼叫 |
+| 埠媒質＝`getMachinePortMedia`                | 與 FlowEngine `resolvePortMedia` 共用；權威＝`PortDef.media`         |
+| 回傳＝detail/C2 的 discriminated union       | 與 `PlacementResult` 同形；`message` 不進 union                      |
+| `describeConnectFailure` 另出                | L3 不組文案；L2 呼叫描述函式                                         |
+| 規則 7 斷線放行必測                          | 最容易被實作者照舊直覺擋掉                                           |
+| **本週原計畫不動 `layoutStore.addPipeline`** | 排 10/11；**2026-09-27 已提前接入**（見開發日誌）                    |
+| **與 A0 分開 commit／PR**                    | 標題帶 `W0921-A1`                                                    |
 
 ### 2.1 本週不做
 
-| 不做 | 排程 |
-|------|------|
-| `addPipeline` 內部呼叫 `canConnect` | 10/11 |
-| L2 draft highlight | toby／10/18 |
-| 環路偵測 | 明確排除 |
-| `createPlacedDevice` | WEEK §2.1 |
+| 不做                                | 排程        |
+| ----------------------------------- | ----------- |
+| `addPipeline` 內部呼叫 `canConnect` | 10/11       |
+| L2 draft highlight                  | toby／10/18 |
+| 環路偵測                            | 明確排除    |
+| `createPlacedDevice`                | WEEK §2.1   |
 
 ---
 
 ## 3. 檔案修改計畫（已落地）
 
-| 動作 | 檔案 | 說明 |
-|------|------|------|
-| 新建 | `src/utils/layout/portAnchorIndex.ts` | 錨點展開／命中共用 |
-| 新建 | `src/utils/layout/portMedia.ts` | `getMachinePortMedia` |
-| 重構 | `src/utils/layout/resolveConnections.ts` | 改呼叫共用錨點；對外行為不變 |
-| 重構 | `src/composables/useFlowEngine.ts` | `resolvePortMedia` 改呼叫 `getMachinePortMedia` |
-| 新建 | `src/utils/layout/connectRules.ts` | `canConnect`＋`describeConnectFailure` |
-| 新建 | `src/__tests__/utils/layout/connectRules.test.ts` | 四條規則各一正一反、斷線放行、`malformed` |
-| **未碰** | `src/store/layoutStore.ts`、`resolveConnections.test.ts`、`src/editor/*` | |
+| 動作     | 檔案                                                                     | 說明                                            |
+| -------- | ------------------------------------------------------------------------ | ----------------------------------------------- |
+| 新建     | `src/utils/layout/portAnchorIndex.ts`                                    | 錨點展開／命中共用                              |
+| 新建     | `src/utils/layout/portMedia.ts`                                          | `getMachinePortMedia`                           |
+| 重構     | `src/utils/layout/resolveConnections.ts`                                 | 改呼叫共用錨點；對外行為不變                    |
+| 重構     | `src/composables/useFlowEngine.ts`                                       | `resolvePortMedia` 改呼叫 `getMachinePortMedia` |
+| 新建     | `src/utils/layout/connectRules.ts`                                       | `canConnect`＋`describeConnectFailure`          |
+| 新建     | `src/__tests__/utils/layout/connectRules.test.ts`                        | 四條規則各一正一反、斷線放行、`malformed`       |
+| **未碰** | `src/store/layoutStore.ts`、`resolveConnections.test.ts`、`src/editor/*` |                                                 |
 
 ---
 

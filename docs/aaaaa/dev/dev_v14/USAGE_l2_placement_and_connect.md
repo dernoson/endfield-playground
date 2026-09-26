@@ -9,12 +9,12 @@
 
 ## 0. 三十秒
 
-| 問 | 答 |
-|----|-----|
-| 交什麼？ | 兩個**純函式入口**：預檢能不能放、能不能連 |
-| 誰呼叫？ | L2（畫布／意圖層）；**不要**自算 `detectOverlaps` 或另寫錨點命中 |
+| 問                  | 答                                                               |
+| ------------------- | ---------------------------------------------------------------- |
+| 交什麼？            | 兩個**純函式入口**：預檢能不能放、能不能連                       |
+| 誰呼叫？            | L2（畫布／意圖層）；**不要**自算 `detectOverlaps` 或另寫錨點命中 |
 | 跟 store 什麼關係？ | `addDevice`／`moveDevice` 已改走同一套預檢；預覽呼叫＝真落子答案 |
-| 解鎖了什麼？ | **沒有解鎖句**；選取／旋轉／刪除仍鎖 |
+| 解鎖了什麼？        | **沒有解鎖句**；選取／旋轉／刪除仍鎖                             |
 
 ---
 
@@ -22,43 +22,43 @@
 
 ```ts
 import {
-  DRAFT_ID,
-  canPlaceDevice,
-  canMoveDevice,
-  type DeviceDraft,
-} from '@/utils/layout/placementCheck'
-import { useLayoutStore } from '@/store/layoutStore'
+    DRAFT_ID,
+    canPlaceDevice,
+    canMoveDevice,
+    type DeviceDraft,
+} from '@/utils/layout/placementCheck';
+import { useLayoutStore } from '@/store/layoutStore';
 
-const layout = useLayoutStore()
+const layout = useLayoutStore();
 
 const draft: DeviceDraft = {
-  machineType: selectedMachineId,
-  position: { x, y, z: 0 },
-  rotation: 0,
-  // machineMode 可省略 → modes[0]
-}
+    machineType: selectedMachineId,
+    position: { x, y, z: 0 },
+    rotation: 0,
+    // machineMode 可省略 → modes[0]
+};
 
 const result = canPlaceDevice(draft, {
-  devices: layout.devices,
-  pipelines: layout.pipelines,
-})
+    devices: layout.devices,
+    pipelines: layout.pipelines,
+});
 
 if (!result.ok) {
-  // result.reason: 'overlap' | 'invalid'
-  // result.conflicts?: 含 DRAFT_ID（'__draft__'）與既有設備 id
-  // → 預覽紅框畫 conflicts；不要自己再跑一遍佔格
+    // result.reason: 'overlap' | 'invalid'
+    // result.conflicts?: 含 DRAFT_ID（'__draft__'）與既有設備 id
+    // → 預覽紅框畫 conflicts；不要自己再跑一遍佔格
 }
 ```
 
 ### 規則
 
-| 規則 | 說明 |
-|------|------|
+| 規則                    | 說明                                           |
+| ----------------------- | ---------------------------------------------- |
 | 回傳＝`PlacementResult` | 與 `addDevice` 同一 narrowing；L2 不用學第二套 |
-| draft **沒有 id** | 型別擋「拿預檢當落子」 |
-| conflicts 裡的 draft | 固定字面 `'__draft__'`（`DRAFT_ID`） |
-| 效能 | 全量檢查；約 >200 台請 debounce（JSDoc 有寫） |
-| 禁止 | `import { detectOverlaps } …` 自組預覽判定 |
+| draft **沒有 id**       | 型別擋「拿預檢當落子」                         |
+| conflicts 裡的 draft    | 固定字面 `'__draft__'`（`DRAFT_ID`）           |
+| 效能                    | 全量檢查；約 >200 台請 debounce（JSDoc 有寫）  |
+| 禁止                    | `import { detectOverlaps } …` 自組預覽判定     |
 
 移動拖曳用 `canMoveDevice(id, nextPos, view)`——原位必 `ok: true`。
 
@@ -67,32 +67,29 @@ if (!result.ok) {
 ## 2. 連線規則（A1・次優）
 
 ```ts
-import {
-  canConnect,
-  describeConnectFailure,
-} from '@/utils/layout/connectRules'
-import { getMachineById } from '@/data/machines'
+import { canConnect, describeConnectFailure } from '@/utils/layout/connectRules';
+import { getMachineById } from '@/data/machines';
 
 const result = canConnect(
-  { media: 'belt', waypoints }, // ≥2 點、軸對齊
-  { devices: layout.devices, pipelines: layout.pipelines },
-  (id) => getMachineById(id),
-)
+    { media: 'belt', waypoints }, // ≥2 點、軸對齊
+    { devices: layout.devices, pipelines: layout.pipelines },
+    (id) => getMachineById(id),
+);
 
 if (!result.ok) {
-  // result.reason 給程式分支；文案用 describeConnectFailure(result)
-  // ConnectResult **沒有** message 欄位（契約：L3 不組文案）
+    // result.reason 給程式分支；文案用 describeConnectFailure(result)
+    // ConnectResult **沒有** message 欄位（契約：L3 不組文案）
 }
 ```
 
 ### 必記
 
-| 點 | 說明 |
-|----|------|
-| 錨點 | 與 `resolveConnections` **同一套**（`portAnchorIndex`）；勿另寫「端點碰哪一埠」 |
-| 規則 7 | 兩端都沒命中埠 → **`ok: true`**（斷線管線合法；不是錯誤） |
-| 本週不做 | `addPipeline` 內部防線（排 10/11）；本函式是給 L2 draft 用的 |
-| 媒質 | 與 FlowEngine 共用 `getMachinePortMedia` |
+| 點                   | 說明                                                                            |
+| -------------------- | ------------------------------------------------------------------------------- |
+| 錨點                 | 與 `resolveConnections` **同一套**（`portAnchorIndex`）；勿另寫「端點碰哪一埠」 |
+| 規則 7               | 兩端都沒命中埠 → **`ok: true`**（斷線管線合法；不是錯誤）                       |
+| store 防線           | `addPipeline` **已**呼叫 `canConnect`；失敗 → `PlacementResult` `invalid`       |
+| 本週原排不做、已提前 | L2 highlight（toby／10/18）；`addPipeline` 防線原排 10/11                       |
 
 ---
 
