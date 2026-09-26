@@ -1,263 +1,311 @@
 <script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+
+/** 定義由上層傳入的 Props */
+const props = defineProps<{
+    /** 目前選取的設備 ID */
+    selectedEquipment?: string | null;
+}>();
+
+/** 定義發送給上層的事件 */
+const emit = defineEmits<{
+    (e: 'equip-click', equipmentId: string): void;
+    (e: 'equip-dragstart', event: DragEvent, equipmentId: string): void;
+}>();
+
+/** 控制底部設備選取列的開關狀態 */
+const bottomBarOpen = ref(true);
+
+/** 記錄目前選取的分類 Tab */
+const activeCategory = ref('全部');
+
+/** 搜尋關鍵字狀態 */
+const searchQuery = ref('');
+
+function toggleBottomBar() {
+    bottomBarOpen.value = !bottomBarOpen.value;
+}
+
+function handleKeyDown(event: KeyboardEvent) {
+    const target = event.target as HTMLElement;
+    const isEditable =
+        target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
+    if (isEditable) return;
+    if (event.ctrlKey || event.metaKey || event.altKey) return;
+    if (event.key.toLowerCase() === 'z') {
+        toggleBottomBar();
+    }
+}
+
+function handleWheelScroll(event: WheelEvent) {
+    const target = event.currentTarget as HTMLElement;
+    target.scrollLeft += event.deltaY;
+}
+
+onMounted(() => {
+    window.addEventListener('keydown', handleKeyDown);
+});
+
+onUnmounted(() => {
+    window.removeEventListener('keydown', handleKeyDown);
+});
+
+/** 分類 Tab */
+const categoryTabs = ['全部', '物流', '倉儲', '生產', '合成', '電力', '功能'];
+
 /**
- * 下方工具列：既有五顆 EquipmentType 按鈕（落子）＋真實機器分類列表（V11-H1）
- *
- * 真實機器點選＝本地 highlight／console；**不**呼叫 armPlacement／dataTransfer。
+ * 擴充後的所有設備清單
  */
-import { computed, ref } from 'vue';
-import type { EquipmentType } from '@/types/editor';
-import type { MachineCategory } from '@/types/machine';
-import { useEditorStore } from '@/store/editorStore';
-import {
-    DEFAULT_TOOLBAR_MACHINE_TAG,
-    listToolbarMachines,
-    TOOLBAR_MACHINE_TAGS,
-    type ToolbarMachineRow,
-} from '@/editor/toolbar/toolbarMachines';
+const equipments: Array<{ id: string; category: string; label: string }> = [
+    // 物流
+    { id: 'conveyor', category: '物流', label: '傳送帶' },
+    { id: 'logistics-bridge', category: '物流', label: '物流橋' },
+    { id: 'splitter', category: '物流', label: '分流器' },
+    { id: 'merger', category: '物流', label: '匯流器' },
+    { id: 'item-inlet', category: '物流', label: '物品准入口' },
+    { id: 'pipe', category: '物流', label: '管道' },
+    { id: 'pipe-bridge', category: '物流', label: '管道橋' },
+    { id: 'pipe-splitter', category: '物流', label: '管道分流器' },
+    { id: 'pipe-merger', category: '物流', label: '管道匯流器' },
+    { id: 'pipe-inlet', category: '物流', label: '管道准入口' },
 
-/** 藍圖 store：武裝放置模式與記錄目前選取設備類型（僅舊五顆） */
-const editorStore = useEditorStore();
+    // 倉儲
+    { id: 'protocol-box', category: '倉儲', label: '協議儲存箱' },
+    { id: 'warehouse-in', category: '倉儲', label: '倉庫存貨口' },
+    { id: 'warehouse-out', category: '倉儲', label: '倉庫取貨口' },
+    { id: 'liquid-tank', category: '倉儲', label: '儲液罐' },
+    { id: 'gas-tank', category: '倉儲', label: '儲氣罐' },
+    { id: 'access-line-base', category: '倉儲', label: '倉庫存取線基段' },
+    { id: 'access-line-source', category: '倉儲', label: '倉庫存取線源樁' },
+    { id: 'hidden-pipe-in', category: '倉儲', label: '暗管入口' },
+    { id: 'hidden-pipe-out', category: '倉儲', label: '暗管出口' },
+    { id: 'multi-hidden-in', category: '倉儲', label: '多口暗管入口' },
+    { id: 'multi-hidden-out', category: '倉儲', label: '多口暗管出口' },
 
-/** 工具列可選擇的設備清單，供點擊武裝放置與拖拉放置共用 */
-const equipments: Array<{ id: EquipmentType; label: string }> = [
-    { id: 'smelter', label: '精煉爐' },
-    { id: 'crusher', label: '粉碎機' },
-    { id: 'assembler', label: '組裝台' },
-    { id: 'conveyor-node', label: '輸送帶節點' },
-    { id: 'power-node', label: '電力節點' },
+    // 生產
+    { id: 'smelter', category: '生產', label: '精煉爐' },
+    { id: 'crusher', category: '生產', label: '粉碎機' },
+    { id: 'parts-maker', category: '生產', label: '配件機' },
+    { id: 'shaper', category: '生產', label: '塑形機' },
+    { id: 'seed-harvester', category: '生產', label: '採種機' },
+    { id: 'planter', category: '生產', label: '種植機' },
+    { id: 'wastewater-processor', category: '生產', label: '廢水處理機' },
+
+    // 合成
+    { id: 'equip-parts-maker', category: '合成', label: '裝備原件機' },
+    { id: 'filler', category: '合成', label: '灌裝機' },
+    { id: 'packager', category: '合成', label: '封裝機' },
+    { id: 'grinder', category: '合成', label: '研磨機' },
+    { id: 'reaction-pool', category: '合成', label: '反應池' },
+    { id: 'expanded-reaction-pool', category: '合成', label: '擴容反應池' },
+    { id: 'heaven-furnace', category: '合成', label: '天有洪爐' },
+    { id: 'purifier', category: '合成', label: '提純機' },
+    { id: 'dismantler', category: '合成', label: '拆解機' },
+    { id: 'liquid-gas-converter', category: '合成', label: '液氣轉化機' },
+    { id: 'solid-gas-converter', category: '合成', label: '固氣轉化機' },
+    { id: 'gas-disperser', category: '合成', label: '氣體散布機' },
+    { id: 'gas-reactor', category: '合成', label: '氣體反應爐' },
+
+    // 電力
+    { id: 'power-pole', category: '電力', label: '供電樁' },
+    { id: 'xirang-power-pole', category: '電力', label: '息壤供電樁' },
+    { id: 'repeater', category: '電力', label: '中繼器' },
+    { id: 'xirang-repeater', category: '電力', label: '息壤中繼器' },
+    { id: 'thermal-pool', category: '電力', label: '熱能池' },
+
+    // 功能
+    { id: 'zipline', category: '功能', label: '滑索架' },
+    { id: 'long-zipline', category: '功能', label: '長距滑索架' },
+    { id: 'sprinkler', category: '功能', label: '灑水機' },
 ];
 
-/** 真實機器分類 Tab（本週預設基礎生產） */
-const activeTag = ref<MachineCategory>(DEFAULT_TOOLBAR_MACHINE_TAG);
-
-/** 本地選取的真實機器 id（不進 store） */
-const selectedRealMachineId = ref<string | null>(null);
-
-/** 當前分類下的真實機器列（唯讀列表；點選不進 store） */
-const realMachines = computed(() => listToolbarMachines(activeTag.value));
-
 /**
- * 點擊設備按鈕時武裝放置模式，之後點擊畫布即可放置該設備。
- * 同時清空真實機器本地高亮，避免與 legacy 武裝態同時亮起。
- * @param equipment 選擇的設備類型
+ * 根據分類與關鍵字進行過濾
  */
-function handleEquipClick(equipment: EquipmentType) {
-    selectedRealMachineId.value = null;
-    editorStore.armPlacement(equipment);
-}
-
-/**
- * 開始拖拉設備按鈕時，記錄目前選取設備並將類型寫入 dataTransfer，
- * 供畫布 drop 事件讀取以決定要放置的設備類型。
- * @param event 拖拉開始事件
- * @param equipment 被拖拉的設備類型
- */
-function handleEquipDragStart(event: DragEvent, equipment: EquipmentType) {
-    selectedRealMachineId.value = null;
-    editorStore.setSelectedEquipment(equipment);
-
-    if (!event.dataTransfer) {
-        return;
+const filteredEquipments = computed(() => {
+    let result = equipments;
+    if (activeCategory.value !== '全部') {
+        result = result.filter((eq) => eq.category === activeCategory.value);
     }
+    const query = searchQuery.value.trim().toLowerCase();
+    if (query) {
+        result = result.filter(
+            (eq) => eq.label.toLowerCase().includes(query) || eq.id.toLowerCase().includes(query),
+        );
+    }
+    return result;
+});
 
-    event.dataTransfer.effectAllowed = 'copy';
-    event.dataTransfer.setData('application/x-endfield-equipment', equipment);
+/** 改為 Emit 事件給上層處理 */
+function handleEquipClick(equipmentId: string) {
+    emit('equip-click', equipmentId);
 }
 
-/**
- * 切換真實機器分類 Tab；清空本地選取，避免切回原 Tab 時殘留高亮。
- * @param tag 目標分類
- */
-function handleTagClick(tag: MachineCategory) {
-    activeTag.value = tag;
-    selectedRealMachineId.value = null;
-}
-
-/**
- * 選取真實機器：僅本地態＋console（下一步＝B2 解封後接落子）
- * @param row 攤平列
- */
-function handleRealMachineClick(row: ToolbarMachineRow) {
-    selectedRealMachineId.value = row.id;
-    console.info('[toolbar] real machine selected (no store / no place)', {
-        id: row.id,
-        name: row.name,
-        sizeText: row.sizeText,
-        tag: activeTag.value,
-    });
+function handleEquipDragStart(event: DragEvent, equipmentId: string) {
+    if (event.dataTransfer) {
+        event.dataTransfer.effectAllowed = 'copy';
+        event.dataTransfer.setData('application/x-endfield-equipment', equipmentId);
+    }
+    emit('equip-dragstart', event, equipmentId);
 }
 </script>
 
 <template>
-    <div class="panel toolbar-bottom toolbar-panel">
-        <!-- 既有五顆：落子／拖曳路徑不變 -->
-        <div class="toolbar-row--legacy">
-            <UButton
-                v-for="equipment in equipments"
-                :key="equipment.id"
-                color="neutral"
-                :variant="editorStore.selectedEquipment === equipment.id ? 'solid' : 'soft'"
-                :label="equipment.label"
-                class="toolbar-button"
-                draggable="true"
-                @click="handleEquipClick(equipment.id)"
-                @dragstart="handleEquipDragStart($event, equipment.id)"
-            />
+    <!-- 永遠釘死在畫布最底端 -->
+    <div class="pointer-events-none absolute bottom-0 left-0 z-50 flex w-full flex-col">
+        <!-- 懸浮控制層：32px (左上角視角按鈕與收合三角形) -->
+        <div class="relative h-[32px] w-full shrink-0">
+            <!-- 視角切換分頁：474x32 -->
+            <div
+                class="pointer-events-auto absolute bottom-0 left-0 flex h-[32px] w-[474px] items-center rounded-tr-[25px] bg-[#4E4E4E] pl-[80px]"
+            >
+                <button
+                    type="button"
+                    class="flex h-[26px] w-[80px] items-center justify-center text-[16px] leading-none font-light text-white disabled:opacity-100"
+                    disabled
+                >
+                    佈局視角
+                </button>
+                <span class="text-white/50">|</span>
+                <button
+                    type="button"
+                    class="flex h-[26px] w-[80px] items-center justify-center text-[16px] leading-none font-light text-white disabled:opacity-100"
+                    disabled
+                >
+                    流程視角
+                </button>
+                <span class="text-white/50">|</span>
+                <button
+                    type="button"
+                    class="flex h-[26px] w-[80px] items-center justify-center text-[16px] leading-none font-light text-white disabled:opacity-100"
+                    disabled
+                >
+                    並列視角
+                </button>
+                <p class="ml-2 text-xs font-light text-[#A4A4A4]">(按TAB切換視角)</p>
+            </div>
+
+            <!-- 底部設備選取列開關：黃色三角形 -->
+            <button
+                type="button"
+                class="group pointer-events-auto absolute bottom-0 left-1/2 flex h-[32px] w-[64px] -translate-x-1/2 items-center justify-center"
+                :aria-label="bottomBarOpen ? '收合底部設備選取列' : '展開底部設備選取列'"
+                :aria-expanded="bottomBarOpen"
+                @click="toggleBottomBar"
+            >
+                <span
+                    class="size-0 border-x-[19.5px] border-b-[19.79px] border-x-transparent border-b-[#EEFD1C] opacity-80 transition-transform group-hover:opacity-100"
+                    :class="bottomBarOpen ? 'rotate-180' : ''"
+                />
+            </button>
         </div>
 
-        <!-- 真實機器：分類＋列表（不接 store） -->
-        <div class="toolbar-real">
-            <div class="toolbar-real__tags" role="tablist" aria-label="機器分類">
-                <button
-                    v-for="tag in TOOLBAR_MACHINE_TAGS"
-                    :key="tag"
-                    type="button"
-                    role="tab"
-                    class="toolbar-tag"
-                    :class="{ 'toolbar-tag--active': activeTag === tag }"
-                    :aria-selected="activeTag === tag"
-                    @click="handleTagClick(tag)"
+        <!-- 實體面板：CSS Grid 動畫 -->
+        <div
+            class="pointer-events-auto grid w-full transition-all duration-300 ease-in-out"
+            :class="bottomBarOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'"
+        >
+            <div class="overflow-hidden">
+                <!-- 鎖定面板高度為 208px -->
+                <div
+                    class="flex h-[208px] w-full shrink-0 flex-col bg-[#4e4e4e] px-[80px] pt-[23px]"
                 >
-                    {{ tag }}
-                </button>
-            </div>
-            <div class="toolbar-real__list">
-                <button
-                    v-for="row in realMachines"
-                    :key="row.id"
-                    type="button"
-                    class="toolbar-machine"
-                    :class="{ 'toolbar-machine--selected': selectedRealMachineId === row.id }"
-                    :title="`${row.name}（${row.id}）`"
-                    @click="handleRealMachineClick(row)"
-                >
-                    <span class="toolbar-machine__name">{{ row.name }}</span>
-                    <span class="toolbar-machine__size">{{ row.sizeText }}</span>
-                </button>
-                <p v-if="realMachines.length === 0" class="toolbar-real__empty">此分類無機器</p>
+                    <!-- 上排：搜尋框 + 分類 Tab -->
+                    <div
+                        class="mb-[18px] flex h-[43px] w-[1114px] shrink-0 items-center gap-[18px]"
+                    >
+                        <!-- 搜尋框 -->
+                        <label
+                            class="flex h-full w-[218px] cursor-text items-center gap-2 rounded-full border border-[#eefd1c] bg-[#3c3c3c] px-[18px]"
+                        >
+                            <UIcon name="i-lucide-search" class="size-5 shrink-0 text-white/50" />
+                            <input
+                                v-model="searchQuery"
+                                type="text"
+                                placeholder="搜尋設備..."
+                                aria-label="搜尋設備"
+                                class="w-full bg-transparent text-[20px] leading-none font-[250] tracking-[0.03em] text-white/50 placeholder:text-white/50 focus:outline-none"
+                            />
+                        </label>
+
+                        <!-- 分類 Tab -->
+                        <button
+                            v-for="tab in categoryTabs"
+                            :key="tab"
+                            type="button"
+                            @click="activeCategory = tab"
+                            class="h-[43px] w-[110px] rounded-[15px] text-[20px] leading-none font-light tracking-[0.03em] text-white transition-colors"
+                            :class="activeCategory === tab ? 'bg-[#2b2b2b]' : 'bg-[#3c3c3c]'"
+                            :aria-label="`切換至 ${tab} 分類`"
+                        >
+                            {{ tab }}
+                        </button>
+                    </div>
+
+                    <!-- 下排：設備卡片列 -->
+                    <!-- 綁定 @wheel.prevent 事件來轉換垂直滾動為水平滾動 -->
+                    <div
+                        class="flex h-[100px] w-[1760px] shrink-0 items-start gap-[18px] overflow-x-auto [&::-webkit-scrollbar]:hidden"
+                        style="scrollbar-width: none"
+                        @wheel.prevent="handleWheelScroll"
+                    >
+                        <!-- 無搜尋結果提示 -->
+                        <div
+                            v-if="filteredEquipments.length === 0"
+                            class="flex h-[100px] w-full items-center justify-center text-[20px] font-light text-white/50"
+                        >
+                            {{
+                                activeCategory !== '全部' ? `在「${activeCategory}」分類中` : ''
+                            }}找不到符合「{{ searchQuery }}」的設備
+                        </div>
+
+                        <!-- 物件卡片 -->
+                        <button
+                            v-for="equipment in filteredEquipments"
+                            :key="equipment.id"
+                            type="button"
+                            draggable="true"
+                            @click="handleEquipClick(equipment.id)"
+                            @dragstart="handleEquipDragStart($event, equipment.id)"
+                            class="relative h-[100px] w-[266px] shrink-0 text-left focus:outline-none"
+                        >
+                            <!-- 深色背景層 -->
+                            <div
+                                class="absolute top-[14px] left-0 h-[78px] w-full rounded-t-[8px]"
+                                :class="
+                                    props.selectedEquipment === equipment.id
+                                        ? 'bg-[#1c1c1c]'
+                                        : 'bg-[#2b2b2b]'
+                                "
+                            ></div>
+
+                            <!-- 黃色底線層 -->
+                            <div
+                                class="absolute top-[92px] left-0 h-[4px] w-full rounded-b-[8px] bg-[#eefd1c] transition-shadow duration-300"
+                                :class="
+                                    props.selectedEquipment === equipment.id
+                                        ? 'shadow-[0_2px_4px_rgba(238,253,28,0.5)]'
+                                        : 'shadow-none'
+                                "
+                            ></div>
+
+                            <!-- 圖片容器：100x100 完整紅色中空方框標示範圍 -->
+                            <div
+                                class="absolute top-0 left-0 flex h-[100px] w-[100px] items-center justify-center border-[2px] border-red-500 bg-transparent"
+                            >
+                                <!-- 之後放置真實圖片的地方 -->
+                            </div>
+
+                            <!-- 文字層 -->
+                            <span
+                                class="absolute top-[41px] left-[107px] text-[20px] leading-none font-light tracking-[0.03em] text-white"
+                            >
+                                {{ equipment.label }}
+                            </span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </template>
-
-<style scoped>
-.toolbar-panel {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    min-height: 0;
-    padding: 0;
-    gap: 0;
-}
-
-.toolbar-row--legacy {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    flex: 0 0 auto;
-    height: 2.25rem;
-    width: 100%;
-    gap: 0;
-}
-
-.toolbar-button {
-    height: 100%;
-    border-radius: 0;
-}
-
-.toolbar-real {
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 auto;
-    min-height: 0;
-    border-top: 1px solid rgb(63 63 70);
-    background: rgb(24 24 27 / 0.85);
-}
-
-.toolbar-real__tags {
-    display: flex;
-    flex: 0 0 auto;
-    gap: 0;
-    overflow-x: auto;
-    border-bottom: 1px solid rgb(63 63 70);
-}
-
-.toolbar-tag {
-    flex: 0 0 auto;
-    padding: 0.25rem 0.6rem;
-    font-size: 0.7rem;
-    color: rgb(161 161 170);
-    background: transparent;
-    border: 0;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.toolbar-tag--active {
-    color: rgb(244 244 245);
-    background: rgb(39 39 42);
-    box-shadow: inset 0 -2px 0 rgb(56 189 248);
-}
-
-.toolbar-real__list {
-    display: flex;
-    flex: 1 1 auto;
-    gap: 0.35rem;
-    min-height: 0;
-    padding: 0.35rem;
-    overflow-x: auto;
-    overflow-y: auto;
-    align-items: flex-start;
-}
-
-.toolbar-machine {
-    display: flex;
-    flex: 0 0 auto;
-    flex-direction: column;
-    justify-content: flex-start;
-    gap: 0.15rem;
-    min-width: 5.5rem;
-    max-width: 8rem;
-    min-height: 2.75rem;
-    padding: 0.3rem 0.5rem;
-    text-align: left;
-    color: rgb(228 228 231);
-    background: rgb(39 39 42);
-    border: 1px solid rgb(82 82 91);
-    border-radius: 0.25rem;
-    cursor: pointer;
-}
-
-.toolbar-machine:hover {
-    border-color: rgb(113 113 122);
-}
-
-.toolbar-machine--selected {
-    border-color: rgb(56 189 248);
-    background: rgb(12 74 110 / 0.45);
-}
-
-.toolbar-machine__name {
-    flex-shrink: 0;
-    font-size: 0.75rem;
-    font-weight: 600;
-    line-height: 1.25;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.toolbar-machine__size {
-    flex-shrink: 0;
-    font-size: 0.65rem;
-    color: rgb(161 161 170);
-    font-variant-numeric: tabular-nums;
-    line-height: 1.2;
-}
-
-.toolbar-real__empty {
-    margin: auto;
-    font-size: 0.75rem;
-    color: rgb(113 113 122);
-}
-</style>
