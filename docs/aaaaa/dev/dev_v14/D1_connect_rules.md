@@ -89,11 +89,16 @@ C2 規則表與 `ConnectResult` 形狀已於 V13／#51 凍結。本項**不做�
 
 ## 7. 開發日誌
 
+### 2026-09-27（提前：addPipeline 防線）
+
+- 依預覽誤標回報：`addPipeline` 改呼叫 `canConnect`；失敗 → `invalid`
+- 新測 `layoutStore.canConnect.test.ts`；既有 floating／規則 7 路徑仍綠
+
 ### 2026-09-27（實作）
 
 - 提 `portAnchorIndex`／`portMedia`；`resolveConnections` 與 FlowEngine 改共用
 - `connectRules.ts`：四條有效規則＋規則 7；`describeConnectFailure`
-- 測試 14 條全綠；`resolveConnections` 既有 6 條未改且全綠；未動 `layoutStore`
+- 測試 14 條全綠；`resolveConnections` 既有 6 條未改且全綠；未動 `layoutStore`（當下）
 
 ### 2026-09-27（開版）
 
