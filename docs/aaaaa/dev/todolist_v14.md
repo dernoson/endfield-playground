@@ -9,8 +9,9 @@
 **上游：** [WEEK_20260921](../../work_dispatch/WEEK_20260921.md) v1.2、[ROADMAP_OUTLINE](../../roadmap/ROADMAP_OUTLINE.md) **v1.13**、[AGENT_WEEK_0921](../claude/AGENT_WEEK_0921.md)
 **門檻週：** 2026-09-21 → 2026-09-27（**9/27＝M2 硬綁 B1**）
 **開發分支：** `dev/aaaaa0921`
-**狀態總覽：** **`[~]` C1／D1 已交、驗收／PR 待開**（2026-09-27；A1／B1／C1／D1 `[x]`）
+**狀態總覽：** **`[~]` 驗收通過、說明／演示齊；PR 待確認後開**（2026-09-27；A1／B1／C1／D1 `[x]`；E1 `[~]`）
 **驗收指南：** [dev_v14/V14_acceptance_guide.md](./dev_v14/V14_acceptance_guide.md)
+**證據／週報／用法：** [evidence/V14_dod.md](./dev_v14/evidence/V14_dod.md)、[V14_week_report.md](./dev_v14/V14_week_report.md)、[USAGE](./dev_v14/USAGE_l2_placement_and_connect.md)
 **待確認問題：** [dispatch_private/0921/PENDING_DECISIONS_20260927.md](../collaborator_survey/dispatch_private/0921/PENDING_DECISIONS_20260927.md)
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
@@ -125,9 +126,10 @@ layoutStore.test.ts 未改且全綠。不發解鎖句；選取／旋轉／刪除
 
 ## V14-E｜驗收、PR、交接
 
-- [ ] **V14-E1** 對照 W0921-A0／A1 DoD；PR body 範圍宣告；不發解鎖句；0928 交接摘要
+- [~] **V14-E1** 對照 W0921-A0／A1 DoD（程式已過）；說明／演示已寫；**PR 待確認後開**；0928 交接摘要草稿見 E1 §4
   - 細項：[dev_v14/E1_acceptance_and_handoff.md](./dev_v14/E1_acceptance_and_handoff.md)
   - 驗收：[dev_v14/V14_acceptance_guide.md](./dev_v14/V14_acceptance_guide.md)
+  - 演示：`dev/placement-connect-check.html`
 
 ---
 
@@ -194,6 +196,12 @@ layoutStore.test.ts 未改且全綠。不發解鎖句；選取／旋轉／刪除
 ---
 
 ## 開發日誌
+
+### 2026-09-27｜E1 驗收＋說明（PR 暫緩）
+
+- **驗收通過：** type-check／lint／847 tests；DoD 證據見 `evidence/V14_dod.md`
+- **說明文件：** 週報、USAGE、INTRO；演示頁 `/dev/placement-connect-check.html`
+- **PR 不開**直到負責人確認；建議 A0（＋演示）與 A1 分開
 
 ### 2026-09-27｜D1 完成
 

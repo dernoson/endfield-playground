@@ -1,10 +1,12 @@
 # V14-E1 — 驗收、PR、0928 交接
 
 **對應工項：** V14-E1
-**狀態：** `[ ]` 未開始
+**狀態：** `[~]` 驗收／文件已齊；**PR 待負責人確認後再開**
 **日期：** 2026-09-27
-**依賴：** [C1](./C1_placement_precheck.md)；[D1](./D1_connect_rules.md) 若開工則一併
+**依賴：** [C1](./C1_placement_precheck.md) `[x]`；[D1](./D1_connect_rules.md) `[x]`
 **驗收集：** [V14_acceptance_guide.md](./V14_acceptance_guide.md)
+**證據：** [evidence/V14_dod.md](./evidence/V14_dod.md)
+**週報／用法／口頭：** [V14_week_report.md](./V14_week_report.md)、[USAGE](./USAGE_l2_placement_and_connect.md)、[INTRO](../../collaborator_survey/dispatch_private/0921/INTRO_A0_placement_precheck.md)
 
 ---
 
@@ -73,15 +75,22 @@ W0921-A1：canConnect＋describeConnectFailure；錨點判定與 resolveConnecti
 
 ## 5. DoD
 
-- [ ] C1 DoD 全勾（或未交頂替已寫進 REVIEW／結算）
-- [ ] 若開 D1：其 DoD 全勾且分開 PR
-- [ ] PR body 含 §2.1 範圍宣告
-- [ ] 未發解鎖句
-- [ ] todolist_v14 狀態已回寫
+- [x] C1 DoD 全勾（見 evidence）
+- [x] D1 DoD 全勾（程式）；**分開 PR** 待開時遵守
+- [ ] PR body 含 §2.1 範圍宣告（開 PR 時）
+- [x] 未發解鎖句
+- [x] todolist_v14 狀態已回寫（E1=`[~]`；驗收文件齊）
+- [x] 週會演示頁＋USAGE／INTRO／週報
 
 ---
 
 ## 6. 開發日誌
+
+### 2026-09-27｜驗收＋說明文件
+
+- 品質閘：type-check／lint／847 tests 綠；`layoutStore.test.ts`／`resolveConnections.test.ts` 未改
+- 產物：`evidence/V14_dod.md`、USAGE、週報、INTRO 更新、`/dev/placement-connect-check.html`
+- **下一步：** 負責人確認後開 PR（建議 A0＋演示一支、A1 一支）；本檔 §2.1 貼進 body
 
 ### 2026-09-27
 

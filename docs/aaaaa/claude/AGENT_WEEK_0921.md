@@ -2,7 +2,7 @@
 
 | meta | value |
 |------|-------|
-| version | **v1.3（2026-09-27；V14-D1／A1 canConnect 完成）** |
+| version | **v1.4（2026-09-27；E1 驗收＋說明／演示齊；PR 暫緩）** |
 | 用途 | 供 Agent 執行本週派工／改工單時的**強制約束**；細節以公開 WEEK 與個人工單為準 |
 | 公開 | [WEEK_0921](../../work_dispatch/WEEK_20260921.md) v1.2、[W0921-A0](../../work_dispatch/aaaaa/0921/W0921-A0_placement_precheck.md)、[W0921-A1](../../work_dispatch/aaaaa/0921/W0921-A1_connect_rules.md) |
 | 執行計畫 | [todolist_v14](../dev/todolist_v14.md)、[dev_v14/](../dev/dev_v14/) |
@@ -15,11 +15,12 @@
 
 ## 0. 三十秒結論
 
-**A0 預檢與 A1 連線規則皆已實作完成（V14-C1／D1）。**  
-- `canPlaceDevice`／`canMoveDevice` → `placementCheck.ts`  
-- `canConnect`／`describeConnectFailure` → `connectRules.ts`（錨點與 `resolveConnections` 共用；媒質與 FlowEngine 共用）
+**A0／A1 程式已驗收通過；週會說明與演示頁已齊。**  
+- 證據：[evidence/V14_dod.md](../dev/dev_v14/evidence/V14_dod.md)  
+- 演示：`pnpm dev` → `/dev/placement-connect-check.html`  
+- 用法／週報：[USAGE](../dev/dev_v14/USAGE_l2_placement_and_connect.md)、[V14_week_report](../dev/dev_v14/V14_week_report.md)
 
-待開 PR（建議 **分開**：`W0921-A0`／`W0921-A1`）。不發解鎖句。本週門檻鏈仍缺 **T1 落子**（公開 V1）。
+**PR 暫不開**（等負責人確認；建議 A0／A1 分開）。不發解鎖句。門檻鏈仍缺 **T1 落子**（公開 V1）。
 
 **本週不做：** `addPipeline` 內部防線（10/11）、選取／旋轉／刪除。
 
@@ -33,7 +34,8 @@
 | ~~0~~ | ~~V13 文件收斂（前置）~~ | **已完成**；[V14-B1](../dev/dev_v14/B1_v13_residue_close.md) |
 | ~~1~~ | ~~A0 落子前預檢（擋門檻）~~ | **已完成**；[V14-C1](../dev/dev_v14/C1_placement_precheck.md)；待開 PR |
 | ~~2~~ | ~~A1 連線規則純函式（次優）~~ | **已完成**；[V14-D1](../dev/dev_v14/D1_connect_rules.md)；待開 PR |
-| 3 | 驗收＋PR＋交接（不發解鎖句） | [V14-E1](../dev/dev_v14/E1_acceptance_and_handoff.md) |
+| ~~3~~ | ~~驗收＋說明／演示~~ | **已完成（PR 除外）**；[V14-E1](../dev/dev_v14/E1_acceptance_and_handoff.md) `[~]` |
+| 4 | 開 PR（確認後；不發解鎖句） | E1 §2.1；A0／A1 分開 |
 | — | **禁止**選取／旋轉／刪除接線 | WEEK §2.1 |
 | — | **禁止**替 toby 寫落子鏈或改其檔 | 規則 17 |
 | — | **禁止**本週改 `layoutStore` 接 `canConnect` | 排 10/11 |
@@ -110,6 +112,11 @@
 ---
 
 ## 6. 日誌
+
+### 2026-09-27（v1.4）
+
+- E1：品質閘綠；DoD 證據、USAGE、週報、INTRO、演示頁齊；**PR 暫緩等確認**
+- §0／§1 改寫；下一優先＝負責人確認後開 PR
 
 ### 2026-09-27（v1.3）
 
