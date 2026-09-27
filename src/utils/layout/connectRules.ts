@@ -2,12 +2,14 @@
  * 連線前檢查（V14／W0921-A1｜R-C2）
  *
  * 規則依 [detail/C2 §4.1](docs/roadmap/detail/C2_add_connection_contract.md)：
- * 方向／媒質三方一致／單埠單線／自連；斷線（規則 7）放行。
+ * 方向／媒質三方一致／單埠單線／自連；斷線（規則 7）＝null **本身**不違規，
+ * 但已命中埠的那一端仍套用規則 1–3。
  *
  * 端點判定與 {@link resolveConnections} **共用** {@link collectPortAnchors}／{@link findPortAt}。
  * 埠媒質與 FlowEngine **共用** {@link getMachinePortMedia}。
  *
- * 本檔**不**做佔格重疊、`addPipeline` 內部防線（排 10/11）、環路。
+ * `layoutStore.addPipeline` 已呼叫本函式；`addDevice`／`moveDevice` 幾何貼上既有管線
+ * **尚未**重跑本檢查（已知缺口，見 V14_closeout）。
  */
 
 import type { PlacedDevice, Pipeline, PortRef } from '@/types/layout';
@@ -37,10 +39,11 @@ export interface PortMediaMismatch {
  *
  * `ok: true` 時 from／to 可為 null（合法但尚未接上；見規則 7）。
  * `message` **不**放進 union——見 {@link describeConnectFailure}。
+ * `direction.ports` 長度 1 或 2（單端斷線時只列已命中端）。
  */
 export type ConnectResult =
     | { ok: true; from: PortRef | null; to: PortRef | null }
-    | { ok: false; reason: 'direction'; ports: [PortRef, PortRef] }
+    | { ok: false; reason: 'direction'; ports: PortRef[] }
     | { ok: false; reason: 'media'; pipelineMedia: PortMedia; mismatched: PortMediaMismatch[] }
     | { ok: false; reason: 'port_occupied'; occupied: PortRef[] }
     | { ok: false; reason: 'self_loop'; deviceId: string }
@@ -82,23 +85,34 @@ export function canConnect(
     const from = findPortAt(anchors, start.x, start.y, 'output');
     const to = findPortAt(anchors, end.x, end.y, 'input');
 
-    /** 規則 7：斷線管線合法；任一端 null 不是違規 */
-    if (from === null || to === null) {
+    /**
+     * 規則 7：from／to 為 null **本身**不是違規（兩端皆空＝純斷線放行）。
+     * 已命中的那一端仍須通過方向／媒質／單埠單線。
+     */
+    if (from === null && to === null) {
         return { ok: true, from, to };
     }
 
-    if (from.deviceId === to.deviceId) {
+    if (from !== null && to !== null && from.deviceId === to.deviceId) {
         return { ok: false, reason: 'self_loop', deviceId: from.deviceId };
     }
 
-    /** 有序：必須 output → input（同向或反向皆拒絕） */
-    if (from.portType !== 'output' || to.portType !== 'input') {
-        return { ok: false, reason: 'direction', ports: [from, to] };
+    /** 有序：已命中端必須是 output（起）／input（終） */
+    const directionPorts: PortRef[] = [];
+    if (from !== null && from.portType !== 'output') {
+        directionPorts.push(from);
+    }
+    if (to !== null && to.portType !== 'input') {
+        directionPorts.push(to);
+    }
+    if (directionPorts.length > 0) {
+        return { ok: false, reason: 'direction', ports: directionPorts };
     }
 
     const deviceById = new Map(layout.devices.map((d) => [d.id, d]));
     const mismatched: PortMediaMismatch[] = [];
     for (const ref of [from, to]) {
+        if (ref === null) continue;
         const device = deviceById.get(ref.deviceId);
         const media = getMachinePortMedia(
             device?.machineType ?? '',
@@ -130,8 +144,8 @@ export function canConnect(
         if (conn.to) occupiedKeys.add(portRefKey(conn.to));
     }
     const occupied: PortRef[] = [];
-    if (occupiedKeys.has(portRefKey(from))) occupied.push(from);
-    if (occupiedKeys.has(portRefKey(to))) occupied.push(to);
+    if (from !== null && occupiedKeys.has(portRefKey(from))) occupied.push(from);
+    if (to !== null && occupiedKeys.has(portRefKey(to))) occupied.push(to);
     if (occupied.length > 0) {
         return { ok: false, reason: 'port_occupied', occupied };
     }

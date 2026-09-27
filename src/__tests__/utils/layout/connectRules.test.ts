@@ -145,7 +145,7 @@ describe('canConnect — 規則 7 斷線放行', () => {
         expect(result).toEqual({ ok: true, from: null, to: null });
     });
 
-    it('僅一端命中 → ok:true', () => {
+    it('僅一端命中 output、終點懸空 → ok:true', () => {
         const src = deviceAt('src', 'stub_belt', 0, 0);
         const start = portAnchor(src, belt, 'output', 0, 0);
         const result = canConnect(
@@ -161,6 +161,65 @@ describe('canConnect — 規則 7 斷線放行', () => {
             expect(result.from).toEqual({ deviceId: 'src', portType: 'output', portIndex: 0 });
             expect(result.to).toBeNull();
         }
+    });
+
+    it('起點落在 input、終點懸空 → direction（非 null 端仍查）', () => {
+        const src = deviceAt('src', 'stub_belt', 0, 0);
+        const start = portAnchor(src, belt, 'input', 0, 0);
+        const result = canConnect(
+            {
+                media: 'belt',
+                waypoints: [start, { x: start.x - 1, y: start.y, z: 0 }],
+            },
+            { devices: [src], pipelines: [] },
+            getMachine,
+        );
+        expect(result.ok).toBe(false);
+        if (!result.ok) {
+            expect(result.reason).toBe('direction');
+            if (result.reason === 'direction') {
+                expect(result.ports).toEqual([
+                    { deviceId: 'src', portType: 'input', portIndex: 0 },
+                ]);
+            }
+        }
+    });
+
+    it('pipe 從 belt 輸出拉出、終點懸空 → media', () => {
+        const src = deviceAt('src', 'stub_belt', 0, 0);
+        const start = portAnchor(src, belt, 'output', 0, 0);
+        const result = canConnect(
+            {
+                media: 'pipe',
+                waypoints: [start, { x: start.x + 1, y: start.y, z: 0 }],
+            },
+            { devices: [src], pipelines: [] },
+            getMachine,
+        );
+        expect(result.ok).toBe(false);
+        if (!result.ok) expect(result.reason).toBe('media');
+    });
+
+    it('輸出埠已被佔用、再拉同起點懸空管線 → port_occupied', () => {
+        const src = deviceAt('src', 'stub_belt', 0, 0);
+        const dst = deviceAt('dst', 'stub_belt', 4, 0);
+        const start = portAnchor(src, belt, 'output', 0, 0);
+        const end = portAnchor(dst, belt, 'input', 0, 0);
+        const existing: Pipeline = {
+            id: 'taken',
+            media: 'belt',
+            waypoints: [start, { x: 2, y: 0, z: 0 }, end],
+        };
+        const result = canConnect(
+            {
+                media: 'belt',
+                waypoints: [start, { x: start.x + 1, y: start.y, z: 0 }],
+            },
+            { devices: [src, dst], pipelines: [existing] },
+            getMachine,
+        );
+        expect(result.ok).toBe(false);
+        if (!result.ok) expect(result.reason).toBe('port_occupied');
     });
 });
 
