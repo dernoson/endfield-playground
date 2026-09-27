@@ -1,68 +1,30 @@
+<!-- Generated from Figma JSON. Regenerate through the converter instead of moving generated nodes manually. -->
 <script setup lang="ts">
-interface Props {
-    collapsed?: boolean;
-}
-
-defineProps<Props>();
+const props = withDefaults(
+  defineProps<{
+    isCollapsed?: boolean
+    topPercent?: number
+  }>(),
+  {
+    isCollapsed: false,
+    topPercent: (559 / 1080) * 100 // 約 51.759%
+  }
+)
 
 const emit = defineEmits<{
-    (e: 'toggle'): void;
-}>();
+  (e: 'toggle'): void
+}>()
 </script>
 
 <template>
-    <button
-        type="button"
-        class="collapse-button"
-        :class="{ 'is-collapsed': collapsed }"
-        :title="collapsed ? '展開面板' : '折疊面板'"
-        @click="emit('toggle')"
-    >
-        <svg
-            width="20"
-            height="39"
-            viewBox="0 0 20 39"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            class="button-svg"
-        >
-            <path d="M0 0L0.00439661 39L19.7875 19.5065L0 0Z" fill="#EEFD1C" />
-        </svg>
-    </button>
+<div
+  data-figma-id="2302:187"
+  data-figma-name="collapse button"
+  class="box-border m-0 border-0 border-solid shrink-0 absolute isolate [z-index:30] [left:-36px] [width:24px] [height:39px] overflow-visible [box-shadow:0px_4px_4px_0px_rgba(0,_0,_0,_0.25)] cursor-pointer select-none transition-transform hover:brightness-110 active:scale-95"
+  :style="{ top: `${topPercent}%`, transform: `translateY(-50%) ${isCollapsed ? 'rotate(180deg)' : ''}` }"
+  :title="isCollapsed ? '展開面板' : '收合面板'"
+  @click="emit('toggle')"
+>
+  <img class="block w-full h-full object-fill pointer-events-none" src="/output/assets/collapse button.svg" alt="" />
+</div>
 </template>
-
-<style scoped>
-.collapse-button {
-    position: absolute;
-    width: 24px;
-    height: 39px;
-    left: -36px;
-    top: 559px;
-    padding: 0;
-    margin: 0;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-    transform: matrix(-1, 0, 0, 1, 0, 0);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 20;
-    transition: opacity 0.2s ease;
-}
-
-.collapse-button:hover {
-    opacity: 0.85;
-}
-
-.collapse-button.is-collapsed {
-    transform: matrix(1, 0, 0, 1, 0, 0);
-}
-
-.button-svg {
-    display: block;
-    width: 20px;
-    height: 39px;
-}
-</style>
