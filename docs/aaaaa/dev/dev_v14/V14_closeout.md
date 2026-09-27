@@ -3,8 +3,19 @@
 **分支：** `dev/aaaaa0921`
 **對照：** [W0921-A0](../../../work_dispatch/aaaaa/0921/W0921-A0_placement_precheck.md)、[W0921-A1](../../../work_dispatch/aaaaa/0921/W0921-A1_connect_rules.md)、[todolist_v14](../todolist_v14.md)
 **品質閘實跑：** `pnpm test` → **46 files／854 tests** 綠；`type-check` 綠
-**結論一句：** **程式與驗收／說明文件已收斂；負責人已確認開 PR（單 PR、body 分 A0／A1 兩節）。**
+**結論一句：** **程式與驗收已收斂；[#54](https://github.com/dernoson/endfield-playground/pull/54) 已 merge #55（T1）後一併交審。**
 
+---
+
+## 0. 併入 T1（#55）
+
+| 項 | 處理 |
+|----|------|
+| 方式 | `git merge origin/dev/toby`（保留原 commit；合入 #54 時 #55 自動 marked merged） |
+| `placementCheck` | **單一份**：保留本 PR 的 `canMoveDevice`＋`DRAFT_ID` 撞名防護；`LayoutView` 採 `DeepReadonly`（相容 Pinia 唯讀面，T1 `LayoutView.vue` 直傳 store） |
+| 測試 | 兩邊 `placementCheck` 案例合併；`layoutStore.test.ts` **未改** |
+| L2 | `usePlacementIntent`／`GridCanvas`／`LayoutView`／`ToolbarPanel` script 來自 T1，呼叫端未另改 |
+| 連線缺口 | 第 1 點已修；第 2 點＝P7 已知缺口 |
 ---
 
 ## 1. 公開工單對照
