@@ -133,12 +133,12 @@ const toggleExpand = (index: number) => {
             <div
                 data-figma-id="2430:348"
                 data-figma-name="imformation"
-                class="relative isolate m-0 mb-6 box-border flex [width:224px] shrink-0 flex-col gap-3 border-0 border-solid"
+                class="relative isolate m-0 mb-6 box-border flex [width:278px] shrink-0 flex-col gap-3 border-0 border-solid"
             >
                 <div
                     v-for="(item, index) in localProducts"
                     :key="item.id"
-                    class="relative isolate m-0 box-border [width:224px] shrink-0 border-0 border-solid transition-all"
+                    class="relative isolate m-0 box-border [width:278px] shrink-0 border-0 border-solid transition-all"
                     :class="item.isExpanded ? '[height:66px]' : '[height:24px]'"
                 >
                     <!-- 展開按鈕 -->
@@ -167,7 +167,7 @@ const toggleExpand = (index: number) => {
                     <!-- 收益 -->
                     <div
                         data-figma-name="Text"
-                        class="absolute [top:2px] [left:156px] isolate m-0 box-border [height:19px] shrink-0 border-0 border-solid [text-align:left] [font-family:'HarmonyOS_Sans_TC',sans-serif] [font-size:16px] [line-height:18.752px] [font-weight:300]"
+                        class="absolute [top:2px] [right:0px] isolate m-0 box-border [width:122px] [height:19px] shrink-0 border-0 border-solid [text-align:left] [font-family:'HarmonyOS_Sans_TC',sans-serif] [font-size:16px] [line-height:18.752px] [font-weight:300]"
                         :class="item.profit >= 0 ? '[color:#a3fd1c]' : '[color:#ff6e6e]'"
                     >
                         {{ item.profit >= 0 ? `收益+${item.profit}` : `收益${item.profit}` }}
