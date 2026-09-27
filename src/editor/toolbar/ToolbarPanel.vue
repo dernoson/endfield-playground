@@ -5,12 +5,15 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 const props = defineProps<{
     /** 目前選取的設備 ID */
     selectedEquipment?: string | null;
+    /** 目前選取的視角 ID（layout / process / parallel） */
+    selectedView?: string | null;
 }>();
 
 /** 定義發送給上層的事件 */
 const emit = defineEmits<{
     (e: 'equip-click', equipmentId: string): void;
     (e: 'equip-dragstart', event: DragEvent, equipmentId: string): void;
+    (e: 'view-click', viewId: string): void;
 }>();
 
 /** 控制底部設備選取列的開關狀態 */
@@ -49,6 +52,13 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener('keydown', handleKeyDown);
 });
+
+/** 視角切換分頁清單 */
+const viewTabs: Array<{ id: string; label: string }> = [
+    { id: 'layout', label: '佈局視角' },
+    { id: 'process', label: '流程視角' },
+    { id: 'parallel', label: '並列視角' },
+];
 
 /** 分類 Tab */
 const categoryTabs = ['全部', '物流', '倉儲', '生產', '合成', '電力', '功能'];
@@ -136,6 +146,11 @@ const filteredEquipments = computed(() => {
     return result;
 });
 
+/** 視角按鈕點擊，僅發送事件，實際切換邏輯交由父層處理 */
+function handleViewClick(viewId: string) {
+    emit('view-click', viewId);
+}
+
 /** 改為 Emit 事件給上層處理 */
 function handleEquipClick(equipmentId: string) {
     emit('equip-click', equipmentId);
@@ -159,36 +174,30 @@ function handleEquipDragStart(event: DragEvent, equipmentId: string) {
             <div
                 class="pointer-events-auto absolute bottom-0 left-0 flex h-[32px] w-[474px] items-center rounded-tr-[25px] bg-[#4E4E4E] pl-[80px]"
             >
-                <button
-                    type="button"
-                    class="flex h-[26px] w-[80px] items-center justify-center text-[16px] leading-none font-light text-white disabled:opacity-100"
-                    disabled
-                >
-                    佈局視角
-                </button>
-                <span class="text-white/50">|</span>
-                <button
-                    type="button"
-                    class="flex h-[26px] w-[80px] items-center justify-center text-[16px] leading-none font-light text-white disabled:opacity-100"
-                    disabled
-                >
-                    流程視角
-                </button>
-                <span class="text-white/50">|</span>
-                <button
-                    type="button"
-                    class="flex h-[26px] w-[80px] items-center justify-center text-[16px] leading-none font-light text-white disabled:opacity-100"
-                    disabled
-                >
-                    並列視角
-                </button>
+                <!-- 按鈕與分隔線群組：彼此間距各 5px -->
+                <div class="flex items-center gap-[5px]">
+                    <template v-for="(tab, index) in viewTabs" :key="tab.id">
+                        <button
+                            type="button"
+                            class="flex h-[26px] w-[80px] cursor-pointer items-center justify-center rounded-[4px] text-[16px] leading-none font-light text-white transition-colors"
+                            :class="props.selectedView === tab.id ? 'bg-[#3C3C3C]' : 'bg-[#4E4E4E]'"
+                            :aria-label="`切換至 ${tab.label}`"
+                            :aria-pressed="props.selectedView === tab.id"
+                            @mousedown="handleViewClick(tab.id)"
+                        >
+                            {{ tab.label }}
+                        </button>
+                        <span v-if="index < viewTabs.length - 1" class="text-white/50">|</span>
+                    </template>
+                </div>
+
                 <p class="ml-2 text-xs font-light text-[#A4A4A4]">(按TAB切換視角)</p>
             </div>
 
             <!-- 底部設備選取列開關：黃色三角形 -->
             <button
                 type="button"
-                class="group pointer-events-auto absolute bottom-0 left-1/2 flex h-[32px] w-[64px] -translate-x-1/2 items-center justify-center"
+                class="group pointer-events-auto absolute bottom-0 left-1/2 flex h-[32px] w-[64px] -translate-x-1/2 cursor-pointer items-center justify-center"
                 :aria-label="bottomBarOpen ? '收合底部設備選取列' : '展開底部設備選取列'"
                 :aria-expanded="bottomBarOpen"
                 @click="toggleBottomBar"
@@ -218,7 +227,19 @@ function handleEquipDragStart(event: DragEvent, equipmentId: string) {
                         <label
                             class="flex h-full w-[218px] cursor-text items-center gap-2 rounded-full border border-[#eefd1c] bg-[#3c3c3c] px-[18px]"
                         >
-                            <UIcon name="i-lucide-search" class="size-5 shrink-0 text-white/50" />
+                            <svg
+                                width="25"
+                                height="25"
+                                viewBox="0 0 25 25"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="shrink-0"
+                            >
+                                <path
+                                    d="M24.2252 21.2744L18.3035 16.2379C17.6913 15.687 17.0366 15.434 16.5078 15.4584C17.9056 13.821 18.75 11.6968 18.75 9.37502C18.75 4.19732 14.5527 0 9.37501 0C4.19732 0 0 4.19732 0 9.37502C0 14.5527 4.19732 18.75 9.37501 18.75C11.6967 18.75 13.821 17.9057 15.4584 16.5078C15.434 17.0366 15.6869 17.6913 16.2379 18.3035L21.2743 24.2252C22.1367 25.1833 23.5454 25.2641 24.4047 24.4047C25.264 23.5454 25.1833 22.1367 24.2252 21.2744ZM9.37501 15.625C5.92325 15.625 3.125 12.8268 3.125 9.37502C3.125 5.92326 5.92325 3.12501 9.37501 3.12501C12.8268 3.12501 15.625 5.92326 15.625 9.37502C15.625 12.8268 12.8268 15.625 9.37501 15.625Z"
+                                    fill="white"
+                                />
+                            </svg>
                             <input
                                 v-model="searchQuery"
                                 type="text"
@@ -233,8 +254,8 @@ function handleEquipDragStart(event: DragEvent, equipmentId: string) {
                             v-for="tab in categoryTabs"
                             :key="tab"
                             type="button"
-                            @click="activeCategory = tab"
-                            class="h-[43px] w-[110px] rounded-[15px] text-[20px] leading-none font-light tracking-[0.03em] text-white transition-colors"
+                            @mousedown="activeCategory = tab"
+                            class="h-[43px] w-[110px] cursor-pointer rounded-[15px] text-[20px] leading-none font-light tracking-[0.03em] text-white transition-colors"
                             :class="activeCategory === tab ? 'bg-[#2b2b2b]' : 'bg-[#3c3c3c]'"
                             :aria-label="`切換至 ${tab} 分類`"
                         >
@@ -265,9 +286,9 @@ function handleEquipDragStart(event: DragEvent, equipmentId: string) {
                             :key="equipment.id"
                             type="button"
                             draggable="true"
-                            @click="handleEquipClick(equipment.id)"
+                            @mousedown="handleEquipClick(equipment.id)"
                             @dragstart="handleEquipDragStart($event, equipment.id)"
-                            class="relative h-[100px] w-[266px] shrink-0 text-left focus:outline-none"
+                            class="relative h-[100px] w-[266px] shrink-0 cursor-pointer text-left focus:outline-none"
                         >
                             <!-- 深色背景層 -->
                             <div
