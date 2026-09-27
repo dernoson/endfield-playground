@@ -89,6 +89,11 @@ C2 規則表與 `ConnectResult` 形狀已於 V13／#51 凍結。本項**不做�
 
 ## 7. 開發日誌
 
+### 2026-09-27（審核 #54）
+
+- **修：** 規則 7 不豁免已命中端——單端斷線仍查方向／媒質／單埠單線；補測
+- **不修／標缺口：** `addDevice`／`moveDevice` 貼埠繞過（closeout P7）
+
 ### 2026-09-27（提前：addPipeline 防線）
 
 - 依預覽誤標回報：`addPipeline` 改呼叫 `canConnect`；失敗 → `invalid`

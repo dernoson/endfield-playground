@@ -84,12 +84,13 @@ if (!result.ok) {
 
 ### 必記
 
-| 點                   | 說明                                                                            |
-| -------------------- | ------------------------------------------------------------------------------- |
-| 錨點                 | 與 `resolveConnections` **同一套**（`portAnchorIndex`）；勿另寫「端點碰哪一埠」 |
-| 規則 7               | 兩端都沒命中埠 → **`ok: true`**（斷線管線合法；不是錯誤）                       |
-| store 防線           | `addPipeline` **已**呼叫 `canConnect`；失敗 → `PlacementResult` `invalid`       |
-| 本週原排不做、已提前 | L2 highlight（toby／10/18）；`addPipeline` 防線原排 10/11                       |
+| 點           | 說明                                                                                      |
+| ------------ | ----------------------------------------------------------------------------------------- |
+| 錨點         | 與 `resolveConnections` **同一套**（`portAnchorIndex`）；勿另寫「端點碰哪一埠」           |
+| 規則 7       | 兩端皆 null → 放行；**單端命中**時命中端仍查方向／媒質／佔用                              |
+| store 防線   | `addPipeline` **已**呼叫 `canConnect`；失敗 → `invalid`                                   |
+| **已知缺口** | `addDevice`／`moveDevice` 貼埠**不**重跑 `canConnect`（[closeout P7](./V14_closeout.md)） |
+| L2 highlight | 仍排 10/18                                                                                |
 
 ---
 

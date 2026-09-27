@@ -43,7 +43,9 @@ layoutStore.test.ts 未改且全綠。DRAFT_ID='__draft__'。
 W0921-A1：canConnect＋describeConnectFailure；錨點與 resolveConnections 共用；媒質與 FlowEngine 共用。
 方向＝有序 output→input（反向亦拒）。
 提前：addPipeline 已呼叫 canConnect（原排 10/11）；失敗→PlacementResult invalid。
-斷線管線（規則 7）仍可寫入。L2 highlight 仍排 10/18。
+斷線管線（規則 7）仍可寫入；單端命中時已命中端仍查方向／媒質／佔用。
+已知缺口：addDevice／moveDevice 貼埠不重跑 canConnect（見 V14_closeout P7）。
+L2 highlight 仍排 10/18。
 ```
 
 ### 2.2 禁止
@@ -56,14 +58,14 @@ W0921-A1：canConnect＋describeConnectFailure；錨點與 resolveConnections �
 
 ## 3. 上游回寫清單
 
-| # | 檔 | 動作 | 狀態 |
-|---|----|------|------|
-| 1 | [todolist_v14](../todolist_v14.md) | 狀態／待處理回寫 | `[x]` 盤點時 |
-| 2 | [V14_closeout](./V14_closeout.md) | 收斂盤點 | `[x]` |
-| 3 | [ROADMAP detail/B2](../../../roadmap/detail/B2_placement_chain.md) | A0 **合入後**補開發日誌 | `[ ]` 待合入 |
-| 4 | [ROADMAP_OUTLINE](../../../roadmap/ROADMAP_OUTLINE.md) §9.1 | 9/27 門檻結算 | 結算時 |
-| 5 | 公開 W0921-A0／A1 DoD | 合入後勾選 | `[ ]` |
-| 6 | 決策層 REVIEW／PENDING | 補交付一行 | `[ ]` 見 closeout P5 |
+| #   | 檔                                                                 | 動作                    | 狀態                 |
+| --- | ------------------------------------------------------------------ | ----------------------- | -------------------- |
+| 1   | [todolist_v14](../todolist_v14.md)                                 | 狀態／待處理回寫        | `[x]` 盤點時         |
+| 2   | [V14_closeout](./V14_closeout.md)                                  | 收斂盤點                | `[x]`                |
+| 3   | [ROADMAP detail/B2](../../../roadmap/detail/B2_placement_chain.md) | A0 **合入後**補開發日誌 | `[ ]` 待合入         |
+| 4   | [ROADMAP_OUTLINE](../../../roadmap/ROADMAP_OUTLINE.md) §9.1        | 9/27 門檻結算           | 結算時               |
+| 5   | 公開 W0921-A0／A1 DoD                                              | 合入後勾選              | `[ ]`                |
+| 6   | 決策層 REVIEW／PENDING                                             | 補交付一行              | `[ ]` 見 closeout P5 |
 
 ---
 

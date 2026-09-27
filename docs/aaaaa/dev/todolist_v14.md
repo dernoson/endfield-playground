@@ -34,17 +34,17 @@
 
 ### 已定案（2026-09-27｜負責人確認）
 
-| # | 項 | 結論 |
-|---|----|------|
-| 1 | 版本範圍 | **V14＝W0921-A0＋W0921-A1（次優）**；V13 只做殘項收斂 |
-| 2 | A0 簽章 | 照 [V13-D1 §3](./dev_v13/D1_placement_precheck_gap.md)；回傳沿用 `PlacementResult`；`DRAFT_ID='__draft__'` |
-| 3 | A0 作法 | **提共用、非另寫一份**；`layoutStore.test.ts` 未修改且全綠 |
-| 4 | A0 交期 | **維持工單原文 9/24**（本檔為執行計畫；立刻開工） |
-| 5 | A1 | 進 todolist 為正式次優項；A0 交完且有餘裕才開；未交＝回 10/04 |
-| 6 | A1 本週不做 `addPipeline` 防線；L2 呼叫端 | **開版定案**；後因預覽誤寫入，**已提前**做 store 防線（見 [closeout P2](./dev_v14/V14_closeout.md)） |
-| 7 | 解鎖句 | **不發** |
-| 8 | 工廠／旋轉／選取 | 本週不做（WEEK §2.1） |
-| 9 | 分支 | `dev/aaaaa0921` |
+| #   | 項                                        | 結論                                                                                                       |
+| --- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| 1   | 版本範圍                                  | **V14＝W0921-A0＋W0921-A1（次優）**；V13 只做殘項收斂                                                      |
+| 2   | A0 簽章                                   | 照 [V13-D1 §3](./dev_v13/D1_placement_precheck_gap.md)；回傳沿用 `PlacementResult`；`DRAFT_ID='__draft__'` |
+| 3   | A0 作法                                   | **提共用、非另寫一份**；`layoutStore.test.ts` 未修改且全綠                                                 |
+| 4   | A0 交期                                   | **維持工單原文 9/24**（本檔為執行計畫；立刻開工）                                                          |
+| 5   | A1                                        | 進 todolist 為正式次優項；A0 交完且有餘裕才開；未交＝回 10/04                                              |
+| 6   | A1 本週不做 `addPipeline` 防線；L2 呼叫端 | **開版定案**；後因預覽誤寫入，**已提前**做 store 防線（見 [closeout P2](./dev_v14/V14_closeout.md)）       |
+| 7   | 解鎖句                                    | **不發**                                                                                                   |
+| 8   | 工廠／旋轉／選取                          | 本週不做（WEEK §2.1）                                                                                      |
+| 9   | 分支                                      | `dev/aaaaa0921`                                                                                            |
 
 詳見 [A1_scope_decision.md](./dev_v14/A1_scope_decision.md)。
 
@@ -68,11 +68,11 @@ A 定案 → B V13 收斂（前置）
 
 ### 週切片
 
-| 區間 | 切片 | 對應 |
-|------|------|------|
-| → 9/24 | 定案落檔；V13 收斂；A0 提共用＋測試＋PR | A1、B1、C1 |
-| 9/24 後 | （有餘裕）A1 錨點共用＋`canConnect`；分開 PR | D1 |
-| → 9/27 | 驗收回寫；門檻結算對照 | E1 |
+| 區間    | 切片                                         | 對應       |
+| ------- | -------------------------------------------- | ---------- |
+| → 9/24  | 定案落檔；V13 收斂；A0 提共用＋測試＋PR      | A1、B1、C1 |
+| 9/24 後 | （有餘裕）A1 錨點共用＋`canConnect`；分開 PR | D1         |
+| → 9/27  | 驗收回寫；門檻結算對照                       | E1         |
 
 > 工單原文：A0 交期 9/24，讓 T1 有三天可接。本檔開版日為 9/27，仍以該交期為計畫基準，立刻開工。
 
@@ -97,41 +97,41 @@ layoutStore.test.ts 未改且全綠。不發解鎖句；選取／旋轉／刪除
 ## V14-A｜範圍與定案
 
 - [x] **V14-A1** 9 項決策落版；與 W0921-A0／A1／V13／T1 邊界
-  - 細項：[dev_v14/A1_scope_decision.md](./dev_v14/A1_scope_decision.md)
+    - 細項：[dev_v14/A1_scope_decision.md](./dev_v14/A1_scope_decision.md)
 
 ---
 
 ## V14-B｜V13 殘項收斂（前置）
 
 - [x] **V14-B1** 交叉比對 #51 已合入；確認 V13 無程式殘刀；簽章草案仍為 A0 唯一依據；收斂 `dev_v13/` meta
-  - 細項：[dev_v14/B1_v13_residue_close.md](./dev_v14/B1_v13_residue_close.md)
+    - 細項：[dev_v14/B1_v13_residue_close.md](./dev_v14/B1_v13_residue_close.md)
 
 ---
 
 ## V14-C｜落子前預檢（W0921-A0・擋門檻）
 
 - [x] **V14-C1** `placementCheck.ts`：匯出 `canPlaceDevice`／`canMoveDevice`／`DRAFT_ID`／`DeviceDraft`／`LayoutView`；store 提共用；測試＋品質閘
-  - 細項：[dev_v14/C1_placement_precheck.md](./dev_v14/C1_placement_precheck.md)
-  - 產物：`src/utils/layout/placementCheck.ts`、`src/__tests__/utils/layout/placementCheck.test.ts`；重構 `layoutStore.ts`
-  - 對照公開驗收：**V2**
+    - 細項：[dev_v14/C1_placement_precheck.md](./dev_v14/C1_placement_precheck.md)
+    - 產物：`src/utils/layout/placementCheck.ts`、`src/__tests__/utils/layout/placementCheck.test.ts`；重構 `layoutStore.ts`
+    - 對照公開驗收：**V2**
 
 ---
 
 ## V14-D｜連線規則純函式（W0921-A1・次優）
 
 - [x] **V14-D1** 錨點判定提共用 → `connectRules.ts`＋測試；後續含方向＝output→input、`addPipeline` 接 `canConnect`
-  - 細項：[dev_v14/D1_connect_rules.md](./dev_v14/D1_connect_rules.md)
-  - 產物：`portAnchorIndex.ts`、`portMedia.ts`、`connectRules.ts`、測試；重構 `resolveConnections`／`useFlowEngine`／`layoutStore.addPipeline`
-  - 依賴：C1 已交
+    - 細項：[dev_v14/D1_connect_rules.md](./dev_v14/D1_connect_rules.md)
+    - 產物：`portAnchorIndex.ts`、`portMedia.ts`、`connectRules.ts`、測試；重構 `resolveConnections`／`useFlowEngine`／`layoutStore.addPipeline`
+    - 依賴：C1 已交
 
 ---
 
 ## V14-E｜驗收、PR、交接
 
 - [~] **V14-E1** 驗收／說明／演示 `[x]`；**PR 單支分節交審**；合入／上游回寫 `[ ]`
-  - 細項：[dev_v14/E1_acceptance_and_handoff.md](./dev_v14/E1_acceptance_and_handoff.md)
-  - 收斂：[dev_v14/V14_closeout.md](./dev_v14/V14_closeout.md)（P1 已定案）
-  - 演示：`dev/placement-connect-check.html`
+    - 細項：[dev_v14/E1_acceptance_and_handoff.md](./dev_v14/E1_acceptance_and_handoff.md)
+    - 收斂：[dev_v14/V14_closeout.md](./dev_v14/V14_closeout.md)（P1 已定案）
+    - 演示：`dev/placement-connect-check.html`
 
 ---
 
@@ -139,13 +139,13 @@ layoutStore.test.ts 未改且全綠。不發解鎖句；選取／旋轉／刪除
 
 本版開發不被下列續掛項卡住（分級見 [PENDING_20260927](../collaborator_survey/dispatch_private/0921/PENDING_DECISIONS_20260927.md)）。
 
-| ID | 原因 | 等待對象 | 阻擋本版？ | 何時決 |
-|----|------|---------|-----------|--------|
-| `historyStore` 分堆疊 | 佈局與舊藍圖共用單一堆疊 | 主編 | **否** | 0928 以後（原 C-3） |
-| 選取面歸屬 | `selectionStore` vs `layoutStore` | 主編＋aaaaa | **否**；本週凍結 | B4 開工前 |
-| `createPlacedDevice` 工廠 | 預設值長線；本週已定 label＝中文名、工廠不做 | paper＋aaaaa | **否** | 10 月 |
-| belt 佈線升格 | 現住 dev-only | C3 owner | **否** | B2／C3 開刀時 |
-| — | **不動** toby／goodmorning／harry／shirone 鎖檔；不發解鎖句 | — | — | 本版硬鎖 |
+| ID                        | 原因                                                        | 等待對象     | 阻擋本版？       | 何時決              |
+| ------------------------- | ----------------------------------------------------------- | ------------ | ---------------- | ------------------- |
+| `historyStore` 分堆疊     | 佈局與舊藍圖共用單一堆疊                                    | 主編         | **否**           | 0928 以後（原 C-3） |
+| 選取面歸屬                | `selectionStore` vs `layoutStore`                           | 主編＋aaaaa  | **否**；本週凍結 | B4 開工前           |
+| `createPlacedDevice` 工廠 | 預設值長線；本週已定 label＝中文名、工廠不做                | paper＋aaaaa | **否**           | 10 月               |
+| belt 佈線升格             | 現住 dev-only                                               | C3 owner     | **否**           | B2／C3 開刀時       |
+| —                         | **不動** toby／goodmorning／harry／shirone 鎖檔；不發解鎖句 | —            | —                | 本版硬鎖            |
 
 ---
 
@@ -183,34 +183,35 @@ layoutStore.test.ts 未改且全綠。不發解鎖句；選取／旋轉／刪除
 
 詳 [V14_closeout §3](./dev_v14/V14_closeout.md)。摘要：
 
-| ID | 問題 | 擋程式？ |
-|----|------|----------|
-| P1 | 開 PR（單 PR 分節） | **已定案／交審中** |
-| P2 | 工單寫不做 addPipeline、已提前做 | 否（PR 說明） |
-| P3 | 方向比 C2 改寫句更嚴 | 否（PR 對齊） |
-| P4 | T1／V1 未達 | 非本版 |
-| P5 | 合入後上游回寫 | 待合入 |
-| P6 | 勿誤標選取／解鎖完成 | 否 |
+| ID  | 問題                                | 擋程式？           |
+| --- | ----------------------------------- | ------------------ |
+| P1  | 開 PR（單 PR 分節）                 | **已定案／交審中** |
+| P2  | 工單寫不做 addPipeline、已提前做    | 否（PR 說明）      |
+| P3  | 方向比 C2 改寫句更嚴                | 否（PR 對齊）      |
+| P4  | T1／V1 未達                         | 非本版             |
+| P5  | 合入後上游回寫                      | 待合入             |
+| P6  | 勿誤標選取／解鎖完成                | 否                 |
+| P7  | move／addDevice 貼埠繞過 canConnect | **已知缺口・後續** |
 
 ---
 
 ## 未交頂替
 
-| 工項 | 未交影響 |
-|------|----------|
-| C1 A0 | T1 退為「放下去才知道」；**V1 門檻仍可能成立**，但體驗降級且有兩套判定風險 |
-| D1 A1 | 原排 10/04 零影響；**本版已交**（含提前防線） |
-| B1 V13 收斂 | **不可未交**；未收斂則簽章依據不明 |
-| E1 PR | **擋公開 V2**；程式已齊 |
+| 工項        | 未交影響                                                                   |
+| ----------- | -------------------------------------------------------------------------- |
+| C1 A0       | T1 退為「放下去才知道」；**V1 門檻仍可能成立**，但體驗降級且有兩套判定風險 |
+| D1 A1       | 原排 10/04 零影響；**本版已交**（含提前防線）                              |
+| B1 V13 收斂 | **不可未交**；未收斂則簽章依據不明                                         |
+| E1 PR       | **擋公開 V2**；程式已齊                                                    |
 
 ---
 
 ## 本週工項檢核（對照 W0921-A0／A1）
 
-| 工項 | 工單要求 | V14 狀態 | 備註 |
-|------|----------|----------|------|
-| A0 | `canPlaceDevice` 提共用＋測試 | 程式 `[x]`／PR [#54](https://github.com/dernoson/endfield-playground/pull/54) | 公開 V2 待合入 |
-| A1 | `canConnect`＋錨點共用 | 同上（同 PR 第二節） | 含方向＋addPipeline 提前 |
+| 工項 | 工單要求                      | V14 狀態                                                                      | 備註                     |
+| ---- | ----------------------------- | ----------------------------------------------------------------------------- | ------------------------ |
+| A0   | `canPlaceDevice` 提共用＋測試 | 程式 `[x]`／PR [#54](https://github.com/dernoson/endfield-playground/pull/54) | 公開 V2 待合入           |
+| A1   | `canConnect`＋錨點共用        | 同上（同 PR 第二節）                                                          | 含方向＋addPipeline 提前 |
 
 ---
 
