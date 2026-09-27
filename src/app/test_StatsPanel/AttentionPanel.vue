@@ -1,10 +1,8 @@
 <!-- Generated from Figma JSON. Regenerate through the converter instead of moving generated nodes manually. -->
 <script setup lang="ts">
-interface TipItem {
-    id: string;
-    type: 'error' | 'warning';
-    text: string;
-}
+import iconErrorUrl from './assets/Iconerror.svg';
+import iconWarningUrl from './assets/iconwarning.svg';
+import type { TipItem } from './types';
 
 const props = withDefaults(
     defineProps<{
@@ -80,11 +78,7 @@ const onHandleDown = (e: MouseEvent | TouchEvent) => {
                 >
                     <img
                         class="block h-full w-full object-contain"
-                        :src="
-                            item.type === 'error'
-                                ? '/output/assets/Iconerror.svg'
-                                : '/output/assets/iconwarning.svg'
-                        "
+                        :src="item.type === 'error' ? iconErrorUrl : iconWarningUrl"
                         alt=""
                     />
                 </div>

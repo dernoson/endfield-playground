@@ -1,15 +1,41 @@
 <!-- Generated from Figma JSON. Regenerate through the converter instead of moving generated nodes manually. -->
+<script lang="ts">
+export * from './types';
+</script>
+
 <script setup lang="ts">
-import { ref, onUnmounted } from 'vue';
+import { ref, watch, onUnmounted } from 'vue';
 import HeaderLabel from './HeaderLabel.vue';
 import ResultPanel from './ResultPanel.vue';
 import AttentionPanel from './AttentionPanel.vue';
 import CollapseButton from './CollapseButton.vue';
+import type { TestStatsPanelProps } from './types';
+
+const props = withDefaults(defineProps<TestStatsPanelProps>(), {
+    isCollapsed: undefined,
+});
+
+const emit = defineEmits<{
+    (e: 'update:isCollapsed', value: boolean): void;
+    (e: 'toggle-collapse'): void;
+}>();
 
 // 1. 面板收合狀態
-const isCollapsed = ref(false);
+const isCollapsed = ref(props.isCollapsed ?? false);
+
+watch(
+    () => props.isCollapsed,
+    (val) => {
+        if (val !== undefined) {
+            isCollapsed.value = val;
+        }
+    },
+);
+
 const toggleCollapse = () => {
     isCollapsed.value = !isCollapsed.value;
+    emit('update:isCollapsed', isCollapsed.value);
+    emit('toggle-collapse');
 };
 
 // 2. 白線上下拖動分割狀態 (預設上半部高度 582px)
@@ -77,10 +103,15 @@ onUnmounted(() => {
             class="relative isolate m-0 box-border flex [width:320px] flex-1 shrink-0 flex-col overflow-hidden border-0 border-solid [background-color:#4e4e4e]"
         >
             <!-- 上半部：整體統計與產能估算 -->
-            <ResultPanel :styleHeight="topHeight" />
+            <ResultPanel
+                :power="props.power"
+                :products="props.products"
+                :exchange-rate="props.exchangeRate"
+                :style-height="topHeight"
+            />
 
             <!-- 下半部：Attention 與 Tips 警告清單 (含可拖曳白線) -->
-            <AttentionPanel @start-drag="startDrag" />
+            <AttentionPanel :tips="props.tips" @start-drag="startDrag" />
         </div>
 
         <!-- 彈窗箭頭/收合按鈕：依高度百分比等比置中與 RWD -->
@@ -91,3 +122,37 @@ onUnmounted(() => {
         />
     </div>
 </template>
+
+<style>
+@font-face {
+    font-family: 'HarmonyOS Sans TC';
+    src: url('../shirones_StatsPanel/fonts/HarmonyOS_Sans_TC_Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HarmonyOS Sans TC';
+    src: url('../shirones_StatsPanel/fonts/HarmonyOS_Sans_TC_Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HarmonyOS Sans TC';
+    src: url('../shirones_StatsPanel/fonts/HarmonyOS_Sans_TC_Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HarmonyOS Sans TC';
+    src: url('../shirones_StatsPanel/fonts/HarmonyOS_Sans_TC_Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+</style>

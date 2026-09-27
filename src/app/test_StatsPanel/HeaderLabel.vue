@@ -1,9 +1,3 @@
-<!-- Generated from Figma JSON. Regenerate through the converter instead of moving generated nodes manually. -->
-<script setup lang="ts">
-// 頂部名稱固定為常數「產線總覽」
-const title = '產線總覽';
-</script>
-
 <template>
     <div
         data-figma-id="2302:138"
@@ -25,7 +19,7 @@ const title = '產線總覽';
             data-figma-name="Text"
             class="absolute [top:13px] [left:31px] isolate [z-index:2] m-0 box-border [height:28px] [width:96px] shrink-0 overflow-visible border-0 border-solid [text-align:left] [font-family:'HarmonyOS_Sans_TC',sans-serif] [font-size:24px] [line-height:28.128002px] [font-weight:300] [letter-spacing:0px] [white-space:pre] [color:#ffffff]"
         >
-            {{ title }}
+            產線總覽
         </div>
     </div>
 </template>

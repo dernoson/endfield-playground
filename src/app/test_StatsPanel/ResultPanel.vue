@@ -1,21 +1,8 @@
 <!-- Generated from Figma JSON. Regenerate through the converter instead of moving generated nodes manually. -->
 <script setup lang="ts">
-import { ref } from 'vue';
-
-interface ProductDetail {
-    id: string;
-    name: string;
-    produce: number;
-    consume: number;
-    profit: number;
-    isExpanded?: boolean;
-}
-
-interface PowerData {
-    used: number;
-    total: number;
-    percent: number;
-}
+import { ref, computed, watch } from 'vue';
+import bottonIconUrl from './assets/botton.svg';
+import type { PowerData, ProductDetail } from './types';
 
 const props = withDefaults(
     defineProps<{
@@ -54,6 +41,22 @@ const props = withDefaults(
 );
 
 const localProducts = ref([...props.products]);
+
+watch(
+    () => props.products,
+    (newVal) => {
+        if (newVal) {
+            localProducts.value = [...newVal];
+        }
+    },
+    { deep: true },
+);
+
+const computedPercent = computed(() => {
+    if (props.power.percent !== undefined) return props.power.percent;
+    if (props.power.total <= 0) return 0;
+    return (props.power.used / props.power.total) * 100;
+});
 
 const toggleExpand = (index: number) => {
     if (localProducts.value[index]) {
@@ -105,7 +108,7 @@ const toggleExpand = (index: number) => {
                         data-figma-id="2302:106"
                         data-figma-name="Bar"
                         class="h-full [border-radius:25px] [background-color:#eefd1c] transition-all duration-300"
-                        :style="{ width: `${Math.min(100, Math.max(0, power.percent))}%` }"
+                        :style="{ width: `${Math.min(100, Math.max(0, computedPercent))}%` }"
                     ></div>
                 </div>
                 <div
@@ -147,7 +150,7 @@ const toggleExpand = (index: number) => {
                     >
                         <img
                             class="pointer-events-none block h-full w-full object-fill"
-                            src="/output/assets/botton.svg"
+                            :src="bottonIconUrl"
                             alt=""
                         />
                     </div>
@@ -238,7 +241,7 @@ const toggleExpand = (index: number) => {
                     data-figma-name="Text"
                     class="absolute [top:29px] [left:63px] m-0 box-border [height:21px] [width:83px] shrink-0 border-0 border-solid [text-align:right] [font-family:'HarmonyOS_Sans_TC',sans-serif] [font-size:18px] [line-height:21.096px] [font-weight:300] [color:#cfcfcf]"
                 >
-                    {{ exchangeRate }}/hr
+                    {{ exchangeRate.toLocaleString() }}/hr
                 </div>
             </div>
         </div>

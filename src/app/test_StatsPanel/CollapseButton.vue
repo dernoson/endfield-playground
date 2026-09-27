@@ -1,5 +1,7 @@
 <!-- Generated from Figma JSON. Regenerate through the converter instead of moving generated nodes manually. -->
 <script setup lang="ts">
+import collapseButtonUrl from './assets/collapse button.svg';
+
 const props = withDefaults(
     defineProps<{
         isCollapsed?: boolean;
@@ -30,7 +32,7 @@ const emit = defineEmits<{
     >
         <img
             class="pointer-events-none block h-full w-full object-fill"
-            src="/output/assets/collapse button.svg"
+            :src="collapseButtonUrl"
             alt=""
         />
     </div>
