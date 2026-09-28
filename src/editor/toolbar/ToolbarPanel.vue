@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue';
 
 /** 定義由上層傳入的 Props */
 const props = defineProps<{
@@ -25,6 +25,13 @@ const activeCategory = ref('全部');
 /** 搜尋關鍵字狀態 */
 const searchQuery = ref('');
 
+/** 設備卡片列（可橫向捲動容器）的 DOM 參照 */
+const scrollerRef = ref<HTMLElement | null>(null);
+
+/** 物件欄是否還能向左 / 向右捲動（控制 scrolling hint 顯示） */
+const canScrollLeft = ref(false);
+const canScrollRight = ref(false);
+
 function toggleBottomBar() {
     bottomBarOpen.value = !bottomBarOpen.value;
 }
@@ -40,17 +47,38 @@ function handleKeyDown(event: KeyboardEvent) {
     }
 }
 
+/** 依目前捲動位置更新左右 scrolling hint 的顯示狀態 */
+function updateScrollHints() {
+    const el = scrollerRef.value;
+    if (!el) {
+        canScrollLeft.value = false;
+        canScrollRight.value = false;
+        return;
+    }
+    // 保留 1px 容差，避免小數點捲動位置造成誤判
+    canScrollLeft.value = el.scrollLeft > 1;
+    canScrollRight.value = el.scrollLeft + el.clientWidth < el.scrollWidth - 1;
+}
+
 function handleWheelScroll(event: WheelEvent) {
     const target = event.currentTarget as HTMLElement;
     target.scrollLeft += event.deltaY;
 }
 
+let resizeObserver: ResizeObserver | null = null;
+
 onMounted(() => {
     window.addEventListener('keydown', handleKeyDown);
+    updateScrollHints();
+    if (scrollerRef.value && typeof ResizeObserver !== 'undefined') {
+        resizeObserver = new ResizeObserver(updateScrollHints);
+        resizeObserver.observe(scrollerRef.value);
+    }
 });
 
 onUnmounted(() => {
     window.removeEventListener('keydown', handleKeyDown);
+    resizeObserver?.disconnect();
 });
 
 /** 視角切換分頁清單 */
@@ -146,6 +174,15 @@ const filteredEquipments = computed(() => {
     return result;
 });
 
+/** 過濾結果改變後，DOM 更新完再重新判斷是否還能捲動 */
+watch(
+    filteredEquipments,
+    () => {
+        nextTick(updateScrollHints);
+    },
+    { flush: 'post' },
+);
+
 /** 視角按鈕點擊，僅發送事件，實際切換邏輯交由父層處理 */
 function handleViewClick(viewId: string) {
     emit('view-click', viewId);
@@ -179,7 +216,7 @@ function handleEquipDragStart(event: DragEvent, equipmentId: string) {
                     <template v-for="(tab, index) in viewTabs" :key="tab.id">
                         <button
                             type="button"
-                            class="flex h-[26px] w-[80px] cursor-pointer items-center justify-center rounded-[4px] text-[16px] leading-none font-light text-white transition-colors"
+                            class="flex h-[26px] w-[80px] cursor-pointer items-center justify-center rounded-[8px] text-[16px] leading-none font-light text-white transition-colors"
                             :class="props.selectedView === tab.id ? 'bg-[#3C3C3C]' : 'bg-[#4E4E4E]'"
                             :aria-label="`切換至 ${tab.label}`"
                             :aria-pressed="props.selectedView === tab.id"
@@ -263,67 +300,101 @@ function handleEquipDragStart(event: DragEvent, equipmentId: string) {
                         </button>
                     </div>
 
-                    <!-- 下排：設備卡片列 -->
-                    <!-- 綁定 @wheel.prevent 事件來轉換垂直滾動為水平滾動 -->
-                    <div
-                        class="flex h-[100px] w-[1760px] shrink-0 items-start gap-[18px] overflow-x-auto [&::-webkit-scrollbar]:hidden"
-                        style="scrollbar-width: none"
-                        @wheel.prevent="handleWheelScroll"
-                    >
-                        <!-- 無搜尋結果提示 -->
+                    <!-- 下排：設備卡片列（外層 relative 容器，用來定位左右 scrolling hint） -->
+                    <div class="relative h-[100px] w-[1760px] shrink-0">
+                        <!-- 綁定 @wheel.prevent 事件來轉換垂直滾動為水平滾動 -->
                         <div
-                            v-if="filteredEquipments.length === 0"
-                            class="flex h-[100px] w-full items-center justify-center text-[20px] font-light text-white/50"
+                            ref="scrollerRef"
+                            class="flex h-full w-full items-start gap-[18px] overflow-x-auto [&::-webkit-scrollbar]:hidden"
+                            style="scrollbar-width: none"
+                            @wheel.prevent="handleWheelScroll"
+                            @scroll="updateScrollHints"
                         >
-                            {{
-                                activeCategory !== '全部' ? `在「${activeCategory}」分類中` : ''
-                            }}找不到符合「{{ searchQuery }}」的設備
-                        </div>
-
-                        <!-- 物件卡片 -->
-                        <button
-                            v-for="equipment in filteredEquipments"
-                            :key="equipment.id"
-                            type="button"
-                            draggable="true"
-                            @mousedown="handleEquipClick(equipment.id)"
-                            @dragstart="handleEquipDragStart($event, equipment.id)"
-                            class="relative h-[100px] w-[266px] shrink-0 cursor-pointer text-left focus:outline-none"
-                        >
-                            <!-- 深色背景層 -->
+                            <!-- 無搜尋結果提示 -->
                             <div
-                                class="absolute top-[14px] left-0 h-[78px] w-full rounded-t-[8px]"
-                                :class="
-                                    props.selectedEquipment === equipment.id
-                                        ? 'bg-[#1c1c1c]'
-                                        : 'bg-[#2b2b2b]'
-                                "
-                            ></div>
-
-                            <!-- 黃色底線層 -->
-                            <div
-                                class="absolute top-[92px] left-0 h-[4px] w-full rounded-b-[8px] bg-[#eefd1c] transition-shadow duration-300"
-                                :class="
-                                    props.selectedEquipment === equipment.id
-                                        ? 'shadow-[0_2px_4px_rgba(238,253,28,0.5)]'
-                                        : 'shadow-none'
-                                "
-                            ></div>
-
-                            <!-- 圖片容器：100x100 完整紅色中空方框標示範圍 -->
-                            <div
-                                class="absolute top-0 left-0 flex h-[100px] w-[100px] items-center justify-center border-[2px] border-red-500 bg-transparent"
+                                v-if="filteredEquipments.length === 0"
+                                class="flex h-[100px] w-full items-center justify-center text-[20px] font-light text-white/50"
                             >
-                                <!-- 之後放置真實圖片的地方 -->
+                                {{
+                                    activeCategory !== '全部'
+                                        ? `在「${activeCategory}」分類中`
+                                        : ''
+                                }}找不到符合「{{ searchQuery }}」的設備
                             </div>
 
-                            <!-- 文字層 -->
-                            <span
-                                class="absolute top-[41px] left-[107px] text-[20px] leading-none font-light tracking-[0.03em] text-white"
+                            <!-- 物件卡片 -->
+                            <button
+                                v-for="equipment in filteredEquipments"
+                                :key="equipment.id"
+                                type="button"
+                                draggable="true"
+                                @mousedown="handleEquipClick(equipment.id)"
+                                @dragstart="handleEquipDragStart($event, equipment.id)"
+                                class="relative h-[100px] w-[266px] shrink-0 cursor-pointer text-left focus:outline-none"
                             >
-                                {{ equipment.label }}
-                            </span>
-                        </button>
+                                <!-- 深色背景層 -->
+                                <div
+                                    class="absolute top-[14px] left-0 h-[78px] w-full rounded-t-[8px]"
+                                    :class="
+                                        props.selectedEquipment === equipment.id
+                                            ? 'bg-[#1c1c1c]'
+                                            : 'bg-[#2b2b2b]'
+                                    "
+                                ></div>
+
+                                <!-- 黃色底線層 -->
+                                <div
+                                    class="absolute top-[92px] left-0 h-[4px] w-full rounded-b-[8px] bg-[#eefd1c] transition-shadow duration-300"
+                                    :class="
+                                        props.selectedEquipment === equipment.id
+                                            ? 'shadow-[0_2px_4px_rgba(238,253,28,0.5)]'
+                                            : 'shadow-none'
+                                    "
+                                ></div>
+
+                                <!-- 圖片容器：100x100 完整紅色中空方框標示範圍 -->
+                                <div
+                                    class="absolute top-0 left-0 flex h-[100px] w-[100px] items-center justify-center border-[2px] border-red-500 bg-transparent"
+                                >
+                                    <!-- 之後放置真實圖片的地方 -->
+                                </div>
+
+                                <!-- 文字層 -->
+                                <span
+                                    class="absolute top-[41px] left-[107px] text-[20px] leading-none font-light tracking-[0.03em] text-white"
+                                >
+                                    {{ equipment.label }}
+                                </span>
+                            </button>
+                        </div>
+
+                        <!-- 左側 scrolling hint：20x100，僅在還能向左捲動時顯示 -->
+                        <div
+                            v-if="canScrollLeft"
+                            aria-hidden="true"
+                            class="pointer-events-none absolute top-0 left-0 z-10 h-[100px] w-[20px] bg-[linear-gradient(to_right,rgba(60,60,60,1),rgba(71,71,71,0))]"
+                        >
+                            <!-- 三角形佔位：8x14，上下各 43、左 10、右 2 -->
+                            <div class="absolute top-[43px] left-[10px] h-[14px] w-[8px]">
+                                <!-- 實際三角形：寬 6.6、高 14，頂點靠左 -->
+                                <span
+                                    class="block size-0 border-y-[7px] border-r-[6.6px] border-y-transparent border-r-white"
+                                ></span>
+                            </div>
+                        </div>
+
+                        <!-- 右側 scrolling hint：與左側完全水平對稱（整個元件水平翻轉） -->
+                        <div
+                            v-if="canScrollRight"
+                            aria-hidden="true"
+                            class="pointer-events-none absolute top-0 right-0 z-10 h-[100px] w-[20px] scale-x-[-1] bg-[linear-gradient(to_right,rgba(60,60,60,1),rgba(71,71,71,0))]"
+                        >
+                            <div class="absolute top-[43px] left-[10px] h-[14px] w-[8px]">
+                                <span
+                                    class="block size-0 border-y-[7px] border-r-[6.6px] border-y-transparent border-r-white"
+                                ></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
