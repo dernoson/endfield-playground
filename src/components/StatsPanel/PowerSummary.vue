@@ -36,17 +36,12 @@ const demandRatio = computed(() => {
                     :style="{ width: `${demandRatio}%` }"
                 />
             </div>
-            <div class="text-[16px] text-[#CFCFCF]">{{ totalDemandKw }}kW / {{ totalSupplyKw }}kW</div>
+            <div class="text-[16px] text-[#A4A4A4]">{{ totalDemandKw }}kW / {{ totalSupplyKw }}kW</div>
         </div>
 
-        <div class="mt-3 text-lg text-[#CFCFCF]">
-            <span v-if="surplus >= 0">電力狀態：盈餘 {{ surplus }} kW</span>
-            <span v-else>電力狀態：不足 {{ -surplus }} kW</span>
-        </div>
+     
 
-        <div class="mt-2 text-lg text-[#DADADA]/80">
-            設備數量：{{ deviceCount }} 台（含 {{ deviceErrorCount }} 台有 Error）
-        </div>
-        <div class="text-lg text-[#DADADA]/80">管線數量：{{ connectionCount }} 條</div>
+        
+       
     </section>
 </template>
