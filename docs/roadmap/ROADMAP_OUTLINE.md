@@ -164,8 +164,8 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
   - 細項：[detail/A1_announce_and_baseline.md](./detail/A1_announce_and_baseline.md)（W0823-D0，8/23 宣讀＋Discord 摘要）
 - [x] **R-A2** 佔格與 port 對資料：產出 port／佔格錯機清單（機器 id ＋ 錯在資料或渲染），修正「錯在資料」者，至少一台常用加工機佔格正確
   - 細項：[detail/A2_grid_and_port_alignment.md](./detail/A2_grid_and_port_alignment.md)（W0823-A1，PR #32 合入；錯機清單＋`rotatePort` pad-to-square＋`/dev/placement-demo`）
-- [~] **R-A3** 新人上手半頁：三塊畫面、props／emit、L3 禁 store、禁止根目錄上傳、禁止檔名當版本
-  - 細項：[detail/A3_onboarding_onepager.md](./detail/A3_onboarding_onepager.md)（Discord 置頂已生效；**repo 貼入 `docs/dernoson/` 尚未完成**）
+- [x] **R-A3** 新人上手半頁：三塊畫面、props／emit、L3 禁 store、禁止根目錄上傳、禁止檔名當版本
+  - 細項：[detail/A3_onboarding_onepager.md](./detail/A3_onboarding_onepager.md)（Discord 置頂已生效；**2026-10-04 收尾：repo 版改由根目錄 `README.md` 承接**）
 - [x] **R-A4** 週節奏與門檻驗收機制：週日會固定議程、30 秒驗收定義、連續兩週未演示的處理、延期改版規則
   - 細項：[detail/A4_weekly_cadence_gate.md](./detail/A4_weekly_cadence_gate.md)（8/23 會上宣讀；8/30 首次完成率與本檔週曆回寫）
 
