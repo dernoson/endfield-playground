@@ -224,7 +224,10 @@ function handleEquipDragStart(event: DragEvent, equipmentId: string) {
                         >
                             {{ tab.label }}
                         </button>
-                        <span v-if="index < viewTabs.length - 1" class="text-white/50">|</span>
+                        <span
+                            v-if="index < viewTabs.length - 1"
+                            class="h-[19px] w-px bg-white"
+                        ></span>
                     </template>
                 </div>
 
