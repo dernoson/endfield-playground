@@ -226,7 +226,7 @@ function handleEquipDragStart(event: DragEvent, equipmentId: string) {
                         </button>
                         <span
                             v-if="index < viewTabs.length - 1"
-                            class="h-[19px] w-px bg-white"
+                            class="h-[19px] w-0 shrink-0 border-l border-white"
                         ></span>
                     </template>
                 </div>
