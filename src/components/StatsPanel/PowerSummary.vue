@@ -11,7 +11,6 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const surplus = computed(() => props.totalSupplyKw - props.totalDemandKw);
 const demandRatio = computed(() => {
     const safeSupply = Math.max(props.totalSupplyKw, 1);
     return Math.min((props.totalDemandKw / safeSupply) * 100, 100);
