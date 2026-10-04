@@ -216,7 +216,7 @@ function handleEquipDragStart(event: DragEvent, equipmentId: string) {
                     <template v-for="(tab, index) in viewTabs" :key="tab.id">
                         <button
                             type="button"
-                            class="flex h-[26px] w-[80px] cursor-pointer items-center justify-center rounded-[8px] text-[16px] leading-none font-light text-white transition-colors"
+                            class="flex h-[26px] w-[80px] cursor-pointer items-center justify-center rounded-[8px] text-[16px] leading-none font-light text-white transition-colors duration-300 ease-out"
                             :class="props.selectedView === tab.id ? 'bg-[#3C3C3C]' : 'bg-[#4E4E4E]'"
                             :aria-label="`切換至 ${tab.label}`"
                             :aria-pressed="props.selectedView === tab.id"
@@ -292,7 +292,7 @@ function handleEquipDragStart(event: DragEvent, equipmentId: string) {
                             :key="tab"
                             type="button"
                             @mousedown="activeCategory = tab"
-                            class="h-[43px] w-[110px] cursor-pointer rounded-[15px] text-[20px] leading-none font-light tracking-[0.03em] text-white transition-colors"
+                            class="h-[43px] w-[110px] cursor-pointer rounded-[15px] text-[20px] leading-none font-light tracking-[0.03em] text-white transition-colors duration-300 ease-out"
                             :class="activeCategory === tab ? 'bg-[#2b2b2b]' : 'bg-[#3c3c3c]'"
                             :aria-label="`切換至 ${tab} 分類`"
                         >
@@ -334,17 +334,17 @@ function handleEquipDragStart(event: DragEvent, equipmentId: string) {
                             >
                                 <!-- 深色背景層 -->
                                 <div
-                                    class="absolute top-[14px] left-0 h-[78px] w-full rounded-t-[8px]"
+                                    class="absolute top-[14px] left-0 h-[78px] w-full rounded-t-[8px] transition-colors duration-300 ease-out"
                                     :class="
                                         props.selectedEquipment === equipment.id
                                             ? 'bg-[#1c1c1c]'
-                                            : 'bg-[#2b2b2b]'
+                                            : 'bg-[#2b2b2b] active:bg-[#1c1c1c]'
                                     "
                                 ></div>
 
                                 <!-- 黃色底線層 -->
                                 <div
-                                    class="absolute top-[92px] left-0 h-[4px] w-full rounded-b-[8px] bg-[#eefd1c] transition-shadow duration-300"
+                                    class="absolute top-[92px] left-0 h-[4px] w-full rounded-b-[8px] bg-[#eefd1c] transition-shadow duration-100"
                                     :class="
                                         props.selectedEquipment === equipment.id
                                             ? 'shadow-[0_2px_4px_rgba(238,253,28,0.5)]'
