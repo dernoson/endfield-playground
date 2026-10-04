@@ -62,15 +62,9 @@
 
 > 注意：`docs/dernoson/` 屬主編資料夾，aaaaa 不得直接修改。本項若由 aaaaa 代擬，須以草稿形式交付，由主編貼入。
 
-### 4.4 三塊畫面對照（半頁用的簡表）
+### 4.4 三塊畫面對照
 
-> 2026-10-04 註：本表停在 9/20 換殼前的舊模型，已不再維護；現行檔案歸屬以根目錄 `README.md` 與 `src/app/layouts/MainLayout.vue` 為準。
-
-| 你看到的區塊 | 資料夾 | 你會改到的檔 |
-|--------------|--------|--------------|
-| 下方設備選單 | `src/editor/toolbar/` | `ToolbarPanel.vue` |
-| 中央畫布 | `src/editor/canvas/`、`src/components/MachineShape.vue` | 由工單指定 |
-| 右側數字與警訊 | `src/editor/stats/`、`src/components/StatsPanel/` | `Index.vue` 等既有檔 |
+已改由根目錄 [`README.md`](../../../README.md)「專案資料夾架構」一節維護，本檔不另列，避免兩處內容分歧。
 
 ## 5. 檔案計畫
 
@@ -129,4 +123,4 @@
 ### 2026-10-04
 - **狀態 `[x]`。** 負責人（主編）確認 repo 版已由根目錄 `README.md` 承接：啟動與開發伺服器網址、L1／L2／L3 職責與檔案歸屬、資料夾結構皆已寫入
 - 交付位置偏離 §4.3 方案 B（貼入 `docs/dernoson/`）：`README.md` 是新 clone 第一眼看到的檔案，入口比 `docs/dernoson/` 更淺，符合本項「把人送到正確門口」的目的
-- §4.4 三塊畫面對照表停在 9/20 換殼前的舊模型（`src/editor/canvas/`、`src/components/StatsPanel/` 等），不再維護；現行檔案歸屬以 `README.md` 與 `src/app/layouts/MainLayout.vue` 為準
+- §4.4 三塊畫面對照表停在 9/20 換殼前的舊模型（`src/editor/canvas/`、`src/components/StatsPanel/` 等），已移除，改指向 `README.md`「專案資料夾架構」；該節同步依現行結構更新，每個主要資料夾以一句話描述
