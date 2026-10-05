@@ -10,6 +10,7 @@ defineProps<{
         class="tool-button"
         :class="{ 'tool-button--active': active }"
         :aria-pressed="active ?? false"
+        aria-label="Files"
     >
         <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
             <path
@@ -20,25 +21,25 @@ defineProps<{
                 stroke-width="1.6"
             />
         </svg>
-        <span>Files</span>
     </button>
 </template>
 
 <style scoped>
 .tool-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    color: rgb(212 212 216);
-    background: rgb(39 39 42);
-    border: 1px solid rgb(63 63 70);
-    border-radius: 0.375rem;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: grid;
+    box-sizing: border-box;
+    width: 58px;
+    height: 55px;
+    place-items: center;
+    padding: 0;
+    color: #2b2b2b;
+    background: #EEFD1C;
+    border: 1px solid transparent;
+    border-radius: 8px;
     cursor: pointer;
-}
-
-.tool-button:hover {
-    background: rgb(63 63 70);
 }
 
 .tool-button:focus-visible {
@@ -47,14 +48,18 @@ defineProps<{
 }
 
 .tool-button--active {
-    color: rgb(224 242 254);
     background: rgb(12 74 110 / 0.45);
     border-color: rgb(56 189 248);
 }
 
+.tool-button:hover {
+    color: #EEFD1C;
+    background: #2B2B2B;
+}
+
 svg {
-    width: 1rem;
-    height: 1rem;
+    width: 25px;
+    height: 25px;
     flex: 0 0 auto;
 }
 </style>

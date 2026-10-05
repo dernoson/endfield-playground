@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
-import ButtonExport from './ButtonExport.vue';
+import ButtonFiles from './ButtonFiles.vue';
 
 const meta = {
-    title: 'L3/Button/ButtonExport',
-    component: ButtonExport,
-} satisfies Meta<typeof ButtonExport>;
+    title: 'L3/Button/ButtonFiles',
+    component: ButtonFiles,
+} satisfies Meta<typeof ButtonFiles>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
