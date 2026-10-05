@@ -53,7 +53,9 @@ defineProps<{
 }
 
 .tool-button:hover {
+    color: #FFFFFF;
     background: rgb(78 78 78 / 0.6);
+    border-color: transparent;
 }
 
 svg {
