@@ -1,11 +1,11 @@
 # Roadmap 大綱｜2026-08-23 → 2026-11-29
 
-**版本：** v1.15（2026-10-06；依 10/04 會議原句重派工、R-D3 提前到 10 月、10 月餘下三週緊湊化）
+**版本：** v1.16（2026-10-06；PR #59 主編裁 R-1＝B／R-2 同意）
 **建立日期：** 2026-08-22
 **規劃：** aaaaa
 **守門與合入：** dernoson（主編）
 **上游來源：** 主編提出並確認的 ROADMAP v0.2（決策層原始文件，未公開；其內容已完整拆進本檔與 `detail/`）
-**狀態總覽：** **M1 成立。M2 功能門檻成立（驗收因 9/27 連假延至 10/04）。** 自建畫布打底全在 master：L1 #40、store #45、殼 #46、viewport #47、主畫面 #50、契約 #51、落子預檢＋`canConnect`＋點擊落子 #54／#55、StatsPanel 搬家 #53、折線幾何 #56。**未合：** 工具列視覺 [#48](https://github.com/dernoson/endfield-playground/pull/48)（CONFLICTING）。**2026-10-04 會議：** 問卷未齊仍派工；harry 換正式殼（拆舊底欄／舊右側）；toby 無邊界畫布＋基地框＋出界 Error；G／S 收工具列與右側並合作設備樣；白紙未接管線警示＋點管線變藍／左面板。**選取鎖部分覆寫：** 管線（及左面板所需的）點選本週允許；旋轉與 Delete 仍不開。C2 L1 已提前交完；C1 UI 順延 10/11。**2026-10-06 重派（v1.15）：** 會議紀錄另點名 **azure9572**（E004／E005／W001 用現行 detector 模型接 dev 頁 → **R-D3 由 11/15 提前到 10 月**）與 **MBD**（頂欄存檔／設定／下載／上傳四顆進 Storybook → **R-D4 頂欄 UI 提前量**），兩人原暫停單作廢；**只有 avery 整週暫停**（主編裁再放一週、不除名）。**連假空白一週不延 M3**——改以把 C1 命中判定與出界列表兩支 L1 純函式提前到 10/04 週交付來補。本週派工見 [WEEK_20261004](../work_dispatch/WEEK_20261004.md) **v1.1**。
+**狀態總覽：** **M1 成立。M2 功能門檻成立（驗收因 9/27 連假延至 10/04）。** 自建畫布打底全在 master：L1 #40、store #45、殼 #46、viewport #47、主畫面 #50、契約 #51、落子預檢＋`canConnect`＋點擊落子 #54／#55、StatsPanel 搬家 #53、折線幾何 #56。**未合：** 工具列視覺 [#48](https://github.com/dernoson/endfield-playground/pull/48)（CONFLICTING）。**2026-10-04 會議：** 問卷未齊仍派工；harry 換正式殼（拆舊底欄／舊右側）；toby 無邊界畫布＋基地框＋出界 Error；G／S 收工具列與右側並合作設備樣；白紙未接管線警示＋點管線變藍／左面板。**選取鎖部分覆寫：** 管線（及左面板所需的）點選本週允許；旋轉與 Delete 仍不開。C2 L1 已提前交完；C1 UI 順延 10/11。**2026-10-06 重派（v1.15）：** 會議紀錄另點名 **azure9572**（E004／E005／W001 用現行 detector 模型接 dev 頁 → **R-D3 由 11/15 提前到 10 月**）與 **MBD**（頂欄存檔／設定／下載／上傳四顆進 Storybook → **R-D4 頂欄 UI 提前量**），兩人原暫停單作廢；**只有 avery 整週暫停**（主編裁再放一週、不除名）。**連假空白一週不延 M3**——改以把 C1 命中判定與出界列表兩支 L1 純函式提前到 10/04 週交付來補。本週派工見 [WEEK_20261004](../work_dispatch/WEEK_20261004.md) **v1.2**（主編已裁 R-1＝B／R-2 同意）。
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 
@@ -201,7 +201,7 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
   - 細項：[detail/C3_pipeline_polyline_render.md](./detail/C3_pipeline_polyline_render.md)
 - [ ] **R-C4** 拖移進歷史：拖曳結束呼叫 `commitDeviceMove(uids, before)`，Undo 可還原位置
   - 細項：[detail/C4_move_into_history.md](./detail/C4_move_into_history.md)
-- [ ] **R-C5** 源節點素材設定：源設備可指定 `primaryOutput` 與速率，寫入 `FactoryNode.data`
+- [ ] **R-C5** 源節點素材設定：源設備可指定 `primaryOutput` 與速率，寫入 **`layoutStore`／`PlacedDevice`**（**主編 2026-10-06 裁採 B**）；引擎讀取端隨 10/18 提前一部分 D1 鏈
   - 細項：[detail/C5_source_primary_output.md](./detail/C5_source_primary_output.md)
 
 ---
@@ -257,7 +257,7 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 | 09/27 | **M2 門檻（連假停工）** | **驗收延至 10/04。** 當週無演示。程式側 #54／#55／#53／#56 已於連假前／當日合入 |
 | **10/04** | **M2 延後結算＋正式換殼** | **功能門檻過**（點真機器落到 GridCanvas）。#48 未合。派工＝harry 換殼、toby 無邊界、G／S 工具列＋右側＋設備樣、白紙未接管線稿、**azure E004／E005／W001 接 dev 頁**、**MBD 頂欄四顆進 Storybook**、**aaaaa 兩支 L1 前置**（`devicesOutsideBase`＋`findPortAt`）。**C1 UI 不在本週。** 見 [WEEK_20261004](../work_dispatch/WEEK_20261004.md) v1.1 |
 | 10/11 | **C1 切片（必要）** | 兩個 port 能連；吃已存在的 `canConnect` 與 aaaaa 上週交的 `findPortAt`。**owner 本週日會定（toby 或 harry）**。前提＝換殼大致站穩；另：harry 把 MBD 的頂欄按鈕掛上 |
-| 10/18 | **C3 套用＋C5（必要）** | `GridCanvas` 改用 `buildPipelinePolyline`（#56 已在 master，視覺鏈同 G／S）；源素材可設（**store 歸屬須在 10/04 週裁完**）。C4 拖移仍視選取是否放行 |
+| 10/18 | **C3 套用＋C5（必要）** | `GridCanvas` 改用 `buildPipelinePolyline`（#56 已在 master，視覺鏈同 G／S）；源素材寫 `layoutStore`（已裁 B），**引擎讀取路徑本週必做**。C4 拖移仍視選取是否放行 |
 
 | 10/25 | **C1＋C2＋C3＋C5（門檻）** | 步驟 3 ＋ 4 單物 ＋ 6。**日期不因連假順延** |
 | 11/01 | D1 | 右側產耗表接 `itemSummary`，空產線有空狀態。**空狀態切片已由 W0823-M1 提前交** |
@@ -276,7 +276,7 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 | **加分項提前吃掉** | R-D3 純函式段（azure Z1）與 R-D4 頂欄按鈕外觀（MBD M1）都在 10/04 週落地。兩者**都不擋門檻、也不與門檻鏈共檔**，提前做等於把 11 月的量先搬走 |
 | **必要項不擴大** | 問卷產能上修（shirone 6–10h、goodmorning／paper 3–5h）只用來加深樣式與清 #48，**不回頭擴大任何人的必要範圍** |
 
-**兩項不裁就會在 10/18 卡住**（已寫入 §9 封鎖表）：C5 的 store 歸屬、C1 的 L2 owner。
+**一項已裁、一項仍待定：** C5 的 store 歸屬＝**B（layoutStore）**（主編 2026-10-06）；**C1 的 L2 owner** 仍待週日會定（見 §9）。
 
 ---
 
@@ -286,7 +286,7 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 |----|----------|----------|----------|------|
 | ~~R-B2~~ | ~~等 store／殼／解鎖~~ | — | — | **已解除且已合入（2026-09-26／27）：** 點擊落子 #54／#55。狀態改 `[x]`（拖曳加分未做） |
 | R-B3 | 旋轉未放行 | 主編當週裁 | 10/04 會議仍不開旋轉 | `[!]`（技術依賴已清） |
-| **R-C5** | **寫入位置未裁（2026-10-06 新增）。** [C5 §4.2](./detail/C5_source_primary_output.md) 定的是 `editorStore` 的 `FactoryNode.data.primaryOutput`，但正式畫布已改走 `layoutStore`／`PlacedDevice`，而「引擎接 layoutStore」排在十一月 D1 鏈 | 主編（dernoson） | 裁定 `primaryOutput` 寫進哪個 store；若寫 `layoutStore`，須一併裁引擎讀取端怎麼辦 | **`[!]` 待裁，期限 10/11**——C5 是 M3 必要項，10/18 要開工 |
+| ~~R-C5~~ | ~~寫入位置未裁~~ | — | — | **已解除（2026-10-06）：** 主編裁 **採 B**——寫 `layoutStore`／`PlacedDevice.primaryOutput`；引擎讀取端隨 10/18 提前一部分 D1 鏈（見 [C5 §4.1a](./detail/C5_source_primary_output.md)） |
 | **R-C1 owner** | **L2 主責未定（2026-10-06 新增）。** 10/04 會議把當週產能全給換殼，C1 只記「順延 10/11」未指人 | 主編＋週日會 | 10/11 工單發出前定 toby 或 harry | **`[!]` 待裁，期限 10/11**；命中判定純函式已派給 aaaaa（10/04 週） |
 | ~~R-C1~~ | ~~等 B2~~ | — | — | **已解除（B2 點擊落子在 master）。** 狀態改 `[ ]`；**W1004 不派**，切片 10/11 |
 | R-B4 | 9/23 曾鎖選取 | 主編 | **10/04 部分解除：** 管線點選＋左面板。完整設備 inspector 與 Delete 未放行 | `[~]` |
@@ -386,6 +386,7 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 
 | 版 | 日期 | 說明 |
 |----|------|------|
+| **v1.16** | **2026-10-06** | **[PR #59](https://github.com/dernoson/endfield-playground/pull/59) 主編裁決回寫：** ①**R-1＝B**——C5 寫入 `layoutStore`／`PlacedDevice.primaryOutput`；引擎讀取端隨 10/18 提前一部分 D1 鏈；§9 R-C5 封鎖解除。②**R-2 同意**——D3 ID 表凍結為 E004／E005／W001（W002／W003 不收）。C1 的 L2 owner 仍待週日會定 |
 | **v1.15** | **2026-10-06** | **依 10/04 會議紀錄原句重新派工（v1.14 漏接兩人）：** ①**azure9572 復工**——會議點名「修 E004／E005／W001，用當前新模型接到 dev 畫面」，派 [W1004-Z1](../work_dispatch/azure9572/1004/W1004-Z1_recipe_alerts_new_model.md)；**R-D3 純函式段由 11/15 提前到 10/04 週**，ID 表凍結為 E004／E005／W001（W002／W003 不收），**不接 `layoutStore`**。②**MBD 恢復功能派工**——會議點名頂欄存檔／設定／下載／上傳四顆進 Storybook，派 [W1004-M1](../work_dispatch/MBD/1004/W1004-M1_topbar_buttons_storybook.md)；理由是**共檔風險消失**（新目錄），**R-D4 頂欄 UI 外觀提前**。③**avery 維持整週暫停**（主編裁再放一週、不除名）。**10 月緊湊化（§8.1）：** 連假空白一週**不延 M3**，改以把 `findPortAt`／`devicesOutsideBase` 提前到 10/04 週交付；新增 §9 兩項待裁封鎖（**C5 的 store 歸屬**、**C1 的 L2 owner**），期限皆 10/11。派工見 [WEEK_20261004](../work_dispatch/WEEK_20261004.md) v1.1 |
 | **v1.14** | **2026-10-04** | **連假停工一週 → M2 驗收延至 10/04。** 畫布打底與點擊落子已在 master，**可以派 10 月工。** 問卷未齊不擋。會議改本週為換殼＋無邊界畫布，C1 切片改 10/11；C2 L1／C3 幾何已提前合入。管線點選部分覆寫 9/23 選取鎖。派工見 [WEEK_20261004](../work_dispatch/WEEK_20261004.md) v1.0 |
 | **v1.13** | **2026-09-24** | **追加裁示（[PR #52](https://github.com/dernoson/endfield-playground/pull/52)）：** ①**#48 本週必須修完合入**（覆寫 v1.12「維持現狀」）——硬條件仍為 rebase＋換回 `listToolbarMachines`；不擋 T1，與 toby 同檔分區鎖。②**MBD**：週報約 3–5h **有產能**，**本週仍不派新功能碼**（Storybook／工作流未確認）；可選上手指引。派工見 [WEEK_20260921](../work_dispatch/WEEK_20260921.md) v1.2 |

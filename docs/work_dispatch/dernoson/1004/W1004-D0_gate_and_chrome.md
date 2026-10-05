@@ -5,7 +5,7 @@
 | 週次 | 2026-10-04 → 2026-10-11 |
 | 等級 | **確定**（決策／合入，不兼功能） |
 | 擋門檻 | 否 |
-| 上游 | [WEEK_20261004](../../WEEK_20261004.md) **v1.1** |
+| 上游 | [WEEK_20261004](../../WEEK_20261004.md) **v1.2** |
 | 待審上限 | ≤3 |
 
 ---
@@ -44,12 +44,14 @@ Z1（detector）與 M1（Storybook 元件）**不在這條序上**——它們�
 
 ---
 
-## 3. 本週要你裁的兩件
+## 3. 本週要你裁的兩件——**已裁（2026-10-06｜PR #59）**
 
-| # | 題目 | 為什麼現在 |
-|---|------|------------|
-| **D3 ID 表凍結** | E004＝缺輸入、E005＝缺輸出、W001＝材料不符，**一個現象一個 ID**；W002／W003 本輪不收 | azure 已開工，不凍結就會又長出平行 ID（他舊分支有五支） |
-| **C5 的 store 歸屬** | C5 細項寫 `editorStore.FactoryNode.data.primaryOutput`，但正式畫布已走 `layoutStore`／`PlacedDevice`，而「引擎接 layoutStore」排十一月 | **C5 是 M3（10/25）必要項**，不裁會在 10/18 卡住；aaaaa 會在週日會前問你 |
+| # | 題目 | 裁決 | 回寫 |
+|---|------|------|------|
+| **R-1 C5 store** | `primaryOutput` 寫進哪個 store | **B**——`layoutStore`／`PlacedDevice`；引擎讀取端隨 10/18 提前一部分 D1 鏈 | [C5 §4.1a](../../../roadmap/detail/C5_source_primary_output.md)、roadmap v1.16 |
+| **R-2 D3 ID 表** | E004／E005／W001；W002／W003 不收 | **同意凍結** | [D3 §4.1](../../../roadmap/detail/D3_recipe_alerts.md) |
+
+**仍待週日會定：** C1 的 L2 owner（toby 或 harry）。
 
 ---
 
@@ -76,6 +78,6 @@ MBD 不用催（有新目錄、自報 3–5h、週報已補）。avery 本週不
 - [ ] 待審 ≤3
 - [ ] 旋轉／Delete 接線未放行
 - [ ] 管線選取若送審：只視覺＋左面板，可過
-- [ ] D3 ID 表已凍結並回寫 [D3 細項](../../../roadmap/detail/D3_recipe_alerts.md) §4.1
-- [ ] C5 store 歸屬已裁並回寫 roadmap
+- [x] D3 ID 表已凍結並回寫 [D3 細項](../../../roadmap/detail/D3_recipe_alerts.md) §4.1 —— **R-2 同意**
+- [x] C5 store 歸屬已裁並回寫 roadmap —— **R-1＝B**
 - [ ] azure 週中已問過一次

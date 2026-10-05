@@ -5,7 +5,7 @@
 | 週次 | 2026-10-04 → 2026-10-11 |
 | 等級 | **確定・三件**（流程＋兩支純函式） |
 | 擋門檻 | 否（但 ③ 是 10/11 C1 的前置） |
-| 上游 | [WEEK_20261004](../../WEEK_20261004.md) v1.1、[#57](https://github.com/dernoson/endfield-playground/pull/57)、[C1 細項 §4.2](../../../roadmap/detail/C1_port_hit_and_draft.md) |
+| 上游 | [WEEK_20261004](../../WEEK_20261004.md) **v1.2**、[#57](https://github.com/dernoson/endfield-playground/pull/57)、[C1 細項 §4.2](../../../roadmap/detail/C1_port_hit_and_draft.md) |
 | 畫面｜交哪個檔｜不要碰｜卡住找誰 | 派工文件在 `docs/work_dispatch/`；兩支純函式在 `src/utils/layout/`（或 `src/utils/`）｜不要改 `GridCanvas`／`MainLayout`／`ToolbarPanel`｜toby（出界顯示）、harry／toby（C1 呼叫端）、dernoson（合入） |
 
 ---
@@ -74,9 +74,12 @@ findPortAt(point, devices, getDef) → { deviceUid, portId, side, media } | null
 
 ---
 
-## 4. 待裁（請在週日會前問主編一句）
+## 4. C5 store——**已裁：採 B（主編 2026-10-06｜PR #59）**
 
-**C5「源設備素材設定」寫進哪個 store？** C5 細項 §4.2 寫的是 `editorStore` 的 `FactoryNode.data.primaryOutput`，但正式畫布現在走 `layoutStore`／`PlacedDevice`，而「引擎接 layoutStore」排在十一月。**C5 是 M3（10/25）必要項**，這題不裁就會在 10/18 卡住。
+寫入 **`layoutStore`／`PlacedDevice.primaryOutput`**（action 名：`setDevicePrimaryOutput`）。  
+**你的後續義務（10/11–10/18）：** 交 action＋測試時，一併定「引擎怎麼讀到這個欄位」的最小接法（可經既有 `toTopology`），並在 10/18 切片落地——這是裁決 B 附帶的一部分 D1 提前量，**不是**整包右側產耗表。
+
+詳見 [C5 §4.1a](../../../roadmap/detail/C5_source_primary_output.md)。
 
 ---
 
@@ -86,4 +89,4 @@ findPortAt(point, devices, getDef) → { deviceUid, portId, side, media } | null
 - [x] W0921 週報已收並回寫個人檔／gitcommit_analyze（9／10；avery 主編裁再放一週）
 - [ ] `devicesOutsideBase` 有測試；`addDevice` 行為不變
 - [ ] `findPortAt` 有測試；熱區 ≥ 半格；無 store import
-- [ ] C5 的 store 歸屬已問到答案並回寫 roadmap
+- [x] C5 的 store 歸屬已問到答案並回寫 roadmap —— **R-1＝B**
