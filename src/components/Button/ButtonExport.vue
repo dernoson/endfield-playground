@@ -30,6 +30,8 @@ defineProps<{
     box-sizing: border-box;
     width: 58px;
     height: 55px;
+    flex: none;
+    order: 2;
     place-items: center;
     padding: 0;
     color: #FFFFFF;
