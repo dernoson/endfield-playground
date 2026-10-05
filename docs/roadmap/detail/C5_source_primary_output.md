@@ -8,8 +8,8 @@
 | 建議主責／備援 | aaaaa（L1 action）＋L2（表單接線）／aaaaa 全包 |
 | 性質 | 接線 |
 | 依賴 | [B4](./B4_selection_inspector.md) |
-| 狀態 | `[ ]` 未開始 |
-| 最後更新 | 2026-08-22 |
+| 狀態 | **`[!]` 待裁（2026-10-06）**：`primaryOutput` 寫進哪個 store 未定，見 §4.1a。**期限 10/11**，10/18 要開工 |
+| 最後更新 | **2026-10-06** |
 
 ---
 
@@ -38,6 +38,25 @@ V9 已新建「基礎材料輸出點」機器，依品項 `form` 選 belt 或 pi
 | 設定 UI | — | **不存在**，本項要補 |
 
 ## 4. 技術決策
+
+### 4.1a 待裁：寫進哪個 store（2026-10-06 新增，**擋本項開工**）
+
+本檔 §3／§4.2 的現況盤點寫的是 `editorStore` 的 `FactoryNode.data.primaryOutput`——那是 8/22 建檔時的唯一模型。之後發生兩件事：
+
+1. 正式畫布已換成 `layoutStore`／`PlacedDevice`（#45／#50 合入）
+2. **但 `useFlowEngine` 仍讀舊 `editorStore`**，「引擎接 layoutStore」排在十一月 D1 鏈
+
+於是出現夾縫：**寫進 `editorStore` 則正式畫布上設不到；寫進 `layoutStore` 則引擎讀不到、右側永遠是零。**
+
+| 選項 | 代價 |
+|------|------|
+| A. 寫 `editorStore`（照原案） | C5 只能在 `/dev` 頁演示，M3 演示得繞過正式畫布 |
+| B. 寫 `layoutStore` | 需同時裁「引擎讀取端怎麼辦」，等於把十一月的 D1 鏈提前一部分 |
+| C. 兩邊都寫 | 違反「唯一寫入點」，不考慮 |
+
+**須主編裁 A 或 B，期限 10/11。** 已登錄 [大綱 §9 封鎖表](../ROADMAP_OUTLINE.md)；aaaaa 於 [W1004-A0 §4](../../work_dispatch/aaaaa/1004/W1004-A0_dispatch_and_e003.md) 負責在週日會前提問，dernoson 於 [W1004-D0 §3](../../work_dispatch/dernoson/1004/W1004-D0_gate_and_chrome.md) 負責裁示。
+
+下面 §4.1／§4.2 的 action 設計在兩個選項下都成立，**只有掛在哪個 store 不同**。
 
 ### 4.1 誰負責寫入（關鍵決策）
 
