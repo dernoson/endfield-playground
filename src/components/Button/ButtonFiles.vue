@@ -1,6 +1,7 @@
 <script setup lang="ts">
 defineProps<{
     active?: boolean;
+    hovered?: boolean;
 }>();
 </script>
 
@@ -8,14 +9,18 @@ defineProps<{
     <button
         type="button"
         class="tool-button"
-        :class="{ 'tool-button--active': active }"
+        :class="{
+            'tool-button--active': active,
+            'tool-button--preview-hovered': hovered === true,
+            'tool-button--preview-not-hovered': hovered === false,
+        }"
         :aria-pressed="active ?? false"
         aria-label="Files"
     >
         <svg aria-hidden="true" viewBox="0 0 25 25" fill="none">
             <path
                 d="M21.875 0H0V25H25V3.125L21.875 0ZM12.5 3.125H15.625V8.5H12.5V3.125ZM21.875 21.875H3.125V3.125H6.5V10.9375H18.75V3.125H20.5805L21.875 4.41938V21.875Z"
-                fill="#FFFFFF"
+                fill="currentColor"
             />
         </svg>
     </button>
@@ -32,8 +37,8 @@ defineProps<{
     height: 55px;
     place-items: center;
     padding: 0;
-    color: #FFFFFF;
-    background: rgba(78, 78, 78, 1);
+    color: rgba(43, 43, 43, 1);
+    background: rgba(238, 253, 28, 1);
     border: 1px solid transparent;
     border-radius: 8px;
     cursor: pointer;
@@ -49,9 +54,15 @@ defineProps<{
     border-color: rgb(56 189 248);
 }
 
-.tool-button:hover {
-    color: #FFFFFF;
-    background: rgba(78, 78, 78, 0.6);
+.tool-button:hover:not(.tool-button--preview-not-hovered),
+.tool-button--preview-hovered {
+    color: rgba(238, 253, 28, 1);
+    background: rgba(43, 43, 43, 1);
+}
+
+.tool-button--preview-not-hovered:hover {
+    color: rgba(43, 43, 43, 1);
+    background: rgba(238, 253, 28, 1);
 }
 
 svg {

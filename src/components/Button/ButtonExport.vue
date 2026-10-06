@@ -1,6 +1,7 @@
 <script setup lang="ts">
 defineProps<{
     active?: boolean;
+    hovered?: boolean;
 }>();
 </script>
 
@@ -8,7 +9,11 @@ defineProps<{
     <button
         type="button"
         class="tool-button"
-        :class="{ 'tool-button--active': active }"
+        :class="{
+            'tool-button--active': active,
+            'tool-button--preview-hovered': hovered === true,
+            'tool-button--preview-not-hovered': hovered === false,
+        }"
         :aria-pressed="active ?? false"
         aria-label="Export"
     >
@@ -49,9 +54,16 @@ defineProps<{
     border-color: rgb(56 189 248);
 }
 
-.tool-button:hover {
+.tool-button:hover:not(.tool-button--preview-not-hovered),
+.tool-button--preview-hovered {
     color: #FFFFFF;
     background: rgba(78 ,78 ,78 , 0.6);
+    border-color: transparent;
+}
+
+.tool-button--preview-not-hovered:hover {
+    color: #FFFFFF;
+    background: rgba(78, 78, 78, 1);
     border-color: transparent;
 }
 
