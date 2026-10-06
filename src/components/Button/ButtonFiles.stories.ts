@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
+import { userEvent, within } from 'storybook/test';
 import ButtonFiles from './ButtonFiles.vue';
 
 const meta = {
@@ -9,14 +10,11 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-    args: {
-        active: false,
-    },
-};
+export const NotHovered: Story = {};
 
-export const Active: Story = {
-    args: {
-        active: true,
+export const Hovered: Story = {
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await userEvent.hover(canvas.getByRole('button', { name: 'Files' }));
     },
 };

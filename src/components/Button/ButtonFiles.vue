@@ -12,13 +12,10 @@ defineProps<{
         :aria-pressed="active ?? false"
         aria-label="Files"
     >
-        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+        <svg aria-hidden="true" viewBox="0 0 25 25" fill="none">
             <path
-                d="M3.75 6.75A1.75 1.75 0 0 1 5.5 5h5l2 2h6A1.75 1.75 0 0 1 20.25 8.75v9.5A1.75 1.75 0 0 1 18.5 20h-13a1.75 1.75 0 0 1-1.75-1.75z"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.6"
+                d="M21.875 0H0V25H25V3.125L21.875 0ZM12.5 3.125H15.625V8.5H12.5V3.125ZM21.875 21.875H3.125V3.125H6.5V10.9375H18.75V3.125H20.5805L21.875 4.41938V21.875Z"
+                fill="#FFFFFF"
             />
         </svg>
     </button>
@@ -35,8 +32,8 @@ defineProps<{
     height: 55px;
     place-items: center;
     padding: 0;
-    color: #2b2b2b;
-    background: #EEFD1C;
+    color: #FFFFFF;
+    background: rgba(78, 78, 78, 1);
     border: 1px solid transparent;
     border-radius: 8px;
     cursor: pointer;
@@ -53,8 +50,8 @@ defineProps<{
 }
 
 .tool-button:hover {
-    color: #EEFD1C;
-    background: #2B2B2B;
+    color: #FFFFFF;
+    background: rgba(78, 78, 78, 0.6);
 }
 
 svg {
