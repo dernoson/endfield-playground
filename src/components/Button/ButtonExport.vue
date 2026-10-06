@@ -12,13 +12,10 @@ defineProps<{
         :aria-pressed="active ?? false"
         aria-label="Export"
     >
-        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+        <svg aria-hidden="true" viewBox="0 0 31 25" fill="none">
             <path
-                d="M12 4v11m0 0 4-4m-4 4-4-4M5 14v4.25A1.75 1.75 0 0 0 6.75 20h10.5A1.75 1.75 0 0 0 19 18.25V14"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.6"
+                d="M17.4375 3.84615L13.5625 0H0V25H31V3.84615H17.4375ZM15.5 10.5769L22.2812 17.3077H17.4375V25H13.5625V17.3077H8.71875L15.5 10.5769Z"
+                fill="#FFFFFF"
             />
         </svg>
     </button>
@@ -35,7 +32,7 @@ defineProps<{
     place-items: center;
     padding: 0;
     color: #FFFFFF;
-    background: #4E4E4E;
+    background: rgba(78, 78, 78 , 1);
     border: 1px solid transparent;
     border-radius: 8px;
     cursor: pointer;
@@ -54,7 +51,7 @@ defineProps<{
 
 .tool-button:hover {
     color: #FFFFFF;
-    background: rgb(78 78 78 / 0.6);
+    background: rgba(78 ,78 ,78 , 0.6);
     border-color: transparent;
 }
 
