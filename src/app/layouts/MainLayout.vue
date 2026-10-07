@@ -5,7 +5,11 @@ import ProjectSidebar from '@/editor/sidebar/ProjectSidebar.vue';
 import ToolbarPanel from '@/editor/toolbar/ToolbarPanel.vue';
 import LayoutView from '@/editor/layout/LayoutView.vue';
 import InspectorSidebar from '@/editor/inspector/InspectorSidebar.vue';
+<<<<<<< HEAD
 import StatsPanel from '@/app/StatsPanel/Index.vue';
+=======
+import StatsPanel from '@/app/shirones_StatsPanel/Index.vue';
+>>>>>>> 27f754f5937385ca4c271d7b5eb293098490599c
 import { useFlowEngine } from '@/composables/useFlowEngine';
 import { useValidation } from '@/composables/useValidation';
 
