@@ -43,7 +43,7 @@ const containerRef = ref<HTMLElement | null>(null);
 const topHeight = ref(582);
 const isDragging = ref(false);
 
-const startDrag = (e: MouseEvent | TouchEvent) => {
+const startDrag = () => {
     isDragging.value = true;
     document.body.style.userSelect = 'none';
     document.body.style.cursor = 'row-resize';
@@ -122,37 +122,3 @@ onUnmounted(() => {
         />
     </div>
 </template>
-
-<style>
-@font-face {
-    font-family: 'HarmonyOS Sans TC';
-    src: url('/fonts/HarmonyOS_Sans_TC_Light.ttf') format('truetype');
-    font-weight: 300;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HarmonyOS Sans TC';
-    src: url('/fonts/HarmonyOS_Sans_TC_Regular.ttf') format('truetype');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HarmonyOS Sans TC';
-    src: url('/fonts/HarmonyOS_Sans_TC_Medium.ttf') format('truetype');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HarmonyOS Sans TC';
-    src: url('/fonts/HarmonyOS_Sans_TC_Bold.ttf') format('truetype');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-}
-</style>
