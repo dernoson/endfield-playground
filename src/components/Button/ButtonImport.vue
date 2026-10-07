@@ -1,6 +1,7 @@
 <script setup lang="ts">
 defineProps<{
     active?: boolean;
+    hovered?: boolean;
 }>();
 </script>
 
@@ -8,37 +9,37 @@ defineProps<{
     <button
         type="button"
         class="tool-button"
-        :class="{ 'tool-button--active': active }"
+        :class="{
+            'tool-button--active': active,
+            'tool-button--preview-hovered': hovered === true,
+            'tool-button--preview-not-hovered': hovered === false,
+        }"
         :aria-pressed="active ?? false"
+        aria-label="Import"
     >
-        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+        <svg aria-hidden="true" viewBox="0 0 31 25" fill="none">
             <path
-                d="M12 15V4m0 0L8 8m4-4 4 4M5 14v4.25A1.75 1.75 0 0 0 6.75 20h10.5A1.75 1.75 0 0 0 19 18.25V14"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.6"
+                d="M17.4375 3.84615L13.5625 0H0V25H31V3.84615H17.4375ZM15.5 22.1154L8.71875 15.3846H13.5625V7.69231H17.4375V15.3846H22.2812L15.5 22.1154Z"
+                fill="white"
             />
         </svg>
-        <span>Import</span>
     </button>
 </template>
 
 <style scoped>
 .tool-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    color: rgb(212 212 216);
-    background: rgb(39 39 42);
-    border: 1px solid rgb(63 63 70);
-    border-radius: 0.375rem;
+    display: inline-grid;
+    box-sizing: border-box;
+    width: 58px;
+    height: 55px;
+    flex: none;
+    place-items: center;
+    padding: 0;
+    color: #ffffff;
+    background: rgba(78, 78, 78, 1);
+    border: 1px solid transparent;
+    border-radius: 8px;
     cursor: pointer;
-}
-
-.tool-button:hover {
-    background: rgb(63 63 70);
 }
 
 .tool-button:focus-visible {
@@ -52,9 +53,22 @@ defineProps<{
     border-color: rgb(56 189 248);
 }
 
+.tool-button:hover:not(.tool-button--preview-not-hovered),
+.tool-button--preview-hovered {
+    color: #ffffff;
+    background: rgba(78, 78, 78, 0.6);
+    border-color: transparent;
+}
+
+.tool-button--preview-not-hovered:hover {
+    color: #ffffff;
+    background: rgba(78, 78, 78, 1);
+    border-color: transparent;
+}
+
 svg {
-    width: 1rem;
-    height: 1rem;
+    width: 31px;
+    height: 25px;
     flex: 0 0 auto;
 }
 </style>
