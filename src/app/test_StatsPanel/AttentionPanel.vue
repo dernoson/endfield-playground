@@ -12,22 +12,10 @@ const iconWarningSvg = computed(() =>
     iconWarningRaw.replace(/fill="(?!none)[^"]*"/g, 'fill="#F7D945"'),
 );
 
-const props = withDefaults(
-    defineProps<{
-        tips?: TipItem[];
-        styleHeight?: number | string;
-    }>(),
-    {
-        tips: () => [
-            { id: '1', type: 'error', text: '碎紙機單元*1位置重疊' },
-            { id: '2', type: 'error', text: '碎紙機單元*1位置重疊' },
-            { id: '3', type: 'warning', text: '貓毛貓範圍總sb超載' },
-            { id: '4', type: 'warning', text: '貓毛貓範圍總sb超載' },
-            { id: '5', type: 'warning', text: '貓毛貓範圍總sb超載' },
-        ],
-        styleHeight: '498px',
-    },
-);
+defineProps<{
+    tips?: TipItem[];
+    styleHeight?: number | string;
+}>();
 
 const emit = defineEmits<{
     (e: 'start-drag', event: MouseEvent | TouchEvent): void;
@@ -78,7 +66,7 @@ const emit = defineEmits<{
                     class="m-0 ml-[11px] box-border min-w-0 flex-1 border-0 [font-family:'HarmonyOS_Sans_TC',sans-serif] [font-size:18px] [line-height:21px] [font-weight:400] break-words"
                     :class="item.type === 'error' ? '[color:#ff6e6e]' : '[color:#f7d945]'"
                 >
-                    {{ item.text }}
+                    {{ item.text || '-' }}
                 </div>
             </div>
         </div>
