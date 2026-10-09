@@ -5,8 +5,12 @@ import iconErrorRaw from '@/assets/icon/icon error.svg?raw';
 import iconWarningRaw from '@/assets/icon/icon warning.svg?raw';
 import type { TipItem } from './types';
 
-const iconErrorSvg = computed(() => iconErrorRaw.replace(/fill="(?!none)[^"]*"/g, 'fill="#FF6E6E"'));
-const iconWarningSvg = computed(() => iconWarningRaw.replace(/fill="(?!none)[^"]*"/g, 'fill="#F7D945"'));
+const iconErrorSvg = computed(() =>
+    iconErrorRaw.replace(/fill="(?!none)[^"]*"/g, 'fill="#FF6E6E"'),
+);
+const iconWarningSvg = computed(() =>
+    iconWarningRaw.replace(/fill="(?!none)[^"]*"/g, 'fill="#F7D945"'),
+);
 
 const props = withDefaults(
     defineProps<{
@@ -28,10 +32,6 @@ const props = withDefaults(
 const emit = defineEmits<{
     (e: 'start-drag', event: MouseEvent | TouchEvent): void;
 }>();
-
-const onHandleDown = (e: MouseEvent | TouchEvent) => {
-    emit('start-drag', e);
-};
 </script>
 
 <template>
@@ -54,7 +54,7 @@ const onHandleDown = (e: MouseEvent | TouchEvent) => {
         <div
             data-figma-id="2430:347"
             data-figma-name="tips"
-            class="custom-scrollbar m-0 box-border flex flex-1 shrink-0 flex-col gap-[9px] overflow-x-hidden overflow-y-auto border-0 border-solid pl-[21px] pr-[12px] pb-4"
+            class="custom-scrollbar m-0 box-border flex flex-1 shrink-0 flex-col gap-[9px] overflow-x-hidden overflow-y-auto border-0 border-solid pr-[12px] pb-4 pl-[21px]"
         >
             <div
                 v-for="item in tips"
@@ -67,7 +67,7 @@ const onHandleDown = (e: MouseEvent | TouchEvent) => {
                 "
             >
                 <div
-                    class="m-0 ml-[7px] box-border flex h-[23px] w-[24px] shrink-0 items-center justify-center border-0 self-center"
+                    class="m-0 ml-[7px] box-border flex h-[23px] w-[24px] shrink-0 items-center justify-center self-center border-0"
                 >
                     <div
                         class="h-full w-full [&>svg]:h-full [&>svg]:w-full"
@@ -75,7 +75,7 @@ const onHandleDown = (e: MouseEvent | TouchEvent) => {
                     ></div>
                 </div>
                 <div
-                    class="m-0 ml-[11px] box-border min-w-0 flex-1 border-0 break-words [font-family:'HarmonyOS_Sans_TC',sans-serif] [font-size:18px] [line-height:21px] [font-weight:400]"
+                    class="m-0 ml-[11px] box-border min-w-0 flex-1 border-0 [font-family:'HarmonyOS_Sans_TC',sans-serif] [font-size:18px] [line-height:21px] [font-weight:400] break-words"
                     :class="item.type === 'error' ? '[color:#ff6e6e]' : '[color:#f7d945]'"
                 >
                     {{ item.text }}
@@ -90,11 +90,11 @@ const onHandleDown = (e: MouseEvent | TouchEvent) => {
     width: 9px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-    background: #3C3C3C;
+    background: #3c3c3c;
     border-radius: 25px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #FFFFFF;
+    background: #ffffff;
     border-radius: 25px;
 }
 /* 向上箭頭按鈕：總高 11px，5px 箭頭置頂，下方自然留 6px (5~6px) 空隙 */

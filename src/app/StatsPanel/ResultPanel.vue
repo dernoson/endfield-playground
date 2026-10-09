@@ -158,7 +158,7 @@ const toggleExpand = (index: number) => {
                     <!-- 產品名稱 -->
                     <div
                         data-figma-name="product"
-                        class="absolute [top:0px] [left:18px] isolate m-0 box-border [height:21px] max-w-[130px] shrink-0 cursor-pointer truncate whitespace-nowrap border-0 border-solid [text-align:left] [font-family:'HarmonyOS_Sans_TC',sans-serif] [font-size:18px] [line-height:21.096px] [font-weight:400] [color:#cfcfcf]"
+                        class="absolute [top:0px] [left:18px] isolate m-0 box-border [height:21px] max-w-[130px] shrink-0 cursor-pointer truncate border-0 border-solid [text-align:left] [font-family:'HarmonyOS_Sans_TC',sans-serif] [font-size:18px] [line-height:21.096px] [font-weight:400] whitespace-nowrap [color:#cfcfcf]"
                         :title="item.name"
                         @click="toggleExpand(index)"
                     >
@@ -168,7 +168,7 @@ const toggleExpand = (index: number) => {
                     <!-- 收益 -->
                     <div
                         data-figma-name="Text"
-                        class="absolute [top:2px] [right:0px] isolate m-0 box-border [width:122px] [height:19px] shrink-0 border-0 border-solid [text-align:left] [font-family:'HarmonyOS_Sans_TC',sans-serif] [font-size:16px] [line-height:18.752px] [font-weight:300]"
+                        class="absolute [top:2px] [right:0px] isolate m-0 box-border [height:19px] [width:122px] shrink-0 border-0 border-solid [text-align:left] [font-family:'HarmonyOS_Sans_TC',sans-serif] [font-size:16px] [line-height:18.752px] [font-weight:300]"
                         :class="item.profit >= 0 ? '[color:#a3fd1c]' : '[color:#ff6e6e]'"
                     >
                         {{ item.profit >= 0 ? `收益+${item.profit}` : `收益${item.profit}` }}
@@ -254,11 +254,11 @@ const toggleExpand = (index: number) => {
     width: 9px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-    background: #3C3C3C;
+    background: #3c3c3c;
     border-radius: 25px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #FFFFFF;
+    background: #ffffff;
     border-radius: 25px;
 }
 /* 向上箭頭按鈕：總高 11px，5px 箭頭置頂，下方自然留 6px (5~6px) 空隙 */

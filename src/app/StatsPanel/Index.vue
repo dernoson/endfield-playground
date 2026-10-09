@@ -112,7 +112,7 @@ onUnmounted(() => {
 
             <!-- 分割白線（Handle） -->
             <div
-                class="z-30 relative -my-[3px] flex h-[6px] w-full cursor-row-resize items-center justify-center bg-transparent transition-colors select-none hover:bg-white/40 active:bg-white/70"
+                class="relative z-30 -my-[3px] flex h-[6px] w-full cursor-row-resize items-center justify-center bg-transparent transition-colors select-none hover:bg-white/40 active:bg-white/70"
                 @mousedown="startDrag"
                 @touchstart.passive="startDrag"
                 title="上下拖動調整統計與Tips區域高度"

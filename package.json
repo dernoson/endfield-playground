@@ -18,10 +18,7 @@
     "build-storybook": "storybook build",
     "sync:aaaaa-data": "node docs/aaaaa/scripts/sync-data-from-v1.mjs",
     "generate:src-data": "node docs/aaaaa/scripts/generate-src-data.mjs",
-    "validate-all": "concurrently -n type,lint,fmt,test -c blue,green,yellow,red \"pnpm type-check\" \"pnpm lint\" \"pnpm format\" \"pnpm test\"",
-    "reviewer": "node figma-to-vue-reviewer/shared/server.js",
-    "reviewer:convert": "node figma-to-vue-reviewer/shared/scripts/convert-static.js",
-    "reviewer:workspaces": "powershell -File figma-to-vue-reviewer/start-workspaces.ps1"
+    "validate-all": "concurrently -n type,lint,fmt,test -c blue,green,yellow,red \"pnpm type-check\" \"pnpm lint\" \"pnpm format\" \"pnpm test\""
   },
   "dependencies": {
     "@nuxt/ui": "^4.6.1",
