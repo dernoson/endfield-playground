@@ -19,9 +19,20 @@ export interface TipItem {
     text: string;
 }
 
+export interface ItemSummaryRow {
+    itemId: string;
+    name: string;
+    iconUrl: string;
+    produced: number; // 每分鐘產量
+    consumed: number; // 每分鐘消耗量
+    net: number; // 淨產出 (produced - consumed)
+    efficiency: number; // (0 ~ 1)
+}
+
 export interface TestStatsPanelProps {
     power?: PowerData;
     products?: ProductDetail[];
+    rows?: ItemSummaryRow[];
     exchangeRate?: number;
     tips?: TipItem[];
     isCollapsed?: boolean;
