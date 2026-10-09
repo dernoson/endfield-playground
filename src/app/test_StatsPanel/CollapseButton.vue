@@ -1,6 +1,6 @@
 <!-- Generated from Figma JSON. Regenerate through the converter instead of moving generated nodes manually. -->
 <script setup lang="ts">
-import collapseButtonUrl from './assets/collapse button.svg';
+import collapseButtonUrl from '@/assets/icon/collapse button.svg';
 
 const props = withDefaults(
     defineProps<{

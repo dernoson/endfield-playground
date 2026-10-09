@@ -1,7 +1,7 @@
 <!-- Generated from Figma JSON. Regenerate through the converter instead of moving generated nodes manually. -->
 <script setup lang="ts">
-import iconErrorUrl from './assets/Iconerror.svg';
-import iconWarningUrl from './assets/iconwarning.svg';
+import iconErrorUrl from '@/assets/icon/Iconerror.svg';
+import iconWarningUrl from '@/assets/icon/iconwarning.svg';
 import type { TipItem } from './types';
 
 const props = withDefaults(
@@ -57,11 +57,11 @@ const onHandleDown = (e: MouseEvent | TouchEvent) => {
             </div>
         </div>
 
-        <!-- 提示與警報列表（可自適應滾動） -->
+        <!-- 提示與警報列表（純 CSS 捲軸） -->
         <div
             data-figma-id="2430:347"
             data-figma-name="tips"
-            class="m-0 box-border flex flex-1 shrink-0 flex-col gap-[9px] overflow-x-hidden overflow-y-auto border-0 border-solid px-[21px] pb-4"
+            class="custom-scrollbar m-0 box-border flex flex-1 shrink-0 flex-col gap-[9px] overflow-x-hidden overflow-y-auto border-0 border-solid px-[21px] pb-4"
         >
             <div
                 v-for="item in tips"
@@ -92,3 +92,17 @@ const onHandleDown = (e: MouseEvent | TouchEvent) => {
         </div>
     </div>
 </template>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+    width: 7px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #3C3C3C;
+    border-radius: 25px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #FFFFFF;
+    border-radius: 25px;
+}
+</style>

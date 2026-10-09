@@ -1,7 +1,7 @@
 <!-- Generated from Figma JSON. Regenerate through the converter instead of moving generated nodes manually. -->
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import bottonIconUrl from './assets/botton.svg';
+import bottonIconUrl from '@/assets/icon/botton.svg';
 import type { PowerData, ProductDetail } from './types';
 
 const props = withDefaults(
@@ -75,7 +75,7 @@ const toggleExpand = (index: number) => {
         <div
             data-figma-id="2302:102"
             data-figma-name="Detail"
-            class="relative isolate m-0 [margin-top:100px] [margin-left:18px] box-border flex [width:281px] flex-1 shrink-0 flex-col overflow-x-hidden overflow-y-auto border-0 border-solid pr-1 pb-4"
+            class="custom-scrollbar relative isolate m-0 [margin-top:100px] [margin-left:18px] box-border flex [width:290px] flex-1 shrink-0 flex-col overflow-x-hidden overflow-y-auto border-0 border-solid pr-2 pb-4"
         >
             <!-- 整體統計標題 -->
             <div
@@ -247,3 +247,17 @@ const toggleExpand = (index: number) => {
         </div>
     </div>
 </template>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+    width: 7px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #3C3C3C;
+    border-radius: 25px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #FFFFFF;
+    border-radius: 25px;
+}
+</style>
