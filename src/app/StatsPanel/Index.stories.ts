@@ -3,7 +3,7 @@ import TestStatsPanel from './Index.vue';
 import type { ProductDetail, TipItem } from './types.ts';
 
 const meta = {
-    title: 'L3/test_StatsPanel',
+    title: 'L3/StatsPanel',
     component: TestStatsPanel,
     decorators: [
         () => ({
