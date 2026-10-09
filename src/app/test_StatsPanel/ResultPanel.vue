@@ -251,7 +251,7 @@ const toggleExpand = (index: number) => {
 
 <style scoped>
 .custom-scrollbar::-webkit-scrollbar {
-    width: 7px;
+    width: 9px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
     background: #3C3C3C;
@@ -260,5 +260,25 @@ const toggleExpand = (index: number) => {
 .custom-scrollbar::-webkit-scrollbar-thumb {
     background: #FFFFFF;
     border-radius: 25px;
+}
+/* 向上箭頭按鈕：總高 11px，5px 箭頭置頂，下方自然留 6px (5~6px) 空隙 */
+.custom-scrollbar::-webkit-scrollbar-button:single-button:vertical:decrement {
+    height: 11px;
+    width: 9px;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: 9px 5px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 5' width='9' height='5'%3E%3Cpath d='M9 5L0 5L4.5 0L9 5Z' fill='%23FFFFFF'/%3E%3C/svg%3E");
+}
+/* 向下箭頭按鈕：總高 11px，5px 箭頭置底，上方自然留 6px (5~6px) 空隙 */
+.custom-scrollbar::-webkit-scrollbar-button:single-button:vertical:increment {
+    height: 11px;
+    width: 9px;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    background-size: 9px 5px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 5' width='9' height='5'%3E%3Cpath d='M0 0L9 0L4.5 5L0 0Z' fill='%23FFFFFF'/%3E%3C/svg%3E");
 }
 </style>

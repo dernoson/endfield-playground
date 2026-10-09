@@ -39,18 +39,7 @@ const onHandleDown = (e: MouseEvent | TouchEvent) => {
         data-figma-id="2302:83"
         data-figma-name="Attention"
         class="relative isolate m-0 box-border flex [width:320px] flex-1 shrink-0 flex-col overflow-hidden border-0 border-solid [background-color:#4e4e4e]"
-        :style="{ height: typeof styleHeight === 'number' ? `${styleHeight}px` : styleHeight }"
     >
-        <!-- 可拖曳白線（Handle） -->
-        <div
-            class="z-30 -mt-[3px] flex h-[6px] w-full cursor-row-resize items-center justify-center bg-transparent transition-colors select-none hover:bg-white/40 active:bg-white/70"
-            @mousedown="onHandleDown"
-            @touchstart.passive="onHandleDown"
-            title="上下拖動調整統計與Tips區域高度"
-        >
-            <div class="pointer-events-none h-[1px] w-full bg-[#dadada]"></div>
-        </div>
-
         <div class="flex shrink-0 items-center justify-between p-[18px] pb-2">
             <div
                 data-figma-id="2302:94"
@@ -65,12 +54,12 @@ const onHandleDown = (e: MouseEvent | TouchEvent) => {
         <div
             data-figma-id="2430:347"
             data-figma-name="tips"
-            class="custom-scrollbar m-0 box-border flex flex-1 shrink-0 flex-col gap-[9px] overflow-x-hidden overflow-y-auto border-0 border-solid px-[21px] pb-4"
+            class="custom-scrollbar m-0 box-border flex flex-1 shrink-0 flex-col gap-[9px] overflow-x-hidden overflow-y-auto border-0 border-solid pl-[21px] pr-[12px] pb-4"
         >
             <div
                 v-for="item in tips"
                 :key="item.id"
-                class="relative isolate m-0 box-border flex [height:35px] [min-height:35px] [width:278px] shrink-0 items-center overflow-hidden rounded border-0 border-solid"
+                class="relative isolate m-0 box-border flex min-h-[31px] w-full shrink-0 items-center overflow-hidden rounded border-0 border-solid py-[5px] pr-2"
                 :class="
                     item.type === 'error'
                         ? '[background-color:rgba(255,_110,_110,_0.1)]'
@@ -78,7 +67,7 @@ const onHandleDown = (e: MouseEvent | TouchEvent) => {
                 "
             >
                 <div
-                    class="m-0 ml-[7px] box-border flex h-[23px] w-[24px] shrink-0 items-center justify-center border-0"
+                    class="m-0 ml-[7px] box-border flex h-[23px] w-[24px] shrink-0 items-center justify-center border-0 self-center"
                 >
                     <div
                         class="h-full w-full [&>svg]:h-full [&>svg]:w-full"
@@ -86,7 +75,7 @@ const onHandleDown = (e: MouseEvent | TouchEvent) => {
                     ></div>
                 </div>
                 <div
-                    class="m-0 ml-[11px] box-border shrink-0 truncate border-0 [font-family:'HarmonyOS_Sans_TC',sans-serif] [font-size:18px] [line-height:21.096px] [font-weight:400]"
+                    class="m-0 ml-[11px] box-border min-w-0 flex-1 border-0 break-words [font-family:'HarmonyOS_Sans_TC',sans-serif] [font-size:18px] [line-height:21px] [font-weight:400]"
                     :class="item.type === 'error' ? '[color:#ff6e6e]' : '[color:#f7d945]'"
                 >
                     {{ item.text }}
@@ -98,7 +87,7 @@ const onHandleDown = (e: MouseEvent | TouchEvent) => {
 
 <style scoped>
 .custom-scrollbar::-webkit-scrollbar {
-    width: 7px;
+    width: 9px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
     background: #3C3C3C;
@@ -107,5 +96,25 @@ const onHandleDown = (e: MouseEvent | TouchEvent) => {
 .custom-scrollbar::-webkit-scrollbar-thumb {
     background: #FFFFFF;
     border-radius: 25px;
+}
+/* 向上箭頭按鈕：總高 11px，5px 箭頭置頂，下方自然留 6px (5~6px) 空隙 */
+.custom-scrollbar::-webkit-scrollbar-button:single-button:vertical:decrement {
+    height: 11px;
+    width: 9px;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: 9px 5px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 5' width='9' height='5'%3E%3Cpath d='M9 5L0 5L4.5 0L9 5Z' fill='%23FFFFFF'/%3E%3C/svg%3E");
+}
+/* 向下箭頭按鈕：總高 11px，5px 箭頭置底，上方自然留 6px (5~6px) 空隙 */
+.custom-scrollbar::-webkit-scrollbar-button:single-button:vertical:increment {
+    height: 11px;
+    width: 9px;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    background-size: 9px 5px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 5' width='9' height='5'%3E%3Cpath d='M0 0L9 0L4.5 5L0 0Z' fill='%23FFFFFF'/%3E%3C/svg%3E");
 }
 </style>

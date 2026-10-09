@@ -110,8 +110,18 @@ onUnmounted(() => {
                 :style-height="topHeight"
             />
 
-            <!-- 下半部：Attention 與 Tips 警告清單 (含可拖曳白線) -->
-            <AttentionPanel :tips="props.tips" @start-drag="startDrag" />
+            <!-- 分割白線（Handle） -->
+            <div
+                class="z-30 relative -my-[3px] flex h-[6px] w-full cursor-row-resize items-center justify-center bg-transparent transition-colors select-none hover:bg-white/40 active:bg-white/70"
+                @mousedown="startDrag"
+                @touchstart.passive="startDrag"
+                title="上下拖動調整統計與Tips區域高度"
+            >
+                <div class="pointer-events-none h-[1px] w-full bg-[#dadada]"></div>
+            </div>
+
+            <!-- 下半部：Attention 與 Tips 警告清單 -->
+            <AttentionPanel :tips="props.tips" />
         </div>
 
         <!-- 彈窗箭頭/收合按鈕：依高度百分比等比置中與 RWD -->
