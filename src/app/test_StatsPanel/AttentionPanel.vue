@@ -1,8 +1,12 @@
 <!-- Generated from Figma JSON. Regenerate through the converter instead of moving generated nodes manually. -->
 <script setup lang="ts">
-import iconErrorUrl from '@/assets/icon/Iconerror.svg';
-import iconWarningUrl from '@/assets/icon/iconwarning.svg';
+import { computed } from 'vue';
+import iconErrorRaw from '@/assets/icon/icon error.svg?raw';
+import iconWarningRaw from '@/assets/icon/icon warning.svg?raw';
 import type { TipItem } from './types';
+
+const iconErrorSvg = computed(() => iconErrorRaw.replace(/fill="(?!none)[^"]*"/g, 'fill="#FF6E6E"'));
+const iconWarningSvg = computed(() => iconWarningRaw.replace(/fill="(?!none)[^"]*"/g, 'fill="#F7D945"'));
 
 const props = withDefaults(
     defineProps<{
@@ -76,11 +80,10 @@ const onHandleDown = (e: MouseEvent | TouchEvent) => {
                 <div
                     class="m-0 ml-[7px] box-border flex h-[23px] w-[24px] shrink-0 items-center justify-center border-0"
                 >
-                    <img
-                        class="block h-full w-full object-contain"
-                        :src="item.type === 'error' ? iconErrorUrl : iconWarningUrl"
-                        alt=""
-                    />
+                    <div
+                        class="h-full w-full [&>svg]:h-full [&>svg]:w-full"
+                        v-html="item.type === 'error' ? iconErrorSvg : iconWarningSvg"
+                    ></div>
                 </div>
                 <div
                     class="m-0 ml-[11px] box-border shrink-0 truncate border-0 [font-family:'HarmonyOS_Sans_TC',sans-serif] [font-size:18px] [line-height:21.096px] [font-weight:400]"

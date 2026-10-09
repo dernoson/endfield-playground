@@ -1,7 +1,7 @@
 <!-- Generated from Figma JSON. Regenerate through the converter instead of moving generated nodes manually. -->
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import bottonIconUrl from '@/assets/icon/botton.svg';
+import bottonIconUrl from '@/assets/icon/icon arrow.svg';
 import type { PowerData, ProductDetail } from './types';
 
 const props = withDefaults(
@@ -75,7 +75,7 @@ const toggleExpand = (index: number) => {
         <div
             data-figma-id="2302:102"
             data-figma-name="Detail"
-            class="custom-scrollbar relative isolate m-0 [margin-top:100px] [margin-left:18px] box-border flex [width:290px] flex-1 shrink-0 flex-col overflow-x-hidden overflow-y-auto border-0 border-solid pr-2 pb-4"
+            class="relative isolate m-0 [margin-top:100px] [margin-left:18px] box-border flex [width:290px] flex-1 shrink-0 flex-col overflow-hidden border-0 border-solid pr-2 pb-4"
         >
             <!-- 整體統計標題 -->
             <div
@@ -129,16 +129,16 @@ const toggleExpand = (index: number) => {
                 產能估算
             </div>
 
-            <!-- 產能產品列表 -->
+            <!-- 產能產品列表（獨立滾動範圍） -->
             <div
                 data-figma-id="2430:348"
-                data-figma-name="imformation"
-                class="relative isolate m-0 mb-6 box-border flex [width:278px] shrink-0 flex-col gap-3 border-0 border-solid"
+                data-figma-name="information"
+                class="custom-scrollbar relative isolate m-0 mb-6 box-border flex [width:281px] flex-1 shrink-0 flex-col gap-3 overflow-x-hidden overflow-y-auto border-0 border-solid pr-1"
             >
                 <div
                     v-for="(item, index) in localProducts"
                     :key="item.id"
-                    class="relative isolate m-0 box-border [width:278px] shrink-0 border-0 border-solid transition-all"
+                    class="relative isolate m-0 box-border [width:100%] shrink-0 border-0 border-solid transition-all"
                     :class="item.isExpanded ? '[height:66px]' : '[height:24px]'"
                 >
                     <!-- 展開按鈕 -->
@@ -158,7 +158,8 @@ const toggleExpand = (index: number) => {
                     <!-- 產品名稱 -->
                     <div
                         data-figma-name="product"
-                        class="absolute [top:0px] [left:18px] isolate m-0 box-border [height:21px] [width:72px] shrink-0 cursor-pointer border-0 border-solid [text-align:left] [font-family:'HarmonyOS_Sans_TC',sans-serif] [font-size:18px] [line-height:21.096px] [font-weight:400] [color:#cfcfcf]"
+                        class="absolute [top:0px] [left:18px] isolate m-0 box-border [height:21px] max-w-[130px] shrink-0 cursor-pointer truncate whitespace-nowrap border-0 border-solid [text-align:left] [font-family:'HarmonyOS_Sans_TC',sans-serif] [font-size:18px] [line-height:21.096px] [font-weight:400] [color:#cfcfcf]"
+                        :title="item.name"
                         @click="toggleExpand(index)"
                     >
                         {{ item.name }}
