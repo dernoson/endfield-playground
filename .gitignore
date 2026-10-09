@@ -44,5 +44,5 @@ __pycache__/
 # 決策層文件（問卷、commit 分析、個人檔與風險矩陣、派工複查）：不進版控
 docs/aaaaa/collaborator_survey
 
-# Tools (開發輔助工具)
-/figma-to-vue-reviewer/
+# tool
+figma-to-vue-reviewer
