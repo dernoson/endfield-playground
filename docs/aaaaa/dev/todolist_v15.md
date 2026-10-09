@@ -122,7 +122,7 @@ A 定案 → B V14 收斂（前置）
 
 ## V15-E｜驗收、PR、交接
 
-- [~] **V15-E1** 品質閘 `[x]`；DoD `[x]`；PR 已開；合入後回寫 `[ ]`
+- [~] **V15-E1** 品質閘 `[x]`；DoD `[x]`；PR [#60](https://github.com/dernoson/endfield-playground/pull/60) 已開；合入後回寫 `[ ]`
     - 細項：[dev_v15/E1_acceptance_and_handoff.md](./dev_v15/E1_acceptance_and_handoff.md)
 
 ---

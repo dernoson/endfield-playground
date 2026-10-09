@@ -26,6 +26,7 @@
 
 | 項 | 內容 |
 |----|------|
+| PR | [#60](https://github.com/dernoson/endfield-playground/pull/60) |
 | 標題 | `W1004-A0：devicesOutsideBase＋hitTestPortAt（V15）` |
 | 分支 | `dev/aaaaa1004` → `master` |
 | Commit | ①文件（V15 開版＋V14 收斂＋C1／A0 用詞回寫）②`devicesOutsideBase` ③`hitTestPortAt` |
