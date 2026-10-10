@@ -1,6 +1,6 @@
 <!-- Generated from Figma JSON. Regenerate through the converter instead of moving generated nodes manually. -->
 <script lang="ts">
-export * from './types';
+export * from './types.ts';
 </script>
 
 <script setup lang="ts">
@@ -9,7 +9,7 @@ import HeaderLabel from './HeaderLabel.vue';
 import ResultPanel from './ResultPanel.vue';
 import AttentionPanel from './AttentionPanel.vue';
 import CollapseButton from './CollapseButton.vue';
-import type { TestStatsPanelProps } from './types';
+import type { TestStatsPanelProps } from './types.ts';
 
 const props = defineProps<TestStatsPanelProps>();
 

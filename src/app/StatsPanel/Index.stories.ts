@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 import TestStatsPanel from './Index.vue';
-import type { SingleProductDetail, SingleTip } from './types';
+import type { SingleProductDetail, SingleTip } from './types.ts';
 
 const meta = {
     title: 'L3/test_StatsPanel',
