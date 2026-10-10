@@ -2,12 +2,12 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import bottonIconUrl from '@/assets/icon/icon arrow.svg';
-import type { PowerData, ProductDetail } from './types';
+import type { PowerData, SingleProductDetail } from './types';
 
 const props = withDefaults(
     defineProps<{
         power?: PowerData;
-        products?: ProductDetail[];
+        products?: SingleProductDetail[];
         exchangeRate?: number;
         styleHeight?: number | string;
     }>(),

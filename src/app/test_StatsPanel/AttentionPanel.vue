@@ -3,7 +3,7 @@
 import { computed } from 'vue';
 import iconErrorRaw from '@/assets/icon/icon error.svg?raw';
 import iconWarningRaw from '@/assets/icon/icon warning.svg?raw';
-import type { TipItem } from './types';
+import type { SingleTip } from './types';
 
 const iconErrorSvg = computed(() =>
     iconErrorRaw.replace(/fill="(?!none)[^"]*"/g, 'fill="#FF6E6E"'),
@@ -14,7 +14,7 @@ const iconWarningSvg = computed(() =>
 
 const props = withDefaults(
     defineProps<{
-        tips?: TipItem[];
+        tips?: SingleTip[];
         styleHeight?: number | string;
     }>(),
     {

@@ -1,4 +1,4 @@
-export interface ProductDetail {
+export interface SingleProductDetail {
     id: string;
     name: string;
     produce: number;
@@ -13,27 +13,16 @@ export interface PowerData {
     percent?: number;
 }
 
-export interface TipItem {
+export interface SingleTip {
     id: string;
     type: 'error' | 'warning';
     text: string;
 }
 
-export interface ItemSummaryRow {
-    itemId: string;
-    name: string;
-    iconUrl: string;
-    produced: number; // 每分鐘產量
-    consumed: number; // 每分鐘消耗量
-    net: number; // 淨產出 (produced - consumed)
-    efficiency: number; // (0 ~ 1)
-}
-
 export interface TestStatsPanelProps {
     power?: PowerData;
-    products?: ProductDetail[];
-    rows?: ItemSummaryRow[];
+    products?: SingleProductDetail[];
     exchangeRate?: number;
-    tips?: TipItem[];
+    tips?: SingleTip[];
     isCollapsed?: boolean;
 }

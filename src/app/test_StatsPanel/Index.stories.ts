@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 import TestStatsPanel from './Index.vue';
-import type { ProductDetail, TipItem } from './types';
+import type { SingleProductDetail, SingleTip } from './types';
 
 const meta = {
     title: 'L3/test_StatsPanel',
@@ -19,7 +19,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const sampleProductions: ProductDetail[] = [
+const sampleProductions: SingleProductDetail[] = [
     {
         id: '1',
         name: '紫晶纖維',
@@ -38,7 +38,7 @@ const sampleProductions: ProductDetail[] = [
     },
 ];
 
-const sampleTips: TipItem[] = [
+const sampleTips: SingleTip[] = [
     {
         id: 'tip-1',
         type: 'error',
@@ -107,7 +107,7 @@ export const ZeroSupplyPower: Story = {
     },
 };
 
-const overflowProductions: ProductDetail[] = [
+const overflowProductions: SingleProductDetail[] = [
     { id: 'p-1', name: '粗製紫晶', produce: 500, consume: 200, profit: 300, isExpanded: true },
     { id: 'p-2', name: '纖維原料', produce: 300, consume: 450, profit: -150, isExpanded: true },
     { id: 'p-3', name: '高純藍鐵', produce: 120, consume: 80, profit: 40, isExpanded: true },
@@ -134,7 +134,7 @@ export const ManyProductionsOverflow: Story = {
     },
 };
 
-const overflowTips: TipItem[] = [
+const overflowTips: SingleTip[] = [
     { id: 't-1', type: 'error', text: '碎紙機單元*1位置重疊' },
     { id: 't-2', type: 'warning', text: '貓毛貓範圍總sb超載' },
     { id: 't-3', type: 'error', text: '高壓變電所負荷過高(120%)' },
