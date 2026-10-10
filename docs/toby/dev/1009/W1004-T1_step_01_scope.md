@@ -1,6 +1,6 @@
 # W1004-T1 步驟 01：範圍與介面確認
 
-狀態：分析已記錄，開始實作前待複核。
+狀態：已完成並複核（2026-10-09）。
 
 ## 目標與檔案
 
@@ -28,3 +28,11 @@
 - 驗收：確認所有呼叫端可維持使用、props 不暴露 store、事件契約與平移方式明確，所有禁止檔案已列入 diff 檢查清單。
 
 下一步：[步驟 02](./W1004-T1_step_02_viewport.md)。
+
+## 執行證據
+
+實作前為 dev/toby，工作樹乾淨，基準 commit 為 26fd3f5。搜尋確認 GridCanvas 只有 LayoutView 與其 Story 呼叫，無其他 gridWidth／gridHeight 傳入，故移除固定格數 props。上游 devicesOutsideBase 尚不存在。
+
+LayoutView 持有 useGridViewport，cellSize 固定為同一初始化值；透過 callback 提供 screenToCell，維持 cell-click(Position)。中鍵拖曳由 L2 處理，左鍵仍落子。GridCanvas 單獨 Story 以 props 提供視窗狀態；未給 callback 時有本地 props 換算。基地傳純尺寸與 ID，不 import store。
+
+首頁 CSS 已提供可用畫布寬高；瀏覽器 resize 後量測為 660.75×630 像素。無需修改 MainLayout。

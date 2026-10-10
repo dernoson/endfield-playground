@@ -1,6 +1,6 @@
 # W1004-T1 步驟 03：基地與出界資料接線
 
-狀態：未執行。前置：[步驟 02](./W1004-T1_step_02_viewport.md) 完成。
+狀態：已完成並驗證，A0 共用函式接線待上游（2026-10-09）。前置：[步驟 02](./W1004-T1_step_02_viewport.md) 完成。
 
 ## 目標與修改檔案
 
@@ -34,3 +34,11 @@
 上游函式若已存在但契約與上述結果不符，記錄具體案例並回報，不修改落子規則掩蓋問題。相關幾何與 placementCheck／layoutStore 測試應保持通過。
 
 下一步：[步驟 04](./W1004-T1_step_04_visual_verification.md)。
+
+## 執行證據
+
+LayoutView 讀 canvasStore.canvasSize，傳純基地尺寸與 outsideDeviceIds。本機分支尚無 A0 函式，暫以共用 getDeviceOccupiedCells、toDeviceFootprint、deviceSizeFromMachine 與 isWithinBaseRegion 判定；日後只替換 outsideDeviceIds computed 接點。
+
+pnpm type-check 通過；deviceOccupancy、machineGeometry、placementCheck 共 3 個檔案、387 項測試通過。Chrome 正式首頁完成 17 項斷言，其中 8 項重驗視窗，9 項驗證 null 基地、256×256 尺寸、負座標設備、原點在內但部分跨界、x=200 在武陵內／谷地外、非正方形設備旋轉出界、跨層 ID 唯一及取消基地清空清單。
+
+這一階段只驗證 props 資料，可見框線與 Error 留在步驟 04 驗證。canPlaceDevice 與 layoutStore 未修改。

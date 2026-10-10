@@ -1,6 +1,6 @@
 # W1004-T1 分析摘要
 
-分析日期：2026-10-09。此文件記錄需求、程式基準與執行建議；不代表程式實作或驗收已完成。
+分析日期：2026-10-09。此文件記錄需求、程式基準與執行建議；實際執行結果依各步驟文件與索引。
 
 ## 來源與基準
 
@@ -57,6 +57,8 @@ canPlaceDevice → layoutStore.addDevice → history → props 重繪
 ## 範圍與限制
 
 主要修改為 `GridCanvas.vue`、`LayoutView.vue`，必要時同步其 Story 與直接相關測試。既有元件不因命名規則順便搬家。
+
+實作時發現 Storybook 主設定未收錄原有 GridCanvas Story，因此補上 `.storybook/main.ts` 的單檔收錄路徑，以完成實際 Story 驗證，不收錄其他 L2 容器。
 
 禁止修改 `MainLayout.vue`、ToolbarPanel template／style、StatsPanel、選取／旋轉／刪除行為與 `layoutStore.addDevice` 簽章。不處理 connected fixture 自動載入、引擎改接 layoutStore、框選、埠命中及 C1 管線互動。縮放不是本週必要交付，須先完成平移與出界 DoD。
 

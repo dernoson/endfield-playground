@@ -1,6 +1,6 @@
 # W1004-T1 步驟 04：框線、Error 與手動驗收
 
-狀態：未執行。前置：[步驟 03](./W1004-T1_step_03_base_data.md) 完成。
+狀態：已完成並驗證（2026-10-09）。前置：[步驟 03](./W1004-T1_step_03_base_data.md) 完成。
 
 ## 目標與修改檔案
 
@@ -35,4 +35,16 @@
 
 檢查 Story Controls、邊界狀態及 Accessibility；確認設備 Error 不只靠顏色辨認。若實際瀏覽器驗收不可用，必須標明待人工確認，不能以 build 成功代替互動結果。
 
-每案記錄通過／失敗／未執行、瀏覽器、操作座標與必要截圖或 DOM 證據。下一步：[步驟 05](./W1004-T1_step_05_quality_gate.md)。
+每案記錄通過／失敗／未執行、瀏覽器、操作座標與DOM 證據。下一步：[步驟 05](./W1004-T1_step_05_quality_gate.md)。
+
+## 執行證據
+
+GridCanvas 以 data-device-id 設備群組與 out-of-base class 呈現出界；原有填色與字重保留，新增紅色描邊、Error 文字與設備 title。基地框為不攔截事件的虛線矩形，與設備及管線共用視窗轉換。SVG 明確關閉等比例留白，使非相同比例的視窗 props 也可按顯示矩形換算座標。
+
+Chrome 無頭模式正式首頁完成 23 項斷言。工具列與基地選項透過實際 UI 選取；落子與中鍵拖曳使用 CDP 滑鼠輸入；far-edge 資料案例透過既有 addDevice 提供，undo／redo 直接呼叫既有 history action。驗證包含 M01～M11 的必要行為；設備 rect 子元素點擊仍走 SVG 格點座標，同格重疊不新增設備。
+
+六個 Story（connected、broken、empty、within-base、partial-outside、multiple-outside）已在瀏覽器檢查設備數、Error、基地框及有界格線；各狀態 axe-core 掃描無 violations。透過 Storybook Controls 所使用的 updateStoryArgs 事件改 baseSize=null，確認視覺更新。
+
+發現既有 .storybook/main.ts 未收錄 editor/layout 的 Story，故只新增 GridCanvas.stories.ts 明確路徑；不擴大收錄所有 L2 容器。pnpm build-storybook 通過。此設定檔為驗證所需的最小範圍補充。
+
+限制：無頭瀏覽器驗證未包含實體滑鼠操作、螢幕閱讀器及完整鍵盤無障礙流程；axe 無違規不代表全部人工可及性檢查通過。原驗收未單獨模擬取消事件，後續拖曳修正已補驗 pointercancel，卸載清理仍未獨立模擬。

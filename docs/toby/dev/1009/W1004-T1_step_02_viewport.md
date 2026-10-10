@@ -1,6 +1,6 @@
 # W1004-T1 步驟 02：無邊界視窗與平移
 
-狀態：未執行。前置：[步驟 01](./W1004-T1_step_01_scope.md) 完成。
+狀態：已完成並驗證（2026-10-09）。前置：[步驟 01](./W1004-T1_step_01_scope.md) 完成。
 
 ## 目標與修改檔案
 
@@ -36,3 +36,21 @@
 沿用 useGridViewport 現有數學測試；新增測試以真實回歸風險為主，例如負座標與拖曳後 click 抑制，不重複照抄公式。純函式測試不能替代瀏覽器事件驗收。
 
 下一步：[步驟 03](./W1004-T1_step_03_base_data.md)。
+
+## 執行證據
+
+- 修改 LayoutView、GridCanvas 與 Story；L2 使用 useElementSize 與 useGridViewport，GridCanvas 同步轉換格線、設備與管線。未加縮放手勢。
+- pnpm type-check 通過；useGridViewport、layoutStore、placementCheck 共 3 個測試檔、68 項測試通過。
+- Chrome 無頭模式透過 CDP 的真實滑鼠輸入驗證 8 項斷言：connected 的 2 台設備保留；塑型機在 (14,10,0) 落子；同格重疊不新增；中鍵平移不新增；平移後可在 (-13,-10,0) 落子；平移前後格線皆 66 條；resize 後 viewBox 與容器均為 660.75×630；後續落子座標為 (-9,-6,0)。
+- 瀏覽器與全域 store 的驗證讀值須展開 readonly position 才可被 CDP JSON 序列化；此為驗證腳本處理，未修改產品資料。
+- 初次瀏覽器 profile 放專案內觸發 Vite 監看，已改至系統暫存資料夾，重新驗證通過。
+
+## 後續修正：移動畫布工具無法左鍵拖曳（2026-10-09）
+
+使用者回報無法拖動畫布。根因是原實作只接受中鍵，LayoutView 未消費頂欄／useShortcuts 已有的 editorStore.activeTool，故頂欄「移動畫布」及空白鍵切到 pan 都不能左鍵拖曳。
+
+本次只修改 LayoutView：讀取既有工具狀態，pan 模式接受左鍵拖曳，保留中鍵；以 grab／grabbing 游標反映手勢。handleCellClick 排除 pan 與平移產生的 click，直到下一次正常左鍵按下才解除抑制，避免使用者先放開空白鍵、後放開滑鼠時誤落子。結束／取消／卸載時清除拖曳狀態與指標捕捉，不修改 Navbar、useShortcuts、store action 或選取功能。
+
+Chrome CDP 驗證 18 項斷言，包含頂欄實際切換、左鍵平移、視角不進 history、pan 點擊不落子、切回 select 能落子、中鍵相容、空白鍵啟用／還原、先放開空白鍵的 click 抑制、下一次正常落子、pointercancel 清理與重新拖曳及游標狀態。
+
+修正後完整 pnpm format-check、pnpm lint-check、pnpm type-check、pnpm test 均通過；測試為 47 個檔案、888 項。臨時瀏覽器腳本已移除，文件連結與 git diff --check 通過。
