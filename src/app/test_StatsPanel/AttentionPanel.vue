@@ -12,22 +12,10 @@ const iconWarningSvg = computed(() =>
     iconWarningRaw.replace(/fill="(?!none)[^"]*"/g, 'fill="#F7D945"'),
 );
 
-const props = withDefaults(
-    defineProps<{
-        tips?: SingleTip[];
-        styleHeight?: number | string;
-    }>(),
-    {
-        tips: () => [
-            { id: '1', type: 'error', text: '碎紙機單元*1位置重疊' },
-            { id: '2', type: 'error', text: '碎紙機單元*1位置重疊' },
-            { id: '3', type: 'warning', text: '貓毛貓範圍總sb超載' },
-            { id: '4', type: 'warning', text: '貓毛貓範圍總sb超載' },
-            { id: '5', type: 'warning', text: '貓毛貓範圍總sb超載' },
-        ],
-        styleHeight: '498px',
-    },
-);
+defineProps<{
+    tips?: SingleTip[];
+    styleHeight?: number | string;
+}>();
 
 const emit = defineEmits<{
     (e: 'start-drag', event: MouseEvent | TouchEvent): void;
@@ -57,8 +45,8 @@ const emit = defineEmits<{
             class="custom-scrollbar m-0 box-border flex flex-1 shrink-0 flex-col gap-[9px] overflow-x-hidden overflow-y-auto border-0 border-solid pr-[12px] pb-4 pl-[21px]"
         >
             <div
-                v-for="item in tips"
-                :key="item.id"
+                v-for="(item, index) in tips"
+                :key="index"
                 class="relative isolate m-0 box-border flex min-h-[31px] w-full shrink-0 items-center overflow-hidden rounded border-0 border-solid py-[5px] pr-2"
                 :class="
                     item.type === 'error'

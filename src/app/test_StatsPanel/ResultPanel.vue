@@ -4,55 +4,25 @@ import { ref, computed, watch } from 'vue';
 import bottonIconUrl from '@/assets/icon/icon arrow.svg';
 import type { PowerData, SingleProductDetail } from './types';
 
-const props = withDefaults(
-    defineProps<{
-        power?: PowerData;
-        products?: SingleProductDetail[];
-        exchangeRate?: number;
-        styleHeight?: number | string;
-    }>(),
-    {
-        power: () => ({
-            used: 120,
-            total: 180,
-            percent: (120 / 180) * 100,
-        }),
-        products: () => [
-            {
-                id: '1',
-                name: '紫晶纖維',
-                produce: 406,
-                consume: 0,
-                profit: 406,
-                isExpanded: true,
-            },
-            {
-                id: '2',
-                name: '紫晶纖維',
-                produce: 0,
-                consume: 799,
-                profit: -799,
-                isExpanded: true,
-            },
-        ],
-        exchangeRate: 799325,
-        styleHeight: '582px',
-    },
-);
+const props = defineProps<{
+    power?: PowerData;
+    products?: SingleProductDetail[];
+    exchangeRate?: number;
+    styleHeight?: number | string;
+}>();
 
-const localProducts = ref([...props.products]);
+const localProducts = ref(props.products ? [...props.products] : []);
 
 watch(
     () => props.products,
     (newVal) => {
-        if (newVal) {
-            localProducts.value = [...newVal];
-        }
+        localProducts.value = newVal ? [...newVal] : [];
     },
     { deep: true },
 );
 
 const computedPercent = computed(() => {
+    if (!props.power) return 0;
     if (props.power.percent !== undefined) return props.power.percent;
     if (props.power.total <= 0) return 0;
     return (props.power.used / props.power.total) * 100;
@@ -116,7 +86,7 @@ const toggleExpand = (index: number) => {
                     data-figma-name="Text"
                     class="absolute [top:44px] [left:0px] m-0 box-border [height:19px] [width:105px] shrink-0 border-0 border-solid [text-align:left] [font-family:'HarmonyOS_Sans_TC',sans-serif] [font-size:16px] [line-height:18.752px] [font-weight:300] [color:#a4a4a4]"
                 >
-                    {{ power.used }}kW/{{ power.total }}kW
+                    {{ power ? `${power.used}kW/${power.total}kW` : '-' }}
                 </div>
             </div>
 
@@ -235,14 +205,14 @@ const toggleExpand = (index: number) => {
                     data-figma-name="Text"
                     class="absolute [top:29px] [left:48px] m-0 box-border [height:21px] [width:10px] shrink-0 border-0 border-solid [text-align:left] [font-family:'HarmonyOS_Sans_TC',sans-serif] [font-size:18px] [line-height:21.096px] [font-weight:300] [color:#cfcfcf]"
                 >
-                    ≈
+                    {{ exchangeRate != null ? '≈' : ' ' }}
                 </div>
                 <div
                     data-figma-id="2302:109"
                     data-figma-name="Text"
                     class="absolute [top:29px] [left:63px] m-0 box-border [height:21px] [width:83px] shrink-0 border-0 border-solid [text-align:right] [font-family:'HarmonyOS_Sans_TC',sans-serif] [font-size:18px] [line-height:21.096px] [font-weight:300] [color:#cfcfcf]"
                 >
-                    {{ exchangeRate.toLocaleString() }}/hr
+                    {{ exchangeRate != null ? `${exchangeRate.toLocaleString()}/hr` : '-' }}
                 </div>
             </div>
         </div>

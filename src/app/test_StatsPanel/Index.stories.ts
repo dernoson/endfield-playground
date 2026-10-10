@@ -40,12 +40,10 @@ const sampleProductions: SingleProductDetail[] = [
 
 const sampleTips: SingleTip[] = [
     {
-        id: 'tip-1',
         type: 'error',
         text: '碎紙機單元*1位置重疊',
     },
     {
-        id: 'tip-2',
         type: 'warning',
         text: '貓毛貓範圍總sb超載',
     },
@@ -84,7 +82,6 @@ export const OverloadPower: Story = {
         exchangeRate: 50000,
         tips: [
             {
-                id: 'overload-tip',
                 type: 'error',
                 text: '電網負載超載，請儘速擴建發電機',
             },
@@ -135,14 +132,14 @@ export const ManyProductionsOverflow: Story = {
 };
 
 const overflowTips: SingleTip[] = [
-    { id: 't-1', type: 'error', text: '碎紙機單元*1位置重疊' },
-    { id: 't-2', type: 'warning', text: '貓毛貓範圍總sb超載' },
-    { id: 't-3', type: 'error', text: '高壓變電所負荷過高(120%)' },
-    { id: 't-4', type: 'warning', text: '主幹傳送帶物料堵塞' },
-    { id: 't-5', type: 'error', text: '水泵未連接水源管道' },
-    { id: 't-6', type: 'warning', text: '產能利用率低於 30%' },
-    { id: 't-7', type: 'error', text: '排汙管道壓力超出臨界值' },
-    { id: 't-8', type: 'warning', text: '無人機集散中心電池不足' },
+    { type: 'error', text: '碎紙機單元*1位置重疊' },
+    { type: 'warning', text: '貓毛貓範圍總sb超載' },
+    { type: 'error', text: '高壓變電所負荷過高(120%)' },
+    { type: 'warning', text: '主幹傳送帶物料堵塞' },
+    { type: 'error', text: '水泵未連接水源管道' },
+    { type: 'warning', text: '產能利用率低於 30%' },
+    { type: 'error', text: '排汙管道壓力超出臨界值' },
+    { type: 'warning', text: '無人機集散中心電池不足' },
 ];
 
 /** 邊界：多筆警示 Tips，驗證 Attention 下半部區域縱向滾動排版 */
@@ -180,7 +177,6 @@ export const LongTextOverflow: Story = {
         exchangeRate: 99999999999,
         tips: [
             {
-                id: 'long-tip-1',
                 type: 'error',
                 text: '茈發動前的41秒內，新宿再次響起了五條悟的吟唱。“九綱”“偏光”“烏與聲明”“表裏之間”、宿儺明白自己再也沒有任何機會阻止茈的誕生了，無限制的虛式如同核爆一般在新宿亮起沖天的光芒，魔虛羅的輪盤在茈中灰飛煙滅，廢墟之中，全力護住自己的宿儺無力的靠在殘破的建築上支持身體，他的左手和大腿都被這一擊吞噬殆盡，同樣傷痕累累的五條悟出現在宿儺面前，宿儺立刻強迫自己不再倚靠牆壁，堂堂正正站在五條悟面前，但是在咒力同源的影響下，五條悟所承受的傷害被大大削弱，在反轉術式的治療下五條悟的身體再次恢復，對五條悟來說，決定性的一擊遠距離“茈”只',
             },

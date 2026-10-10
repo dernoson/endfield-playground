@@ -14,7 +14,6 @@ export interface PowerData {
 }
 
 export interface SingleTip {
-    id: string;
     type: 'error' | 'warning';
     text: string;
 }
