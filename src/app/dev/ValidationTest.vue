@@ -107,6 +107,12 @@
                         ➕ 新增不重疊的設備 C（精煉爐 @50,50）
                     </button>
                     <button
+                        @click="testPlaceUnconnectedMachine"
+                        class="w-full rounded-md bg-amber-600 px-3 py-2 text-sm text-white hover:bg-amber-700"
+                    >
+                        ➕ 新增沒接線的機器（精煉爐 @20,20，觸發 E004）
+                    </button>
+                    <button
                         @click="testClearDevices"
                         :disabled="editorStore.nodes.length === 0"
                         class="w-full rounded-md bg-gray-600 px-3 py-2 text-sm text-white hover:bg-gray-700 disabled:opacity-50"
@@ -149,6 +155,7 @@ import { useEditorStore } from '@/store/editorStore';
 import { useValidationStore } from '@/store/validationStore';
 import { useValidation } from '@/composables/useValidation';
 import { E001_deviceOverlap } from '@/lib/validation/detectors/E001_deviceOverlap';
+import { E004_missingInput } from '@/lib/validation/detectors/E004_missingInput';
 
 /** 藍圖 store：本頁所有測試設備皆透過此 store 擺放 / 清除 */
 const editorStore = useEditorStore();
@@ -157,6 +164,7 @@ const validationStore = useValidationStore();
 
 /** 註冊必須早於 useValidation()：後者的 watch 是 immediate，setup 當下就會跑一次 */
 validationStore.registerDetector(E001_deviceOverlap);
+validationStore.registerDetector(E004_missingInput);
 
 /** 啟動 editorStore → validationStore 的自動重跑監聽 */
 useValidation();
@@ -200,6 +208,20 @@ function testPlaceNonOverlappingDeviceC() {
         type: 'default',
         position: { x: 1000, y: 1000 },
         data: { label: '測試設備 C', machineType: '精煉爐', recipeIndex: 0, rotation: 0 },
+    });
+}
+
+/**
+ * 在像素座標 (400,400)（即格子 (20,20)）擺放一台未接線的精煉爐，用於驗證觸發 E004。
+ * @example
+ * testPlaceUnconnectedMachine()
+ */
+function testPlaceUnconnectedMachine() {
+    editorStore.placeDevice({
+        id: crypto.randomUUID(),
+        type: 'default',
+        position: { x: 400, y: 400 },
+        data: { label: '未接線精煉爐', machineType: '精煉爐', recipeIndex: 0, rotation: 0 },
     });
 }
 
