@@ -11,7 +11,9 @@ import AttentionPanel from './AttentionPanel.vue';
 import CollapseButton from './CollapseButton.vue';
 import type { TestStatsPanelProps } from './types';
 
-const props = defineProps<TestStatsPanelProps>();
+const props = withDefaults(defineProps<TestStatsPanelProps>(), {
+    isCollapsed: undefined,
+});
 
 const emit = defineEmits<{
     (e: 'update:isCollapsed', value: boolean): void;
