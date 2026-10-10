@@ -183,18 +183,3 @@ export const LongTextOverflow: Story = {
         ],
     },
 };
-
-/** 邊界：收合狀態（點擊側邊黃色按鈕可展開） */
-export const Collapsed: Story = {
-    name: '邊界：收合狀態',
-    args: {
-        power: {
-            used: 120,
-            total: 180,
-        },
-        products: sampleProductions,
-        exchangeRate: 799325,
-        tips: sampleTips,
-        isCollapsed: true,
-    },
-};
