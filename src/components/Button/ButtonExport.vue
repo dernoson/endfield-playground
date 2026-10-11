@@ -36,8 +36,8 @@ defineProps<{
     order: 2;
     place-items: center;
     padding: 0;
-    color: #FFFFFF;
-    background: rgba(78, 78, 78 , 1);
+    color: #ffffff;
+    background: rgba(78, 78, 78, 1);
     border: 1px solid transparent;
     border-radius: 8px;
     cursor: pointer;
@@ -56,13 +56,13 @@ defineProps<{
 
 .tool-button:hover:not(.tool-button--preview-not-hovered),
 .tool-button--preview-hovered {
-    color: #FFFFFF;
-    background: rgba(78 ,78 ,78 , 0.6);
+    color: #ffffff;
+    background: rgba(78, 78, 78, 0.6);
     border-color: transparent;
 }
 
 .tool-button--preview-not-hovered:hover {
-    color: #FFFFFF;
+    color: #ffffff;
     background: rgba(78, 78, 78, 1);
     border-color: transparent;
 }

@@ -33,7 +33,7 @@ defineProps<Props>();
             <table class="w-full border-collapse text-left">
                 <thead>
                     <tr
-                        class="border-b border-[#3C3C3C] text-xs tracking-wider uppercase text-[#DADADA]/70"
+                        class="border-b border-[#3C3C3C] text-xs tracking-wider text-[#DADADA]/70 uppercase"
                     >
                         <th class="pb-2 font-medium">項目名稱</th>
                         <th class="pb-2 text-right font-medium">每分鐘速率 (/min)</th>
@@ -44,7 +44,9 @@ defineProps<Props>();
                 <tbody class="divide-y divide-[#4E4E4E] text-sm text-[#DADADA]">
                     <tr v-for="row in rows" :key="row.itemId" class="hover:bg-[#4E4E4E]/20">
                         <td class="py-2.5 font-medium text-[#DADADA]">{{ row.name }}</td>
-                        <td class="py-2.5 text-right font-mono text-[#DADADA]">{{ row.ratePerMin }}</td>
+                        <td class="py-2.5 text-right font-mono text-[#DADADA]">
+                            {{ row.ratePerMin }}
+                        </td>
                         <td class="py-2.5 text-right font-mono font-semibold text-[#DADADA]">
                             {{ row.ticketPerHour }}
                         </td>

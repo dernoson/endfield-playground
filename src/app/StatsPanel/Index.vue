@@ -5,10 +5,42 @@ import TicketEstimate from './TicketEstimate.vue';
 import WarehouseEstimate from './WarehouseEstimate.vue';
 
 const demoRows = [
-    { itemId: 'fiber-1', name: '紫晶纖維', iconUrl: '', produced: 799, consumed: 0, net: 799, efficiency: 1 },
-    { itemId: 'fiber-2', name: '紫晶纖維', iconUrl: '', produced: 0, consumed: 799, net: -799, efficiency: 0 },
-    { itemId: 'fiber-3', name: '紫晶纖維', iconUrl: '', produced: 0, consumed: 799, net: -799, efficiency: 0 },
-    { itemId: 'fiber-4', name: '紫晶纖維', iconUrl: '', produced: 799, consumed: 0, net: 799, efficiency: 1 },
+    {
+        itemId: 'fiber-1',
+        name: '紫晶纖維',
+        iconUrl: '',
+        produced: 799,
+        consumed: 0,
+        net: 799,
+        efficiency: 1,
+    },
+    {
+        itemId: 'fiber-2',
+        name: '紫晶纖維',
+        iconUrl: '',
+        produced: 0,
+        consumed: 799,
+        net: -799,
+        efficiency: 0,
+    },
+    {
+        itemId: 'fiber-3',
+        name: '紫晶纖維',
+        iconUrl: '',
+        produced: 0,
+        consumed: 799,
+        net: -799,
+        efficiency: 0,
+    },
+    {
+        itemId: 'fiber-4',
+        name: '紫晶纖維',
+        iconUrl: '',
+        produced: 799,
+        consumed: 0,
+        net: 799,
+        efficiency: 1,
+    },
 ];
 </script>
 
@@ -22,7 +54,7 @@ const demoRows = [
             產線總覽
         </div>
 
-        <div class="px-4.5 pb-3 pt-19">
+        <div class="px-4.5 pt-19 pb-3">
             <div class="stack-block">
                 <PowerSummary
                     :total-demand-kw="50"

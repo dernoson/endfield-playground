@@ -36,7 +36,9 @@ function getNetText(value: number) {
                         <span class="product-name">{{ row.name }}</span>
                     </div>
 
-                    <div class="net-value" :class="getNetClass(row.net)">{{ getNetText(row.net) }}</div>
+                    <div class="net-value" :class="getNetClass(row.net)">
+                        {{ getNetText(row.net) }}
+                    </div>
 
                     <div class="produce-line">
                         <span class="label">生產</span>

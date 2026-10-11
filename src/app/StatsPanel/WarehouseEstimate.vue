@@ -47,7 +47,7 @@ function handleCapacityChange(event: Event) {
         <!-- 列表呈現 -->
         <table class="mt-2 w-full text-left text-[#DADADA]">
             <thead>
-                    <tr class="border-b border-[#3C3C3C]">
+                <tr class="border-b border-[#3C3C3C]">
                     <th class="pb-2">品項名稱</th>
                     <th class="pb-2">預估滿載時間</th>
                 </tr>
