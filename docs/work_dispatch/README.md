@@ -2,10 +2,10 @@
 
 | meta | value |
 |------|-------|
-| version | **v3.5（2026-09-15；PR #49 勘誤：S1＝產線總覽、M2 恢復硬綁 B1）** |
-| 本週區間 | **2026-09-14 → 2026-09-20**（[WEEK_20260914](./WEEK_20260914.md) **v1.1**） |
-| 上週區間 | 2026-09-07 → 2026-09-13（[WEEK_20260907](./WEEK_20260907.md)） |
-| 上游 | [ROADMAP_OUTLINE](../roadmap/ROADMAP_OUTLINE.md) **v1.9**、主編 PR #49 review |
+| version | **v3.11（2026-10-06；主編裁 R-1＝B／R-2 同意）** |
+| 本週區間 | **2026-10-04 → 2026-10-11**（[WEEK_20261004](./WEEK_20261004.md) **v1.2**） |
+| 上週區間 | 2026-09-21 → 2026-09-27（[WEEK_20260921](./WEEK_20260921.md) v1.2；**驗收因連假延至 10/04**） |
+| 上游 | [ROADMAP_OUTLINE](../roadmap/ROADMAP_OUTLINE.md) **v1.16** |
 
 ---
 
@@ -13,44 +13,44 @@
 
 | 你想知道 | 打開 |
 |----------|------|
-| **我這週要交什麼** | 下表 **0914** |
-| 這週全隊／驗收 | [WEEK_20260914.md](./WEEK_20260914.md) |
-| 檔案鎖 | [WEEK_20260914.md](./WEEK_20260914.md) §3 |
+| **我這週要交什麼** | 下表 **1004** |
+| 這週全隊／驗收 | [WEEK_20261004.md](./WEEK_20261004.md) |
+| **檔案鎖（暫停中也適用）** | [WEEK_20261004.md](./WEEK_20261004.md) §2.2 |
 
-### 本週（9/14–9/20）
+### 本週（10/04–10/11）
 
 | code | 工單 | 一句話 |
 |------|------|--------|
-| [aaaaa](./aaaaa/0914/) | [**A0（最優）**](./aaaaa/0914/W0914-A0_layout_store_land.md) | #45 收尾合入（T1 前置） |
-| | [A1](./aaaaa/0914/W0914-A1_connection_blueprint_contract.md) | C2／D4 草案（可超前） |
-| [dernoson](./dernoson/0914/) | [D0](./dernoson/0914/W0914-D0_gate_and_main_view.md) | 清積壓；守閘 |
-| [toby](./toby/0914/) | [**T1**](./toby/0914/W0914-T1_main_view_integration.md) | #45 合入後掛 GridCanvas（只讀） |
-| [harry](./harry/0914/) | [H1](./harry/0914/W0914-H1_viewport_into_canvas.md) | #47 收尾＋接面說明 |
-| [shirone](./shirone/0914/) | [S1](./shirone/0914/W0914-S1_stats_panel_land.md) | **產線總覽** StatsPanel → `src/app/` |
-| [goodmorning](./goodmorning/0914/) | [G1](./goodmorning/0914/W0914-G1_toolbar_land.md) | #48 收尾；ToolbarPanel 限視覺 |
-| [paper](./paper/0914/) | [P1](./paper/0914/W0914-P1_review_and_polish.md) | 審 #48／S1；命名已結案 |
-| [avery](./avery/0914/) | [V0](./avery/0914/W0914-V0_pause.md) | 暫停（亞運） |
-| [azure9572](./azure9572/0914/) | [Z0](./azure9572/0914/W0914-Z0_pause.md) | 暫停 |
-| [MBD](./MBD/0914/) | [M0](./MBD/0914/W0914-M0_pause.md) | 暫停；9/21 StatsPanel 文案 |
+| [aaaaa](./aaaaa/1004/) | [A0](./aaaaa/1004/W1004-A0_dispatch_and_e003.md) | 派工已發；出界列表＋埠命中判定（10/11 前置） |
+| [dernoson](./dernoson/1004/) | [D0](./dernoson/1004/W1004-D0_gate_and_chrome.md) | 守閘；#48 清積壓；管線選取可過、刪／轉仍退 |
+| [toby](./toby/1004/) | [**T1**](./toby/1004/W1004-T1_unbounded_canvas.md) | 畫布無邊界；基地框＋出界 Error、不擋落子 |
+| [harry](./harry/1004/) | [**H1（主戲）**](./harry/1004/W1004-H1_chrome_land.md) | 工具列／左右接正式頁；拆舊底欄與舊右側 |
+| [goodmorning](./goodmorning/1004/) | [G1](./goodmorning/1004/W1004-G1_toolbar_and_device_style.md) | **#48 必須合**；再與 S 做畫布設備樣 |
+| [shirone](./shirone/1004/) | [S1](./shirone/1004/W1004-S1_stats_and_device_style.md) | 右側面板樣式；與 G 做畫布設備樣 |
+| [paper](./paper/1004/) | [P1](./paper/1004/W1004-P1_pipeline_warn_and_select.md) | 未接管線警示；點管線藍＋左面板 |
+| [MBD](./MBD/1004/) | [**M1**](./MBD/1004/W1004-M1_topbar_buttons_storybook.md) | 頂欄四顆按鈕（存檔／設定／下載／上傳）進 Storybook |
+| [azure9572](./azure9572/1004/) | [**Z1**](./azure9572/1004/W1004-Z1_recipe_alerts_new_model.md) | E004／E005 進 master、W001 修正，接 dev 驗證頁 |
+| [avery](./avery/1004/) | [V0](./avery/1004/W1004-V0_pause.md) | 暫停（主編裁再放一週） |
 
 ---
 
 ## 1. 定案摘要（全員）
 
-1. 佈局視角改掛 `GridCanvas`；舊殼保留不刪  
-2. **只讀**；B2／B4 等底層接完（不硬綁進 9/27）  
-3. T1：**#45 合入後開工**  
-4. 視角切換器照稿；**下週另派人**（非 Avery）  
-5. 右側＝**產線總覽 StatsPanel** → `src/app/StatsPanel/`（不是設備資訊）  
-6. `ToolbarPanel` 對 goodmorning 限視覺解鎖  
-7. **9/27 硬綁 B1**  
-8. 合入序：#45 → #47 → #48 → T1 → S1  
+1. 自建畫布打底**已在 master**，本週可以派工（不是再開 L1 殼）
+2. 9/27 連假停工 → **M2 驗收延一週**；功能門檻已過，#48 視覺未過
+3. 本週主線＝正式畫面換殼＋無邊界畫布，**不是** C1 拉管線
+4. 管線**可以點選變藍、左面板可出現**；旋轉與 Delete 仍不開
+5. `InspectorSidebar` **卸掛載、不刪檔**
+6. #48 本週必須 rebase 合入，否則新工具列掛不上去
+7. 合入序：#57 → #48 → T1 → S1 → H1 → 設備樣式（**A0／Z1／M1 不排在這條序上**）
+8. **azure 與 MBD 本週有正式工單**（10/04 會議點名）；**只有 avery 暫停**
+9. **M3＝10/25 不動。** 連假空白一週由「L1 前置提前到本週」補，見 [WEEK §4](./WEEK_20261004.md)
 
 ---
 
 ## 2. 目錄
 
-`0914/`＝本週；`0907/`＝上週；`0831/`／`0823/`＝封存。
+`1004/`＝本週；`0921/`／`0914/`／`0907/`／`0831/`／`0823/`＝封存。
 
 ---
 
@@ -58,5 +58,5 @@
 
 | 檔 | 狀態 |
 |----|------|
-| WEEK_20260914 | **v1.1** |
-| ROADMAP_OUTLINE | **v1.9** |
+| WEEK_20261004 | **v1.2**（主編裁 R-1＝B／R-2 同意） |
+| ROADMAP_OUTLINE | **v1.16** |
