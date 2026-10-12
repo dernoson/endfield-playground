@@ -28,9 +28,6 @@ defineProps<{
 
 <style scoped>
 .tool-button {
-    position: absolute;
-    top: 20px;
-    left: 20px;
     display: grid;
     box-sizing: border-box;
     width: 58px;
