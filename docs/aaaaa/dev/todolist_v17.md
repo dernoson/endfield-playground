@@ -10,6 +10,7 @@
 **開發分支：** #73＝`dev/aaaaa1018`（[#74](https://github.com/dernoson/endfield-playground/pull/74)）；#58＝**`dev/aaaaa1018-58`**（本線）
 **狀態總覽：** **`[~]`**（2026-10-18；#73／[#74](https://github.com/dernoson/endfield-playground/pull/74)；#58／[#76](https://github.com/dernoson/endfield-playground/pull/76) 皆交審中）
 **會議介紹：** [INTRO_meeting_c5_primary_output](../../work_dispatch/aaaaa/1011/INTRO_meeting_c5_primary_output.md)
+**串接演示：** [USAGE_l1_contract_lab](./USAGE_l1_contract_lab.md) → `/dev/l1-contract-lab`（V14–V17 契約＋可測案例）
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 >
