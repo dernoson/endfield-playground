@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import planterPatternUrl from '@/assets/icon/planter-pattern.png';
 
 const props = withDefaults(
     defineProps<{
@@ -29,6 +30,24 @@ const outline = computed(
             fill-opacity="0.2"
             stroke="white"
         />
+        <template v-if="props.label === '種植機'">
+            <image
+                :href="planterPatternUrl"
+                x="77.23"
+                y="74.75"
+                width="55"
+                height="55"
+            />
+            <rect
+                x="77.23"
+                y="74.75"
+                width="55"
+                height="55"
+                fill="none"
+                stroke="rgba(238, 253, 28, 1)"
+                stroke-width="3"
+            />
+        </template>
         <foreignObject
             v-if="props.label === '種植機'"
             x="77.23"
