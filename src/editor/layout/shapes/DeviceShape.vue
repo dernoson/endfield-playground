@@ -29,8 +29,34 @@ const outline = computed(
             fill-opacity="0.2"
             stroke="white"
         />
+        <foreignObject
+            v-if="props.label === '種植機'"
+            x="77.23"
+            y="132.23"
+            width="71.16"
+            height="18.25"
+        >
+            <div
+                xmlns="http://www.w3.org/1999/xhtml"
+                style="
+                    width: 71.16px;
+                    height: 18.25px;
+                    color: rgba(207, 207, 207, 1);
+                    font-family: 'HarmonyOS Sans TC', sans-serif;
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: 19px;
+                    letter-spacing: 0;
+                    text-align: center;
+                    white-space: nowrap;
+                "
+            >
+                {{ props.label }}
+            </div>
+        </foreignObject>
         <text
-            v-if="props.label"
+            v-else-if="props.label"
             :x="props.width / 2"
             :y="props.height / 2"
             fill="white"

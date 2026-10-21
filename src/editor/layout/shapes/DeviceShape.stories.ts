@@ -8,7 +8,7 @@ const meta = {
         (story) => ({
             components: { story },
             template: `
-                <svg width="320" height="280" style="background:#1f1f1f">
+                <svg width="320" height="900" style="background:#1f1f1f">
                     <story />
                 </svg>`,
         }),
@@ -20,16 +20,16 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-    name: '設備方塊',
+    name: '種植機',
     args: {},
 };
 
 export const Labeled: Story = {
-    name: '含設備名稱',
-    args: { label: '設備名稱' },
+    name: '含種植機',
+    args: { label: '種植機' },
 };
 
 export const Dragging: Story = {
     name: '拖曳中',
-    args: { label: '設備名稱', dragging: true },
+    args: { label: '種植機', dragging: true },
 };
