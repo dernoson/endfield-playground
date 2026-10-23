@@ -18,6 +18,7 @@
 import { computed, readonly, ref } from 'vue';
 import { defineStore } from 'pinia';
 import type { Position } from '@/types/euclideanSpace';
+import type { Rotation } from '@/types/editor';
 import type {
     LayoutIssues,
     LayoutSnapshot,
@@ -242,6 +243,52 @@ export const useLayoutStore = defineStore('layout', () => {
     }
 
     /**
+     * 旋轉單一已放置設備，保持原點與既有管線位置不變。
+     * 合法變更呼叫一次自動產生一筆 Command 推入 historyStore；同角度為 no-op。
+     * 無效角度、未知／重複 id 或旋轉後重疊時拒絕，不修改資料或歷史。
+     * @param id 設備實例識別
+     * @param rotation 目標旋轉次數，0 至 3 分別表示 0、90、180、270 度
+     * @returns 沿用既有佈局放置結果，供 L2 顯示非彈窗失敗提示
+     * @example
+     * const result = layout.rotateDevice('device-id', 1);
+     */
+    function rotateDevice(id: string, rotation: Rotation): PlacementResult {
+        if (
+            ![0, 1, 2, 3].includes(rotation) ||
+            devices.value.filter((device) => device.id === id).length !== 1
+        ) {
+            return { ok: false, reason: 'invalid', invalidIds: [id] };
+        }
+        /** 必須找到唯一實例，不能因快捷鍵晚到而旋轉另一台設備。 */
+        const target = devices.value.find((device) => device.id === id);
+        if (!target) return { ok: false, reason: 'invalid', invalidIds: [id] };
+        if (target.rotation === rotation) return { ok: true };
+        /** 前後快照各自深拷貝，確保 undo／redo 不持有外部可寫參考。 */
+        const before = devices.value.map(cloneDevice);
+        /** 僅更新旋轉次數，不交換機型靜態尺寸，也不移動管線來假裝保持連接。 */
+        const after = before.map((device) => (device.id === id ? { ...device, rotation } : device));
+        /** 與放置／移動共用 L1 佔格檢查，只拒絕本次旋轉涉及的衝突。 */
+        const result = assessInvolving(after, pipelines.value, new Set([id]));
+        if (!result.ok) return result;
+        /** 歷史由 L1 action 建立，L2 不需自行組 Command。 */
+        const historyStore = useHistoryStore();
+        historyStore.execute({
+            id: crypto.randomUUID(),
+            type: HistoryRecordType.MachineRotation,
+            label: `佈局旋轉 ${id}`,
+            /** 套用已驗證的旋轉快照，衍生埠與連線會自行重算。 */
+            execute() {
+                devices.value = after.map(cloneDevice);
+            },
+            /** 還原角度與其他設備快照，管線仍保留原來座標。 */
+            undo() {
+                devices.value = before.map(cloneDevice);
+            },
+        });
+        return { ok: true };
+    }
+
+    /**
      * 新增管線；waypoints 須 ≥2 點、座標有限且逐段軸對齊；  \
      * 連線語意依 {@link canConnect}（方向／媒質／單埠單線／自連）；  \
      * 僅當「本管線」引入 overlap 時失敗
@@ -416,6 +463,17 @@ export const useLayoutStore = defineStore('layout', () => {
          * @param position 新佔格左上角
          */
         moveDevice,
+        /**
+         * 旋轉單一已放置設備，保持原點與既有管線位置不變。
+         * 合法變更呼叫一次自動產生一筆 Command 推入 historyStore；同角度為 no-op。
+         * 無效角度、未知／重複 id 或旋轉後重疊時拒絕，不修改資料或歷史。
+         * @param id 設備實例識別
+         * @param rotation 目標旋轉次數，0 至 3 分別表示 0、90、180、270 度
+         * @returns 沿用既有佈局放置結果，供 L2 顯示非彈窗失敗提示
+         * @example
+         * const result = layout.rotateDevice('device-id', 1);
+         */
+        rotateDevice,
         /**
          * 新增管線；waypoints 須 ≥2 點、座標有限且逐段軸對齊；  \
          * 僅當「本管線」引入 overlap 時失敗
