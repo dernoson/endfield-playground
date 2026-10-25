@@ -5,11 +5,13 @@
 **負責人：** aaaaa（[#73](https://github.com/dernoson/endfield-playground/issues/73)、[#58](https://github.com/dernoson/endfield-playground/issues/58) assignee）
 **前置：** [V16](./todolist_v16.md) 已合 master（[#72](https://github.com/dernoson/endfield-playground/pull/72)）；文件收斂見 [V17-B1](./dev_v17/B1_v16_residue_close.md)
 **正式依據：** [#73](https://github.com/dernoson/endfield-playground/issues/73)、[#58](https://github.com/dernoson/endfield-playground/issues/58)、[C5 §4.1a](../../roadmap/detail/C5_source_primary_output.md)、[V16-D1](./dev_v16/D1_engine_read_path.md)、[#57](https://github.com/dernoson/endfield-playground/pull/57) S1-2
-**上游：** [WEEK_20261011](../../work_dispatch/WEEK_20261011.md) v1.2、[AGENT_WEEK_1018](../claude/AGENT_WEEK_1018.md)
+**上游：** [WEEK_20261011](../../work_dispatch/WEEK_20261011.md) v1.2、[AGENT_WEEK_1018](../claude/AGENT_WEEK_1018.md)（續見 **V18**）
 **週次：** 2026-10-18 → 2026-10-25（連線月第三週；M3＝10/25）
-**開發分支：** #73＝`dev/aaaaa1018`（[#74](https://github.com/dernoson/endfield-playground/pull/74)）；#58＝**`dev/aaaaa1018-58`**（本線）
-**狀態總覽：** **`[~]`**（2026-10-18；#73／[#74](https://github.com/dernoson/endfield-playground/pull/74)；#58／[#76](https://github.com/dernoson/endfield-playground/pull/76) 皆交審中）
+**開發分支：** #73＝`dev/aaaaa1018`（[#74](https://github.com/dernoson/endfield-playground/pull/74)）；#58＝**`dev/aaaaa1018-58`**（[#76](https://github.com/dernoson/endfield-playground/pull/76)）
+**狀態總覽：** **`[x]` 已結案／已合 master**（[#74](https://github.com/dernoson/endfield-playground/pull/74)／[#76](https://github.com/dernoson/endfield-playground/pull/76) MERGED 2026-10-18；#73／#58 CLOSED；續見 [V18](./todolist_v18.md)）
 **會議介紹：** [INTRO_meeting_c5_primary_output](../../work_dispatch/aaaaa/1011/INTRO_meeting_c5_primary_output.md)
+**文件收斂：** [V18-B1](./dev_v18/B1_v17_residue_close.md)
+**串接演示：** [USAGE_l1_contract_lab](./USAGE_l1_contract_lab.md) → `/dev/l1-contract-lab`（V14–V17 契約＋可測案例）
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 >
@@ -24,8 +26,8 @@
 
 | 主線 | Issue | 內容 | 狀態 |
 |------|-------|------|------|
-| **查表＋引擎讀** | [#73](https://github.com/dernoson/endfield-playground/issues/73) | resolve／驗證／引擎／toTopology 30/min | **實作完**；PR [#74](https://github.com/dernoson/endfield-playground/pull/74) |
-| **歷史隔離** | [#58](https://github.com/dernoson/endfield-playground/issues/58) | 停自動 fixture；情境切換 `history.clear()` | **下一刀**；細項 H1–H3 |
+| **查表＋引擎讀** | [#73](https://github.com/dernoson/endfield-playground/issues/73) | resolve／驗證／引擎／toTopology 30/min | **已合**；PR [#74](https://github.com/dernoson/endfield-playground/pull/74) MERGED |
+| **歷史隔離** | [#58](https://github.com/dernoson/endfield-playground/issues/58) | 停自動 fixture；情境切換 `history.clear()` | **已合**；PR [#76](https://github.com/dernoson/endfield-playground/pull/76) MERGED |
 
 ### 問題（整理自 #73）
 
@@ -162,7 +164,7 @@ H1 停自動 fixture → H2 情境切換 clear history → H3 驗收＋PR（Clos
 
 ## V17-G｜#73 驗收、PR
 
-- [~] **V17-G1** 品質閘 `[x]`；PR [#74](https://github.com/dernoson/endfield-playground/pull/74) 交審中；合入後關 #73 `[ ]`
+- [x] **V17-G1** 品質閘 `[x]`；PR [#74](https://github.com/dernoson/endfield-playground/pull/74) **MERGED**；#73 CLOSED
     - 細項：[dev_v17/G1_acceptance_and_handoff.md](./dev_v17/G1_acceptance_and_handoff.md)
 
 ---
@@ -175,7 +177,7 @@ H1 停自動 fixture → H2 情境切換 clear history → H3 驗收＋PR（Clos
 - [x] **V17-H2** 跨正式／dev 情境 `historyStore.clear()`
     - 細項：[dev_v17/H2_clear_history_on_context_switch.md](./dev_v17/H2_clear_history_on_context_switch.md)
     - 產物：`historyContext.ts`／`clearHistoryOnContextSwitch.ts`；router 註冊；單元測
-- [~] **V17-H3** 品質閘 `[x]`；PR [#76](https://github.com/dernoson/endfield-playground/pull/76) 交審中；合入後關 #58 `[ ]`
+- [x] **V17-H3** 品質閘 `[x]`；PR [#76](https://github.com/dernoson/endfield-playground/pull/76) **MERGED**；#58 CLOSED
     - 細項：[dev_v17/H3_history_isolation_acceptance.md](./dev_v17/H3_history_isolation_acceptance.md)
 
 ---
@@ -199,19 +201,19 @@ H1 停自動 fixture → H2 情境切換 clear history → H3 驗收＋PR（Clos
 - [x] toTopology → 產耗各 30/min（測試）
 - [~] dev 頁相容（回歸綠；手動待 reviewer）
 - [x] 品質閘綠（開 #74 時 961 tests）
-- [~] PR [#74](https://github.com/dernoson/endfield-playground/pull/74) 交審；合入後關 #73
+- [x] PR [#74](https://github.com/dernoson/endfield-playground/pull/74) MERGED；#73 CLOSED
 
 ### 主線 #58
 
 - [x] 正式頁開頁不自動載 connected（H1）
 - [x] 跨正式／dev 操作歷史互不影響（clear 策略）（H2）
 - [x] H1／H2 單元測；H3 手動腳本待驗收
-- [ ] PR Closes #58
+- [x] PR [#76](https://github.com/dernoson/endfield-playground/pull/76) MERGED；#58 CLOSED
 
 ### 品質閘（兩線共用）
 
 - [x] #73：不重開 A-5；不改 editorStore 簽名；不發解鎖句
-- [ ] #58：知會 toby／harry；不發解鎖句
+- [x] #58：知會 toby／harry；不發解鎖句
 
 ---
 
@@ -235,16 +237,20 @@ H1 停自動 fixture → H2 情境切換 clear history → H3 驗收＋PR（Clos
 | #73 驗證 | getDef＋E004／W001 | `[x]` | D1 |
 | #73 引擎查表 | 英文 id | `[x]` | E1 |
 | #73 引擎切片 | toTopology 可測 | `[x]` | F1＝A |
-| #73 PR | Closes #73 | `[~]` | #74 |
+| #73 PR | Closes #73 | `[x]` | #74 MERGED |
 | #58 停自動 fixture | LayoutView | `[x]` | H1 2026-10-18 |
 | #58 歷史隔離 | clear on switch | `[x]` | H2 2026-10-18 |
 | #58 品質閘 | type／lint／format／test | `[x]` | H3 2026-10-18 |
-| #58 PR | Closes #58 | `[~]` | [#76](https://github.com/dernoson/endfield-playground/pull/76) |
+| #58 PR | Closes #58 | `[x]` | [#76](https://github.com/dernoson/endfield-playground/pull/76) MERGED |
 | V16 | #72 收斂 | `[x]` | B1 |
 
 ---
 
 ## 開發日誌
+
+### 2026-10-25｜V17 結案（V18-B1）
+
+- #74／#76 MERGED 查證；#73／#58 CLOSED；續 [V18](./todolist_v18.md)／W1018-A0
 
 ### 2026-10-18｜V17-H3 開 PR
 

@@ -117,22 +117,25 @@ export interface LayoutSnapshot {
 /**
  * 放置／移動失敗原因（V12 layoutStore）
  *
- * - `overlap`：與既有設備或管線佔格衝突
+ * - `overlap`：與既有設備或管線佔格衝突（**預檢** {@link canPlaceDevice}／{@link canMoveDevice} 仍可回此值；畫紅框用）
  * - `invalid`：缺機器定義、找不到 uid、重複 id、座標不合法等
+ *
+ * POC 裁決：重疊（E001）是 Error，但**不阻擋** `layoutStore` 寫入類操作。  \
+ * `addDevice`／`moveDevice`／`rotateDevice` 遇重疊仍寫入並回 `{ ok: true }`；  \
+ * 重疊狀態改由 {@link LayoutIssues}／驗證系統標出，勿再以本 reason 擋寫入。
  */
 export type PlacementFailReason = 'overlap' | 'invalid';
 
 /**
- * 放置合法性結果；**不 throw**，供 L2 決定是否畫紅框
+ * 放置合法性結果；**不 throw**，供 L2 決定是否畫紅框或是否寫入
  *
- * `overlap` 時帶 `conflicts`（detectOverlaps 的 id 配對），紅框只落在真正重疊者。  \
- * `invalid` 時可帶 `invalidIds`（缺定義／非法座標的物件）。
+ * - **預檢**（`canPlaceDevice`／`canMoveDevice`）：`overlap` 時帶 `conflicts`（紅框只落在真正重疊者）；`invalid` 帶 `invalidIds`
+ * - **寫入**（`addDevice`／`moveDevice`／`rotateDevice`）：僅 `invalid` 會失敗；重疊照常寫入，回 `{ ok: true }`，E001 看 `layoutIssues`
  */
 export type PlacementResult =
     | { ok: true }
     | { ok: false; reason: 'overlap'; conflicts: [string, string][] }
     | { ok: false; reason: 'invalid'; invalidIds?: string[] };
-
 /**
  * 佈局整體檢查結果；**同時**帶所有類別的問題
  *
