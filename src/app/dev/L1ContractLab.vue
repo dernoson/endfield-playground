@@ -6,6 +6,7 @@
  * 不取代各版專頁；深鏈見 {@link CONTRACT_BLOCKS}.deeperDemo。
  */
 import { computed, ref } from 'vue';
+import { createPinia, getActivePinia, setActivePinia } from 'pinia';
 import type { Connection, PlacedDevice, Pipeline } from '@/types/layout';
 import { getMachineMode } from '@/types/machine';
 import { getMachineById, getMachine, resolveMachineDef } from '@/data/machines';
@@ -36,22 +37,57 @@ import {
 } from '@/utils/history/historyContext';
 import { CONTRACT_BLOCKS, type ContractVersion } from '@/app/dev/l1ContractLab/contractCatalog';
 
+/** 目前分頁：總覽或某契約版本 */
 const active = ref<ContractVersion | 'overview'>('overview');
 
+/** 契約塊列表（來自 catalog） */
 const blocks = CONTRACT_BLOCKS;
+
+/** 目前選中的契約塊；總覽時為 null */
 const activeBlock = computed(() => blocks.find((b) => b.version === active.value) ?? null);
 
-/** 右側／下方輸出面板 */
+/** 結果面板標題 */
 const outputTitle = ref('尚未執行');
+
+/** 結果面板 JSON 字串 */
 const outputJson = ref('點下方「執行」按鈕，結果會顯示在這裡。');
 
+/**
+ * 把案例結果寫進輸出面板
+ *
+ * @param title 標題
+ * @param value 任意可 JSON 化物件
+ */
 function showResult(title: string, value: unknown) {
     outputTitle.value = title;
     outputJson.value = JSON.stringify(value, null, 2);
 }
 
-// ─── 共用 fixture（真實機型 id，對齊 canPlaceDevice＝getMachineById）────────
+/**
+ * 在獨立 Pinia 實例上執行寫入示範，避免污染 SPA 共用 layoutStore／history
+ *
+ * @param run 在臨時 Pinia 為 active 時執行的函式
+ */
+function withLabPinia<T>(run: () => T): T {
+    const previous = getActivePinia();
+    const labPinia = createPinia();
+    setActivePinia(labPinia);
+    try {
+        return run();
+    } finally {
+        if (previous) {
+            setActivePinia(previous);
+        }
+    }
+}
 
+/**
+ * 測試用 splitter 設備（真實機型 id）
+ *
+ * @param id 設備 uid
+ * @param x 佔格左上角 x
+ * @param y 佔格左上角 y
+ */
 function splitterAt(id: string, x: number, y: number): PlacedDevice {
     return {
         id,
@@ -62,6 +98,12 @@ function splitterAt(id: string, x: number, y: number): PlacedDevice {
     };
 }
 
+/**
+ * 取設備第一個入／出埠的外側錨點格（給 canConnect waypoints）
+ *
+ * @param device 已放置設備
+ * @param portType 輸入或輸出
+ */
 function portAnchor(
     device: PlacedDevice,
     portType: 'input' | 'output',
@@ -83,8 +125,7 @@ function portAnchor(
     return { x: cell.x, y: cell.y, z: 0 };
 }
 
-// ─── V14 ────────────────────────────────────────────────────────────────────
-
+/** V14：空地放置預檢 */
 function runV14PlaceOk() {
     const result = canPlaceDevice(
         { machineType: 'splitter', position: { x: 5, y: 0, z: 0 }, rotation: 0 },
@@ -93,6 +134,7 @@ function runV14PlaceOk() {
     showResult('canPlaceDevice（空地 → ok）', { ...result, DRAFT_ID });
 }
 
+/** V14：重疊放置預檢（仍回 overlap；寫入層不擋） */
 function runV14PlaceOverlap() {
     const draft: DeviceDraft = {
         machineType: 'splitter',
@@ -106,12 +148,14 @@ function runV14PlaceOverlap() {
     showResult('canPlaceDevice（重疊 → overlap；conflicts 含 DRAFT_ID）', result);
 }
 
+/** V14：原位移動必 ok */
 function runV14MoveSame() {
     const d = splitterAt('a', 2, 3);
     const result = canMoveDevice('a', { x: 2, y: 3, z: 0 }, { devices: [d], pipelines: [] });
     showResult('canMoveDevice（原位 → 必 ok）', result);
 }
 
+/** V14：合法 belt 連線 */
 function runV14ConnectOk() {
     const src = splitterAt('src', 0, 0);
     const dst = splitterAt('dst', 4, 0);
@@ -128,8 +172,9 @@ function runV14ConnectOk() {
     });
 }
 
-// ─── V15 ────────────────────────────────────────────────────────────────────
+/** V15 案例群 */
 
+/** V15：有基地時的出界 id */
 function runV15Outside() {
     const devices: PlacedDevice[] = [splitterAt('in', 0, 0), splitterAt('far', 300, 0)];
     const ids = devicesOutsideBase(devices, 'wuling');
@@ -140,6 +185,7 @@ function runV15Outside() {
     });
 }
 
+/** V15：未選基地 → 出界一律空 */
 function runV15OutsideNullRegion() {
     const ids = devicesOutsideBase([splitterAt('x', 999, 999)], null);
     showResult('devicesOutsideBase（region=null）', {
@@ -148,6 +194,7 @@ function runV15OutsideNullRegion() {
     });
 }
 
+/** V15：埠熱區命中 */
 function runV15HitTest() {
     const device: PlacedDevice = {
         id: 'c',
@@ -170,9 +217,11 @@ function runV15HitTest() {
     });
 }
 
-// ─── V16 ────────────────────────────────────────────────────────────────────
+/** V16 案例群 */
 
-/** 不寫 store：證明 toTopology 會帶出 primaryOutput（契約） */
+/**
+ * V16：純資料證明 toTopology 帶出 primaryOutput（不寫任何 store）
+ */
 function runV16TopologyMapping() {
     const devices: PlacedDevice[] = [
         {
@@ -197,43 +246,74 @@ function runV16TopologyMapping() {
     });
 }
 
-/** 會寫入共用 layoutStore／history——僅供驗證 action；勿在正式頁有重要圖時亂點 */
+/**
+ * V16：在**獨立 Pinia** 上示範 setDevicePrimaryOutput（不污染正式頁 layoutStore）
+ */
 function runV16StoreAction() {
-    const layout = useLayoutStore();
-    const history = useHistoryStore();
-    const id = `lab-src-${Date.now()}`;
-    const placed = layout.addDevice({
-        id,
-        machineType: 'material_source',
-        position: { x: 0, y: 0, z: 0 },
-        rotation: 0,
-        machineMode: 'solid_belt',
-    });
-    if (!placed.ok) {
-        showResult('setDevicePrimaryOutput（store）', {
-            error: 'addDevice failed（可能 overlap）',
-            placed,
-            hint: '改點「toTopology 映射」案例，或清掉正式頁設備後再試',
-        });
-        return;
-    }
-    const depthBefore = history.undoDepth;
-    layout.setDevicePrimaryOutput(id, '源礦');
-    const device = layout.devices.find((d) => d.id === id);
-    showResult('setDevicePrimaryOutput（已寫入共用 layoutStore）', {
-        warning: '此案例會污染 SPA 共用 store／history；正式頁切回可見此設備',
-        device: {
+    const payload = withLabPinia(() => {
+        const layout = useLayoutStore();
+        const history = useHistoryStore();
+        const id = `lab-src-${Date.now()}`;
+        const placed = layout.addDevice({
             id,
-            primaryOutput: device?.primaryOutput,
-            sourceRatePerMin: device?.sourceRatePerMin,
-        },
-        undoDepthBefore: depthBefore,
-        undoDepthAfter: history.undoDepth,
+            machineType: 'material_source',
+            position: { x: 0, y: 0, z: 0 },
+            rotation: 0,
+            machineMode: 'solid_belt',
+        });
+        if (!placed.ok) {
+            return {
+                error: 'addDevice failed（僅 invalid 會失敗；重疊應 ok）',
+                placed,
+            };
+        }
+        const depthBefore = history.undoDepth;
+        layout.setDevicePrimaryOutput(id, '源礦');
+        const device = layout.devices.find((d) => d.id === id);
+        return {
+            isolation: 'createPinia 臨時實例；結束後已還原 SPA active Pinia',
+            device: {
+                id,
+                primaryOutput: device?.primaryOutput,
+                sourceRatePerMin: device?.sourceRatePerMin,
+            },
+            undoDepthBefore: depthBefore,
+            undoDepthAfter: history.undoDepth,
+        };
     });
+    showResult('setDevicePrimaryOutput（獨立 Pinia，不寫正式頁）', payload);
 }
 
-// ─── V17 ────────────────────────────────────────────────────────────────────
+/**
+ * V16／V18：獨立 Pinia 示範 rotateDevice（原點不動、進歷史）
+ */
+function runV16RotateDevice() {
+    const payload = withLabPinia(() => {
+        const layout = useLayoutStore();
+        const history = useHistoryStore();
+        layout.addDevice({
+            id: 'rot',
+            machineType: 'filling_machine',
+            position: { x: 3, y: 3, z: 0 },
+            rotation: 0,
+        });
+        history.clear();
+        const beforePos = { ...layout.devices[0]!.position };
+        const result = layout.rotateDevice('rot', 1);
+        return {
+            isolation: '獨立 Pinia',
+            result,
+            positionUnchanged: layout.devices[0]!.position,
+            expectedPosition: beforePos,
+            rotation: layout.devices[0]!.rotation,
+            undoDepth: history.undoDepth,
+            note: '重疊不擋寫入；E001 看 layoutIssues',
+        };
+    });
+    showResult('rotateDevice（獨立 Pinia）', payload);
+}
 
+/** V17：resolveMachineDef 與配方鍵 */
 function runV17Resolve() {
     const byId = resolveMachineDef('crusher');
     const byName = resolveMachineDef('粉碎機');
@@ -249,6 +329,7 @@ function runV17Resolve() {
     });
 }
 
+/** V17：純函式引擎 30/min 產線（不寫 store） */
 function runV17EngineSlice() {
     const devices: PlacedDevice[] = [
         {
@@ -321,6 +402,7 @@ function runV17EngineSlice() {
     });
 }
 
+/** V17：history 情境與跨頁是否 clear（純規則，不寫 store） */
 function runV17HistoryContext() {
     showResult('history 情境邊界', {
         contexts: {
@@ -338,12 +420,19 @@ function runV17HistoryContext() {
     });
 }
 
+/**
+ * 可點案例列
+ */
 interface PlayCase {
+    /** 穩定 id（列表 key） */
     id: string;
+    /** 按鈕文案 */
     label: string;
+    /** 執行函式 */
     run: () => void;
 }
 
+/** 各版本可點案例 */
 const playByVersion: Record<ContractVersion, PlayCase[]> = {
     V14: [
         { id: 'p-ok', label: 'canPlaceDevice 空地', run: runV14PlaceOk },
@@ -358,7 +447,8 @@ const playByVersion: Record<ContractVersion, PlayCase[]> = {
     ],
     V16: [
         { id: 's1', label: 'toTopology 映射（不寫 store）', run: runV16TopologyMapping },
-        { id: 's2', label: 'setDevicePrimaryOutput（寫 store⚠）', run: runV16StoreAction },
+        { id: 's2', label: 'setDevicePrimaryOutput（獨立 Pinia）', run: runV16StoreAction },
+        { id: 's3', label: 'rotateDevice（獨立 Pinia）', run: runV16RotateDevice },
     ],
     V17: [
         { id: 'r1', label: 'resolveMachineDef＋配方鍵', run: runV17Resolve },

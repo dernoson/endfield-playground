@@ -1,17 +1,26 @@
 /**
  * V14–V17 L1 契約目錄（給串接／呼叫端的定義表）
  *
- * 演示頁 {@link L1ContractLab} 消費此資料；改契約時請同步更新。
+ * 演示頁 `L1ContractLab.vue` 消費此資料；改契約時請同步更新本檔與公開 LAB 指南。
  */
 
+/**
+ * 契約實驗室分頁版本鍵
+ *
+ * @example
+ * const v: ContractVersion = 'V16'
+ */
 export type ContractVersion = 'V14' | 'V15' | 'V16' | 'V17';
 
+/**
+ * 單一 API／契約列（表格一列）
+ */
 export interface ContractApiRow {
-    /** 匯出符號 */
+    /** 匯出符號或呼叫路徑（顯示用） */
     symbol: string;
-    /** 模組路徑 */
+    /** 模組路徑（顯示用） */
     module: string;
-    /** 一句话 */
+    /** 一句話：做什麼 */
     purpose: string;
     /** 誰該呼叫 */
     callers: string;
@@ -19,16 +28,37 @@ export interface ContractApiRow {
     dont: string;
 }
 
-export interface ContractVersionBlock {
-    version: ContractVersion;
-    title: string;
-    prs: string;
-    oneLiner: string;
-    apis: ContractApiRow[];
-    deeperDemo?: { label: string; href: string };
+/**
+ * 可選的更深演示連結
+ */
+export interface ContractDeeperDemo {
+    /** 連結文字 */
+    label: string;
+    /** 相對站台路徑或獨立 HTML */
+    href: string;
 }
 
-/** 總覽：版本 → 契約塊 */
+/**
+ * 單一版本契約塊（總覽列＋分頁內容）
+ */
+export interface ContractVersionBlock {
+    /** 版本鍵 */
+    version: ContractVersion;
+    /** 分頁標題 */
+    title: string;
+    /** 相關 PR 字串 */
+    prs: string;
+    /** 總覽「一句話」 */
+    oneLiner: string;
+    /** API 列 */
+    apis: ContractApiRow[];
+    /** 可選深鏈 */
+    deeperDemo?: ContractDeeperDemo;
+}
+
+/**
+ * 總覽：版本 → 契約塊（頁面唯一資料源）
+ */
 export const CONTRACT_BLOCKS: ContractVersionBlock[] = [
     {
         version: 'V14',
@@ -44,13 +74,13 @@ export const CONTRACT_BLOCKS: ContractVersionBlock[] = [
                 symbol: 'canPlaceDevice',
                 module: '@/utils/layout/placementCheck',
                 purpose: 'draft 能否放置；回傳 PlacementResult（含 DRAFT_ID conflicts）',
-                callers: '落子預覽、toolbar 意圖；layoutStore.addDevice 內部同源',
+                callers: '落子預覽、toolbar 意圖；預檢與寫入規則同源，寫入重疊不擋（見 addDevice）',
                 dont: '自己 import detectOverlaps 另算預覽',
             },
             {
                 symbol: 'canMoveDevice',
                 module: '@/utils/layout/placementCheck',
-                purpose: '既有設備移到新格是否合法；原位必 ok',
+                purpose: '既有設備移到新格是否合法；原位必 ok（預檢可回 overlap）',
                 callers: '拖曳預覽／放開前',
                 dont: '移動時用 canPlaceDevice 假裝新機',
             },
@@ -94,10 +124,10 @@ export const CONTRACT_BLOCKS: ContractVersionBlock[] = [
     },
     {
         version: 'V16',
-        title: '源素材寫入（C5）',
-        prs: '#72',
+        title: '源素材寫入＋設備旋轉（layoutStore）',
+        prs: '#72／V18 rotateDevice',
         oneLiner:
-            'primaryOutput 只寫 layoutStore；引擎讀經 toTopology（V17 兌現）。不雙寫 editorStore。',
+            'primaryOutput 只寫 layoutStore；旋轉用 rotateDevice；引擎讀經 toTopology。重疊不擋寫入。',
         deeperDemo: {
             label: 'layoutStore 演示（獨立 HTML）',
             href: '/dev/layout-store-preview.html',
@@ -109,6 +139,20 @@ export const CONTRACT_BLOCKS: ContractVersionBlock[] = [
                 purpose: 'uid＋itemId|null＋可選 rate；進歷史；省略 rate＝30',
                 callers: '左面板／源設備表單（正式 UI 後續）',
                 dont: '雙寫 editorStore.primaryOutput',
+            },
+            {
+                symbol: 'rotateDevice',
+                module: '@/store/layoutStore',
+                purpose: '單一設備設 rotation（0–3）；進 MachineRotation 歷史；原點／管線座標不動',
+                callers: 'L2 快捷鍵旋轉（#78）；勿在 L2 自寫第二套',
+                dont: '旋轉時改 position 或改寫管線 waypoints；勿因 overlap 擋寫入',
+            },
+            {
+                symbol: 'addDevice／moveDevice',
+                module: '@/store/layoutStore',
+                purpose: '寫入類；僅 invalid 失敗；overlap 仍寫入（E001→layoutIssues）',
+                callers: 'L2 落子／拖曳確認',
+                dont: '把 PlacementResult.overlap 當寫入擋板（預檢 can* 仍可回 overlap）',
             },
             {
                 symbol: 'toTopology（已映射欄位）',
@@ -125,7 +169,7 @@ export const CONTRACT_BLOCKS: ContractVersionBlock[] = [
         title: '機型 id 查表＋引擎切片＋歷史隔離',
         prs: '#74／#76（#73／#58）',
         oneLiner:
-            '查定義 resolveMachineDef（id 優先）；配方仍用 name；toTopology 可測 30/min；正式頁不自動 fixture；跨／↔／dev 清 history。',
+            '查定義 resolveMachineDef（id 優先）；配方仍用 name；toTopology 可測 30/min；正式頁不自動 fixture；跨正式／dev 清 history。',
         deeperDemo: {
             label: 'FlowEngine 測試頁',
             href: '/dev/flow-engine',

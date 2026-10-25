@@ -232,7 +232,7 @@ pointerup
 
 ---
 
-## 6. V16｜源素材寫入與拓樸映射（本週 V2 核心）
+## 6. V16｜源素材寫入、旋轉與拓樸映射（本週 V2 核心）
 
 ### 6.1 `setDevicePrimaryOutput`
 
@@ -244,7 +244,18 @@ pointerup
 | **串接方式** | `layoutStore.setDevicePrimaryOutput(uid, itemId, ratePerMin?)`；`itemId === null` 清除；省略速率＝**30**。 |
 | **常見誤用** | 同時改舊的 `editorStore` 欄位（**雙寫**）→ 違反主編裁決，Undo／引擎會對不起來。 |
 
-### 6.2 `toTopology`
+### 6.2 `rotateDevice`
+
+| 項目 | 說明 |
+|------|------|
+| **用途** | 設定單一已放置設備的 `rotation`（0–3）。 |
+| **目的** | L1 唯一旋轉寫入點；自動進 `MachineRotation` 歷史；**原點與既有管線座標不動**。 |
+| **誰該呼叫** | L2 快捷鍵／工具列旋轉（#78 應改呼叫此 action，勿自寫第二套）。 |
+| **串接方式** | `layoutStore.rotateDevice(uid, rotation)`；同角度＝no-op 且不進歷史。 |
+| **重疊** | 與 `addDevice`／`moveDevice` 相同：**不擋寫入**；E001 由 `layoutIssues`／驗證標出。 |
+| **常見誤用** | 旋轉時改 `position` 或改寫管線 waypoints；或把預檢 `overlap` 當寫入擋板。 |
+
+### 6.3 `toTopology`
 
 | 項目 | 說明 |
 |------|------|
@@ -310,10 +321,12 @@ pointerup
 2. **滑鼠點埠用埠熱區** — `hitTestPortAt`，不是 `findPortAt`。  
 3. **拉線語意帶 PortRef** — 起拖存 `deviceId`＋`portIndex`；外錨同格也不改用「猜格」。  
 4. **源素材只寫 layoutStore** — `setDevicePrimaryOutput`；禁止雙寫 `editorStore`。  
-5. **引擎讀佈局要經 toTopology** — 不要假設自動監聽。  
-6. **查機型用 resolveMachineDef；查配方用 def.name** — 英文 id ≠ 配方鍵。  
-7. **正式頁不自動載示範佈局** — 示範留給 lab／dev。  
-8. **改契約文案** — 優先改 `contractCatalog.ts`，再考慮是否同步本檔。
+5. **旋轉只寫 layoutStore.rotateDevice** — 原點／管線座標不動；勿在 L2 自寫第二套。  
+6. **重疊（E001）不擋寫入** — `addDevice`／`moveDevice`／`rotateDevice` 遇重疊仍寫入；預檢 `can*` 仍可回 overlap。  
+7. **引擎讀佈局要經 toTopology** — 不要假設自動監聽。  
+8. **查機型用 resolveMachineDef；查配方用 def.name** — 英文 id ≠ 配方鍵。  
+9. **正式頁不自動載示範佈局** — 示範留給 lab／dev；lab 寫入案例用**獨立 Pinia**，不污染正式頁 store。  
+10. **改契約文案** — 優先改 `contractCatalog.ts`，再考慮是否同步本檔。
 
 ---
 
@@ -322,7 +335,7 @@ pointerup
 | 問題 | 答案 |
 |------|------|
 | 開得了 lab ＝ V2 過關？ | **否。** V2 以 [ACCEPTANCE](./ACCEPTANCE_V2_c5_chain.md) 測試重跑為準。 |
-| lab 一定要合進 master 才算 W1018-A0？ | 工單原寫 A 或 B 擇一；本週負責人裁 **A＋B 都要**；合入 PR 時程另裁。 |
+| lab 一定要合進 master 才算 W1018-A0？ | 工單原寫 A 或 B 擇一；**A＋B 裁決**見 `W1018-A0` §0 註（2026-10-25 開工對話 A-1／PENDING）；合入 PR 時程另裁。 |
 | 我只做 L2 拉線要讀哪裡？ | 至少 V14 的 `canConnect`＋V15 的 `hitTestPortAt`；埠幾何與同格消歧見 **§5.3**；源數字另見 V16／ACCEPTANCE。 |
 | 外錨同格怎知來源機？ | 起拖用 `hitTestPortAt` 的 `deviceId`；見 §5.3。 |
 
