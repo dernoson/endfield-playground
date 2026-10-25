@@ -2,9 +2,9 @@
 
 | meta | value |
 |------|-------|
-| version | **v3.3（2026-10-25；V18-D1 lab 已 merge；PR 另裁）** |
+| version | **v3.4（2026-10-25；公開三件＋埠／L2 FAQ；開 PR）** |
 | 用途 | Agent 執行本週派工／改工單時的強制約束 |
-| 公開 | [WEEK_1018](../../work_dispatch/WEEK_20261018.md) v1.0、[W1018-A0](../../work_dispatch/aaaaa/1018/W1018-A0_m3_engine_lab.md) |
+| 公開 | [WEEK_1018](../../work_dispatch/WEEK_20261018.md) v1.0、[W1018-A0](../../work_dispatch/aaaaa/1018/W1018-A0_m3_engine_lab.md)、[INTRO](../../work_dispatch/aaaaa/1018/INTRO_meeting_m3_engine_lab.md)、[ACCEPTANCE](../../work_dispatch/aaaaa/1018/ACCEPTANCE_V2_c5_chain.md)、[LAB](../../work_dispatch/aaaaa/1018/LAB_l1_contract_guide.md) |
 | 執行計畫 | [todolist_v18](../dev/todolist_v18.md)、[dev_v18/](../dev/dev_v18/) |
 | 決策層 | [1018/REVIEW](../collaborator_survey/dispatch_private/1018/REVIEW_20261018.md)、[1018/E3](../collaborator_survey/dispatch_private/1018/E3_risk_backup_staffing.md)、[1018/PENDING](../collaborator_survey/dispatch_private/1018/PENDING_DECISIONS_20261025.md)、[1018/INTRO](../collaborator_survey/dispatch_private/1018/INTRO_A0_m3_engine_lab.md) |
 | 操作總則 | [AGENT_ROADMAP](./AGENT_ROADMAP.md)（v1.6；檔案地圖仍指 0907，已知過期） |
@@ -28,7 +28,7 @@
 | ~~0~~ | ~~派工已發（WEEK＋十張工單）~~ | **已完成**；PR [#77](https://github.com/dernoson/endfield-playground/pull/77) |
 | ~~1~~ | ~~V17 殘項收斂~~ | **已完成**；[V18-B1](../dev/dev_v18/B1_v17_residue_close.md) |
 | ~~2~~ | ~~**②A 驗收步驟**~~ | **已完成**；[C1](../dev/dev_v18/C1_m3_acceptance_steps.md) |
-| ~~3~~ | ~~**②B lab** 併入分支~~ | **已 merge**；[D1](../dev/dev_v18/D1_l1_lab_pr.md)；**開 PR 另裁** |
+| ~~3~~ | ~~**②B lab** 併入分支~~ | **已 merge**；隨本週 PR；[D1](../dev/dev_v18/D1_l1_lab_pr.md) |
 | 4 | 驗收＋回寫（公開 V2） | [E1](../dev/dev_v18/E1_acceptance_and_handoff.md) |
 | — | **禁止**改 GridCanvas／LayoutView／MainLayout | 鎖表 WEEK §2.2 |
 | — | **禁止**擴大 V17、整包右側產耗、正式頁源素材表單 | W1018-A0 §2 |
@@ -95,9 +95,13 @@
 
 ## 6. 日誌
 
+### 2026-10-25（v3.4）
+
+- 公開 INTRO／ACCEPTANCE／LAB 補埠幾何與 L2 `PortRef` FAQ；開 PR → master
+
 ### 2026-10-25（v3.3）
 
-- V18-D1：merge `aaaaa1019-l1-lab`；`/dev/l1-contract-lab` 在分支；開 PR 等裁示
+- V18-D1：merge `aaaaa1019-l1-lab`；`/dev/l1-contract-lab` 在分支
 
 ### 2026-10-25（v3.2）
 

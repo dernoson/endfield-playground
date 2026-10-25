@@ -1,7 +1,7 @@
 # V18-D1 — L1 contract lab 合入（W1018-A0 ②B）
 
 **對應工項：** V18-D1
-**狀態：** `[~]` 碼已併入 `dev/aaaaa1018`；type-check／關鍵測綠；**PR 另裁再開**
+**狀態：** `[~]` 碼已併入 `dev/aaaaa1018`；type-check／關鍵測綠；**開 PR 中**
 **日期：** 2026-10-25
 **依賴：** 無（來源分支已存在）
 **正式工單：** [W1018-A0 §1](../../../work_dispatch/aaaaa/1018/W1018-A0_m3_engine_lab.md)

@@ -5,7 +5,8 @@
 | 頁面 | `http://localhost:5173/dev/l1-contract-lab` |
 | 對象 | 畫布 L2、驗證、引擎、週會聽眾 |
 | 對應 | [todolist_v14](./todolist_v14.md)～[todolist_v17](./todolist_v17.md) |
-| 最後更新 | 2026-10-19 |
+| 最後更新 | 2026-10-25 |
+| 公開長文（建議先讀） | [LAB_l1_contract_guide](../../work_dispatch/aaaaa/1018/LAB_l1_contract_guide.md)（詞彙表＋各函式用途／串接） |
 
 ---
 
@@ -17,7 +18,8 @@
 1. **定義表**（符號／模組／誰呼叫／不要做什麼）
 2. **一鍵案例**（呼叫真實 API，JSON 輸出）
 
-方便其他串接者對照與自測，而不必只讀 diff。
+方便其他串接者對照與自測，而不必只讀 diff。  
+若需要「高中～大學程度」的完整說明與專有名詞解釋，請改讀公開 [LAB 指南](../../work_dispatch/aaaaa/1018/LAB_l1_contract_guide.md)。
 
 ---
 

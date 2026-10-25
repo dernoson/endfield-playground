@@ -174,6 +174,15 @@ A 定案 → B V17 收斂（前置）
 
 ## 開發日誌
 
+### 2026-10-25｜埠幾何／L2 FAQ 寫入公開檔＋開 PR
+
+- INTRO §2.1、LAB §5.3：外錨 vs 邊心、`PortRef`、同格多機認 `deviceId`
+- 文件＋lab 碼準備 push／開 PR → master
+
+### 2026-10-25｜派工公開三件
+
+- `work_dispatch/aaaaa/1018/`：INTRO 會議報告、ACCEPTANCE V2、LAB 指南（白話＋詞彙表＋函式串接）
+
 ### 2026-10-25｜V18-D1 merge lab
 
 - merge `origin/dev/aaaaa1019-l1-lab` → `dev/aaaaa1018`；衝突解＝todolist_v17 兩行皆留
