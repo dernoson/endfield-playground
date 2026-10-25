@@ -369,6 +369,7 @@ useHistoryStore().clear()
 | 項目 | 連結 |
 |------|------|
 | 工單 | [W1011-A0](./W1011-A0_c5_primary_output.md) |
+| 串接實驗室 | [USAGE_l1_contract_lab](../../../aaaaa/dev/USAGE_l1_contract_lab.md) → `/dev/l1-contract-lab` |
 | Issue（查表） | [#73](https://github.com/dernoson/endfield-playground/issues/73) |
 | Issue（歷史） | [#58](https://github.com/dernoson/endfield-playground/issues/58) |
 | PR 寫入 | [#72](https://github.com/dernoson/endfield-playground/pull/72) |
