@@ -1,7 +1,7 @@
 # V17-H3 — #58 驗收、PR、交接
 
 **對應工項：** V17-H3
-**狀態：** `[~]` 品質閘全綠；[#76](https://github.com/dernoson/endfield-playground/pull/76) 交審中（base＝`dev/aaaaa1018`／#74）
+**狀態：** `[x]` [#76](https://github.com/dernoson/endfield-playground/pull/76) MERGED 2026-10-18；#58 CLOSED
 **日期：** 2026-10-18
 **依賴：** [H1](./H1_stop_auto_demo_snapshot.md)、[H2](./H2_clear_history_on_context_switch.md)
 **正式依據：** [#58](https://github.com/dernoson/endfield-playground/issues/58)
@@ -61,10 +61,10 @@ Closes #58
 
 ## 4. 合入後回寫
 
-- [ ] todolist_v17 H 線結案；若 #73 已合則 V17 可整版 `[x]`
-- [ ] AGENT_WEEK_1018
-- [ ] 關閉 #58
-- [ ] INTRO 會議檔（已預標已修；合入後再核）
+- [x] todolist_v17 H 線結案；V17 整版 `[x]`（2026-10-25｜V18-B1）
+- [x] AGENT_WEEK_1018（改掛 V18）
+- [x] 關閉 #58
+- [x] INTRO 會議檔（已預標已修）
 
 ---
 
@@ -72,11 +72,15 @@ Closes #58
 
 - [x] H1＋H2 DoD 滿足
 - [x] §1 品質閘通過（#1／#2 手動待 reviewer）
-- [x] PR 已開（[#76](https://github.com/dernoson/endfield-playground/pull/76)；Closes #58）
+- [x] PR 已開並合入（[#76](https://github.com/dernoson/endfield-playground/pull/76)；#58 CLOSED）
 
 ---
 
 ## 6. 開發日誌
+
+### 2026-10-25｜結案回寫
+
+- #76 MERGED 查證；#58 CLOSED；續 V18
 
 ### 2026-10-18｜開 PR
 
