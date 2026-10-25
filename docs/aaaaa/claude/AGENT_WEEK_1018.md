@@ -2,7 +2,7 @@
 
 | meta | value |
 |------|-------|
-| version | **v3.1（2026-10-25；A-1＝A＋B；先 commit 不開 PR）** |
+| version | **v3.3（2026-10-25；V18-D1 lab 已 merge；PR 另裁）** |
 | 用途 | Agent 執行本週派工／改工單時的強制約束 |
 | 公開 | [WEEK_1018](../../work_dispatch/WEEK_20261018.md) v1.0、[W1018-A0](../../work_dispatch/aaaaa/1018/W1018-A0_m3_engine_lab.md) |
 | 執行計畫 | [todolist_v18](../dev/todolist_v18.md)、[dev_v18/](../dev/dev_v18/) |
@@ -27,8 +27,8 @@
 |----|------|------------|
 | ~~0~~ | ~~派工已發（WEEK＋十張工單）~~ | **已完成**；PR [#77](https://github.com/dernoson/endfield-playground/pull/77) |
 | ~~1~~ | ~~V17 殘項收斂~~ | **已完成**；[V18-B1](../dev/dev_v18/B1_v17_residue_close.md) |
-| 2 | **②A 驗收步驟**（必做） | [C1](../dev/dev_v18/C1_m3_acceptance_steps.md) |
-| 3 | **②B lab PR**（必做；時機另裁） | [D1](../dev/dev_v18/D1_l1_lab_pr.md) |
+| ~~2~~ | ~~**②A 驗收步驟**~~ | **已完成**；[C1](../dev/dev_v18/C1_m3_acceptance_steps.md) |
+| ~~3~~ | ~~**②B lab** 併入分支~~ | **已 merge**；[D1](../dev/dev_v18/D1_l1_lab_pr.md)；**開 PR 另裁** |
 | 4 | 驗收＋回寫（公開 V2） | [E1](../dev/dev_v18/E1_acceptance_and_handoff.md) |
 | — | **禁止**改 GridCanvas／LayoutView／MainLayout | 鎖表 WEEK §2.2 |
 | — | **禁止**擴大 V17、整包右側產耗、正式頁源素材表單 | W1018-A0 §2 |
@@ -94,6 +94,14 @@
 ---
 
 ## 6. 日誌
+
+### 2026-10-25（v3.3）
+
+- V18-D1：merge `aaaaa1019-l1-lab`；`/dev/l1-contract-lab` 在分支；開 PR 等裁示
+
+### 2026-10-25（v3.2）
+
+- V18-C1：M3 驗收步驟落版；兩測檔 8 passed；下一＝D1 lab
 
 ### 2026-10-25（v3.1）
 

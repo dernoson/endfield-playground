@@ -101,17 +101,17 @@ A 定案 → B V17 收斂（前置）
 
 ## V18-C｜②A 驗收步驟（必做）
 
-- [ ] **V18-C1** M3 彩排用「源→`setDevicePrimaryOutput`→`toTopology`／引擎可測」短文
+- [x] **V18-C1** M3 彩排用「源→`setDevicePrimaryOutput`→`toTopology`／引擎可測」短文（2026-10-25）
     - 細項：[dev_v18/C1_m3_acceptance_steps.md](./dev_v18/C1_m3_acceptance_steps.md)
-    - 對照公開驗收：**V2**
+    - 對照公開驗收：**V2**；本機兩測檔 8 passed
 
 ---
 
 ## V18-D｜②B Lab 合入（必做）
 
-- [ ] **V18-D1** `dev/aaaaa1019-l1-lab` 開 PR → master（路由已在分支則直接 PR）
+- [~] **V18-D1** lab 已 merge 進 `dev/aaaaa1018`；**開 PR → master 另裁**
     - 細項：[dev_v18/D1_l1_lab_pr.md](./dev_v18/D1_l1_lab_pr.md)
-    - 註：與 C1 **皆交**（負責人 2026-10-25 裁 A＋B）；本輪文件 commit **先不開 PR**
+    - 產物：`/dev/l1-contract-lab`＋[USAGE](./USAGE_l1_contract_lab.md)
 
 ---
 
@@ -137,8 +137,8 @@ A 定案 → B V17 收斂（前置）
 ### 主線（對照 [W1018-A0 §3](../../work_dispatch/aaaaa/1018/W1018-A0_m3_engine_lab.md)）
 
 - [x] 派工①已發（WEEK＋工單在 master；#77）
-- [ ] ②A 驗收步驟可跟做
-- [ ] ②B lab 可開頁／可合入（PR 時機另裁；本輪開版先不開）
+- [x] ②A 驗收步驟可跟做（[C1](./dev_v18/C1_m3_acceptance_steps.md)）
+- [~] ②B lab 已在分支可開頁；PR → master 另裁
 - [ ] 未改 C1 鎖檔／`editorStore` 簽名
 - [ ] 不做長篇派工第二主交付
 
@@ -166,13 +166,23 @@ A 定案 → B V17 收斂（前置）
 | 工項 | 工單要求 | V18 狀態 | 備註 |
 |------|----------|----------|------|
 | ① | 派工已發 | `[x]` | #77；已在 master |
-| ②A | 驗收步驟 | `[ ]` | 必做 |
-| ②B | lab 合入 | `[ ]` | 必做；開 PR 另裁 |
+| ②A | 驗收步驟 | `[x]` | [C1](./dev_v18/C1_m3_acceptance_steps.md) 2026-10-25 |
+| ②B | lab 合入 | `[~]` | 碼已 merge；開 PR 另裁 |
 | 邊界 | 未改 C1 鎖檔 | `[ ]` | 驗收時勾 |
 
 ---
 
 ## 開發日誌
+
+### 2026-10-25｜V18-D1 merge lab
+
+- merge `origin/dev/aaaaa1019-l1-lab` → `dev/aaaaa1018`；衝突解＝todolist_v17 兩行皆留
+- type-check 綠；關鍵兩測綠；**開 PR 另裁**
+
+### 2026-10-25｜V18-C1 完成
+
+- 驗收短文落版：最快＝重跑 `layoutStore.primaryOutput`＋`flowEngine.topology.layout`（8 passed）
+- 含寫入／toTopology 步驟與失敗排查；下一＝D1 lab
 
 ### 2026-10-25｜負責人確認
 

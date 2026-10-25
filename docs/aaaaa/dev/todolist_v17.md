@@ -10,11 +10,8 @@
 **開發分支：** #73＝`dev/aaaaa1018`（[#74](https://github.com/dernoson/endfield-playground/pull/74)）；#58＝**`dev/aaaaa1018-58`**（[#76](https://github.com/dernoson/endfield-playground/pull/76)）
 **狀態總覽：** **`[x]` 已結案／已合 master**（[#74](https://github.com/dernoson/endfield-playground/pull/74)／[#76](https://github.com/dernoson/endfield-playground/pull/76) MERGED 2026-10-18；#73／#58 CLOSED；續見 [V18](./todolist_v18.md)）
 **會議介紹：** [INTRO_meeting_c5_primary_output](../../work_dispatch/aaaaa/1011/INTRO_meeting_c5_primary_output.md)
-<<<<<<< HEAD
 **文件收斂：** [V18-B1](./dev_v18/B1_v17_residue_close.md)
-=======
 **串接演示：** [USAGE_l1_contract_lab](./USAGE_l1_contract_lab.md) → `/dev/l1-contract-lab`（V14–V17 契約＋可測案例）
->>>>>>> origin/dev/aaaaa1019-l1-lab
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 >
