@@ -3,6 +3,8 @@ import { computed, useId } from 'vue';
 import planterPatternUrl from '@/assets/icon/planter-pattern.png';
 
 const planterClipId = useId();
+/** 種植機圓形徽章的 drop shadow filter id，對應設計稿 X0 Y4 Blur4 #000 25% */
+const planterShadowId = useId();
 const markerXs = [2.977, 215.08];
 const markerYs = [17.17, 61.97, 106.77, 151.57, 196.37];
 
@@ -20,20 +22,12 @@ const props = withDefaults(
     { dragging: false },
 );
 
-const outline = computed(
-    () =>
-        `M0.5 0.5H${props.width - 0.5}V${props.height - 0.5}H0.5V0.5Z`,
-);
+const outline = computed(() => `M0.5 0.5H${props.width - 0.5}V${props.height - 0.5}H0.5V0.5Z`);
 </script>
 
 <template>
     <g data-testid="device-shape" :data-dragging="props.dragging">
-        <path
-            :d="outline"
-            fill="white"
-            fill-opacity="0.2"
-            stroke="white"
-        />
+        <path :d="outline" fill="white" fill-opacity="0.2" stroke="white" />
         <g v-for="x in markerXs" :key="x">
             <path
                 v-for="y in markerYs"
@@ -54,44 +48,46 @@ const outline = computed(
                 <clipPath :id="planterClipId">
                     <circle cx="110.81" cy="102.5" r="27.5" />
                 </clipPath>
+                <!-- Figma 的 Blur 是模糊半徑，換算成 SVG stdDeviation 需除以 2 -->
+                <filter :id="planterShadowId" x="-50%" y="-50%" width="200%" height="200%">
+                    <feDropShadow
+                        dx="0"
+                        dy="4"
+                        stdDeviation="2"
+                        flood-color="#000000"
+                        flood-opacity="0.25"
+                    />
+                </filter>
             </defs>
-            <foreignObject x="83.31" y="75" width="55" height="55">
-                <div
-                    xmlns="http://www.w3.org/1999/xhtml"
-                    style="
-                        width: 55px;
-                        height: 55px;
-                        border-radius: 50%;
-                        background: rgba(43, 43, 43, 1);
-                    "
+            <g :filter="`url(#${planterShadowId})`">
+                <foreignObject x="83.31" y="75" width="55" height="55">
+                    <div
+                        xmlns="http://www.w3.org/1999/xhtml"
+                        style="
+                            width: 55px;
+                            height: 55px;
+                            border-radius: 50%;
+                            background: rgba(43, 43, 43, 1);
+                        "
+                    />
+                </foreignObject>
+                <image
+                    :href="planterPatternUrl"
+                    x="83.31"
+                    y="75"
+                    width="55"
+                    height="55"
+                    :clip-path="`url(#${planterClipId})`"
                 />
-            </foreignObject>
-            <image
-                :href="planterPatternUrl"
-                x="83.31"
-                y="75"
-                width="55"
-                height="55"
-                :clip-path="`url(#${planterClipId})`"
-            />
-            <circle
-                cx="110.81"
-                cy="102.5"
-                r="27.5"
-                fill="none"
-                stroke="rgba(0, 0, 0, 0.25)"
-                stroke-width="3"
-                transform="translate(0 4)"
-                style="filter: blur(4px)"
-            />
-            <circle
-                cx="110.81"
-                cy="102.5"
-                r="27.5"
-                fill="none"
-                stroke="rgba(238, 253, 28, 1)"
-                stroke-width="3"
-            />
+                <circle
+                    cx="110.81"
+                    cy="102.5"
+                    r="27.5"
+                    fill="none"
+                    stroke="rgba(238, 253, 28, 1)"
+                    stroke-width="3"
+                />
+            </g>
         </template>
         <foreignObject
             v-if="props.label === '種植機'"
