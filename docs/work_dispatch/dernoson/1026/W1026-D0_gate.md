@@ -32,7 +32,7 @@
 | #78 | draft＝local ref；埠／拖曳／平移分流；GridCanvas 無 Pinia；旋轉是否拆出 |
 | A0 | 僅 docs／dev 導覽；未改 C1 鎖檔 |
 | M3 | `shapes/DeviceShape` 根 `<g>`；無 Pinia；未改 GridCanvas |
-| H1 | WarningIcon／stories；未掛進 GridCanvas（掛載等 #78 後另派） |
+| H1（C5 表單） | 只呼叫 `setDevicePrimaryOutput`；未改 #78 鎖檔／`MachineCard` 內部；未接右側產耗 |
 
 ---
 

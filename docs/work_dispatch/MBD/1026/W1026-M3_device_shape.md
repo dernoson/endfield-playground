@@ -33,7 +33,7 @@
 
 - import store、讀 `src/data`
 - 改 `GridCanvas`／`LayoutView`
-- 改 `WarningIcon`（本週 harry）、頂欄 `Button/*`
+- 改頂欄 `Button/*`；本週主交付仍是 DeviceShape（WarningIcon 已是你的 L3 域，[#70](https://github.com/dernoson/endfield-playground/pull/70)／[#71](https://github.com/dernoson/endfield-playground/pull/71)，本週不必另開）
 - 與人共檔
 
 ---

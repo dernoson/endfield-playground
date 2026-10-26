@@ -2,8 +2,8 @@
 
 | meta | value |
 |------|-------|
-| version | **v3.17（2026-10-27；W1026 派工｜問卷週次）** |
-| 本週區間 | **2026-10-26 → 2026-11-01**（[WEEK_20261026](./WEEK_20261026.md) **v1.0**） |
+| version | **v3.18（2026-10-27；harry→C5 表單）** |
+| 本週區間 | **2026-10-26 → 2026-11-01**（[WEEK_20261026](./WEEK_20261026.md) **v1.1**） |
 | 上週區間 | 2026-10-18 → 2026-10-25（[WEEK_20261018](./WEEK_20261018.md)；問卷週 **1019**） |
 | 上游 | [ROADMAP_OUTLINE](../roadmap/ROADMAP_OUTLINE.md) **v1.21** |
 
@@ -27,7 +27,7 @@
 | [dernoson](./dernoson/1026/) | [D0](./dernoson/1026/W1026-D0_gate.md) | 守閘；優審 #78 |
 | [MBD](./MBD/1026/) | [M3](./MBD/1026/W1026-M3_device_shape.md) | DeviceShape 開 PR |
 | [paper](./paper/1026/) | [P2](./paper/1026/W1026-P2_pipeline_select.md) | 管線點選稿 |
-| [harry](./harry/1026/) | [H1](./harry/1026/W1026-H1_warning_icon_storybook.md) | WarningIcon Storybook 小件 |
+| [harry](./harry/1026/) | [H1](./harry/1026/W1026-H1_c5_source_form.md) | C5 正式頁源素材選擇（L2） |
 | [azure9572](./azure9572/1026/) | [Z0](./azure9572/1026/W1026-Z0_pause.md) | 考試暫停 |
 | [shirone](./shirone/1026/) | [S0](./shirone/1026/W1026-S0_pause.md) | 長假至 11 月中～底 |
 | [goodmorning](./goodmorning/1026/) | [G0](./goodmorning/1026/W1026-G0_pause.md) | 期中暫停 |
@@ -39,7 +39,7 @@
 1. 上週 **#79 合**；**#78 OPEN**（C1）
 2. **toby 合入 #78 前不派新功能塊**（10/25 會議）
 3. aaaaa：tutorial＋Lab／詞彙；`/dev/l1-contract-lab` 可查
-4. MBD DeviceShape、paper P2、harry WarningIcon stories
+4. MBD DeviceShape（含既有 WarningIcon 域）；paper P2；harry＝**C5 源素材表單**
 5. azure／shirone／goodmorning **暫停**
 6. **avery 退出協作，不再派工**（[avery/README](./avery/README.md)）
 7. 旋轉／Delete **仍退**
@@ -56,5 +56,5 @@
 
 | 檔 | 狀態 |
 |----|------|
-| WEEK_20261026 | **v1.0** |
+| WEEK_20261026 | **v1.1** |
 | ROADMAP_OUTLINE | **v1.21** |

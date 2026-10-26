@@ -5,7 +5,7 @@
 **規劃：** aaaaa
 **守門與合入：** dernoson（主編）
 **上游來源：** 主編提出並確認的 ROADMAP v0.2（決策層原始文件，未公開；其內容已完整拆進本檔與 `detail/`）
-**狀態總覽：** **M1／M2 功能門檻成立。** **W1018 結算（10/27）：** C5 讀取驗收 [#79](https://github.com/dernoson/endfield-playground/pull/79) 合入；**C1 L2 UI＝[#78](https://github.com/dernoson/endfield-playground/pull/78) OPEN**（埠連線／斷線警示等）。**OPEN＝1。** **未達／欠帳：** DeviceShape（MBD 進行中）、P2 點選稿。**W1026（10/26→11/01｜問卷週）：** **toby＝收斂 #78（合入前不派新塊）**；aaaaa＝tutorial＋dev Lab／API／詞彙（≤2h）；MBD＝DeviceShape PR；paper＝P2；harry＝WarningIcon Storybook；dernoson＝守閘。**avery 退出協作，不再派工。** 見 [WEEK_20261026](../work_dispatch/WEEK_20261026.md)。**M3 日 10/25 已驗；C1 合入跟 #78。**
+**狀態總覽：** **M1／M2 功能門檻成立。** **W1018 結算（10/27）：** C5 讀取驗收 [#79](https://github.com/dernoson/endfield-playground/pull/79) 合入；**C1 L2 UI＝[#78](https://github.com/dernoson/endfield-playground/pull/78) OPEN**（埠連線／斷線警示等）。**OPEN＝1。** **未達／欠帳：** DeviceShape（MBD 進行中）、P2 點選稿。**W1026（10/26→11/01｜問卷週）：** **toby＝收斂 #78（合入前不派新塊）**；aaaaa＝tutorial＋dev Lab／API／詞彙（≤2h）；MBD＝DeviceShape PR；paper＝P2；harry＝**C5 正式頁源素材表單（L2）**；dernoson＝守閘。**avery 退出協作，不再派工。** 見 [WEEK_20261026](../work_dispatch/WEEK_20261026.md)。**M3 日 10/25 已驗；C1 合入跟 #78。**
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 
@@ -260,7 +260,7 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 | **10/11** | ~~C1 切片~~ → **設備拖曳＋畫布樣式** | **結算（10/19）：** #67／#75／#48／#62／#64／#68／#70／#71／#72／#74／#76 合入；OPEN＝0。欠 DeviceShape／PowerPole／P2。見 [WEEK_20261011](../work_dispatch/WEEK_20261011.md) |
 | **10/18** | **C1 UI＋M3 彩排（必要）** | **已結算（10/27）：** C1＝**#78 OPEN**；C5 驗收 **#79 合**；DeviceShape／P2 未過。見 [WEEK_20261018](../work_dispatch/WEEK_20261018.md) |
 
-| **10/25** | **M3 結算＋#78 合入週** | **派工中（問卷週 1026）。** #78 優先；aaaaa tutorial／Lab；MBD DeviceShape；paper P2；harry WarningIcon。見 [WEEK_20261026](../work_dispatch/WEEK_20261026.md) |
+| **10/25** | **M3 結算＋#78 合入週** | **派工中（問卷週 1026）。** #78 優先；aaaaa tutorial／Lab；MBD DeviceShape；paper P2；harry C5 源素材表單。見 [WEEK_20261026](../work_dispatch/WEEK_20261026.md) |
 | 11/01 | D1 | 右側產耗表接 `itemSummary`，空產線有空狀態。**空狀態切片已由 W0823-M1 提前交** |
 | 11/08 | D2 | 兩台重疊 → 右側一條訊息。**E001 純函式＋dev 頁已就位**；缺右側 Tips |
 | 11/15 | D3 | 缺輸入或輸出、材料組合不符，至少一類上右側。**純函式段已於 10/04 週提前（W1004-Z1）**，本週只剩「上右側」 |
@@ -387,7 +387,7 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 
 | 版 | 日期 | 說明 |
 |----|------|------|
-| **v1.21** | **2026-10-27** | **W1018 結算＋W1026 派工：** #79 合；**#78 OPEN（C1 L2 UI）**；DeviceShape／P2 部分未過。本週＝**toby 收斂 #78**＋aaaaa tutorial／Lab＋MBD DeviceShape＋paper P2＋harry WarningIcon。**avery 退出協作，不再派工。** 見 [WEEK_20261026](../work_dispatch/WEEK_20261026.md) |
+| **v1.21** | **2026-10-27** | **W1018 結算＋W1026 派工：** #79 合；**#78 OPEN（C1 L2 UI）**；DeviceShape／P2 部分未過。本週＝**toby 收斂 #78**＋aaaaa tutorial／Lab＋MBD DeviceShape＋paper P2＋harry **C5 源素材表單**。**avery 退出協作，不再派工。** 見 [WEEK_20261026](../work_dispatch/WEEK_20261026.md) |
 | **v1.20** | **2026-10-19** | **W1011 結算＋W1018／M3 派工：** #67／#75／#48／#62／#64／#68／#70–72／#74／#76 合入；OPEN＝0。欠 DeviceShape／PowerPole／P2。本週＝**toby C1**＋aaaaa ≤2h 引擎讀驗收／lab＋MBD DeviceShape＋paper P2；三人 0h＋avery 空工單暫停。C5 引擎讀改記已合（#74）。見 [WEEK_20261018](../work_dispatch/WEEK_20261018.md) |
 | **v1.19** | **2026-10-13** | **[PR #66](https://github.com/dernoson/endfield-playground/pull/66) 主編裁決回寫：** A／B 組照暫定。A-1 補拖曳拿起＝淺藍（白紙稿）；A-3 補多選 store 不在 POC；B-1 **C1＝toby**；B-2 相鄰直線備案；B-3 Ctrl+Z 排 11 月。見 [WEEK_20261011](../work_dispatch/WEEK_20261011.md) v1.2 |
 | **v1.18** | **2026-10-12** | **依 10/11 會議重派 W1011（規則 26）：** toby＝設備拖曳（C4 拖曳 UI 先行；歷史由 `moveDevice` 自帶，Undo 入口未接）；harry＝刪舊 `ProjectSidebar`、接 `MachineCard`；G／shirone／avery＝設備／管線（C3 視覺）／供電樁樣式子元件；MBD＝未連通警示 icon；paper 警示已完成、續做點選；azure＝#64 修正＋**W001 決議（只比對目前模式配方）**。**C1 owner 轉待裁**，10/18 週加重。見 [WEEK_20261011](../work_dispatch/WEEK_20261011.md) v1.1 |
