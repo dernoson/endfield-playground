@@ -30,9 +30,9 @@ const outline = computed(
     <g data-testid="device-shape" :data-dragging="props.dragging">
         <path
             :d="outline"
-            :fill="props.dragging ? '#7dd3fc' : 'white'"
-            fill-opacity="0.2"
-            stroke="white"
+            :fill="props.dragging ? 'rgba(28, 174, 253, 0.3)' : 'white'"
+            :fill-opacity="props.dragging ? 1 : 0.2"
+            :stroke="props.dragging ? 'rgba(28, 174, 253, 1)' : 'white'"
         />
         <g v-for="x in markerXs" :key="x">
             <path
@@ -49,6 +49,20 @@ const outline = computed(
                     <circle cx="110.81" cy="102.5" r="27.5" />
                 </clipPath>
             </defs>
+            <foreignObject x="83.31" y="75" width="55" height="55">
+                <div
+                    xmlns="http://www.w3.org/1999/xhtml"
+                    style="
+                        width: 55px;
+                        height: 55px;
+                        border-radius: 50%;
+                        background: rgba(43, 43, 43, 1);
+                        box-shadow:
+                            0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset,
+                            0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+                    "
+                />
+            </foreignObject>
             <image
                 :href="planterPatternUrl"
                 x="83.31"
