@@ -5,11 +5,11 @@
 | 對應大綱 | [ROADMAP_OUTLINE.md](../ROADMAP_OUTLINE.md) §5 |
 | 里程碑 | M3（2026-10-25）；首次可演示 10/4 |
 | 擋門檻 | **是**（主編步驟 3 的入口） |
-| 建議主責／備援 | **L2＝toby**（[W1018-T1](../../work_dispatch/toby/1018/W1018-T1_c1_draft_connect.md)）／aaaaa 命中判定（**#65 已合**） |
+| 建議主責／備援 | **L2＝toby**（[#78](https://github.com/dernoson/endfield-playground/pull/78) OPEN；[W1026-T0](../../work_dispatch/toby/1026/W1026-T0_pr78_update.md)）／aaaaa 命中判定（**#65 已合**） |
 | 性質 | 接線（L2） |
 | 依賴 | [A2](./A2_grid_and_port_alignment.md)、[B2](./B2_placement_chain.md)、[B3](./B3_rotation_90.md) |
-| 狀態 | `[~]` L1 命中 #65、拖曳 #67 已合；**本週＝C1 draft UI（toby）** |
-| 最後更新 | **2026-10-19**（W1018 派工；T2 已合） |
+| 狀態 | `[~]` L1 命中 #65、拖曳 #67 已合；**L2 C1 UI＝[#78](https://github.com/dernoson/endfield-playground/pull/78) OPEN** |
+| 最後更新 | **2026-10-27**（W1018 結算；W1026 收斂 #78） |
 
 ---
 
@@ -137,6 +137,9 @@ hitTestPortAt(point, devices, getMachine?) →
 **未交頂替：** 無。本項是 10/25 門檻的必要條件；owner＝toby。若 10/18 週仍趕不上，砍到「只支援水平／垂直相鄰兩台的直線連線」（PR #66 B-2）。
 
 ## 11. 開發日誌
+
+### 2026-10-27
+- L2 UI 在 **PR #78 OPEN**（埠連線／斷線警示等）；本週工單 [W1026-T0](../../work_dispatch/toby/1026/W1026-T0_pr78_update.md)
 
 ### 2026-10-12
 - L2 owner＝**toby**（PR #66；本週先做 [W1011-T2](../../work_dispatch/toby/1011/W1011-T2_device_drag.md) 拖曳，10/18 接 C1）。`hitTestPortAt` **#65 已合**；檔案計畫仍掛 `LayoutView`／`GridCanvas`
