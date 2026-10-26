@@ -30,9 +30,9 @@ const outline = computed(
     <g data-testid="device-shape" :data-dragging="props.dragging">
         <path
             :d="outline"
-            :fill="props.dragging ? 'rgba(28, 174, 253, 0.3)' : 'white'"
-            :fill-opacity="props.dragging ? 1 : 0.2"
-            :stroke="props.dragging ? 'rgba(28, 174, 253, 1)' : 'white'"
+            fill="white"
+            fill-opacity="0.2"
+            stroke="white"
         />
         <g v-for="x in markerXs" :key="x">
             <path
@@ -43,6 +43,12 @@ const outline = computed(
                 fill="white"
             />
         </g>
+        <path
+            v-if="props.dragging"
+            :d="outline"
+            fill="rgba(28, 174, 253, 0.3)"
+            stroke="rgba(28, 174, 253, 1)"
+        />
         <template v-if="props.label === '種植機'">
             <defs>
                 <clipPath :id="planterClipId">
