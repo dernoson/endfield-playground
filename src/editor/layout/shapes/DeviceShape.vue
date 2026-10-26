@@ -63,9 +63,6 @@ const outline = computed(
                         height: 55px;
                         border-radius: 50%;
                         background: rgba(43, 43, 43, 1);
-                        box-shadow:
-                            0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset,
-                            0px 4px 4px 0px rgba(0, 0, 0, 0.25);
                     "
                 />
             </foreignObject>
@@ -76,6 +73,16 @@ const outline = computed(
                 width="55"
                 height="55"
                 :clip-path="`url(#${planterClipId})`"
+            />
+            <circle
+                cx="110.81"
+                cy="102.5"
+                r="27.5"
+                fill="none"
+                stroke="rgba(0, 0, 0, 0.5)"
+                stroke-width="3"
+                transform="translate(0 4)"
+                style="filter: blur(4px)"
             />
             <circle
                 cx="110.81"
