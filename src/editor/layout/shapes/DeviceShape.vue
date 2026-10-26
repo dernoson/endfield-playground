@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, useId } from 'vue';
 import planterPatternUrl from '@/assets/icon/planter-pattern.png';
+
+const planterClipId = useId();
+const markerXs = [2.977, 215.08];
+const markerYs = [17.17, 61.97, 106.77, 151.57, 196.37];
 
 const props = withDefaults(
     defineProps<{
@@ -30,19 +34,33 @@ const outline = computed(
             fill-opacity="0.2"
             stroke="white"
         />
+        <g v-for="x in markerXs" :key="x">
+            <path
+                v-for="y in markerYs"
+                :key="y"
+                :transform="`translate(${x} ${y})`"
+                d="M4.60201 5.84476L0.00194907 1.2447L1.246 3.8147e-06L7.09141 5.84476L1.2447 11.6934L0 10.4481L4.60201 5.84476Z"
+                fill="white"
+            />
+        </g>
         <template v-if="props.label === '種植機'">
+            <defs>
+                <clipPath :id="planterClipId">
+                    <circle cx="110.81" cy="102.5" r="27.5" />
+                </clipPath>
+            </defs>
             <image
                 :href="planterPatternUrl"
-                x="77.23"
-                y="74.75"
+                x="83.31"
+                y="75"
                 width="55"
                 height="55"
+                :clip-path="`url(#${planterClipId})`"
             />
-            <rect
-                x="77.23"
-                y="74.75"
-                width="55"
-                height="55"
+            <circle
+                cx="110.81"
+                cy="102.5"
+                r="27.5"
                 fill="none"
                 stroke="rgba(238, 253, 28, 1)"
                 stroke-width="3"
@@ -50,15 +68,15 @@ const outline = computed(
         </template>
         <foreignObject
             v-if="props.label === '種植機'"
-            x="77.23"
-            y="132.23"
-            width="71.16"
+            x="83.31"
+            y="132.47"
+            width="55"
             height="18.25"
         >
             <div
                 xmlns="http://www.w3.org/1999/xhtml"
                 style="
-                    width: 71.16px;
+                    width: 55px;
                     height: 18.25px;
                     color: rgba(207, 207, 207, 1);
                     font-family: 'HarmonyOS Sans TC', sans-serif;
