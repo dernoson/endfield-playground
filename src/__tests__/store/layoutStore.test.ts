@@ -3,7 +3,7 @@
  *
  * 釘 W0907-A0 §3 四點：
  *   1. connections 為 getter（隨 devices／pipelines 變）
- *   2. 放置重疊回傳 ok:false，不 throw
+ *   2. 放置重疊仍寫入 ok:true（E001 不擋）；僅 invalid 擋寫入，不 throw
  *   3. 讀取面 readonly（外部 mutate 不影響內部）
  *   4. loadSnapshot(toLayoutSnapshot(scenario)) → toSnapshot 等值
  *
@@ -129,33 +129,31 @@ describe('useLayoutStore — PlacementResult（不 throw）', () => {
         expect(store.devices[0].id).toBe('a');
     });
 
-    it('addDevice 重疊回傳 ok:false reason:overlap＋conflicts，不寫入', () => {
+    it('addDevice 重疊仍寫入 ok:true；layoutIssues 標出 conflicts（POC／E001 不擋）', () => {
         const store = useLayoutStore();
         expect(store.addDevice(makeSplitter('a', 0, 0)).ok).toBe(true);
 
         const result = store.addDevice(makeSplitter('b', 0, 0));
 
-        expect(result.ok).toBe(false);
-        if (result.ok) return;
-        expect(result.reason).toBe('overlap');
-        if (result.reason === 'overlap') {
-            expect(result.conflicts.some(([x, y]) => x === 'a' || y === 'a')).toBe(true);
-            expect(result.conflicts.some(([x, y]) => x === 'b' || y === 'b')).toBe(true);
-        }
-        expect(store.devices).toHaveLength(1);
-        expect(store.devices[0].id).toBe('a');
+        expect(result).toEqual({ ok: true });
+        expect(store.devices).toHaveLength(2);
+        expect(
+            store.layoutIssues.conflicts.some(
+                ([x, y]) => (x === 'a' || y === 'a') && (x === 'b' || y === 'b'),
+            ),
+        ).toBe(true);
     });
 
-    it('moveDevice 重疊回傳 overlap，位置不變', () => {
+    it('moveDevice 重疊仍寫入新座標；layoutIssues 有 conflicts', () => {
         const store = useLayoutStore();
         store.addDevice(makeSplitter('a', 0, 0));
         store.addDevice(makeSplitter('b', 3, 0));
 
         const result = store.moveDevice('b', { x: 0, y: 0, z: 0 });
 
-        expect(result.ok).toBe(false);
-        if (!result.ok) expect(result.reason).toBe('overlap');
-        expect(store.devices.find((d) => d.id === 'b')?.position).toEqual({ x: 3, y: 0, z: 0 });
+        expect(result).toEqual({ ok: true });
+        expect(store.devices.find((d) => d.id === 'b')?.position).toEqual({ x: 0, y: 0, z: 0 });
+        expect(store.layoutIssues.conflicts.length).toBeGreaterThan(0);
     });
 
     it('moveDevice 成功更新座標', () => {

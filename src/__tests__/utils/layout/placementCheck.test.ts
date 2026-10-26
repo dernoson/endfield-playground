@@ -121,7 +121,7 @@ describe('canPlaceDevice — 對 Pinia 唯讀面／與 addDevice 同判（T1）'
         expect(history.undoDepth).toBe(0);
     });
 
-    it('重疊時以代稱 id 回報設備，且與 addDevice 同判', () => {
+    it('重疊時預檢以代稱 id 回報；addDevice 仍寫入（E001 不擋）', () => {
         const layout = useLayoutStore();
         const history = useHistoryStore();
         expect(layout.addDevice(makeSplitter('existing', 0))).toEqual({ ok: true });
@@ -137,11 +137,10 @@ describe('canPlaceDevice — 對 Pinia 唯讀面／與 addDevice 同判（T1）'
         expect(history.undoDepth).toBe(beforeDepth);
 
         const added = layout.addDevice(makeSplitter('actual', 0));
-        expect(added.ok).toBe(false);
-        if (added.ok || added.reason !== 'overlap') return;
-        expect(added.conflicts).toContainEqual(['existing', 'actual']);
-        expect(layout.devices).toHaveLength(1);
-        expect(history.undoDepth).toBe(beforeDepth);
+        expect(added).toEqual({ ok: true });
+        expect(layout.devices).toHaveLength(2);
+        expect(history.undoDepth).toBe(beforeDepth + 1);
+        expect(layout.layoutIssues.conflicts).toContainEqual(['existing', 'actual']);
     });
 
     it('未知機型與非有限座標回 invalid；不把既有問題誤歸於 draft', () => {
@@ -168,7 +167,7 @@ describe('canPlaceDevice — 對 Pinia 唯讀面／與 addDevice 同判（T1）'
         ).toEqual({ ok: true });
     });
 
-    it('設備與既有管線重疊時拒絕，且預檢與真落子同判', () => {
+    it('設備與既有管線重疊：預檢回 overlap；addDevice 仍寫入', () => {
         const layout = useLayoutStore();
         layout.loadSnapshot(toLayoutSnapshot(getMockLayoutScenario('connected')));
 
@@ -186,9 +185,14 @@ describe('canPlaceDevice — 對 Pinia 唯讀面／與 addDevice 同判（T1）'
         expect(result.conflicts.some(([a, b]) => a === 'pipe-ok' || b === 'pipe-ok')).toBe(true);
         expect(result.conflicts.some(([a, b]) => a === DRAFT_ID || b === DRAFT_ID)).toBe(true);
 
+        const beforeCount = layout.devices.length;
         const added = layout.addDevice(makeSplitter('actual', 2));
-        expect(added.ok).toBe(false);
-        if (added.ok) return;
-        expect(added.reason).toBe('overlap');
+        expect(added).toEqual({ ok: true });
+        expect(layout.devices).toHaveLength(beforeCount + 1);
+        expect(
+            layout.layoutIssues.conflicts.some(
+                ([a, b]) => a === 'actual' || b === 'actual' || a === 'pipe-ok' || b === 'pipe-ok',
+            ),
+        ).toBe(true);
     });
 });

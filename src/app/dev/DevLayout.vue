@@ -119,6 +119,12 @@ const devPages = [
         icon: '📏',
         description: 'W0921-H1：逐段方向／轉角／違規標紅演示',
     },
+    {
+        path: '/dev/l1-contract-lab',
+        name: 'L1 契約實驗室',
+        icon: '📘',
+        description: 'V14–V17：定義表＋真實 API 驗證（串接必看）',
+    },
 ];
 </script>
 

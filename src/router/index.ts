@@ -64,6 +64,11 @@ const router = createRouter({
                     name: 'dev-pipeline-polyline',
                     component: () => import('@/app/dev/PipelinePolylineDemo.vue'),
                 },
+                {
+                    path: 'l1-contract-lab',
+                    name: 'dev-l1-contract-lab',
+                    component: () => import('@/app/dev/L1ContractLab.vue'),
+                },
             ],
         },
         // 獨立於 DevLayout 之外：不掛在左側 dev 工具導覽列，只能直接切換網址到達

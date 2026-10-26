@@ -8,10 +8,10 @@
 | 建議主責／備援 | aaaaa（L1 action）＋L2（表單接線）／aaaaa 全包 |
 | 性質 | 接線 |
 | 依賴 | [B4](./B4_selection_inspector.md) |
-| 狀態 | `[~]` 寫入 **#72 合入**；引擎讀／機型 id **#74 合入**；正式頁源素材表單仍未做 |
-| 最後更新 | **2026-10-19（W1011 結算）** |
+| 狀態 | `[~]` 寫入 **#72 合入**；引擎讀／機型 id **#74 合入**；正式頁源素材表單＝**W1026-H1（harry）** |
+| 最後更新 | **2026-10-27（W1026 改派 harry 做表單）** |
 
-> **W1011 已交：** 寫入 action＋測試＝[#72](https://github.com/dernoson/endfield-playground/pull/72)；引擎讀最小切片（經 `toTopology`）＋`resolveMachineDef`＝[#74](https://github.com/dernoson/endfield-playground/pull/74)。**W1018：** aaaaa ≤2h＝驗收證明／lab 合入；**不做**正式頁表單。
+> **W1011 已交：** 寫入 action＋測試＝[#72](https://github.com/dernoson/endfield-playground/pull/72)；引擎讀最小切片（經 `toTopology`）＋`resolveMachineDef`＝[#74](https://github.com/dernoson/endfield-playground/pull/74)。**W1018：** aaaaa ≤2h＝驗收證明／lab 合入；**不做**正式頁表單。**W1026：** 正式頁表單派 [W1026-H1](../../work_dispatch/harry/1026/W1026-H1_c5_source_form.md)（harry；加分／獨立 L2）。
 
 ---
 
@@ -158,6 +158,9 @@ function setDevicePrimaryOutput(
 **未交頂替：** 無。這是 11 月產耗數字的唯一起點，**不可丟棄**。若 L2 表單未完成，最低限度由 aaaaa 在 `/dev` 頁提供設定入口，讓 [D5](./D5_acceptance_rehearsal.md) 的驗收劇本仍能跑完，但這會讓「不開 `/dev` 也能做」的驗收前提失守，屬嚴重降級。
 
 ## 11. 開發日誌
+
+### 2026-10-27
+- 正式頁表單改派 [W1026-H1](../../work_dispatch/harry/1026/W1026-H1_c5_source_form.md)（harry；獨立 L2；不碰 #78）
 
 ### 2026-10-06
 - **主編裁 R-1＝B**（[PR #59](https://github.com/dernoson/endfield-playground/pull/59)）：寫入 `layoutStore`／`PlacedDevice.primaryOutput`；引擎讀取端隨 10/18 提前一部分 D1 鏈

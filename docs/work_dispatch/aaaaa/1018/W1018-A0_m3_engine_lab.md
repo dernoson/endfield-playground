@@ -7,7 +7,11 @@
 | 擋門檻 | **是（C5 讀取鏈可演示）** |
 | 上游 | [WEEK_20261018](../../WEEK_20261018.md)、[C5](../../../roadmap/detail/C5_source_primary_output.md) |
 | 畫面｜交哪個檔｜不要碰｜卡住找誰 | 派工在 `docs/work_dispatch/`；驗收／lab 在 docs 或 `/dev`｜`GridCanvas`／`LayoutView`（toby）、`MainLayout`｜toby（C1）、dernoson（合入） |
-| 時數上限 | **≤2h**（問卷：公司專案壓縮） |
+| 時數上限 | **≤2h**（問卷：公司專案壓縮；**A＋B 皆交**——裁決見 §0 註） |
+| 會議報告 | [INTRO_meeting_m3_engine_lab](./INTRO_meeting_m3_engine_lab.md) |
+| 驗收說明 | [ACCEPTANCE_V2_c5_chain](./ACCEPTANCE_V2_c5_chain.md) |
+| Lab 說明 | [LAB_l1_contract_guide](./LAB_l1_contract_guide.md) |
+| 最後更新 | 2026-10-25 |
 
 ---
 
@@ -18,21 +22,23 @@ C5 **寫入（#72）**與**引擎讀／機型 id（#74）**已在 master。本�
 | # | 件 | 為什麼 |
 |---|----|--------|
 | ① | 派工已發（本檔＋WEEK＋各人工單） | M3 週發工 |
-| ② | **擇一先交（≤2h）：**（A）M3 彩排用「源素材→拓樸／引擎可測」步驟清單；或（B）`dev/aaaaa1019-l1-lab` 開 PR 合入 | 門檻日要證明讀取鏈；可視化訴求 |
+| ② | **A＋B 皆交：**（A）M3「源素材→拓樸／引擎可測」驗收說明；（B）L1 contract lab 合入／可開頁 | 門檻日證明讀取鏈；可視化與串接說明 |
+
+> **A＋B 裁決出處（2026-10-25）：** 工單原文為「擇一先交（≤2h）」。開版時負責人（aaaaa）於開工對話確認 **A-1＝A＋B 兩者都做**（可超出問卷時數）；並寫入決策層 `dispatch_private/1018/PENDING_DECISIONS_20261025.md` §1 A-1、`todolist_v18`／`AGENT_WEEK_1018` 日誌。**非正式會議改派；屬本線負責人開工裁示。**
 
 **不做：** 正式頁源素材下拉、整包右側產耗、再寫長篇派工當第二主交付。
 
 ---
 
-## 1. ② 驗收／lab（必做其一）
+## 1. ② 驗收／lab
 
-**A. 驗收步驟（建議優先）：** 一份短文（可放 `docs/aaaaa/dev/` 或工單 PR 描述）寫清：
+**A. 驗收步驟：** 見公開 [ACCEPTANCE_V2_c5_chain](./ACCEPTANCE_V2_c5_chain.md)（執行細項 [V18-C1](../../../aaaaa/dev/dev_v18/C1_m3_acceptance_steps.md)）。須寫清：
 
 1. 如何放一台源設備並 `setDevicePrimaryOutput`
-2. 如何經 `toTopology`／既有 dev 頁看到產出速率（對齊 #74）
+2. 如何經 `toTopology`／測試看到產出速率（對齊 #74）
 3. 失敗時看哪裡
 
-**B. Lab 合入：** 將 L1 contract lab 開 PR 進 master（路由已在分支則直接 PR）。
+**B. Lab：** 碼在分支 `/dev/l1-contract-lab`；用途與各函式串接見 [LAB_l1_contract_guide](./LAB_l1_contract_guide.md)。開 PR → master **另裁**。
 
 ---
 
@@ -47,5 +53,8 @@ C5 **寫入（#72）**與**引擎讀／機型 id（#74）**已在 master。本�
 ## 3. DoD
 
 - [x] `WEEK_20261018` 與各人工單在分支
-- [ ] ②A 或 ②B 擇一可驗收
-- [ ] 未改 C1 鎖檔
+- [x] 會議報告／驗收說明／lab 指南在 `aaaaa/1018/`
+- [x] ②A 驗收說明可跟做（ACCEPTANCE＋測試指令）
+- [x] ②B lab 在分支可開（隨本週 PR 合入）
+- [x] 會議／LAB 補埠幾何與 L2 `PortRef` 串接說明
+- [x] 未改 C1 鎖檔

@@ -1,7 +1,7 @@
 # V17-G1 — 驗收、PR、交接
 
 **對應工項：** V17-G1
-**狀態：** `[~]` 品質閘全綠；[#74](https://github.com/dernoson/endfield-playground/pull/74) 交審中
+**狀態：** `[x]` [#74](https://github.com/dernoson/endfield-playground/pull/74) MERGED 2026-10-18；#73 CLOSED
 **日期：** 2026-10-18
 **依賴：** [D1](./D1_validation_id_lookup.md)、[E1](./E1_flow_engine_id_lookup.md)、[F1](./F1_engine_topology_slice.md)
 **正式依據：** [#73](https://github.com/dernoson/endfield-playground/issues/73) 驗收
@@ -63,22 +63,26 @@
 
 ## 4. 合入後回寫
 
-- [ ] todolist_v17 結案
-- [ ] AGENT_WEEK_1018
-- [ ] 關閉 #73
-- [ ] ROADMAP C5／相關句（若適用）
+- [x] todolist_v17 結案（2026-10-25｜V18-B1）
+- [x] AGENT_WEEK_1018（改掛 V18）
+- [x] 關閉 #73
+- [x] ROADMAP C5／相關句（W1018／v1.20 已記 #74）
 
 ---
 
 ## 5. DoD
 
 - [x] §1 通過（#5 待 reviewer 手動）
-- [x] PR 已開（[#74](https://github.com/dernoson/endfield-playground/pull/74)）
-- [ ] #73 驗收項可勾（合入後）
+- [x] PR 已開並合入（[#74](https://github.com/dernoson/endfield-playground/pull/74)）
+- [x] #73 CLOSED
 
 ---
 
 ## 6. 開發日誌
+
+### 2026-10-25｜結案回寫
+
+- #74 MERGED 查證；#73 CLOSED；續 V18
 
 ### 2026-10-18｜V17 擴寫
 

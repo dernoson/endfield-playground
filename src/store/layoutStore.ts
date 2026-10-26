@@ -1,5 +1,5 @@
 /**
- * 佈局領域 store（V12／W0907-A0；V16 補 setDevicePrimaryOutput）
+ * 佈局領域 store（V12／W0907-A0；V16 補 setDevicePrimaryOutput；V18 補 rotateDevice）
  *
  * 平行於 `editorStore` 落地：持有 `devices`／`pipelines`，`connections` 為 getter  \
  *（每次呼叫 {@link resolveConnections}）。放置合法性回傳 {@link PlacementResult}，不 throw。
@@ -8,6 +8,9 @@
  *
  * 佔格檢查與落子前預檢共用 {@link collectLayoutIssues}／{@link assessInvolving}
  *（`src/utils/layout/placementCheck.ts`，V14／W0921-A0）。
+ *
+ * POC：重疊（E001）不阻擋 `addDevice`／`moveDevice`／`rotateDevice` 寫入；  \
+ * 預檢仍可由 `canPlaceDevice`／`canMoveDevice` 回 `overlap` 供紅框。
  *
  * @example
  * const layout = useLayoutStore()
@@ -18,6 +21,7 @@
 import { computed, readonly, ref } from 'vue';
 import { defineStore } from 'pinia';
 import type { Position } from '@/types/euclideanSpace';
+import type { Rotation } from '@/types/editor';
 import type {
     LayoutIssues,
     LayoutSnapshot,
@@ -37,6 +41,18 @@ import {
 import { canConnect } from '@/utils/layout/connectRules';
 import { useHistoryStore } from '@/store/historyStore';
 
+/**
+ * 寫入類 action：僅 `invalid` 擋下；`overlap` 放行（E001 改由 layoutIssues／驗證標示）
+ *
+ * @param result {@link assessInvolving} 結果
+ * @returns 若應擋寫入則回失敗結果，否則 `null` 表示可繼續寫入
+ */
+function blockWriteIfInvalid(result: PlacementResult): PlacementResult | null {
+    if (!result.ok && result.reason === 'invalid') {
+        return result;
+    }
+    return null;
+}
 /**
  * 深拷貝快照，避免外部持有同一參考後改寫 store 內部
  */
@@ -132,7 +148,8 @@ export const useLayoutStore = defineStore('layout', () => {
     }
 
     /**
-     * 新增設備；僅當「本設備」引入 overlap／invalid 時失敗並帶 conflicts
+     * 新增設備；僅 `invalid`（缺定義／重複 id／非法座標等）失敗。  \
+     * 重疊仍寫入並進歷史；E001 由 {@link layoutIssues}／驗證標出（POC）。
      *
      * @param device 待放置設備
      */
@@ -150,9 +167,11 @@ export const useLayoutStore = defineStore('layout', () => {
         const added = cloneDevice(device);
         const before = devices.value.map(cloneDevice);
         const after = [...before, added];
-        const result = assessInvolving(after, pipelines.value, new Set([added.id]));
-        if (!result.ok) {
-            return result;
+        const blocked = blockWriteIfInvalid(
+            assessInvolving(after, pipelines.value, new Set([added.id])),
+        );
+        if (blocked) {
+            return blocked;
         }
 
         const historyStore = useHistoryStore();
@@ -199,7 +218,7 @@ export const useLayoutStore = defineStore('layout', () => {
     }
 
     /**
-     * 移動設備；僅當「本設備」引入 overlap 時失敗
+     * 移動設備；僅 `invalid` 失敗。重疊仍寫入；E001 由 {@link layoutIssues} 標出（POC）。
      *
      * @param id 設備 uid
      * @param position 新佔格左上角
@@ -221,9 +240,9 @@ export const useLayoutStore = defineStore('layout', () => {
 
         const before = devices.value.map(cloneDevice);
         const after = before.map((d, i) => (i === index ? { ...d, position: { ...position } } : d));
-        const result = assessInvolving(after, pipelines.value, new Set([id]));
-        if (!result.ok) {
-            return result;
+        const blocked = blockWriteIfInvalid(assessInvolving(after, pipelines.value, new Set([id])));
+        if (blocked) {
+            return blocked;
         }
 
         const historyStore = useHistoryStore();
@@ -231,6 +250,54 @@ export const useLayoutStore = defineStore('layout', () => {
             id: crypto.randomUUID(),
             type: HistoryRecordType.MachineMovement,
             label: `佈局移動 ${id}`,
+            execute() {
+                devices.value = after.map(cloneDevice);
+            },
+            undo() {
+                devices.value = before.map(cloneDevice);
+            },
+        });
+        return { ok: true };
+    }
+
+    /**
+     * 旋轉已放置設備；原點與既有管線座標不變；進歷史（`MachineRotation`）。
+     *
+     * 同角度＝no-op 且不進歷史。僅 `invalid`（未知／重複 uid、非法角度）失敗；  \
+     * 重疊仍寫入，E001 由 {@link layoutIssues} 標出（POC）。
+     *
+     * @param id 設備 uid
+     * @param rotation 目標旋轉步數（0–3）
+     * @example
+     * const result = layout.rotateDevice('device-id', 1)
+     */
+    function rotateDevice(id: string, rotation: Rotation): PlacementResult {
+        if (
+            ![0, 1, 2, 3].includes(rotation) ||
+            devices.value.filter((device) => device.id === id).length !== 1
+        ) {
+            return { ok: false, reason: 'invalid', invalidIds: [id] };
+        }
+        const target = devices.value.find((device) => device.id === id);
+        if (!target) {
+            return { ok: false, reason: 'invalid', invalidIds: [id] };
+        }
+        if (target.rotation === rotation) {
+            return { ok: true };
+        }
+
+        const before = devices.value.map(cloneDevice);
+        const after = before.map((device) => (device.id === id ? { ...device, rotation } : device));
+        const blocked = blockWriteIfInvalid(assessInvolving(after, pipelines.value, new Set([id])));
+        if (blocked) {
+            return blocked;
+        }
+
+        const historyStore = useHistoryStore();
+        historyStore.execute({
+            id: crypto.randomUUID(),
+            type: HistoryRecordType.MachineRotation,
+            label: `佈局旋轉 ${id}`,
             execute() {
                 devices.value = after.map(cloneDevice);
             },
@@ -398,7 +465,7 @@ export const useLayoutStore = defineStore('layout', () => {
          */
         toSnapshot,
         /**
-         * 新增設備；僅當「本設備」引入 overlap／invalid 時失敗並帶 conflicts
+         * 新增設備；僅 `invalid` 失敗；重疊仍寫入（POC／E001）
          *
          * @param device 待放置設備
          */
@@ -410,12 +477,21 @@ export const useLayoutStore = defineStore('layout', () => {
          */
         removeDevice,
         /**
-         * 移動設備；僅當「本設備」引入 overlap 時失敗
+         * 移動設備；僅 `invalid` 失敗；重疊仍寫入（POC／E001）
          *
          * @param id 設備 uid
          * @param position 新佔格左上角
          */
         moveDevice,
+        /**
+         * 旋轉已放置設備；原點與管線座標不變；進歷史；重疊仍寫入（POC／E001）
+         *
+         * @param id 設備 uid
+         * @param rotation 目標旋轉步數（0–3）
+         * @example
+         * const result = layout.rotateDevice('device-id', 1)
+         */
+        rotateDevice,
         /**
          * 新增管線；waypoints 須 ≥2 點、座標有限且逐段軸對齊；  \
          * 僅當「本管線」引入 overlap 時失敗
