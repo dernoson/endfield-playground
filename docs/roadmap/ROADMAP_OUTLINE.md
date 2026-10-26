@@ -1,11 +1,11 @@
 # Roadmap 大綱｜2026-08-23 → 2026-11-29
 
-**版本：** v1.20（2026-10-19；W1011 結算＋W1018／M3 週派工）
+**版本：** v1.21（2026-10-27；W1018 結算＋W1026 派工）
 **建立日期：** 2026-08-22
 **規劃：** aaaaa
 **守門與合入：** dernoson（主編）
 **上游來源：** 主編提出並確認的 ROADMAP v0.2（決策層原始文件，未公開；其內容已完整拆進本檔與 `detail/`）
-**狀態總覽：** **M1／M2 功能門檻成立。** **W1011 結算（10/19）：** 拖曳 [#67](https://github.com/dernoson/endfield-playground/pull/67)、左面板 [#75](https://github.com/dernoson/endfield-playground/pull/75)、積壓 [#48](https://github.com/dernoson/endfield-playground/pull/48)／[#62](https://github.com/dernoson/endfield-playground/pull/62)／[#64](https://github.com/dernoson/endfield-playground/pull/64) 合入、`PipelineShape` [#68](https://github.com/dernoson/endfield-playground/pull/68)、WarningIcon [#70](https://github.com/dernoson/endfield-playground/pull/70)／[#71](https://github.com/dernoson/endfield-playground/pull/71)、C5 寫入 [#72](https://github.com/dernoson/endfield-playground/pull/72)、引擎讀／機型 id [#74](https://github.com/dernoson/endfield-playground/pull/74)、history 隔離 [#76](https://github.com/dernoson/endfield-playground/pull/76)。**OPEN＝0。** **未達／欠帳：** DeviceShape、PowerPoleShape、P2 點選稿、G2 畫布設備樣（#48＝Toolbar 非 DeviceShape）。**W1018（10/18→10/25＝M3 週）：** **toby＝C1 UI**；aaaaa＝引擎讀驗收＋lab（≤2h）；MBD＝DeviceShape；paper＝P2 收尾；三人 0h＋avery 空工單暫停。見 [WEEK_20261018](../work_dispatch/WEEK_20261018.md)。**M3＝10/25 不動。**
+**狀態總覽：** **M1／M2 功能門檻成立。** **W1018 結算（10/27）：** C5 讀取驗收 [#79](https://github.com/dernoson/endfield-playground/pull/79) 合入；**C1 L2 UI＝[#78](https://github.com/dernoson/endfield-playground/pull/78) OPEN**（埠連線／斷線警示等）。**OPEN＝1。** **未達／欠帳：** DeviceShape（MBD 進行中）、P2 點選稿。**W1026（10/26→11/01｜問卷週）：** **toby＝收斂 #78（合入前不派新塊）**；aaaaa＝tutorial＋dev Lab／API／詞彙（≤2h）；MBD＝DeviceShape PR；paper＝P2；harry＝WarningIcon Storybook；dernoson＝守閘。**avery 退出協作，不再派工。** 見 [WEEK_20261026](../work_dispatch/WEEK_20261026.md)。**M3 日 10/25 已驗；C1 合入跟 #78。**
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 
@@ -79,7 +79,7 @@ R-B 擺放（9/6→9/27）──── 使用者可見：真機器選單、擺�
       │                 10/04：M2 延後驗收過功能門檻；視覺 #48 仍欠
       │                 10/11：換殼 #63、無邊界 #61、出界／埠命中 #60／#65 已合
       ▼
-R-C 連線（10/4→10/25）── **W1011 主戲已合**（拖曳／左面板／積壓／C5 寫入＋引擎讀／PipelineShape）；**W1018＝C1 UI（toby）＋M3 彩排**
+R-C 連線（10/4→10/25）── **W1011 主戲已合**；**W1018＝C1 UI 在 #78 OPEN**、C5 驗收 **#79 合**；**W1026＝#78 合入優先**
       ▼
 R-D 串通（11/1→11/29）── D4 格式跟新模型；D1–D3 相對獨立
       ▼
@@ -90,7 +90,7 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 
 **讀法：** 上面是使用者功能軸；右邊是技術前置軸。兩邊都要動，但**門檻必要項在殼落地前只能押在左邊不依賴畫布的塊**（本月＝B1）與右邊的 **L1 純函式／契約**。store 已交未合時，**不以「分支有 store」假裝 B2 已解**。
 
-**2026-10-19 更新：W1011 主戲＋積壓已合，OPEN＝0。** **未齊：** C1 draft UI、C3 幾何套用（`buildPipelinePolyline`＋掛 PipelineShape）、DeviceShape。**解鎖仍是裁決：** 管線點選＋左面板已放行；旋轉／Delete 仍鎖。見 §9。**關鍵路徑：C1（toby）——M3 必要；產能真空（harry／shirone／goodmorning 0h）。**
+**2026-10-27 更新：W1018 結算——#79 合、#78 OPEN（C1 L2 UI）。** **未齊：** DeviceShape、P2 稿；C3 套用仍加分。**解鎖仍是裁決：** 管線點選＋左面板已放行；旋轉／Delete 仍鎖。見 §9。**關鍵路徑：#78 合入（toby）。**
 
 ### 1.5 里程碑一覽
 
@@ -112,12 +112,12 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 | **不改什麼？** | **不是**捨棄 Vue.js；流程視角可續用 Vue Flow；右側 Stats／detector 純函式不因換殼重寫 |
 | **為何改？** | Vue Flow 節點盒限制 paper 稿 1:1 落地；佔格／port／管線與資料模型長期分叉；8/30 主編：不提前則設計 UI「沒地方擺」 |
 | **為何提前？** | **已定案提前開工**（8/30–31）。評估與閘門：[EARLY_START](../aaaaa/LAYOUT_REWRITE_EARLY_START_0831.md) |
-| **優先序** | **2026-10-19 起：** ① **C1 UI（toby）**（M3 必要）→ ② C3 套用（toby 有餘力／否則視覺降級）＋DeviceShape（MBD）→ ③ **M3 驗收（10/25）** |
-| **卡住誰？** | **已解：** store、容器、viewport、點擊落子、C2 L1、換殼、無邊界、出界、`hitTestPortAt`、拖曳 #67、左面板 #75、C5 寫入 #72、引擎讀／機型 id #74、積壓 #48／#62／#64、PipelineShape #68。**仍鎖：** 旋轉、Delete。**仍等：** C1 draft UI、C3 幾何套用、DeviceShape。**不卡：** B1、D1 空狀態 |
-| **關鍵路徑** | **C1＝toby**（本週唯一門檻主戲）；aaaaa ≤2h 只保引擎讀驗收／lab；趕不上用「相鄰兩台直線」備案（B-2） |
+| **優先序** | **2026-10-27 起：** ① **#78 合入（toby）** → ② DeviceShape（MBD）＋ P2 稿 → ③ C3 套用（加分，#78 合後） |
+| **卡住誰？** | **已解：** store、容器、viewport、點擊落子、C2 L1、換殼、無邊界、出界、`hitTestPortAt`、拖曳 #67、左面板 #75、C5 寫入 #72、引擎讀 #74、C5 驗收鏈 #79、PipelineShape #68。**仍鎖：** 旋轉、Delete。**仍等：** C1 L2 UI（#78）、DeviceShape、P2。**不卡：** B1、D1 空狀態 |
+| **關鍵路徑** | **#78＝toby**；合入前不派新功能塊 |
 | **誰做 L1？** | aaaaa；store＝#45；契約＝#51；出界＝#60；埠命中＝#65；C5 寫入＝#72；引擎讀＝#74 |
 | **L2 解鎖** | **2026-09-23：** 點擊落子。**2026-10-04 追加：** 管線點選變藍＋左設備面板。旋轉／Delete 仍鎖。原則不變——底層就緒不等於自動解鎖 |
-| **L2 檔案切分** | **W1018：** `LayoutView`／`GridCanvas`＝**toby（C1）**；`MainLayout`＝凍結（harry 0h）；`shapes/DeviceShape`＝**MBD**（新檔）；`shapes/PipelineShape`＝已合（shirone）。import 可、改對方檔退回 |
+| **L2 檔案切分** | **W1026：** `LayoutView`／`GridCanvas`＝**toby（#78）**；`MainLayout`＝凍結；`shapes/DeviceShape`＝**MBD**；`shapes/PipelineShape`＝已合。import 可、改對方檔退回 |
 | **視角切換器** | 照稿；仍未派（非 Avery）。**連續順延** |
 | **誰不做？** | dernoson 不兼功能；StatsPanel owner＝shirone（本週只收 #62） |
 
@@ -194,7 +194,7 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 
 **門檻句：** 兩台設備 port 對 port 拉管線，皮帶與水管能分、能轉 90 度彎；單台／單線可刪、可拖移；源設備能設產出素材。對應主編步驟 3 ＋ 4 ＋ 6。
 
-- [~] **R-C1** Port 命中與 draft 連線：L1 `hitTestPortAt` **已合 #65**。拖曳 UI **已合 #67**。**L2 C1＝toby（W1018-T1）**——本週必要
+- [~] **R-C1** Port 命中與 draft 連線：L1 `hitTestPortAt` **已合 #65**。拖曳 UI **已合 #67**。**L2 C1 UI＝[#78](https://github.com/dernoson/endfield-playground/pull/78) OPEN（toby）**
   - 細項：[detail/C1_port_hit_and_draft.md](./detail/C1_port_hit_and_draft.md)
 - [~] **R-C2** 連線契約與型別檢查：`canConnect` 純函式＋`addPipeline` 防線 **已合 #54**；L2 draft highlight 未做（隨 C1）
   - 細項：[detail/C2_add_connection_contract.md](./detail/C2_add_connection_contract.md)
@@ -258,9 +258,9 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 | 09/27 | **M2 門檻（連假停工）** | **驗收延至 10/04。** 當週無演示。程式側 #54／#55／#53／#56 已於連假前／當日合入 |
 | **10/04** | **M2 延後結算＋正式換殼** | **結算（10/12）：** 換殼 #63、無邊界 #61、出界 #60、埠命中 #65 **合入**；#48／#62／#64 未合；M1 無 PR；P1 未交。見 [WEEK_20261004](../work_dispatch/WEEK_20261004.md) v1.2 |
 | **10/11** | ~~C1 切片~~ → **設備拖曳＋畫布樣式** | **結算（10/19）：** #67／#75／#48／#62／#64／#68／#70／#71／#72／#74／#76 合入；OPEN＝0。欠 DeviceShape／PowerPole／P2。見 [WEEK_20261011](../work_dispatch/WEEK_20261011.md) |
-| **10/18** | **C1 UI＋M3 彩排（必要）** | **派工中。** C1＝**toby**；C5 引擎讀已於 #74 合入；C3 套用＝toby 加分（否則視覺降級）。產能：三人 0h＋aaaaa ≤2h。趕不上 → 相鄰兩台直線（B-2）。見 [WEEK_20261018](../work_dispatch/WEEK_20261018.md) |
+| **10/18** | **C1 UI＋M3 彩排（必要）** | **已結算（10/27）：** C1＝**#78 OPEN**；C5 驗收 **#79 合**；DeviceShape／P2 未過。見 [WEEK_20261018](../work_dispatch/WEEK_20261018.md) |
 
-| 10/25 | **C1＋C2＋C3＋C5（門檻）** | 步驟 3 ＋ 4 單物 ＋ 6。**日期不因連假順延** |
+| **10/25** | **M3 結算＋#78 合入週** | **派工中（問卷週 1026）。** #78 優先；aaaaa tutorial／Lab；MBD DeviceShape；paper P2；harry WarningIcon。見 [WEEK_20261026](../work_dispatch/WEEK_20261026.md) |
 | 11/01 | D1 | 右側產耗表接 `itemSummary`，空產線有空狀態。**空狀態切片已由 W0823-M1 提前交** |
 | 11/08 | D2 | 兩台重疊 → 右側一條訊息。**E001 純函式＋dev 頁已就位**；缺右側 Tips |
 | 11/15 | D3 | 缺輸入或輸出、材料組合不符，至少一類上右側。**純函式段已於 10/04 週提前（W1004-Z1）**，本週只剩「上右側」 |
@@ -289,7 +289,7 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 | R-B3 | 旋轉未放行 | 主編當週裁 | 10/04 會議仍不開旋轉 | `[!]`（技術依賴已清） |
 | ~~R-C5~~ | ~~寫入位置未裁~~ | — | — | **已解除（2026-10-06）：** 主編裁 **採 B**——寫 `layoutStore`／`PlacedDevice.primaryOutput`；引擎讀取端隨 10/18 提前一部分 D1 鏈（見 [C5 §4.1a](./detail/C5_source_primary_output.md)） |
 | ~~R-C1 owner~~ | ~~L2 主責未定~~ | — | — | **已解除（2026-10-13／PR #66）：** **toby**（T2 合入後、10/18 週接）。趕不上用「相鄰兩台直線」備案 |
-| ~~R-C1~~ | ~~等 B2／命中函式~~ | — | — | **B2 已清；`hitTestPortAt` #65 已合。** 狀態 `[~]`；L2 UI＝toby（10/18） |
+| ~~R-C1~~ | ~~等 B2／命中函式~~ | — | — | **B2 已清；`hitTestPortAt` #65 已合。** 狀態 `[~]`；L2 UI＝**#78 OPEN（toby）** |
 | R-B4 | 9/23 曾鎖選取 | 主編 | **10/04 部分解除：** 管線點選＋左面板。完整設備 inspector 與 Delete 未放行 | `[~]` |
 | ~~R-D1 遷移~~ | ~~`StatsPanel` → `src/app/` 的遷移多出兩套未經裁決的平行面板（2026-09-21 新增）~~ | — | — | **已撤銷（2026-09-23 主編裁）：** 那兩套只在 `dev/shirone0918`、未開 PR、不在 master；master 只有一套，**不存在版本選擇問題**。原判讀把「未開 PR 的分支內容」當成交付物，屬誤判。D1 的唯一前置回到「遷移合入 master」，已排進 [W0921-S1](../work_dispatch/shirone/0921/W0921-S1_stats_panel_split_pr.md) |
 | ~~R-C2~~ | ~~佈局自建後連接改為衍生值、不儲存~~ | — | — | **L1 已合 #54**（`canConnect`＋`addPipeline` 防線）。狀態改 `[~]`；缺 L2 highlight |
@@ -387,6 +387,7 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 
 | 版 | 日期 | 說明 |
 |----|------|------|
+| **v1.21** | **2026-10-27** | **W1018 結算＋W1026 派工：** #79 合；**#78 OPEN（C1 L2 UI）**；DeviceShape／P2 部分未過。本週＝**toby 收斂 #78**＋aaaaa tutorial／Lab＋MBD DeviceShape＋paper P2＋harry WarningIcon。**avery 退出協作，不再派工。** 見 [WEEK_20261026](../work_dispatch/WEEK_20261026.md) |
 | **v1.20** | **2026-10-19** | **W1011 結算＋W1018／M3 派工：** #67／#75／#48／#62／#64／#68／#70–72／#74／#76 合入；OPEN＝0。欠 DeviceShape／PowerPole／P2。本週＝**toby C1**＋aaaaa ≤2h 引擎讀驗收／lab＋MBD DeviceShape＋paper P2；三人 0h＋avery 空工單暫停。C5 引擎讀改記已合（#74）。見 [WEEK_20261018](../work_dispatch/WEEK_20261018.md) |
 | **v1.19** | **2026-10-13** | **[PR #66](https://github.com/dernoson/endfield-playground/pull/66) 主編裁決回寫：** A／B 組照暫定。A-1 補拖曳拿起＝淺藍（白紙稿）；A-3 補多選 store 不在 POC；B-1 **C1＝toby**；B-2 相鄰直線備案；B-3 Ctrl+Z 排 11 月。見 [WEEK_20261011](../work_dispatch/WEEK_20261011.md) v1.2 |
 | **v1.18** | **2026-10-12** | **依 10/11 會議重派 W1011（規則 26）：** toby＝設備拖曳（C4 拖曳 UI 先行；歷史由 `moveDevice` 自帶，Undo 入口未接）；harry＝刪舊 `ProjectSidebar`、接 `MachineCard`；G／shirone／avery＝設備／管線（C3 視覺）／供電樁樣式子元件；MBD＝未連通警示 icon；paper 警示已完成、續做點選；azure＝#64 修正＋**W001 決議（只比對目前模式配方）**。**C1 owner 轉待裁**，10/18 週加重。見 [WEEK_20261011](../work_dispatch/WEEK_20261011.md) v1.1 |
