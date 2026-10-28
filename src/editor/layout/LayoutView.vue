@@ -22,6 +22,11 @@ import type { Pipeline, PortDirection, PortRef } from '@/types/layout';
 import { getMachineMode, type PortDef } from '@/types/machine';
 import { portPointOnMachine, resolveDisplayGrid, rotatePort } from '@/utils/portUtils';
 import { canConnect, describeConnectFailure } from '@/utils/layout/connectRules';
+import {
+    buildConnectionWaypoints,
+    buildGapConnectionWaypoints,
+    type ConnectionDeviceBounds,
+} from '@/utils/layout/connectionWaypoints';
 
 /** 指標手勢僅保存本地快照，不持有可寫的 store 設備參考 */
 interface CanvasGesture {
@@ -245,13 +250,9 @@ onComboTriggered(
         connectionFeedback.value = null;
         /** Rotation 只允許四種離散值，尺寸與埠換算仍由既有工具處理。 */
         const rotation = ((device.rotation + 1) % 4) as Rotation;
-        /** 高階 action 保持原點與管線位置，成功後衍生連線及警示會自動更新。 */
+        /** 使用 #79 的 L1 action；重疊仍寫入並由 layoutIssues 標示，不在 L2 阻擋。 */
         const result = layoutStore.rotateDevice(device.id, rotation);
-        if (!result.ok)
-            rotationFeedback.value =
-                result.reason === 'overlap'
-                    ? '旋轉後與設備或管線重疊，請先移到空位'
-                    : '設備目前無法旋轉';
+        if (!result.ok) rotationFeedback.value = '設備目前無法旋轉';
     },
     { preventDefault: true },
 );
@@ -298,7 +299,7 @@ const targetPort = computed(() =>
  * @example
  * const sourceBounds = connectionDeviceBounds('src');
  */
-function connectionDeviceBounds(deviceId: string) {
+function connectionDeviceBounds(deviceId: string): ConnectionDeviceBounds | null {
     /** 提交候選依目前 store 查詢，不沿用起拖前的過期位置。 */
     const device = layoutStore.devices.find((entry) => entry.id === deviceId);
     if (!device) return null;
@@ -333,22 +334,12 @@ const connectionCandidate = computed(() => {
     if (!start || !end) return null;
     /** 現有領域慣例：belt 在地面層，pipe 在上層；整條管線不沿 z 位移。 */
     const z = draft.source.media === 'pipe' ? 1 : 0;
-    /** 起點與終點位於同一媒質層，保持現有管線的平面路徑契約。 */
-    const first = { x: start.x, y: start.y, z };
-    /** 最終錨點保存為新的位置物件，不持有 store 的可寫參考。 */
-    const last = { x: end.x, y: end.y, z };
-    /** 尚未提交的路徑，只在此計算內組裝。 */
-    const waypoints = [first];
-    if (first.x !== last.x && first.y !== last.y) {
-        /** 起段依來源側選擇水平或垂直；若碰到障礙，交由既有檢查拒絕。 */
-        waypoints.push(
-            draft.source.side === 'left' || draft.source.side === 'right'
-                ? { x: last.x, y: first.y, z }
-                : { x: first.x, y: last.y, z },
-        );
-    }
-    /** 兩錨點同格也保留兩端；既有路徑契約允許零長度段。 */
-    waypoints.push(last);
+    /** 將外側整數錨點與來源方位映射為純資料，不在容器中計算折點。 */
+    const sourceAnchor = { position: { x: start.x, y: start.y, z }, side: draft.source.side };
+    /** 與來源共用媒質層，純函式自行建立輸出副本。 */
+    const targetAnchor = { position: { x: end.x, y: end.y, z }, side: target.side };
+    /** 幾何由純函式生成，語意與碰撞仍依原順序預檢。 */
+    const waypoints = buildConnectionWaypoints(sourceAnchor, targetAnchor);
     /** 候選管線只供預檢；唯一寫入入口仍是 pointerup 的高階 action。 */
     const pipeline: Pipeline = { id: draft.pipelineId, media: draft.source.media, waypoints };
     /** 將深唯讀 waypoints 轉為本地副本，不修改 store 或以型別強制轉換繞過契約。 */
@@ -387,43 +378,13 @@ const connectionCandidate = computed(() => {
         /** 兩端都必須仍存在，才能判定設備間確實有空隙。 */
         const targetBounds = connectionDeviceBounds(target.deviceId);
         if (sourceBounds && targetBounds) {
-            /** 上下埠的並排設備需在水平空隙中換行，避免往回穿過來源。 */
-            const verticalPorts =
-                (draft.source.side === 'top' || draft.source.side === 'bottom') &&
-                (target.side === 'top' || target.side === 'bottom');
-            /** 左右埠的上下設備使用垂直空隙，與上式採相同固定折線規則。 */
-            const horizontalPorts =
-                (draft.source.side === 'left' || draft.source.side === 'right') &&
-                (target.side === 'left' || target.side === 'right');
-            /** 空隙兩端均排除設備本體；至少一個整數格才可形成走線通道。 */
-            const gapLeft =
-                sourceBounds.right < targetBounds.left
-                    ? sourceBounds.right + 1
-                    : targetBounds.right + 1;
-            const gapRight =
-                sourceBounds.right < targetBounds.left
-                    ? targetBounds.left - 1
-                    : sourceBounds.left - 1;
-            /** 對垂直方向採同樣的端點設備邊界映射。 */
-            const gapTop =
-                sourceBounds.bottom < targetBounds.top
-                    ? sourceBounds.bottom + 1
-                    : targetBounds.bottom + 1;
-            const gapBottom =
-                sourceBounds.bottom < targetBounds.top
-                    ? targetBounds.top - 1
-                    : sourceBounds.top - 1;
-            /** 固定選擇空隙中間的整數格，不逐格搜尋或繞開其他障礙。 */
-            const laneX = Math.floor((gapLeft + gapRight) / 2);
-            /** 垂直空隙同樣採中間格，保持反向拖線的幾何選擇一致。 */
-            const laneY = Math.floor((gapTop + gapBottom) / 2);
-            /** 沒有對應空隙時維持原拒絕結果，不生成任意外繞路徑。 */
-            const gapWaypoints =
-                verticalPorts && gapLeft <= gapRight
-                    ? [first, { x: laneX, y: first.y, z }, { x: laneX, y: last.y, z }, last]
-                    : horizontalPorts && gapTop <= gapBottom
-                      ? [first, { x: first.x, y: laneY, z }, { x: last.x, y: laneY, z }, last]
-                      : null;
+            /** 只呼叫純幾何函式，是否採用替代路徑仍由既有碰撞預檢決定。 */
+            const gapWaypoints = buildGapConnectionWaypoints(
+                sourceAnchor,
+                targetAnchor,
+                sourceBounds,
+                targetBounds,
+            );
             if (gapWaypoints) {
                 /** 保留同一對埠、媒質與 id，只替換本地預覽路徑。 */
                 const gapPipeline: Pipeline = { ...pipeline, waypoints: gapWaypoints };
@@ -651,7 +612,7 @@ function handlePointerMove(event: PointerEvent): void {
         hoveredPort.value = editorStore.activeTool === 'pan' ? null : portAt(event, 'output');
         return;
     }
-    if (!drag || event.pointerId !== drag.pointerId) return;
+    if (event.pointerId !== drag.pointerId) return;
     /** 埠手勢不套設備的 4 px 門檻；從按下起就顯示本地 draft。 */
     if (drag.kind === 'connection' && connectionDraft.value) {
         connectionDraft.value = {
