@@ -1,6 +1,6 @@
 # Session Handoff —— 給下一個聊天用的接續筆記
 
-**最後更新：** 2026-10-31（`dev/cake` 基於 `upstream/master` `d48ac99`；W1026-H1 實作完成、未 commit）
+**最後更新：** 2026-10-31（W1026-H1 已 push 未開 PR；另有工單外的 `dev/cake_toolbar`、`dev/cake_prodstats`）
 **用途：** 開新聊天時給 Claude 看，快速還原現況與待跟進項目。長期規則在同資料夾的 [CLAUDE.md](CLAUDE.md)。
 **身分：** L2 接線層（harry），負責 CR-01（畫布）+ CR-02（管線）+ CR-11（工具列）的互動與接線。詳細角色定位見 [README.md](../README.md)，早期 editorStore action 缺口清單見 [MILESTONE_0726.md](../MILESTONE_0726.md)（屬舊 Vue Flow 世界，參考用）。
 
@@ -30,7 +30,7 @@
 
 工單：[W1026-H1_c5_source_form.md](../../work_dispatch/harry/1026/W1026-H1_c5_source_form.md)｜週總表：[WEEK_20261026.md](../../work_dispatch/WEEK_20261026.md) v1.1｜計畫：[PLAN_c5SourceForm.md](../PLAN_c5SourceForm.md)｜PR 描述：[PR_DESCRIPTION_1031.md](../PR_DESCRIPTION_1031.md)
 
-**狀態：** 實作與驗證完成，**尚未 commit／push／開 PR**（等使用者指示）。
+**狀態：** 已 commit 並 push 到 `origin/dev/cake`（`76c69a9` feat、`6123024` docs、`f17e9bb` chore），**尚未開 PR**（等使用者指示）。
 
 **使用者裁決（2026-10-31）：** 所有 `is_source` 設備都顯示下拉；依輸出埠媒質過濾；另開 L2 元件，資料夾用小寫 `src/editor/sourceOutput/`（與 `src/editor/` 既有慣例一致）。
 
@@ -42,9 +42,31 @@
 
 **待跟進：**
 
-1. commit（feat＋docs 分開）、push、開 PR——等使用者指示
+1. 開 PR——等使用者指示（PR 描述：[PR_DESCRIPTION_1031.md](../PR_DESCRIPTION_1031.md)，貼上前刪掉最後一行 Claude Code 標記）
 2. **回報 aaaaa：** `layoutStore` 沒有切換 `machineMode` 的 action，正式頁放下的基礎材料輸出點固定是 `solid_belt`，液體／氣體（清水、沉積酸、惰氣、息壤氣）在正式頁選不到
 3. 面板視覺（白色 `USelect` 疊在深色卡片下）屬 L3 範疇，若要對稿請找 paper／shirone
+
+### 3.1 工單外：工具列對齊設計稿（`dev/cake_toolbar`）
+
+使用者 10/31 指示。自 `upstream/master` 切出，已 push（`60f0739` feat、`845ab02` chore、`8cf8b48` docs），**尚未開 PR**。計畫：[PLAN_toolbarFigmaAlign.md](../PLAN_toolbarFigmaAlign.md)。
+
+- 版面依 Figma `Tools Selection`（`2302:176`）調整；分類改顯示兩字短名；35 台機器接上 `src/assets/machines/*.webp`（無圖 11 台留空）；工具列指定 HarmonyOS 字型
+- 抓圖腳本新增 WebP 輸出與 `--webp-only`；`docs/harry/dev/icons/*.webp`（92 張）依使用者決定**不進版控**，本機以 `.git/info/exclude` 排除
+- `ToolbarPanel.vue` 是 goodmorning #48 的檔案，開 PR 前先在 Discord 告知 dernoson
+- 設計稿來源：`docs/harry/figma_full.json`（Figma REST API 匯出，10/26 版，不進版控）。token 只設在使用者自己的 PowerShell 環境變數
+
+### 3.2 工單外：右側產線總覽（`dev/cake_prodstats`）
+
+使用者 10/31 指示，自 `dev/cake` 切出，進行中。盤點結論（已向使用者報告，使用者決定照做）：
+
+- `src/editor/stats/ProductionStats.vue` 只被已卸載的舊 `InspectorPanel.vue` 引用，**不在正式頁**
+- 設計稿 `Production Overview`（`2302:81`）已由 shirone 做成 `src/app/StatsPanel/`（#62，元件標 `data-figma-id="2302:81"`），但 `MainLayout` 掛 `<StatsPanel />` 沒傳 props，正式頁只顯示占位
+- shirone W1004-S1 明寫「保留 props／空狀態，D1 十一月接 `flowStore`」「不要接 `flowStore`（引擎還在舊 `editorStore`）」；shirone 長假至 11 月中下旬
+- 接資料屬 roadmap D1（aaaaa 主責、M4 11/29），開 PR 前要先告知 dernoson／aaaaa
+- **使用者裁決：** 做法 A（`ProductionStats.vue` 改成 L2 容器，轉接 `toStatsPanelProps` 後渲染 StatsPanel；`MainLayout` 右側改掛 `ProductionStats`）；設計稿沒有的區塊（畫布概況、原料供給、計畫產物、機器用量、兌換率輸入、倉庫容量）先拿掉
+- 實作完成、四項全過（58 檔、986 測試），**尚未 commit**。正式頁目前仍是占位（引擎沒讀 `layoutStore`）；在瀏覽器手動寫入 store 驗證過電力、產能、Tips 都會顯示
+- **MachineCard／InspectorSidebar 盤點（W1018、W1026）：** 兩週工單都沒人被派到這兩處；只有 H1 與 D0 寫「不改 `MachineCard` 內部」。shirone（`MachineCard` owner）兩週暫停。`InspectorSidebar.vue` 不在正式頁，但 W1018 退回清單禁止刪除
+- **與 #78 的衝突風險：** toby 的 #78 改了 `MainLayout.vue` 的 `selectedMachineCard`（`sizeText` 改用旋轉後尺寸 `resolveDisplayGrid`，並把 `selectedDeviceId` 傳給 `LayoutView`），與 H1 在同一段抽出 `selectedDevice` 的重構重疊；後合的一方要手動合併
 
 ---
 
@@ -115,8 +137,11 @@
 
 ## 5. Git 狀態
 
-- 目前在 **`dev/cake`**，與 `upstream/master` 同為 `d48ac99`，W1026-H1 改動尚未 commit
-- `cv/cake`（`573ed22`）只多一個「handoff 移入 `claude/`」的 docs commit，本檔已帶到 `dev/cake`（staged）；`cv/cake` 之後可不再使用
+- **`dev/cake`**：W1026-H1，已 push（`f17e9bb`），未開 PR
+- **`dev/cake_toolbar`**：自 `upstream/master` 切出，工具列對齊設計稿，已 push（`8cf8b48`），未開 PR
+- **`dev/cake_prodstats`**：自 `dev/cake` 切出，右側產線總覽進行中（目前所在分支）
+- `cv/cake`（`573ed22`）的內容已併入 `dev/cake`，之後可不再使用
+- `.git/info/exclude`（本機）排除了 `docs/harry/claude/CLAUDE.md`、`docs/harry/figma_full.json`、`docs/harry/dev/icons/*.webp`：從 `upstream/master` 切出的分支沒有 `dev/cake` 加的 `.gitignore` 規則，靠這裡補
 - remote、PR 查詢方式與 git 事故教訓見 [CLAUDE.md](CLAUDE.md) §8
 
 ## 6. 已知問題清單（遇到先查這份，避免重複調查）
@@ -130,6 +155,9 @@
 
 - **Ctrl+Z 會同時觸發瀏覽器原生文字復原**（2026-10-31 發現，已在原始 `d48ac99` 重現）：`onComboTriggered`（`src/composables/useKeybinding.ts:137`）註冊 undo／redo 時沒有 `preventDefault`，按 Ctrl+Z 時瀏覽器也會復原工具列搜尋框的輸入，焦點跳進 `<input>`，之後 `isTypingTarget()` 會擋掉 Ctrl+Y，看起來就像重做失效。只要搜尋框打過兩次字就會發生。尚未回報，不在 W1026-H1 範圍
 - **`layoutStore` 沒有切換 `machineMode` 的 action**：正式頁放下的基礎材料輸出點固定 `solid_belt`（見 §3 待跟進 2）
+- **正式頁 FlowEngine 沒有讀 `layoutStore`**（2026-10-31 發現）：`useFlowEngine()`（`src/composables/useFlowEngine.ts:1409`）仍只 watch `editorStore.nodes`／`edges`；`toTopology` 只有 dev 頁（`L1ContractLab`、`LayoutL1Preview`）在呼叫。因此正式頁擺的設備、W1026-H1 寫入的 `primaryOutput` 都不會進引擎，`flowStore` 在正式頁永遠是空結果。C5 文件寫「引擎讀 #74 合入」應只指 adapter 本身。尚未回報 dernoson／aaaaa
+- **`src/editor/stats/ProductionStats.vue` 的「總產出」區塊重複兩次**（第 340–367 行與 369–396 行內容完全相同）。該元件目前不在正式頁（見 §3.2）
+- **`src/style.css` 的全域字型註解與實際不符**：註解寫「全域字型 HarmonyOS Sans TC」，但 `:root` 的 `font-family` 是 Inter；`MachineCard`、StatsPanel、工具列（`dev/cake_toolbar`）各自在元件內指定 HarmonyOS
 
 - **真機器武裝（`usePlacementIntent`）時按 Esc 會開設定、不會取消落子**。spec 說拿起狀態 Esc＝取消，但這屬落子互動設計，留給 C1
 - **#48 寫死 Z 鍵收合工具列**，繞過 `keybindingStore`（已合入，未確認是否改過）
