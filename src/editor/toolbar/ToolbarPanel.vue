@@ -9,6 +9,7 @@ import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue';
 import type { MachineCategory } from '@/types/machine';
 import { usePlacementIntent } from '@/editor/toolbar/usePlacementIntent';
 import {
+    TOOLBAR_CATEGORY_LABELS,
     TOOLBAR_MACHINE_TAGS,
     listToolbarMachines,
     type ToolbarMachineRow,
@@ -120,6 +121,14 @@ const viewTabs: Array<{ id: string; label: string }> = [
 /** 分類 Tab：「全部」＋資料庫分類（順序同 `TOOLBAR_MACHINE_TAGS`） */
 const categoryTabs: readonly CategoryTab[] = ['全部', ...TOOLBAR_MACHINE_TAGS];
 
+/**
+ * 分類 Tab 的顯示文字（設計稿兩字短名）；篩選仍用原分類值。
+ * @param tab 分類 Tab 值
+ */
+function categoryLabel(tab: CategoryTab): string {
+    return tab === '全部' ? tab : TOOLBAR_CATEGORY_LABELS[tab];
+}
+
 /** 依目前分類取出的真機器列；「全部」為各分類合併，同一機型只列一次 */
 const categoryMachines = computed<ToolbarMachineRow[]>(() => {
     if (activeCategory.value !== '全部') {
@@ -175,8 +184,10 @@ function handleMachineClick(row: ToolbarMachineRow) {
 </script>
 
 <template>
-    <!-- 永遠釘死在畫布最底端 -->
-    <div class="pointer-events-none absolute bottom-0 left-0 z-50 flex w-full flex-col">
+    <!-- 永遠釘死在畫布最底端；字型比照設計稿（:root 預設為 Inter） -->
+    <div
+        class="pointer-events-none absolute bottom-0 left-0 z-50 flex w-full flex-col font-['HarmonyOS_Sans_TC',sans-serif]"
+    >
         <!-- 懸浮控制層：32px (左上角視角按鈕與收合三角形) -->
         <div class="relative h-[32px] w-full shrink-0">
             <!-- 視角切換分頁：474x32 -->
@@ -188,8 +199,10 @@ function handleMachineClick(row: ToolbarMachineRow) {
                     <template v-for="(tab, index) in viewTabs" :key="tab.id">
                         <button
                             type="button"
-                            class="flex h-[26px] w-[80px] cursor-pointer items-center justify-center rounded-[8px] text-[16px] leading-none font-light text-white transition-colors duration-300 ease-out"
-                            :class="props.selectedView === tab.id ? 'bg-[#3C3C3C]' : 'bg-[#4E4E4E]'"
+                            class="flex h-[26px] w-[80px] cursor-pointer items-center justify-center rounded-[4px] text-[16px] leading-none font-light text-white transition-colors duration-300 ease-out"
+                            :class="
+                                props.selectedView === tab.id ? 'bg-[#3C3C3C]' : 'bg-transparent'
+                            "
                             :aria-label="`切換至 ${tab.label}`"
                             :aria-pressed="props.selectedView === tab.id"
                             @mousedown="handleViewClick(tab.id)"
@@ -203,13 +216,13 @@ function handleMachineClick(row: ToolbarMachineRow) {
                     </template>
                 </div>
 
-                <p class="ml-2 text-xs font-light text-[#A4A4A4]">(按TAB切換視角)</p>
+                <p class="ml-2 text-[14px] font-light text-[#A4A4A4]">(按TAB切換視角)</p>
             </div>
 
             <!-- 底部設備選取列開關：黃色三角形 -->
             <button
                 type="button"
-                class="group pointer-events-auto absolute bottom-0 left-1/2 flex h-[32px] w-[64px] -translate-x-1/2 cursor-pointer items-center justify-center"
+                class="group pointer-events-auto absolute bottom-0 left-1/2 flex h-[32px] w-[64px] -translate-x-1/2 cursor-pointer items-end justify-center pb-[10px]"
                 :aria-label="bottomBarOpen ? '收合底部設備選取列' : '展開底部設備選取列'"
                 :aria-expanded="bottomBarOpen"
                 @click="toggleBottomBar"
@@ -229,11 +242,11 @@ function handleMachineClick(row: ToolbarMachineRow) {
             <div class="overflow-hidden">
                 <!-- 鎖定面板高度為 208px -->
                 <div
-                    class="flex h-[208px] w-full shrink-0 flex-col bg-[#4e4e4e] px-[80px] pt-[23px]"
+                    class="flex h-[208px] w-full shrink-0 flex-col bg-[#4e4e4e] px-[80px] pt-[22px]"
                 >
                     <!-- 上排：搜尋框 + 分類 Tab -->
                     <div
-                        class="mb-[18px] flex h-[43px] w-[1114px] shrink-0 items-center gap-[18px]"
+                        class="mb-[10px] flex h-[43px] w-[1114px] shrink-0 items-center gap-[18px]"
                     >
                         <!-- 搜尋框 -->
                         <label
@@ -267,12 +280,16 @@ function handleMachineClick(row: ToolbarMachineRow) {
                             :key="tab"
                             type="button"
                             @click="handleCategoryClick(tab)"
-                            class="h-[43px] w-[110px] cursor-pointer rounded-[15px] text-[20px] leading-none font-light tracking-[0.03em] text-white transition-colors duration-300 ease-out"
-                            :class="activeCategory === tab ? 'bg-[#2b2b2b]' : 'bg-[#3c3c3c]'"
-                            :aria-label="`切換至 ${tab} 分類`"
+                            class="h-[43px] w-[110px] cursor-pointer text-[20px] leading-none font-light tracking-[0.03em] text-white transition-colors duration-300 ease-out"
+                            :class="
+                                activeCategory === tab
+                                    ? 'rounded-[15px] bg-[#2b2b2b]'
+                                    : 'rounded-[16px] bg-[#3c3c3c]'
+                            "
+                            :aria-label="`切換至 ${categoryLabel(tab)} 分類`"
                             :aria-pressed="activeCategory === tab"
                         >
-                            {{ tab }}
+                            {{ categoryLabel(tab) }}
                         </button>
                     </div>
 
@@ -281,7 +298,7 @@ function handleMachineClick(row: ToolbarMachineRow) {
                         <!-- 綁定 @wheel.prevent 事件來轉換垂直滾動為水平滾動 -->
                         <div
                             ref="scrollerRef"
-                            class="flex h-full w-full items-start gap-[18px] overflow-x-auto [&::-webkit-scrollbar]:hidden"
+                            class="flex h-full w-full items-start gap-[22px] overflow-x-auto [&::-webkit-scrollbar]:hidden"
                             style="scrollbar-width: none"
                             @wheel.prevent="handleWheelScroll"
                             @scroll="updateScrollHints"
@@ -293,7 +310,7 @@ function handleMachineClick(row: ToolbarMachineRow) {
                             >
                                 {{
                                     activeCategory !== '全部'
-                                        ? `在「${activeCategory}」分類中`
+                                        ? `在「${categoryLabel(activeCategory)}」分類中`
                                         : ''
                                 }}找不到符合「{{ searchQuery }}」的設備
                             </div>
@@ -310,7 +327,7 @@ function handleMachineClick(row: ToolbarMachineRow) {
                             >
                                 <!-- 深色背景層 -->
                                 <div
-                                    class="absolute top-[14px] left-0 h-[78px] w-full rounded-t-[8px] transition-colors duration-300 ease-out"
+                                    class="absolute top-[13px] left-0 h-[78px] w-full rounded-t-[8px] transition-colors duration-300 ease-out"
                                     :class="
                                         armedMachineId === machine.id
                                             ? 'bg-[#1c1c1c]'
@@ -320,7 +337,7 @@ function handleMachineClick(row: ToolbarMachineRow) {
 
                                 <!-- 黃色底線層 -->
                                 <div
-                                    class="absolute top-[92px] left-0 h-[4px] w-full rounded-b-[8px] bg-[#eefd1c] transition-shadow duration-100"
+                                    class="absolute top-[91px] left-0 h-[4px] w-full rounded-b-[8px] bg-[#eefd1c] transition-shadow duration-100"
                                     :class="
                                         armedMachineId === machine.id
                                             ? 'shadow-[0_2px_4px_rgba(238,253,28,0.5)]'
@@ -328,12 +345,14 @@ function handleMachineClick(row: ToolbarMachineRow) {
                                     "
                                 ></div>
 
-                                <!-- 圖片容器：100x100 完整紅色中空方框標示範圍 -->
-                                <div
-                                    class="absolute top-0 left-0 flex h-[100px] w-[100px] items-center justify-center border-[2px] border-red-500 bg-transparent"
-                                >
-                                    <!-- 之後放置真實圖片的地方 -->
-                                </div>
+                                <!-- 機器圖：100x100，疊在底板之上；沒有圖的機型留空 -->
+                                <img
+                                    v-if="machine.iconUrl"
+                                    :src="machine.iconUrl"
+                                    alt=""
+                                    draggable="false"
+                                    class="absolute top-0 left-0 size-[100px] object-contain"
+                                />
 
                                 <!-- 文字層 -->
                                 <span

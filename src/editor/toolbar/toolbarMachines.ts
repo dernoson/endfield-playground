@@ -14,6 +14,38 @@ export const DEFAULT_TOOLBAR_MACHINE_TAG: MachineCategory = '基礎生產';
 /** 工具列可用的分類順序（與 MACHINE_TAGS 一致） */
 export const TOOLBAR_MACHINE_TAGS: readonly MachineCategory[] = MACHINE_TAGS;
 
+/**
+ * 分類按鈕的顯示文字（設計稿 Tools Selection 用兩字短名）。  \
+ * 只換顯示，篩選仍以資料的 MachineCategory 為準。
+ */
+export const TOOLBAR_CATEGORY_LABELS: Readonly<Record<MachineCategory, string>> = {
+    物流設備: '物流',
+    倉庫存取: '倉儲',
+    基礎生產: '生產',
+    合成製造: '合成',
+    電力: '電力',
+};
+
+/**
+ * 機器圖（`src/assets/machines/<Machine.id>.webp`）：機器 id → 打包後 URL。  \
+ * 圖檔由 `docs/harry/scripts/fetch-factory-machine-craft-table.mjs` 產生；沒有圖的機型不在表內。
+ * 以檔名作 key，不依賴 glob 回傳路徑的格式。
+ */
+const machineIconUrls = new Map(
+    Object.entries(
+        import.meta.glob<string>('@/assets/machines/*.webp', { eager: true, import: 'default' }),
+    ).map(([path, url]) => [path.slice(path.lastIndexOf('/') + 1, -'.webp'.length), url]),
+);
+
+/**
+ * 依機器 id 查圖片 URL。
+ * @param machineId Machine.id
+ * @returns 沒有對應圖檔時為 `undefined`
+ */
+export function getMachineIconUrl(machineId: string): string | undefined {
+    return machineIconUrls.get(machineId);
+}
+
 /** 攤平後供工具列／下游卡片使用的列 */
 export interface ToolbarMachineRow {
     /** Machine.id */
@@ -26,6 +58,8 @@ export interface ToolbarMachineRow {
     width: number;
     /** 原始高（格） */
     height: number;
+    /** 機器圖 URL；沒有圖的機型為 `undefined` */
+    iconUrl?: string;
 }
 
 /**
@@ -45,6 +79,7 @@ export function toToolbarMachineRow(machine: Machine): ToolbarMachineRow {
         sizeText: formatMachineSizeText(machine),
         width: machine.width,
         height: machine.height,
+        iconUrl: getMachineIconUrl(machine.id),
     };
 }
 
