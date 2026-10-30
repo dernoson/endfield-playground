@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 import Navbar from '@/editor/navbar/Navbar.vue';
 import ToolbarPanel from '@/editor/toolbar/ToolbarPanel.vue';
 import LayoutView from '@/editor/layout/LayoutView.vue';
-import StatsPanel from '@/app/StatsPanel/Index.vue';
+import ProductionStats from '@/editor/stats/ProductionStats.vue';
 import MachineCard, { type MachineCardProps } from '@/app/MachineCard/Index.vue';
 import SourceOutputPanel from '@/editor/sourceOutput/SourceOutputPanel.vue';
 import { useLayoutStore } from '@/store/layoutStore';
@@ -49,7 +49,7 @@ const selectedMachineCard = computed<MachineCardProps | null>(() => {
 
 /**
  * 右側產線總覽是否展開，預設展開。  \
- * 收合只把欄寬歸零、不卸載 StatsPanel，避免面板內的輸入（如倉庫容量）在開合之間被重置。
+ * 收合只把欄寬歸零、不卸載面板，避免面板內的狀態（產品展開、Tips 分割線高度）在開合之間被重置。
  */
 const statsOpen = ref(true);
 
@@ -105,7 +105,7 @@ useFlowEngine();
 
             <aside id="area-stats" class="area-stats" :class="{ 'is-collapsed': !statsOpen }">
                 <div class="area-stats__body">
-                    <StatsPanel />
+                    <ProductionStats />
                 </div>
             </aside>
         </div>
