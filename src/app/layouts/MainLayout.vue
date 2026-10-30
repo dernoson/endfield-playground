@@ -9,8 +9,11 @@ import SourceOutputPanel from '@/editor/sourceOutput/SourceOutputPanel.vue';
 import { useLayoutStore } from '@/store/layoutStore';
 import type { PlacedDevice } from '@/types/layout';
 import { getMachineById } from '@/data/machines';
+import { getMachineIconUrl } from '@/editor/toolbar/toolbarMachines';
+import { toMachineCardFormulas } from './toMachineCardFormulas';
 import { useFlowEngine } from '@/composables/useFlowEngine';
 import { useValidation } from '@/composables/useValidation';
+import { useDragScroll } from '@/composables/useDragScroll';
 
 /** 讀取已放置設備，供左側面板由選中 id 反查設備實例 */
 const layoutStore = useLayoutStore();
@@ -22,6 +25,20 @@ const layoutStore = useLayoutStore();
 const selectedDeviceId = ref<string | null>(null);
 
 /**
+ * 物件資訊卡片是否被使用者收起（點卡片右緣黃色三角形）。   * 只隱藏卡片、不清掉選取，避免影響其他依選取運作的功能；再點一次設備就重新顯示。
+ */
+const devicePanelHidden = ref(false);
+
+/**
+ * 畫布選取設備：記下選取並重新顯示卡片。
+ * @param deviceId 選中的設備 id；點空白處為 `null`
+ */
+function onSelectDevice(deviceId: string | null): void {
+    selectedDeviceId.value = deviceId;
+    devicePanelHidden.value = false;
+}
+
+/**
  * 選中的設備實例；找不到時為 `null`。  \
  * 每次從 store 反查而非保存快照：設備被復原移除後面板自動收起，不會顯示已不存在的設備。
  */
@@ -31,7 +48,8 @@ const selectedDevice = computed<PlacedDevice | null>(
 
 /**
  * 選中設備轉成 MachineCard 的 props；找不到設備或機器定義時為 `null`，面板隨之隱藏。  \
- * 尺寸取 0° 靜態值，因為旋轉尚未開放；配方清單本週不轉接，交給 MachineCard 的預設呈現。
+ * 尺寸取 0° 靜態值，因為旋轉尚未開放。
+ * `selectedRecipe` 不給：正式頁沒有指定配方，配方由引擎依實際輸入判斷，卡片顯示佔位符號。
  */
 const selectedMachineCard = computed<MachineCardProps | null>(() => {
     const device = selectedDevice.value;
@@ -44,8 +62,15 @@ const selectedMachineCard = computed<MachineCardProps | null>(() => {
         sizeText: `${machine.width}×${machine.height}`,
         /** 負值（含 -1 資料未定義）不是耗電量，留給卡片顯示佔位符號 */
         power: machine.power >= 0 ? `${machine.power}kW` : undefined,
+        /** 沒有機器圖的機型為 undefined，卡片改用內建占位圖 */
+        iconUrl: getMachineIconUrl(machine.id),
+        formulas: toMachineCardFormulas(machine, device.machineMode),
     };
 });
+
+/** 左側物件資訊槽的 DOM；捲軸隱藏，改以按住左鍵拖曳捲動 */
+const devicePanelRef = ref<HTMLElement | null>(null);
+useDragScroll(devicePanelRef);
 
 /**
  * 右側產線總覽是否展開，預設展開。  \
@@ -73,10 +98,17 @@ useFlowEngine();
             <!-- 畫布與疊在其上的浮層共用同一個定位容器；工具列（#48）以 absolute 貼齊此容器底緣 -->
             <div class="area-stage">
                 <div class="area-canvas">
-                    <LayoutView @select-device="selectedDeviceId = $event" />
+                    <LayoutView @select-device="onSelectDevice" />
                 </div>
-                <aside v-if="selectedMachineCard" class="area-device-panel">
-                    <MachineCard v-bind="selectedMachineCard" />
+                <aside
+                    v-if="selectedMachineCard && !devicePanelHidden"
+                    ref="devicePanelRef"
+                    class="area-device-panel"
+                >
+                    <MachineCard
+                        v-bind="selectedMachineCard"
+                        @collapse="devicePanelHidden = true"
+                    />
                     <!-- C5：源設備才會渲染內容，非源設備此元件為空 -->
                     <SourceOutputPanel v-if="selectedDevice" :device="selectedDevice" />
                 </aside>
@@ -153,17 +185,23 @@ useFlowEngine();
 }
 
 /*
- * 寬度＝MachineCard 設計寬 451px；卡片自帶底板，本槽不另鋪底色。
- * 高度隨卡片而不撐滿：卡片下方留給畫布接點擊。畫面比卡片矮時改由本槽捲動。
+ * 寬度＝MachineCard 設計寬 451px＋右緣三角形凸出 10px，三角形不被裁切也不產生橫向溢出。
+ * 卡片自帶底板，本槽不另鋪底色。高度隨卡片而不撐滿：卡片下方留給畫布接點擊。
+ * 畫面比卡片矮時由本槽捲動；捲軸隱藏，改用滾輪或按住左鍵拖曳（useDragScroll）。
  */
 .area-device-panel {
     position: absolute;
     top: 0;
     left: 0;
     z-index: 10;
-    width: 451px;
+    width: 461px;
     max-height: 100%;
-    overflow-y: auto;
+    overflow: auto;
+    scrollbar-width: none;
+}
+
+.area-device-panel::-webkit-scrollbar {
+    display: none;
 }
 
 /*
