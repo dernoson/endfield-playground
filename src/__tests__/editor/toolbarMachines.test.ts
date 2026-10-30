@@ -5,7 +5,10 @@
 import { describe, it, expect } from 'vitest';
 import {
     DEFAULT_TOOLBAR_MACHINE_TAG,
+    TOOLBAR_CATEGORY_LABELS,
+    TOOLBAR_MACHINE_TAGS,
     formatMachineSizeText,
+    getMachineIconUrl,
     listToolbarMachines,
 } from '@/editor/toolbar/toolbarMachines';
 
@@ -41,5 +44,22 @@ describe('toolbarMachines', () => {
 
     it('formatMachineSizeText', () => {
         expect(formatMachineSizeText({ width: 2, height: 4 })).toBe('2×4');
+    });
+
+    it('有圖的機型帶 iconUrl；沒有圖的機型為 undefined', () => {
+        expect(getMachineIconUrl('crusher')).toMatch(/crusher.*\.webp/);
+        expect(listToolbarMachines('基礎生產').find((r) => r.id === 'crusher')?.iconUrl).toBe(
+            getMachineIconUrl('crusher'),
+        );
+        expect(getMachineIconUrl('splitter')).toBeUndefined();
+        expect(listToolbarMachines('物流設備').find((r) => r.id === 'splitter')?.iconUrl).toBe(
+            undefined,
+        );
+    });
+
+    it('每個分類都有兩字顯示文字', () => {
+        for (const tag of TOOLBAR_MACHINE_TAGS) {
+            expect(TOOLBAR_CATEGORY_LABELS[tag]).toHaveLength(2);
+        }
     });
 });
