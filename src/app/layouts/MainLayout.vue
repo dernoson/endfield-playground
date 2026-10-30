@@ -5,7 +5,9 @@ import ToolbarPanel from '@/editor/toolbar/ToolbarPanel.vue';
 import LayoutView from '@/editor/layout/LayoutView.vue';
 import StatsPanel from '@/app/StatsPanel/Index.vue';
 import MachineCard, { type MachineCardProps } from '@/app/MachineCard/Index.vue';
+import SourceOutputPanel from '@/editor/sourceOutput/SourceOutputPanel.vue';
 import { useLayoutStore } from '@/store/layoutStore';
+import type { PlacedDevice } from '@/types/layout';
 import { getMachineById } from '@/data/machines';
 import { useFlowEngine } from '@/composables/useFlowEngine';
 import { useValidation } from '@/composables/useValidation';
@@ -20,12 +22,19 @@ const layoutStore = useLayoutStore();
 const selectedDeviceId = ref<string | null>(null);
 
 /**
- * 選中設備轉成 MachineCard 的 props；找不到設備或機器定義時為 `null`，面板隨之隱藏。  \
+ * 選中的設備實例；找不到時為 `null`。  \
  * 每次從 store 反查而非保存快照：設備被復原移除後面板自動收起，不會顯示已不存在的設備。
+ */
+const selectedDevice = computed<PlacedDevice | null>(
+    () => layoutStore.devices.find((d) => d.id === selectedDeviceId.value) ?? null,
+);
+
+/**
+ * 選中設備轉成 MachineCard 的 props；找不到設備或機器定義時為 `null`，面板隨之隱藏。  \
  * 尺寸取 0° 靜態值，因為旋轉尚未開放；配方清單本週不轉接，交給 MachineCard 的預設呈現。
  */
 const selectedMachineCard = computed<MachineCardProps | null>(() => {
-    const device = layoutStore.devices.find((d) => d.id === selectedDeviceId.value);
+    const device = selectedDevice.value;
     if (!device) return null;
     const machine = getMachineById(device.machineType);
     if (!machine) return null;
@@ -68,6 +77,8 @@ useFlowEngine();
                 </div>
                 <aside v-if="selectedMachineCard" class="area-device-panel">
                     <MachineCard v-bind="selectedMachineCard" />
+                    <!-- C5：源設備才會渲染內容，非源設備此元件為空 -->
+                    <SourceOutputPanel v-if="selectedDevice" :device="selectedDevice" />
                 </aside>
                 <section class="area-toolbar-dock">
                     <ToolbarPanel />
