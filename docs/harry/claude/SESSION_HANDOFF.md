@@ -1,6 +1,6 @@
 # Session Handoff —— 給下一個聊天用的接續筆記
 
-**最後更新：** 2026-10-31（W1026-H1 已 push 未開 PR；另有工單外的 `dev/cake_toolbar`、`dev/cake_prodstats`）
+**最後更新：** 2026-10-31（W1026-H1 已 push 未開 PR；另有工單外的 `dev/cake_toolbar`、`dev/cake_prodstats`、`dev/cake_machinecard`）
 **用途：** 開新聊天時給 Claude 看，快速還原現況與待跟進項目。長期規則在同資料夾的 [CLAUDE.md](CLAUDE.md)。
 **身分：** L2 接線層（harry），負責 CR-01（畫布）+ CR-02（管線）+ CR-11（工具列）的互動與接線。詳細角色定位見 [README.md](../README.md)，早期 editorStore action 缺口清單見 [MILESTONE_0726.md](../MILESTONE_0726.md)（屬舊 Vue Flow 世界，參考用）。
 
@@ -64,9 +64,27 @@
 - shirone W1004-S1 明寫「保留 props／空狀態，D1 十一月接 `flowStore`」「不要接 `flowStore`（引擎還在舊 `editorStore`）」；shirone 長假至 11 月中下旬
 - 接資料屬 roadmap D1（aaaaa 主責、M4 11/29），開 PR 前要先告知 dernoson／aaaaa
 - **使用者裁決：** 做法 A（`ProductionStats.vue` 改成 L2 容器，轉接 `toStatsPanelProps` 後渲染 StatsPanel；`MainLayout` 右側改掛 `ProductionStats`）；設計稿沒有的區塊（畫布概況、原料供給、計畫產物、機器用量、兌換率輸入、倉庫容量）先拿掉
-- 實作完成、四項全過（58 檔、986 測試），**尚未 commit**。正式頁目前仍是占位（引擎沒讀 `layoutStore`）；在瀏覽器手動寫入 store 驗證過電力、產能、Tips 都會顯示
+- 已 commit 並 push（`262f440` feat、`7b468df` 黃色三角形開合＋移除左側黑邊）。正式頁目前仍是占位（引擎沒讀 `layoutStore`）；在瀏覽器手動寫入 store 驗證過電力、產能、Tips 都會顯示
 - **MachineCard／InspectorSidebar 盤點（W1018、W1026）：** 兩週工單都沒人被派到這兩處；只有 H1 與 D0 寫「不改 `MachineCard` 內部」。shirone（`MachineCard` owner）兩週暫停。`InspectorSidebar.vue` 不在正式頁，但 W1018 退回清單禁止刪除
 - **與 #78 的衝突風險：** toby 的 #78 改了 `MainLayout.vue` 的 `selectedMachineCard`（`sizeText` 改用旋轉後尺寸 `resolveDisplayGrid`，並把 `selectedDeviceId` 傳給 `LayoutView`），與 H1 在同一段抽出 `selectedDevice` 的重構重疊；後合的一方要手動合併
+
+### 3.3 工單外：左側物件資訊卡片（`dev/cake_machinecard`）
+
+使用者 10/31 指示，自 `dev/cake` 切出，再 merge `dev/cake_toolbar`（取得 `getMachineIconUrl` 與 35 張機器圖）。
+
+- 確認過：`src/app/MachineCard/`、`src/app/StatsPanel/` 都在 `upstream/master`，且都已掛在正式頁。設計稿 `Equipment Information`（`2465:87`，451×686）就是 `MachineCard`，版面已對稿；`src/editor/inspector/` 是未掛載的舊碼
+- **使用者裁決：** 轉接留在 `MainLayout`，`src/editor/inspector/` 不動
+- `MainLayout` 的 `selectedMachineCard` 補上 `iconUrl`（`getMachineIconUrl`）與 `formulas`（新檔 `src/app/layouts/toMachineCardFormulas.ts`：`getRecipesForMachine(機器名, 型態)` 轉 `{ duration, input, output }`）。`selectedRecipe` 不給（正式頁沒有指定配方）
+- 物品沒有圖示資料，配方列表的物品圖用 FormulaItem 預設圖
+- 使用者 10/31 追加：
+    - 右緣黃色三角形可點擊收起卡片：`MachineCard/Index.vue` 新增 `collapse` emit（`Button` 以 `@click.stop` 掛上，避免觸發 `pick`）；`MainLayout` 用 `devicePanelHidden` 只隱藏卡片、不清選取，再點設備即重新顯示
+    - `MachineCard/Machine.vue` 的圖片固定 153×153（原本沒設尺寸，200px 的 WebP 會蓋到資訊文字）
+    - 左側槽寬 461px（451＋三角形凸出 10），捲軸隱藏，新增 `src/composables/useDragScroll.ts` 按住左鍵拖曳捲動；子元素已 `preventDefault` 的拖曳（配方列橫向拖曳）不接手
+    - **以上兩處改到 shirone 的 L3 元件（`Index.vue`、`Machine.vue`），開 PR 時要註明並知會 shirone**
+
+### 3.4 分層對照（使用者 10/31 詢問後確認）
+
+分層以「有沒有 import store」判斷，不以資料夾判斷（`docs/dernoson/L3/L3.md:196`）。README 原意：L2 的畫面在 `src/app`、L3 元件在 `src/components`；實際上 `src/app/MachineCard`、`src/app/StatsPanel` 是 L3（不讀 store），`src/app/layouts` 與 `src/editor/*` 是 L2，`src/app/dev` 是 L1 debug 頁
 
 ---
 
@@ -139,7 +157,9 @@
 
 - **`dev/cake`**：W1026-H1，已 push（`f17e9bb`），未開 PR
 - **`dev/cake_toolbar`**：自 `upstream/master` 切出，工具列對齊設計稿，已 push（`8cf8b48`），未開 PR
-- **`dev/cake_prodstats`**：自 `dev/cake` 切出，右側產線總覽進行中（目前所在分支）
+- **`dev/cake_prodstats`**：自 `dev/cake` 切出，右側產線總覽，已 push 主要 commit
+- **`dev/cake_machinecard`**：自 `dev/cake` 切出並 merge `dev/cake_toolbar`，左側卡片接機器圖與配方（目前所在分支）
+- 10/31 四個分支都各加了兩個 commit：刪除 `docs/harry/dev/icons/*.png`（92 張，約 24MB）、`.gitignore` 加 `docs/harry/dev/icons/*.png`。刪 PNG 後 `--webp-only` 無法重產 WebP，要重跑完整腳本（會連網）
 - `cv/cake`（`573ed22`）的內容已併入 `dev/cake`，之後可不再使用
 - `.git/info/exclude`（本機）排除了 `docs/harry/claude/CLAUDE.md`、`docs/harry/figma_full.json`、`docs/harry/dev/icons/*.webp`：從 `upstream/master` 切出的分支沒有 `dev/cake` 加的 `.gitignore` 規則，靠這裡補
 - remote、PR 查詢方式與 git 事故教訓見 [CLAUDE.md](CLAUDE.md) §8
@@ -158,6 +178,7 @@
 - **正式頁 FlowEngine 沒有讀 `layoutStore`**（2026-10-31 發現）：`useFlowEngine()`（`src/composables/useFlowEngine.ts:1409`）仍只 watch `editorStore.nodes`／`edges`；`toTopology` 只有 dev 頁（`L1ContractLab`、`LayoutL1Preview`）在呼叫。因此正式頁擺的設備、W1026-H1 寫入的 `primaryOutput` 都不會進引擎，`flowStore` 在正式頁永遠是空結果。C5 文件寫「引擎讀 #74 合入」應只指 adapter 本身。尚未回報 dernoson／aaaaa
 - **`src/editor/stats/ProductionStats.vue` 的「總產出」區塊重複兩次**（第 340–367 行與 369–396 行內容完全相同）。該元件目前不在正式頁（見 §3.2）
 - **`src/style.css` 的全域字型註解與實際不符**：註解寫「全域字型 HarmonyOS Sans TC」，但 `:root` 的 `font-family` 是 Inter；`MachineCard`、StatsPanel、工具列（`dev/cake_toolbar`）各自在元件內指定 HarmonyOS
+- **`src/components/BaseRegionSelector` 讀 store，違反 L3 規則**（L3 不得 import Pinia store；2026-10-31 以 grep 盤點發現）。尚未回報
 
 - **真機器武裝（`usePlacementIntent`）時按 Esc 會開設定、不會取消落子**。spec 說拿起狀態 Esc＝取消，但這屬落子互動設計，留給 C1
 - **#48 寫死 Z 鍵收合工具列**，繞過 `keybindingStore`（已合入，未確認是否改過）
