@@ -34,6 +34,7 @@ components.d.ts
 /.claude
 /CLAUDE.md
 docs/harry/claude/CLAUDE.md
+docs/harry/figma_full.json
 
 # Agents
 .agents/
