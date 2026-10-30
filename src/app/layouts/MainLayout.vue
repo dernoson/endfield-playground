@@ -84,23 +84,21 @@ useFlowEngine();
                     <ToolbarPanel />
                 </section>
                 <!--
+                    設計稿 collapse button：黃色三角形貼畫布右緣、垂直置中。
                     放在 stage 內而非 aside 內：收合後 aside 寬度為 0，按鈕仍需留在畫面上。
-                    外包一層 div 承接定位：scoped style 的 data-v 屬性傳不進 UButton 的根節點。
+                    展開時指向右（收合），收合時翻轉指向左（展開）。
                 -->
-                <div class="area-stats-toggle">
-                    <UButton
-                        size="sm"
-                        color="neutral"
-                        variant="soft"
-                        :icon="
-                            statsOpen ? 'i-lucide-panel-right-close' : 'i-lucide-panel-right-open'
-                        "
-                        :aria-label="statsOpen ? '收合產線總覽' : '展開產線總覽'"
-                        :aria-expanded="statsOpen"
-                        aria-controls="area-stats"
-                        @click="statsOpen = !statsOpen"
-                    />
-                </div>
+                <button
+                    type="button"
+                    class="area-stats-toggle"
+                    :class="{ 'is-collapsed': !statsOpen }"
+                    :aria-label="statsOpen ? '收合產線總覽' : '展開產線總覽'"
+                    :aria-expanded="statsOpen"
+                    aria-controls="area-stats"
+                    @click="statsOpen = !statsOpen"
+                >
+                    <span class="area-stats-toggle__triangle" />
+                </button>
             </div>
 
             <aside id="area-stats" class="area-stats" :class="{ 'is-collapsed': !statsOpen }">
@@ -182,33 +180,65 @@ useFlowEngine();
 
 .area-stats-toggle {
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
+    top: 50%;
+    right: 12px;
     z-index: 30;
+    display: flex;
+    width: 24px;
+    height: 39px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    align-items: center;
+    justify-content: flex-end;
+    opacity: 0.8;
+    transition: opacity 150ms ease;
 }
 
-/* 寬度＝StatsPanel 設計寬 333px（主體 320＋標籤左凸 13）＋左邊框 1px */
-.area-stats {
-    width: 334px;
-    flex-shrink: 0;
-    min-height: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-    border-left: 1px solid #27272a;
-    transition: width 150ms ease;
+.area-stats-toggle:hover {
+    opacity: 1;
 }
 
-.area-stats.is-collapsed {
+/* 設計稿向量 20×39、#EEFD1C；以邊框畫出指向右的三角形 */
+.area-stats-toggle__triangle {
     width: 0;
-    border-left-width: 0;
+    height: 0;
+    border-top: 19.5px solid transparent;
+    border-bottom: 19.5px solid transparent;
+    border-left: 20px solid #eefd1c;
+}
+
+.area-stats-toggle.is-collapsed .area-stats-toggle__triangle {
+    transform: rotate(180deg);
 }
 
 /*
- * 內容寬度固定，收合動畫期間只裁切、不讓 StatsPanel 跟著重排。
+ * 寬度＝StatsPanel 主體 320px。面板標籤往左凸出 13px 疊在畫布上（同設計稿），
+ * 所以本欄不設 overflow（會把凸出部分裁掉），改用 clip-path 只放行左側 13px，
+ * 同時裁掉收合動畫中超出右緣的內容。position＋z-index 讓凸出的標籤蓋在 stage 之上。
+ */
+.area-stats {
+    position: relative;
+    z-index: 1;
+    width: 320px;
+    flex-shrink: 0;
+    min-height: 0;
+    clip-path: inset(0 0 0 -13px);
+    transition: width 150ms ease;
+}
+
+/* 收合後連凸出的標籤一起裁掉，不在畫布右緣留下 13px 殘影 */
+.area-stats.is-collapsed {
+    width: 0;
+    clip-path: inset(0);
+}
+
+/*
+ * 內容寬度固定為 StatsPanel 的 333px，左移 13px 讓主體對齊本欄；收合動畫期間只裁切、不重排。
  * 高度撐滿欄位：StatsPanel 根節點是 h-full，這層沒有高度時會退回內容高度。
  */
 .area-stats__body {
     width: 333px;
     height: 100%;
+    margin-left: -13px;
 }
 </style>
