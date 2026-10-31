@@ -17,7 +17,8 @@
                 <ul class="ml-4 space-y-1">
                     <li>
                         • 本頁於 setup 時以 <code>registerDetector()</code> 掛上
-                        <code>E001_deviceOverlap</code>，因此下方警示會實際反映設備重疊
+                        <code>E001</code
+                        >、<code>E004</code>、<code>E005</code>、<code>W001</code>，警示會即時反映重疊、缺輸入、缺輸出與材料不符
                     </li>
                     <li>
                         • 透過 <code>useValidation()</code> 監聽
@@ -110,7 +111,13 @@
                         @click="testPlaceUnconnectedMachine"
                         class="w-full rounded-md bg-amber-600 px-3 py-2 text-sm text-white hover:bg-amber-700"
                     >
-                        ➕ 新增沒接線的機器（精煉爐 @20,20，觸發 E004）
+                        ➕ 新增沒接線的機器（精煉爐 @20,20，觸發 E004+E005）
+                    </button>
+                    <button
+                        @click="testPlaceUnconnectedSource"
+                        class="w-full rounded-md bg-rose-600 px-3 py-2 text-sm text-white hover:bg-rose-700"
+                    >
+                        ➕ 新增沒接輸出線的源機（採礦機 @60,20，純粹觸發 E005）
                     </button>
                     <button
                         @click="testPlaceMismatchedConnection"
@@ -193,6 +200,7 @@ import { useValidationStore } from '@/store/validationStore';
 import { useValidation } from '@/composables/useValidation';
 import { E001_deviceOverlap } from '@/lib/validation/detectors/E001_deviceOverlap';
 import { E004_missingInput } from '@/lib/validation/detectors/E004_missingInput';
+import { E005_missingOutput } from '@/lib/validation/detectors/E005_missingOutput';
 import { W001_unmatchedMaterial } from '@/lib/validation/detectors/W001_unmatchedMaterial';
 
 /** 藍圖 store：本頁所有測試設備皆透過此 store 擺放 / 清除 */
@@ -203,6 +211,7 @@ const validationStore = useValidationStore();
 /** 註冊必須早於 useValidation()：後者的 watch 是 immediate，setup 當下就會跑一次 */
 validationStore.registerDetector(E001_deviceOverlap);
 validationStore.registerDetector(E004_missingInput);
+validationStore.registerDetector(E005_missingOutput);
 validationStore.registerDetector(W001_unmatchedMaterial);
 
 /** 啟動 editorStore → validationStore 的自動重跑監聽 */
@@ -261,6 +270,21 @@ function testPlaceUnconnectedMachine() {
         type: 'default',
         position: { x: 400, y: 400 },
         data: { label: '未接線精煉爐', machineType: '精煉爐', recipeIndex: 0, rotation: 0 },
+    });
+}
+
+/**
+ * 在像素座標 (1200,400)（即格子 (60,20)）擺放一台未接輸出線的採礦機（is_source: true），
+ * 因源機不套用 E004，但無出邊而觸發 E005，用於純粹驗證 E005。
+ * @example
+ * testPlaceUnconnectedSource()
+ */
+function testPlaceUnconnectedSource() {
+    editorStore.placeDevice({
+        id: crypto.randomUUID(),
+        type: 'default',
+        position: { x: 1200, y: 400 },
+        data: { label: '未接線採礦機', machineType: '採礦機', rotation: 0 },
     });
 }
 
