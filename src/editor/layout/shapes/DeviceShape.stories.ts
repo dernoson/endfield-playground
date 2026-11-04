@@ -13,7 +13,7 @@ const meta = {
                 </svg>`,
         }),
     ],
-    args: { width: 225, height: 225 },
+    args: { width: 5, height: 5 },
 } satisfies Meta<typeof DeviceShape>;
 
 export default meta;

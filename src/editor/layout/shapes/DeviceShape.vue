@@ -5,37 +5,50 @@ import planterPatternUrl from '@/assets/icon/planter-pattern.png';
 const planterClipId = useId();
 /** 種植機圓形徽章的 drop shadow filter id，對應設計稿 X0 Y4 Blur4 #000 25% */
 const planterShadowId = useId();
+const DESIGN_WIDTH = 225;
+const DESIGN_HEIGHT = 225;
 const markerXs = [2.977, 215.08];
 const markerYs = [17.17, 61.97, 106.77, 151.57, 196.37];
 
 const props = withDefaults(
     defineProps<{
-        /** 設備寬度（像素） */
+        /** 設備寬度（格） */
         width: number;
-        /** 設備高度（像素） */
+        /** 設備高度（格） */
         height: number;
+        /** 一格的像素大小；預設與佈局畫布一致 */
+        gridSize?: number;
         /** 可選的設備名稱 */
         label?: string;
         /** 拖曳中以淺藍色標示 */
         dragging?: boolean;
     }>(),
-    { dragging: false },
+    { gridSize: 28, dragging: false },
 );
 
-const outline = computed(() => `M0.5 0.5H${props.width - 0.5}V${props.height - 0.5}H0.5V0.5Z`);
+const pixelWidth = computed(() => props.width * props.gridSize);
+const pixelHeight = computed(() => props.height * props.gridSize);
+const shapeTransform = computed(
+    () => `scale(${pixelWidth.value / DESIGN_WIDTH} ${pixelHeight.value / DESIGN_HEIGHT})`,
+);
+const outline = computed(
+    () => `M0.5 0.5H${pixelWidth.value - 0.5}V${pixelHeight.value - 0.5}H0.5V0.5Z`,
+);
 </script>
 
 <template>
     <g data-testid="device-shape" :data-dragging="props.dragging">
         <path :d="outline" fill="white" fill-opacity="0.2" stroke="white" />
-        <g v-for="x in markerXs" :key="x">
-            <path
-                v-for="y in markerYs"
-                :key="y"
-                :transform="`translate(${x} ${y})`"
-                d="M4.60201 5.84476L0.00194907 1.2447L1.246 3.8147e-06L7.09141 5.84476L1.2447 11.6934L0 10.4481L4.60201 5.84476Z"
-                fill="white"
-            />
+        <g :transform="shapeTransform">
+            <g v-for="x in markerXs" :key="x">
+                <path
+                    v-for="y in markerYs"
+                    :key="y"
+                    :transform="`translate(${x} ${y})`"
+                    d="M4.60201 5.84476L0.00194907 1.2447L1.246 3.8147e-06L7.09141 5.84476L1.2447 11.6934L0 10.4481L4.60201 5.84476Z"
+                    fill="white"
+                />
+            </g>
         </g>
         <path
             v-if="props.dragging"
@@ -43,54 +56,68 @@ const outline = computed(() => `M0.5 0.5H${props.width - 0.5}V${props.height - 0
             fill="rgba(28, 174, 253, 0.3)"
             stroke="rgba(28, 174, 253, 1)"
         />
-        <template v-if="props.label === '種植機'">
-            <defs>
-                <clipPath :id="planterClipId">
-                    <circle cx="110.81" cy="102.5" r="27.5" />
-                </clipPath>
-                <!-- Figma 的 Blur 是模糊半徑，換算成 SVG stdDeviation 需除以 2 -->
-                <filter :id="planterShadowId" x="-50%" y="-50%" width="200%" height="200%">
-                    <feDropShadow
-                        dx="0"
-                        dy="4"
-                        stdDeviation="2"
-                        flood-color="#000000"
-                        flood-opacity="0.25"
+        <g :transform="shapeTransform">
+            <template v-if="props.label === '種植機'">
+                <defs>
+                    <clipPath :id="planterClipId">
+                        <circle cx="110.81" cy="102.5" r="27.5" />
+                    </clipPath>
+                    <!-- Figma 的 Blur 是模糊半徑，換算成 SVG stdDeviation 需除以 2 -->
+                    <filter :id="planterShadowId" x="-50%" y="-50%" width="200%" height="200%">
+                        <feDropShadow
+                            dx="0"
+                            dy="4"
+                            stdDeviation="2"
+                            flood-color="#000000"
+                            flood-opacity="0.25"
+                        />
+                    </filter>
+                </defs>
+                <g :filter="`url(#${planterShadowId})`">
+                    <foreignObject x="83.31" y="75" width="55" height="55">
+                        <div
+                            xmlns="http://www.w3.org/1999/xhtml"
+                            style="
+                                width: 55px;
+                                height: 55px;
+                                border-radius: 50%;
+                                background: rgba(43, 43, 43, 1);
+                            "
+                        />
+                    </foreignObject>
+                    <image
+                        :href="planterPatternUrl"
+                        x="83.31"
+                        y="75"
+                        width="55"
+                        height="55"
+                        :clip-path="`url(#${planterClipId})`"
                     />
-                </filter>
-            </defs>
-            <g :filter="`url(#${planterShadowId})`">
-                <foreignObject x="83.31" y="75" width="55" height="55">
-                    <div
-                        xmlns="http://www.w3.org/1999/xhtml"
-                        style="
-                            width: 55px;
-                            height: 55px;
-                            border-radius: 50%;
-                            background: rgba(43, 43, 43, 1);
-                        "
+                    <circle
+                        cx="110.81"
+                        cy="102.5"
+                        r="27.5"
+                        fill="none"
+                        stroke="rgba(238, 253, 28, 1)"
+                        stroke-width="3"
                     />
-                </foreignObject>
-                <image
-                    :href="planterPatternUrl"
-                    x="83.31"
-                    y="75"
-                    width="55"
-                    height="55"
-                    :clip-path="`url(#${planterClipId})`"
-                />
-                <circle
-                    cx="110.81"
-                    cy="102.5"
-                    r="27.5"
-                    fill="none"
-                    stroke="rgba(238, 253, 28, 1)"
-                    stroke-width="3"
-                />
-            </g>
-        </template>
+                </g>
+            </template>
+            <text
+                v-else-if="props.label"
+                :x="DESIGN_WIDTH / 2"
+                :y="DESIGN_HEIGHT / 2"
+                fill="white"
+                font-size="14"
+                text-anchor="middle"
+                dominant-baseline="middle"
+            >
+                {{ props.label }}
+            </text>
+        </g>
         <foreignObject
             v-if="props.label === '種植機'"
+            :transform="shapeTransform"
             x="83.31"
             y="132.47"
             width="55"
@@ -115,16 +142,5 @@ const outline = computed(() => `M0.5 0.5H${props.width - 0.5}V${props.height - 0
                 {{ props.label }}
             </div>
         </foreignObject>
-        <text
-            v-else-if="props.label"
-            :x="props.width / 2"
-            :y="props.height / 2"
-            fill="white"
-            font-size="14"
-            text-anchor="middle"
-            dominant-baseline="middle"
-        >
-            {{ props.label }}
-        </text>
     </g>
 </template>
