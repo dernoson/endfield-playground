@@ -62,16 +62,22 @@ const NO_NAME_IDS: ReadonlySet<string> = new Set(['thermal_pool']);
 /** 沒有接電時顯示的電池圖示網址；檔案不存在時為 undefined */
 const BATTERY_URL = firstUrl(batteryFiles);
 
-// ─── 設計稿常數（單位：設計單位；一格 = CELL_DESIGN） ──────────────────
+// ─── 設計稿常數（單位：設計單位 = Figma 長度單位；一格 = CELL_DESIGN） ──
 /** 設計稿中一格的邊長；原 225×225 設計稿 = 5×5 格，每格 45 */
 const CELL_DESIGN = 45;
-/** 箭頭中心距離設備邊緣的內縮量（取自原設計稿左右標記的位置平均） */
-const MARKER_INSET = 6.45;
+
 /** 箭頭路徑（朝右的 chevron）的包圍盒中心，旋轉時以此為軸心 */
 const CHEVRON_CX = 3.546;
 const CHEVRON_CY = 5.847;
 const CHEVRON_PATH =
     'M4.60201 5.84476L0.00194907 1.2447L1.246 3.8147e-06L7.09141 5.84476L1.2447 11.6934L0 10.4481L4.60201 5.84476Z';
+/** 箭頭最靠近設備邊緣的那一點，到設備邊緣的距離（Figma：3） */
+const ARROW_EDGE_GAP = 3;
+/**
+ * 箭頭中心距離設備邊緣的內縮量。
+ * 箭頭沿「朝內」方向的寬度為 CHEVRON_CX × 2，所以中心 = 間距 + 半寬。
+ */
+const MARKER_INSET = ARROW_EDGE_GAP + CHEVRON_CX;
 
 /** 四個邊；橋的標記依序畫在每一邊 */
 const ALL_SIDES: readonly PortSide[] = ['top', 'right', 'bottom', 'left'];
@@ -87,13 +93,35 @@ const INWARD_ANGLE: Record<PortSide, number> = {
 /** 1×1 的橋類機器：四邊各畫一組對稱重疊箭頭，不依埠資料 */
 const BRIDGE_IDS: ReadonlySet<string> = new Set(['logistics_bridge', 'pipe_bridge']);
 
+// ─── 顏色與狀態 ───────────────────────────────────────────────────────
+/** 底框底色不透明度（一般、選取、供電樁都是 20%） */
+const OUTLINE_FILL_OPACITY = 0.2;
+
+/** 被單擊選取時：邊線、箭頭、底色都用這個藍色（Figma：#1CAEFD） */
+const SELECTED_COLOR = '#1CAEFD';
+
+/** 供電樁外框（未選取）：底色 #EEFD1C，描邊同色 */
+const POLE_FILL = '#EEFD1C';
+const POLE_STROKE = 'rgba(238, 253, 28, 1)';
+
+/** 拖曳中：底框（底色、邊線、箭頭）整組的 Opacity */
+const DRAG_BODY_OPACITY = 0.7;
+/** 拖曳中：頭像圓框的 Opacity */
+const DRAG_AVATAR_OPACITY = 0.5;
+
 // ─── 頭像（圓形徽章）與名稱標籤 ───────────────────────────────────────
 /** 頭像圓框半徑（直徑 55 設計單位） */
 const ICON_RADIUS = 27.5;
-/** 圓心到下方名稱標籤頂端的距離（原：132.47 − 102.5） */
-const ICON_LABEL_DY = 29.97;
+/** 頭像圓框描邊寬度（以圓周為中心，向外凸出一半） */
+const ICON_STROKE_WIDTH = 3;
+/** 頭像描邊外緣到名稱標籤框頂端的間距（Figma：3） */
+const ICON_NAME_GAP = 3;
+/** 圓心到下方名稱標籤頂端的距離 = 半徑 + 描邊外凸 + 間距 */
+const ICON_LABEL_DY = ICON_RADIUS + ICON_STROKE_WIDTH / 2 + ICON_NAME_GAP;
 /** 名稱標籤框高度（Figma：Height 18px） */
 const ICON_LABEL_HEIGHT = 18;
+/** 名稱文字大小；line-height 為 100%，所以一行文字的高度等於字級 */
+const ICON_LABEL_FONT_SIZE = 16;
 
 // ─── 其他圖示 ─────────────────────────────────────────────────────────
 /** 供電樁正中央圖示的顯示寬高（設計單位，Figma：36 × 33.77） */
@@ -102,17 +130,14 @@ const CENTER_ICON_HEIGHT = 33.77;
 /** 電池圖示的顯示寬高（設計單位，Figma：23.82 × 11.16） */
 const BATTERY_WIDTH = 23.82;
 const BATTERY_HEIGHT = 11.16;
-/** 電池圖示頂端與名稱標籤底端的距離（設計單位） */
+/** 電池圖示頂端與名稱文字（一行文字的底端）的距離（Figma：1） */
 const BATTERY_GAP = 1;
-
-/** 供電樁外框：底色 #EEFD1C、不透明度 20%，描邊同色 */
-const POLE_FILL = '#EEFD1C';
-const POLE_FILL_OPACITY = 0.2;
-const POLE_STROKE = 'rgba(238, 253, 28, 1)';
 
 const iconClipId = useId();
 /** 圓形徽章的 drop shadow filter id，對應設計稿 X0 Y4 Blur4 #000 25% */
 const iconShadowId = useId();
+/** 供電樁圖示選取時改色的 filter id */
+const poleIconTintId = useId();
 
 const props = withDefaults(
     defineProps<{
@@ -128,12 +153,14 @@ const props = withDefaults(
         gridSize?: number;
         /** 顯示名稱；查得到機器時以機器名稱為準 */
         label?: string;
-        /** 拖曳中以淺藍色標示 */
+        /** 拖曳中：底框與邊線、箭頭 Opacity 70%，頭像圓框 Opacity 50%，放下後恢復 */
         dragging?: boolean;
+        /** 被滑鼠單擊選取：邊線、箭頭、底色改為藍色 #1CAEFD */
+        selected?: boolean;
         /** 設備目前沒有接電（收到「未接電」訊號）時為 true，會顯示電池圖示 */
         unpowered?: boolean;
     }>(),
-    { gridSize: 28, dragging: false, unpowered: false },
+    { gridSize: 28, dragging: false, selected: false, unpowered: false },
 );
 
 /** 查到的機器定義；查不到時為 undefined（只畫外框與文字） */
@@ -218,9 +245,8 @@ const iconCx = computed(() => designWidth.value / 2);
 /** 圓心 Y：整個群組在設備內垂直置中 */
 const iconCy = computed(() => designHeight.value / 2 - groupHeight.value / 2 + ICON_RADIUS);
 
-/** 名稱標籤框頂端與底端 */
+/** 名稱標籤框頂端 */
 const labelTop = computed(() => iconCy.value + ICON_LABEL_DY);
-const labelBottom = computed(() => labelTop.value + ICON_LABEL_HEIGHT);
 
 /** 標籤框：寬度為機器內寬（避開兩側箭頭），文字置中，長名稱不會偏移 */
 const labelBoxWidth = computed(() => designWidth.value - 2 * (MARKER_INSET + 8));
@@ -234,8 +260,8 @@ const showBattery = computed(() => props.unpowered && showName.value && !!BATTER
 
 /** 電池圖示左上角 X：設備水平置中 */
 const batteryX = computed(() => designWidth.value / 2 - BATTERY_WIDTH / 2);
-/** 電池圖示左上角 Y：名稱標籤底端下方 1 單位 */
-const batteryY = computed(() => labelBottom.value + BATTERY_GAP);
+/** 電池圖示左上角 Y：名稱文字（一行）底端下方 BATTERY_GAP */
+const batteryY = computed(() => labelTop.value + ICON_LABEL_FONT_SIZE + BATTERY_GAP);
 
 // ─── 特殊外觀 ─────────────────────────────────────────────────────────
 /** 1×1 的橋（物流橋、管道橋） */
@@ -252,6 +278,22 @@ const isPipe = computed(() => {
 
 /** 供電樁類：外框改為圓形、顏色改為淡黃色 */
 const isPole = computed(() => layout.value === 'centerIcon');
+
+// ─── 顏色（依選取狀態切換） ───────────────────────────────────────────
+/** 底框底色：選取時藍色，供電樁淡黃色，其餘白色 */
+const outlineFill = computed(() => {
+    if (props.selected) return SELECTED_COLOR;
+    return isPole.value ? POLE_FILL : 'white';
+});
+
+/** 外框描邊：選取時藍色，供電樁淡黃色，其餘白色 */
+const outlineStroke = computed(() => {
+    if (props.selected) return SELECTED_COLOR;
+    return isPole.value ? POLE_STROKE : 'white';
+});
+
+/** 箭頭與分流器直線的顏色：選取時與邊線同為藍色，其餘白色 */
+const lineColor = computed(() => (props.selected ? SELECTED_COLOR : 'white'));
 
 /**
  * 長條機器的倒角側：取第一個埠所在的邊（箭頭所在側）。
@@ -394,31 +436,28 @@ const markers = computed(() => {
 </script>
 
 <template>
-    <g data-testid="device-shape" :data-dragging="props.dragging">
-        <path
-            :d="outline"
-            :fill="isPole ? POLE_FILL : 'white'"
-            :fill-opacity="isPole ? POLE_FILL_OPACITY : 0.2"
-            :stroke="isPole ? POLE_STROKE : 'white'"
-        />
-        <path v-if="spokePath" :d="spokePath" fill="none" stroke="white" />
-        <g :transform="shapeTransform">
+    <g data-testid="device-shape" :data-dragging="props.dragging" :data-selected="props.selected">
+        <!-- 底框、邊線、箭頭：拖曳中整組套用 Opacity 70% -->
+        <g :opacity="props.dragging ? DRAG_BODY_OPACITY : 1">
             <path
-                v-for="marker in markers"
-                :key="marker.key"
-                :transform="marker.transform"
-                :d="CHEVRON_PATH"
-                fill="white"
+                :d="outline"
+                :fill="outlineFill"
+                :fill-opacity="OUTLINE_FILL_OPACITY"
+                :stroke="outlineStroke"
             />
+            <path v-if="spokePath" :d="spokePath" fill="none" :stroke="lineColor" />
+            <g :transform="shapeTransform">
+                <path
+                    v-for="marker in markers"
+                    :key="marker.key"
+                    :transform="marker.transform"
+                    :d="CHEVRON_PATH"
+                    :fill="lineColor"
+                />
+            </g>
         </g>
-        <path
-            v-if="props.dragging"
-            :d="outline"
-            fill="rgba(28, 174, 253, 0.3)"
-            stroke="rgba(28, 174, 253, 1)"
-        />
         <g :transform="shapeTransform">
-            <!-- 頭像圓框：即使沒有圖片也保留直徑 55 的圓框 -->
+            <!-- 頭像圓框：即使沒有圖片也保留直徑 55 的圓框；拖曳中 Opacity 50% -->
             <template v-if="layout === 'badge'">
                 <defs>
                     <clipPath :id="iconClipId">
@@ -435,7 +474,10 @@ const markers = computed(() => {
                         />
                     </filter>
                 </defs>
-                <g :filter="`url(#${iconShadowId})`">
+                <g
+                    :filter="`url(#${iconShadowId})`"
+                    :opacity="props.dragging ? DRAG_AVATAR_OPACITY : 1"
+                >
                     <foreignObject
                         :x="iconCx - ICON_RADIUS"
                         :y="iconCy - ICON_RADIUS"
@@ -467,19 +509,28 @@ const markers = computed(() => {
                         :r="ICON_RADIUS"
                         fill="none"
                         stroke="rgba(238, 253, 28, 1)"
-                        stroke-width="3"
+                        :stroke-width="ICON_STROKE_WIDTH"
                     />
                 </g>
             </template>
-            <!-- 供電樁類：機器正中央的圖示（圓形外框由 outline 負責） -->
-            <image
-                v-else-if="layout === 'centerIcon' && centerIconUrl"
-                :href="centerIconUrl"
-                :x="designWidth / 2 - CENTER_ICON_WIDTH / 2"
-                :y="designHeight / 2 - CENTER_ICON_HEIGHT / 2"
-                :width="CENTER_ICON_WIDTH"
-                :height="CENTER_ICON_HEIGHT"
-            />
+            <!-- 供電樁類：機器正中央的圖示（圓形外框由 outline 負責），選取時線條改為藍色 -->
+            <template v-else-if="layout === 'centerIcon' && centerIconUrl">
+                <defs>
+                    <!-- 先填滿藍色，再只保留原圖有顏色的部分，所以原本的線條形狀不變、顏色變藍 -->
+                    <filter :id="poleIconTintId" color-interpolation-filters="sRGB">
+                        <feFlood :flood-color="SELECTED_COLOR" result="tint" />
+                        <feComposite in="tint" in2="SourceAlpha" operator="in" />
+                    </filter>
+                </defs>
+                <image
+                    :href="centerIconUrl"
+                    :x="designWidth / 2 - CENTER_ICON_WIDTH / 2"
+                    :y="designHeight / 2 - CENTER_ICON_HEIGHT / 2"
+                    :width="CENTER_ICON_WIDTH"
+                    :height="CENTER_ICON_HEIGHT"
+                    :filter="props.selected ? `url(#${poleIconTintId})` : undefined"
+                />
+            </template>
             <!-- 查不到機器：只顯示傳入的 label -->
             <text
                 v-else-if="layout === 'text' && displayName"
@@ -517,7 +568,7 @@ const markers = computed(() => {
                     height: ICON_LABEL_HEIGHT + 'px',
                     color: 'rgba(207, 207, 207, 1)',
                     fontFamily: `'HarmonyOS Sans TC', sans-serif`,
-                    fontSize: '16px',
+                    fontSize: ICON_LABEL_FONT_SIZE + 'px',
                     fontStyle: 'normal',
                     fontWeight: 400,
                     lineHeight: '100%',

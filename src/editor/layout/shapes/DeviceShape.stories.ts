@@ -22,13 +22,15 @@ const svgStage = () => ({
 interface GridItem {
     /** 項目下方的說明文字 */
     caption: string;
-    /** 傳給 DeviceShape 的 props（不含 gridSize／dragging／unpowered） */
+    /** 傳給 DeviceShape 的 props（不含 gridSize／dragging／selected／unpowered） */
     props: Record<string, unknown>;
     /** 設備佔幾格，用來算 svg 容器大小 */
     cellsW: number;
     cellsH: number;
-    /** 是否為拉出狀態 */
+    /** 是否為拖曳中狀態 */
     dragging: boolean;
+    /** 是否為被選取狀態 */
+    selected: boolean;
     /** 是否為未接電狀態（顯示電池圖示） */
     unpowered: boolean;
 }
@@ -36,11 +38,18 @@ interface GridItem {
 /**
  * 依機器 id（與可選的 mode）建立並排項目；寬高取自機器資料。
  * @param id 機器 id
- * @param dragging 是否為拉出狀態
+ * @param dragging 是否為拖曳中狀態
  * @param modeId 機器模式 id；省略則取第一個 mode
  * @param unpowered 是否為未接電狀態
+ * @param selected 是否為被選取狀態
  */
-function machineItem(id: string, dragging: boolean, modeId?: string, unpowered = false): GridItem {
+function machineItem(
+    id: string,
+    dragging: boolean,
+    modeId?: string,
+    unpowered = false,
+    selected = false,
+): GridItem {
     const machine = getMachineById(id);
     return {
         caption: modeId ? `${id} / ${modeId}` : id,
@@ -48,6 +57,7 @@ function machineItem(id: string, dragging: boolean, modeId?: string, unpowered =
         cellsW: machine?.width ?? 1,
         cellsH: machine?.height ?? 1,
         dragging,
+        selected,
         unpowered,
     };
 }
@@ -81,6 +91,7 @@ function gridRender(buildItems: (args: Record<string, unknown>) => GridItem[]) {
                                 v-bind="item.props"
                                 :grid-size="gs"
                                 :dragging="item.dragging"
+                                :selected="item.selected"
                                 :unpowered="item.unpowered"
                             />
                         </g>
@@ -97,9 +108,14 @@ function gridRender(buildItems: (args: Record<string, unknown>) => GridItem[]) {
  * - 一般機器（3×3 以上）：頭像圓框（直徑 55，沒有圖片時保留空圓框）＋名稱，整組在設備內置中
  * - 1×1：不放名稱與頭像；分流器／匯流器用三條直線，橋用四邊重疊箭頭，管道類外框為圓形
  * - 1×3／3×1：不放名稱與頭像；箭頭側兩端倒角
- * - 供電樁類（2×2）：正中央放圖示；熱能池（2×2）：只有頭像圓框，沒有名稱
- * `dragging` 為 false 是放下後的樣子，true 是拉出（跟著滑鼠）時疊上淺藍色的樣子。
- * `unpowered` 為 true 時，有名稱的機器會在名稱下方顯示電池圖示。
+ * - 供電樁類（2×2）：淡黃色圓形外框，正中央放圖示；熱能池（2×2）：只有頭像圓框，沒有名稱
+ *
+ * 狀態：
+ * - 預設（放下後）：灰色；供電樁為淡黃色
+ * - `selected`：被單擊選取，邊線、箭頭、底色（20%）為藍色 #1CAEFD；供電樁的圖示線條也變藍
+ * - `dragging`：拖曳中，設備維持原色，底框與邊線、箭頭 Opacity 70%，頭像圓框 Opacity 50%，放下後恢復
+ * - `unpowered`：有名稱的機器會在名稱下方顯示電池圖示
+ *
  * 目前只有種植機登記了頭像圖片。
  */
 const meta = {
@@ -109,6 +125,7 @@ const meta = {
         machineType: 'planter',
         gridSize: 28,
         dragging: false,
+        selected: false,
         unpowered: false,
     },
     argTypes: {
@@ -119,7 +136,14 @@ const meta = {
         },
         machineMode: { control: 'text', description: '機器模式 id；留空取第一個 mode' },
         gridSize: { control: { type: 'range', min: 12, max: 72, step: 2 } },
-        dragging: { control: 'boolean', description: '拖曳中以淺藍色標示' },
+        dragging: {
+            control: 'boolean',
+            description: '拖曳中：底框與邊線、箭頭 Opacity 70%，頭像圓框 Opacity 50%',
+        },
+        selected: {
+            control: 'boolean',
+            description: '被單擊選取：邊線、箭頭、底色改為藍色 #1CAEFD',
+        },
         unpowered: { control: 'boolean', description: '沒有接電時顯示電池圖示' },
     },
 } satisfies Meta<typeof DeviceShape>;
@@ -136,22 +160,45 @@ export const Placed: Story = {
     decorators: [svgStage],
 };
 
-/** 拉出時：疊上淺藍色填色與藍色描邊 */
+/** 被選取：邊線、箭頭、底色（20%）都是藍色 #1CAEFD */
+export const Selected: Story = {
+    name: '選取：種植機',
+    args: { machineType: 'planter', selected: true },
+    decorators: [svgStage],
+};
+
+/** 拖曳中：設備維持灰色，底框與邊線、箭頭 Opacity 70%，頭像圓框 Opacity 50% */
 export const Dragging: Story = {
-    name: '拉出：種植機',
+    name: '拖曳中：種植機',
     args: { machineType: 'planter', dragging: true },
     decorators: [svgStage],
 };
 
-/** 放下與拉出並排對照；種植機有頭像圖片，灌裝機尚無圖片，保留空圓框 */
+/** 放下與拖曳並排對照；種植機有頭像圖片，灌裝機尚無圖片，保留空圓框 */
 export const PlacedVsDragging: Story = {
-    name: '對照：放下 vs 拉出',
+    name: '對照：放下 vs 拖曳',
     render: gridRender(() => [
         { ...machineItem('planter', false), caption: 'planter · 放下' },
-        { ...machineItem('planter', true), caption: 'planter · 拉出' },
+        { ...machineItem('planter', true), caption: 'planter · 拖曳中' },
         { ...machineItem('filling_machine', false), caption: 'filling_machine · 放下' },
-        { ...machineItem('filling_machine', true), caption: 'filling_machine · 拉出' },
+        { ...machineItem('filling_machine', true), caption: 'filling_machine · 拖曳中' },
     ]),
+};
+
+/**
+ * 三種狀態對照：放下、選取、拖曳中。
+ * 涵蓋有頭像的設備、供電樁（圓形、圖示會變藍）、1×1 分流器（直線與箭頭會變藍）。
+ */
+export const StatesComparison: Story = {
+    name: '對照：放下 vs 選取 vs 拖曳',
+    args: { gridSize: 40 },
+    render: gridRender(() =>
+        ['planter', 'power_pole', 'splitter'].flatMap((id) => [
+            { ...machineItem(id, false), caption: `${id} · 放下` },
+            { ...machineItem(id, false, undefined, false, true), caption: `${id} · 選取` },
+            { ...machineItem(id, true), caption: `${id} · 拖曳中` },
+        ]),
+    ),
 };
 
 /** 3×3：上方輸入箭頭朝下、下方輸出箭頭朝下；頭像與名稱整組置中 */
@@ -185,7 +232,7 @@ export const RefineryLiquidMode: Story = {
 /**
  * 1×1 機器：不放名稱與頭像。
  * 准入口＝左入右出箭頭；分流器＝左側輸入箭頭＋三條輸出直線；匯流器＝三條輸入直線＋右側輸出箭頭；
- * 橋＝四邊各兩個重疊箭頭；管道類外框為圓形。
+ * 橋＝四邊各兩個重疊箭頭；管道類外框為圓形。可用 controls 切換 dragging／selected。
  */
 export const TinyMachines1x1: Story = {
     name: '1×1 機器（箭頭與線條）',
@@ -200,20 +247,23 @@ export const TinyMachines1x1: Story = {
             'pipe_splitter',
             'pipe_bridge',
             'pipe_merger',
-        ].map((id) => machineItem(id, Boolean(args.dragging))),
+        ].map((id) =>
+            machineItem(id, Boolean(args.dragging), undefined, false, Boolean(args.selected)),
+        ),
     ),
 };
 
 /**
  * 1×3／3×1 長條機器：不放名稱與頭像，箭頭所在側的兩端各倒一個半格的 45 度角。
- * 目前資料中 1×3 的埠都在右側、3×1 的埠都在上側。
+ * 目前資料中 1×3 的埠都在右側、3×1 的埠都在上側。可用 controls 切換 dragging／selected。
  */
 export const BarMachines: Story = {
     name: '長條機器（倒角）',
     args: { gridSize: 56 },
     render: gridRender((args) =>
         ['warehouse_input', 'warehouse_output', 'material_source', 'item_source', 'item_sink'].map(
-            (id) => machineItem(id, Boolean(args.dragging)),
+            (id) =>
+                machineItem(id, Boolean(args.dragging), undefined, false, Boolean(args.selected)),
         ),
     ),
 };
@@ -225,18 +275,21 @@ export const MaterialSourceFluidMode: Story = {
     decorators: [svgStage],
 };
 
-/** 2×2：供電樁類正中央放圖示；熱能池只有頭像圓框與 2 個輸入箭頭，兩者都沒有名稱 */
+/**
+ * 2×2：供電樁類為淡黃色圓形外框，正中央放圖示；熱能池只有頭像圓框與 2 個輸入箭頭，兩者都沒有名稱。
+ * 可用 controls 切換 selected（供電樁底色與圖示變藍）、dragging。
+ */
 export const Machines2x2: Story = {
     name: '2×2 機器（供電樁／熱能池）',
     args: { gridSize: 56 },
     render: gridRender((args) =>
         ['power_pole', 'xi_rang_power_pole', 'thermal_pool'].map((id) =>
-            machineItem(id, Boolean(args.dragging)),
+            machineItem(id, Boolean(args.dragging), undefined, false, Boolean(args.selected)),
         ),
     ),
 };
 
-/** 未接電：有名稱的機器在名稱下方 1 單位處出現電池圖示，水平置中；可用 controls 切換 unpowered */
+/** 未接電：有名稱的機器在名稱文字下方 1 單位處出現電池圖示，水平置中；可用 controls 切換 unpowered */
 export const Unpowered: Story = {
     name: '未接電：電池圖示',
     args: { machineType: 'crusher', unpowered: true, gridSize: 56 },
@@ -273,12 +326,18 @@ export const UnknownMachine: Story = {
     decorators: [svgStage],
 };
 
-/** 全部機器（預設 mode）；導入新機器或新圖片時用來目視檢查，可用 controls 切換放下／拉出／未接電 */
+/** 全部機器（預設 mode）；導入新機器或新圖片時用來目視檢查，可用 controls 切換拖曳中／選取／未接電 */
 export const GalleryAllMachines: Story = {
     name: '總覽：所有機器',
     render: gridRender((args) =>
         machineList.map((m) =>
-            machineItem(m.id, Boolean(args.dragging), undefined, Boolean(args.unpowered)),
+            machineItem(
+                m.id,
+                Boolean(args.dragging),
+                undefined,
+                Boolean(args.unpowered),
+                Boolean(args.selected),
+            ),
         ),
     ),
 };
@@ -289,7 +348,13 @@ export const GalleryAllModes: Story = {
     render: gridRender((args) =>
         machineList.flatMap((m) =>
             m.modes.map((mode) =>
-                machineItem(m.id, Boolean(args.dragging), mode.id, Boolean(args.unpowered)),
+                machineItem(
+                    m.id,
+                    Boolean(args.dragging),
+                    mode.id,
+                    Boolean(args.unpowered),
+                    Boolean(args.selected),
+                ),
             ),
         ),
     ),
@@ -311,7 +376,8 @@ const CONTINUOUS_PLACEMENT = false;
 
 /**
  * 模擬 L2 接線：與下方真正的 ToolbarPanel 連動。
- * 點卡片 → 淺藍色預覽（吸附格線）跟著滑鼠 → 點畫布放下 → 變回一般樣式。
+ * 點卡片 → 半透明預覽（吸附格線）跟著滑鼠 → 點畫布放下 → 變回一般樣式。
+ * 沒有拿起機器時，單擊已放下的設備可選取（藍色），點空白處取消選取。
  * 這只是 Story 內的簡化模擬，沒有碰撞檢查、平移、縮放，也不寫入 editorStore。
  */
 export const WithToolbar: Story = {
@@ -327,6 +393,8 @@ export const WithToolbar: Story = {
             const selectedView = ref('layout');
             const placed = ref<PlacedItem[]>([]);
             const hover = ref<{ col: number; row: number } | null>(null);
+            /** 目前被選取的已放置設備；沒有選取時為 null */
+            const selectedKey = ref<number | null>(null);
             let nextKey = 0;
 
             /** 目前拿起的機器定義；沒拿起時為 undefined */
@@ -346,7 +414,7 @@ export const WithToolbar: Story = {
             const hint = computed(() =>
                 armed.value
                     ? `已拿起：${armed.value.name}（${armed.value.width}×${armed.value.height}）｜點畫布放下，Esc 取消`
-                    : '點下方卡片拿起機器',
+                    : '點下方卡片拿起機器；單擊已放下的設備可選取',
             );
 
             /**
@@ -372,10 +440,14 @@ export const WithToolbar: Story = {
                 };
             }
 
-            /** 點畫布：有拿起機器且有預覽位置才放下 */
+            /** 點畫布：有拿起機器且有預覽位置才放下；沒拿起機器時，點空白處取消選取 */
             function handleClick() {
                 const machine = armed.value;
-                if (!machine || !hover.value) return;
+                if (!machine) {
+                    selectedKey.value = null;
+                    return;
+                }
+                if (!hover.value) return;
                 placed.value.push({
                     key: nextKey++,
                     machineId: machine.id,
@@ -389,6 +461,17 @@ export const WithToolbar: Story = {
             }
 
             /**
+             * 點已放下的設備：沒拿起機器時選取它；拿起機器時讓事件往上傳，照常放置。
+             * @param event 點擊事件
+             * @param key 被點的設備 key
+             */
+            function handleItemClick(event: MouseEvent, key: number) {
+                if (armed.value) return;
+                event.stopPropagation();
+                selectedKey.value = key;
+            }
+
+            /**
              * 計算設備在畫布上的位移。
              * @param col 左上角所在欄
              * @param row 左上角所在列
@@ -398,13 +481,14 @@ export const WithToolbar: Story = {
             }
 
             /**
-             * Esc 取消拿起。
+             * Esc 取消拿起，並取消選取。
              * @param event 全域鍵盤事件
              */
             function handleKeyDown(event: KeyboardEvent) {
                 if (event.key === 'Escape') {
                     disarm();
                     hover.value = null;
+                    selectedKey.value = null;
                 }
             }
 
@@ -420,11 +504,13 @@ export const WithToolbar: Story = {
                 selectedView,
                 placed,
                 hover,
+                selectedKey,
                 armed,
                 gridStyle,
                 hint,
                 handleMove,
                 handleClick,
+                handleItemClick,
                 offset,
             };
         },
@@ -441,8 +527,13 @@ export const WithToolbar: Story = {
                         v-for="item in placed"
                         :key="item.key"
                         :transform="offset(item.col, item.row)"
+                        @click="handleItemClick($event, item.key)"
                     >
-                        <DeviceShape :machine-type="item.machineId" :grid-size="gs" />
+                        <DeviceShape
+                            :machine-type="item.machineId"
+                            :grid-size="gs"
+                            :selected="item.key === selectedKey"
+                        />
                     </g>
                     <g
                         v-if="armed && hover"
@@ -457,7 +548,7 @@ export const WithToolbar: Story = {
                     <button
                         type="button"
                         class="cursor-pointer rounded bg-zinc-700 px-2 py-1 text-white"
-                        @click="placed = []"
+                        @click="placed = []; selectedKey = null"
                     >
                         清除已放置（{{ placed.length }}）
                     </button>
