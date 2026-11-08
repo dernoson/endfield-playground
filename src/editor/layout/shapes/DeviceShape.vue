@@ -3,6 +3,14 @@
 import { computed, useId } from 'vue';
 import { resolveMachineDef } from '@/data/machines';
 import type { Machine } from '@/types/machine';
+import Electric from './Electric.vue';
+import {
+    CELL_DESIGN,
+    DRAG_BODY_OPACITY,
+    ELECTRIC_POLE_IDS,
+    OUTLINE_FILL_OPACITY,
+    SELECTED_COLOR,
+} from './deviceShapeConstants';
 
 type PortDef = Machine['modes'][number]['input_ports'][number];
 type PortSide = PortDef['side'];
@@ -12,14 +20,10 @@ type PortSide = PortDef['side'];
  * 圖片一律用 import.meta.glob 讀取：檔案不存在時得到空物件，而不是讓編譯失敗。
  * 圖片只在這裡「讀取」，圓形裁切由下方 clipPath 處理，所以放原圖即可。
  * svg 加上 `?url` 是為了不論專案有沒有裝 svg 轉元件的外掛，都拿到網址字串。
+ * （供電樁的電力圖示由 Electric.vue 自己讀取。）
  */
 const planterFiles = import.meta.glob<string>('@/assets/icon/planter-pattern.png', {
     eager: true,
-    import: 'default',
-});
-const electricFiles = import.meta.glob<string>('@/assets/icon/icon electric.svg', {
-    eager: true,
-    query: '?url',
     import: 'default',
 });
 const batteryFiles = import.meta.glob<string>('@/assets/icon/icon battery.svg', {
@@ -50,12 +54,6 @@ const MACHINE_ICON_URLS: Readonly<Record<string, string | undefined>> = {
     planter: firstUrl(planterFiles),
 };
 
-/** 2×2 供電樁類：外框為圓形，不畫頭像圓框與名稱，改在機器正中央顯示圖示 */
-const CENTER_ICON_URLS: Readonly<Record<string, string | undefined>> = {
-    power_pole: firstUrl(electricFiles),
-    xi_rang_power_pole: firstUrl(electricFiles),
-};
-
 /** 有頭像圓框、但不顯示機器名稱的機器 */
 const NO_NAME_IDS: ReadonlySet<string> = new Set(['thermal_pool']);
 
@@ -63,9 +61,6 @@ const NO_NAME_IDS: ReadonlySet<string> = new Set(['thermal_pool']);
 const BATTERY_URL = firstUrl(batteryFiles);
 
 // ─── 設計稿常數（單位：設計單位 = Figma 長度單位；一格 = CELL_DESIGN） ──
-/** 設計稿中一格的邊長；原 225×225 設計稿 = 5×5 格，每格 45 */
-const CELL_DESIGN = 45;
-
 /** 箭頭路徑（朝右的 chevron）的包圍盒中心，旋轉時以此為軸心 */
 const CHEVRON_CX = 3.546;
 const CHEVRON_CY = 5.847;
@@ -93,19 +88,7 @@ const INWARD_ANGLE: Record<PortSide, number> = {
 /** 1×1 的橋類機器：四邊各畫一組對稱重疊箭頭，不依埠資料 */
 const BRIDGE_IDS: ReadonlySet<string> = new Set(['logistics_bridge', 'pipe_bridge']);
 
-// ─── 顏色與狀態 ───────────────────────────────────────────────────────
-/** 底框底色不透明度（一般、選取、供電樁都是 20%） */
-const OUTLINE_FILL_OPACITY = 0.2;
-
-/** 被單擊選取時：邊線、箭頭、底色都用這個藍色（Figma：#1CAEFD） */
-const SELECTED_COLOR = '#1CAEFD';
-
-/** 供電樁外框（未選取）：底色 #EEFD1C，描邊同色 */
-const POLE_FILL = '#EEFD1C';
-const POLE_STROKE = 'rgba(238, 253, 28, 1)';
-
-/** 拖曳中：底框（底色、邊線、箭頭）整組的 Opacity */
-const DRAG_BODY_OPACITY = 0.7;
+// ─── 拖曳時的頭像透明度 ───────────────────────────────────────────────
 /** 拖曳中：頭像圓框的 Opacity */
 const DRAG_AVATAR_OPACITY = 0.5;
 
@@ -123,10 +106,7 @@ const ICON_LABEL_HEIGHT = 18;
 /** 名稱文字大小；line-height 為 100%，所以一行文字的高度等於字級 */
 const ICON_LABEL_FONT_SIZE = 16;
 
-// ─── 其他圖示 ─────────────────────────────────────────────────────────
-/** 供電樁正中央圖示的顯示寬高（設計單位，Figma：36 × 33.77） */
-const CENTER_ICON_WIDTH = 36;
-const CENTER_ICON_HEIGHT = 33.77;
+// ─── 電池圖示 ─────────────────────────────────────────────────────────
 /** 電池圖示的顯示寬高（設計單位，Figma：23.82 × 11.16） */
 const BATTERY_WIDTH = 23.82;
 const BATTERY_HEIGHT = 11.16;
@@ -136,8 +116,6 @@ const BATTERY_GAP = 1;
 const iconClipId = useId();
 /** 圓形徽章的 drop shadow filter id，對應設計稿 X0 Y4 Blur4 #000 25% */
 const iconShadowId = useId();
-/** 供電樁圖示選取時改色的 filter id */
-const poleIconTintId = useId();
 
 const props = withDefaults(
     defineProps<{
@@ -200,19 +178,22 @@ const isBar = computed(() => isSlim.value && !isTiny.value);
 /**
  * 機器內容的配置方式：
  * - text：查不到機器，只顯示傳入的 label 文字
+ * - electric：供電樁類，整個交給 Electric.vue 繪製
  * - slim：1×1／1×3／3×1，不放名稱也不放頭像
- * - centerIcon：供電樁類，圓形外框、正中央放圖示，不放名稱也不放頭像
  * - badge：頭像圓框（無圖片時保留空圓框）＋名稱標籤（NO_NAME_IDS 例外）
  */
-type DeviceLayout = 'text' | 'slim' | 'centerIcon' | 'badge';
+type DeviceLayout = 'text' | 'electric' | 'slim' | 'badge';
 
 const layout = computed<DeviceLayout>(() => {
     const id = machine.value?.id;
     if (!id) return 'text';
+    if (ELECTRIC_POLE_IDS.has(id)) return 'electric';
     if (isSlim.value) return 'slim';
-    if (id in CENTER_ICON_URLS) return 'centerIcon';
     return 'badge';
 });
+
+/** 是否交給 Electric.vue 繪製 */
+const isElectric = computed(() => layout.value === 'electric');
 
 /** 是否顯示名稱標籤（頭像下方） */
 const showName = computed(
@@ -226,12 +207,6 @@ const showName = computed(
 const iconUrl = computed(() => {
     const id = machine.value?.id;
     return id ? MACHINE_ICON_URLS[id] : undefined;
-});
-
-/** 供電樁類正中央圖示網址 */
-const centerIconUrl = computed(() => {
-    const id = machine.value?.id;
-    return id ? CENTER_ICON_URLS[id] : undefined;
 });
 
 // ─── 頭像群組的置中計算（設計單位） ───────────────────────────────────
@@ -276,21 +251,9 @@ const isPipe = computed(() => {
     );
 });
 
-/** 供電樁類：外框改為圓形、顏色改為淡黃色 */
-const isPole = computed(() => layout.value === 'centerIcon');
-
 // ─── 顏色（依選取狀態切換） ───────────────────────────────────────────
-/** 底框底色：選取時藍色，供電樁淡黃色，其餘白色 */
-const outlineFill = computed(() => {
-    if (props.selected) return SELECTED_COLOR;
-    return isPole.value ? POLE_FILL : 'white';
-});
-
-/** 外框描邊：選取時藍色，供電樁淡黃色，其餘白色 */
-const outlineStroke = computed(() => {
-    if (props.selected) return SELECTED_COLOR;
-    return isPole.value ? POLE_STROKE : 'white';
-});
+/** 底框底色與外框描邊：選取時藍色，其餘白色 */
+const outlineColor = computed(() => (props.selected ? SELECTED_COLOR : 'white'));
 
 /** 箭頭與分流器直線的顏色：選取時與邊線同為藍色，其餘白色 */
 const lineColor = computed(() => (props.selected ? SELECTED_COLOR : 'white'));
@@ -319,7 +282,7 @@ const multiPortGroup = computed<'input' | 'output' | null>(() => {
 });
 
 /**
- * 外框路徑：一般為矩形；管道類 1×1 與供電樁為內接圓；長條機器在箭頭側倒角。
+ * 外框路徑：一般為矩形；管道類 1×1 為內接圓；長條機器在箭頭側倒角。
  * 路徑偏移 0.5px 讓線條落在像素中間。
  */
 const outline = computed(() => {
@@ -343,7 +306,7 @@ const outline = computed(() => {
                 return `M${x0} ${y0}H${x1}V${y1 - c}L${x1 - c} ${y1}H${x0 + c}L${x0} ${y1 - c}Z`;
         }
     }
-    if (isPipe.value || isPole.value) {
+    if (isPipe.value) {
         const r = Math.min(w, h) / 2 - 0.5;
         const cx = w / 2;
         const cy = h / 2;
@@ -436,149 +399,144 @@ const markers = computed(() => {
 </script>
 
 <template>
-    <g data-testid="device-shape" :data-dragging="props.dragging" :data-selected="props.selected">
-        <!-- 底框、邊線、箭頭：拖曳中整組套用 Opacity 70% -->
-        <g :opacity="props.dragging ? DRAG_BODY_OPACITY : 1">
-            <path
-                :d="outline"
-                :fill="outlineFill"
-                :fill-opacity="OUTLINE_FILL_OPACITY"
-                :stroke="outlineStroke"
-            />
-            <path v-if="spokePath" :d="spokePath" fill="none" :stroke="lineColor" />
-            <g :transform="shapeTransform">
+    <g
+        data-testid="device-shape"
+        :data-dragging="props.dragging"
+        :data-selected="props.selected"
+    >
+        <!-- 供電樁類：整個交給 Electric.vue（圓形外框、中央圖示） -->
+        <Electric
+            v-if="isElectric"
+            :grid-size="props.gridSize"
+            :selected="props.selected"
+            :dragging="props.dragging"
+        />
+        <template v-else>
+            <!-- 底框、邊線、箭頭：拖曳中整組套用 Opacity 70% -->
+            <g :opacity="props.dragging ? DRAG_BODY_OPACITY : 1">
                 <path
-                    v-for="marker in markers"
-                    :key="marker.key"
-                    :transform="marker.transform"
-                    :d="CHEVRON_PATH"
-                    :fill="lineColor"
+                    :d="outline"
+                    :fill="outlineColor"
+                    :fill-opacity="OUTLINE_FILL_OPACITY"
+                    :stroke="outlineColor"
                 />
-            </g>
-        </g>
-        <g :transform="shapeTransform">
-            <!-- 頭像圓框：即使沒有圖片也保留直徑 55 的圓框；拖曳中 Opacity 50% -->
-            <template v-if="layout === 'badge'">
-                <defs>
-                    <clipPath :id="iconClipId">
-                        <circle :cx="iconCx" :cy="iconCy" :r="ICON_RADIUS" />
-                    </clipPath>
-                    <!-- Figma 的 Blur 是模糊半徑，換算成 SVG stdDeviation 需除以 2 -->
-                    <filter :id="iconShadowId" x="-50%" y="-50%" width="200%" height="200%">
-                        <feDropShadow
-                            dx="0"
-                            dy="4"
-                            stdDeviation="2"
-                            flood-color="#000000"
-                            flood-opacity="0.25"
-                        />
-                    </filter>
-                </defs>
-                <g
-                    :filter="`url(#${iconShadowId})`"
-                    :opacity="props.dragging ? DRAG_AVATAR_OPACITY : 1"
-                >
-                    <foreignObject
-                        :x="iconCx - ICON_RADIUS"
-                        :y="iconCy - ICON_RADIUS"
-                        :width="ICON_RADIUS * 2"
-                        :height="ICON_RADIUS * 2"
-                    >
-                        <div
-                            xmlns="http://www.w3.org/1999/xhtml"
-                            style="
-                                width: 55px;
-                                height: 55px;
-                                border-radius: 50%;
-                                background: rgba(43, 43, 43, 1);
-                            "
-                        />
-                    </foreignObject>
-                    <image
-                        v-if="iconUrl"
-                        :href="iconUrl"
-                        :x="iconCx - ICON_RADIUS"
-                        :y="iconCy - ICON_RADIUS"
-                        :width="ICON_RADIUS * 2"
-                        :height="ICON_RADIUS * 2"
-                        :clip-path="`url(#${iconClipId})`"
-                    />
-                    <circle
-                        :cx="iconCx"
-                        :cy="iconCy"
-                        :r="ICON_RADIUS"
-                        fill="none"
-                        stroke="rgba(238, 253, 28, 1)"
-                        :stroke-width="ICON_STROKE_WIDTH"
+                <path v-if="spokePath" :d="spokePath" fill="none" :stroke="lineColor" />
+                <g :transform="shapeTransform">
+                    <path
+                        v-for="marker in markers"
+                        :key="marker.key"
+                        :transform="marker.transform"
+                        :d="CHEVRON_PATH"
+                        :fill="lineColor"
                     />
                 </g>
-            </template>
-            <!-- 供電樁類：機器正中央的圖示（圓形外框由 outline 負責），選取時線條改為藍色 -->
-            <template v-else-if="layout === 'centerIcon' && centerIconUrl">
-                <defs>
-                    <!-- 先填滿藍色，再只保留原圖有顏色的部分，所以原本的線條形狀不變、顏色變藍 -->
-                    <filter :id="poleIconTintId" color-interpolation-filters="sRGB">
-                        <feFlood :flood-color="SELECTED_COLOR" result="tint" />
-                        <feComposite in="tint" in2="SourceAlpha" operator="in" />
-                    </filter>
-                </defs>
+            </g>
+            <g :transform="shapeTransform">
+                <!-- 頭像圓框：即使沒有圖片也保留直徑 55 的圓框；拖曳中 Opacity 50% -->
+                <template v-if="layout === 'badge'">
+                    <defs>
+                        <clipPath :id="iconClipId">
+                            <circle :cx="iconCx" :cy="iconCy" :r="ICON_RADIUS" />
+                        </clipPath>
+                        <!-- Figma 的 Blur 是模糊半徑，換算成 SVG stdDeviation 需除以 2 -->
+                        <filter :id="iconShadowId" x="-50%" y="-50%" width="200%" height="200%">
+                            <feDropShadow
+                                dx="0"
+                                dy="4"
+                                stdDeviation="2"
+                                flood-color="#000000"
+                                flood-opacity="0.25"
+                            />
+                        </filter>
+                    </defs>
+                    <g
+                        :filter="`url(#${iconShadowId})`"
+                        :opacity="props.dragging ? DRAG_AVATAR_OPACITY : 1"
+                    >
+                        <foreignObject
+                            :x="iconCx - ICON_RADIUS"
+                            :y="iconCy - ICON_RADIUS"
+                            :width="ICON_RADIUS * 2"
+                            :height="ICON_RADIUS * 2"
+                        >
+                            <div
+                                xmlns="http://www.w3.org/1999/xhtml"
+                                style="
+                                    width: 55px;
+                                    height: 55px;
+                                    border-radius: 50%;
+                                    background: rgba(43, 43, 43, 1);
+                                "
+                            />
+                        </foreignObject>
+                        <image
+                            v-if="iconUrl"
+                            :href="iconUrl"
+                            :x="iconCx - ICON_RADIUS"
+                            :y="iconCy - ICON_RADIUS"
+                            :width="ICON_RADIUS * 2"
+                            :height="ICON_RADIUS * 2"
+                            :clip-path="`url(#${iconClipId})`"
+                        />
+                        <circle
+                            :cx="iconCx"
+                            :cy="iconCy"
+                            :r="ICON_RADIUS"
+                            fill="none"
+                            stroke="rgba(238, 253, 28, 1)"
+                            :stroke-width="ICON_STROKE_WIDTH"
+                        />
+                    </g>
+                </template>
+                <!-- 查不到機器：只顯示傳入的 label -->
+                <text
+                    v-else-if="layout === 'text' && displayName"
+                    :x="designWidth / 2"
+                    :y="designHeight / 2"
+                    fill="white"
+                    font-size="14"
+                    text-anchor="middle"
+                    dominant-baseline="middle"
+                >
+                    {{ displayName }}
+                </text>
+                <!-- 沒有接電時的電池圖示 -->
                 <image
-                    :href="centerIconUrl"
-                    :x="designWidth / 2 - CENTER_ICON_WIDTH / 2"
-                    :y="designHeight / 2 - CENTER_ICON_HEIGHT / 2"
-                    :width="CENTER_ICON_WIDTH"
-                    :height="CENTER_ICON_HEIGHT"
-                    :filter="props.selected ? `url(#${poleIconTintId})` : undefined"
+                    v-if="showBattery"
+                    :href="BATTERY_URL"
+                    :x="batteryX"
+                    :y="batteryY"
+                    :width="BATTERY_WIDTH"
+                    :height="BATTERY_HEIGHT"
                 />
-            </template>
-            <!-- 查不到機器：只顯示傳入的 label -->
-            <text
-                v-else-if="layout === 'text' && displayName"
-                :x="designWidth / 2"
-                :y="designHeight / 2"
-                fill="white"
-                font-size="14"
-                text-anchor="middle"
-                dominant-baseline="middle"
+            </g>
+            <foreignObject
+                v-if="showName"
+                :transform="shapeTransform"
+                :x="iconCx - labelBoxWidth / 2"
+                :y="labelTop"
+                :width="labelBoxWidth"
+                :height="ICON_LABEL_HEIGHT"
             >
-                {{ displayName }}
-            </text>
-            <!-- 沒有接電時的電池圖示 -->
-            <image
-                v-if="showBattery"
-                :href="BATTERY_URL"
-                :x="batteryX"
-                :y="batteryY"
-                :width="BATTERY_WIDTH"
-                :height="BATTERY_HEIGHT"
-            />
-        </g>
-        <foreignObject
-            v-if="showName"
-            :transform="shapeTransform"
-            :x="iconCx - labelBoxWidth / 2"
-            :y="labelTop"
-            :width="labelBoxWidth"
-            :height="ICON_LABEL_HEIGHT"
-        >
-            <div
-                xmlns="http://www.w3.org/1999/xhtml"
-                :style="{
-                    width: labelBoxWidth + 'px',
-                    height: ICON_LABEL_HEIGHT + 'px',
-                    color: 'rgba(207, 207, 207, 1)',
-                    fontFamily: `'HarmonyOS Sans TC', sans-serif`,
-                    fontSize: ICON_LABEL_FONT_SIZE + 'px',
-                    fontStyle: 'normal',
-                    fontWeight: 400,
-                    lineHeight: '100%',
-                    letterSpacing: '0',
-                    textAlign: 'center',
-                    whiteSpace: 'nowrap',
-                }"
-            >
-                {{ displayName }}
-            </div>
-        </foreignObject>
+                <div
+                    xmlns="http://www.w3.org/1999/xhtml"
+                    :style="{
+                        width: labelBoxWidth + 'px',
+                        height: ICON_LABEL_HEIGHT + 'px',
+                        color: 'rgba(207, 207, 207, 1)',
+                        fontFamily: `'HarmonyOS Sans TC', sans-serif`,
+                        fontSize: ICON_LABEL_FONT_SIZE + 'px',
+                        fontStyle: 'normal',
+                        fontWeight: 400,
+                        lineHeight: '100%',
+                        letterSpacing: '0',
+                        textAlign: 'center',
+                        whiteSpace: 'nowrap',
+                    }"
+                >
+                    {{ displayName }}
+                </div>
+            </foreignObject>
+        </template>
     </g>
 </template>
