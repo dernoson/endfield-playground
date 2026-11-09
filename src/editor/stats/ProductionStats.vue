@@ -3,6 +3,20 @@ import { computed, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useFlowStore } from '@/store/flowStore';
 import { useEditorStore } from '@/store/editorStore';
+import { useLayoutStore } from '@/store/layoutStore';
+import StatsPanel from '@/app/StatsPanel/Index.vue';
+import type { PowerData, SingleProductDetail } from '@/app/StatsPanel/types';
+
+/** 正式右欄使用現行展示面板；省略時保留舊 Inspector 的完整統計畫面。 */
+const props = defineProps<{
+    /** 是否以現行右欄總覽呈現；預設 false 以相容舊 Inspector 呼叫端。 */
+    overview?: boolean;
+}>();
+
+/** 正式畫布的設備來源，空狀態不依賴引擎是否已有摘要。 */
+const layoutStore = useLayoutStore();
+/** 供展示層區分無設備與有設備但無摘要；不由 products 長度推定。 */
+const hasDevices = computed(() => layoutStore.devices.length > 0);
 
 /** FlowEngine 計算結果 store：本面板所有統計數字的資料來源 */
 const flowStore = useFlowStore();
@@ -12,8 +26,6 @@ const editorStore = useEditorStore();
 const {
     totalPowerDemand,
     totalPowerSupply,
-    powerBalance,
-    hasPowerShortage,
     edgeFlowCount,
     invalidChainCount,
     itemSummary,
@@ -23,9 +35,38 @@ const {
     ticketRates,
     ticketOutput,
     ticketTotal,
+    deliveryTicketTotal,
+    deliveryTicketRates,
     warehouseCapacity,
     warehouseEstimates,
 } = storeToRefs(flowStore);
+
+/** 映射自動交付券數；空畫布立即歸零，避免顯示等待引擎更新的舊值。 */
+const exchangeRate = computed(() => (hasDevices.value ? deliveryTicketTotal.value : 0));
+
+/** 映射各券種與數值；清空設備時立即將每一種券歸零，保留名稱。 */
+const exchangeRates = computed(() =>
+    deliveryTicketRates.value.map((item) => ({ ...item, rate: hasDevices.value ? item.rate : 0 })),
+);
+
+/** 僅映射引擎的耗電／供電結果，不提供供電設定輸入。 */
+const power = computed<PowerData>(() => ({
+    used: totalPowerDemand.value,
+    total: totalPowerSupply.value,
+}));
+
+/** 僅映射展示欄位，保留中間物與零淨值，不在容器重算產耗。 */
+const products = computed<SingleProductDetail[]>(() =>
+    itemSummary.value.map((item) => ({
+        id: item.itemId,
+        name: item.name,
+        produce: item.produced,
+        consume: item.consumed,
+        profit: item.net,
+        /** 正式產線直接顯示產出與消耗，避免零淨值讓使用者誤以為沒有產能。 */
+        isExpanded: true,
+    })),
+);
 
 /** 解構 flowStore 的 action，供調度券兌換率與倉庫容量輸入框直接呼叫 */
 const { setTicketRate, setWarehouseCapacity } = flowStore;
@@ -62,17 +103,6 @@ const ticketDetailsOpen = ref(false);
 
 /** 解構 editorStore 的響應式參照，供畫布概況與計畫相關區塊使用 */
 const { nodeCount, currentPlan, machineUsedCounts } = storeToRefs(editorStore);
-
-// G2：電力狀態文字
-/** 電力狀態顯示文字，依盈餘 / 不足呈現不同圖示與數值 */
-const powerStatusText = computed(() => {
-    const abs = Math.abs(powerBalance.value).toFixed(1);
-    return hasPowerShortage.value ? `⚠️ 不足 ${abs} kW` : `✅ 盈餘 ${abs} kW`;
-});
-/** 電力狀態文字顏色，不足為紅色、盈餘為綠色 */
-const powerStatusClass = computed(() =>
-    hasPowerShortage.value ? 'text-red-400' : 'text-green-400',
-);
 
 // G3：淨產量顏色
 /**
@@ -232,7 +262,15 @@ function applyPlanRates(): void {
 </script>
 
 <template>
-    <div class="space-y-4 text-sm text-zinc-200">
+    <StatsPanel
+        v-if="props.overview"
+        :power="power"
+        :products="products"
+        :has-devices="hasDevices"
+        :exchange-rate="exchangeRate"
+        :exchange-rates="exchangeRates"
+    />
+    <div v-else class="space-y-4 text-sm text-zinc-200">
         <!-- G2：整體電力統計 -->
         <section>
             <h4 class="mb-2 text-xs font-semibold tracking-wide text-zinc-400 uppercase">
@@ -240,16 +278,11 @@ function applyPlanRates(): void {
             </h4>
             <div class="space-y-1">
                 <div class="flex justify-between">
-                    <span class="text-zinc-400">總耗電</span>
-                    <span>{{ totalPowerDemand.toFixed(1) }} kW</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-zinc-400">總供電</span>
-                    <span>{{ totalPowerSupply.toFixed(1) }} kW</span>
-                </div>
-                <div class="flex justify-between font-semibold">
-                    <span class="text-zinc-400">電力狀態</span>
-                    <span :class="powerStatusClass">{{ powerStatusText }}</span>
+                    <span class="text-zinc-400">總耗電量/供電量</span>
+                    <span
+                        >{{ totalPowerDemand.toFixed(1) }} kW /
+                        {{ `${totalPowerSupply.toFixed(1)} kW` }}</span
+                    >
                 </div>
             </div>
         </section>
