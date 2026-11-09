@@ -9,10 +9,21 @@ import { getRecipesForMachine } from '@/data/products';
 import { getMachineMode, type Machine } from '@/types/machine';
 
 /**
+ * 物品在卡片上顯示的名稱：瓶裝素材（`藍鐵瓶-清水`）只顯示瓶子本身（`藍鐵瓶`），暫不標內容物。
+ *
+ * @param itemId 物品 id
+ * @returns 顯示名稱；非瓶裝素材原樣回傳
+ */
+export function toItemDisplayName(itemId: string): string {
+    return itemId.split('-')[0];
+}
+
+/**
  * 取得機器在目前型態下的可用配方，轉成 MachineCard 的 `Formula`。
  *
  * 配方只篩型態、不篩環境：卡片是「這台機器能做什麼」的總覽，環境限制由引擎在計算時判斷。
  * 物品沒有圖示資料，`image` 不給，交給 FormulaItem 的預設圖示。
+ * 名稱經 `toItemDisplayName`，瓶裝素材只顯示瓶名。
  *
  * @param machine 機器定義
  * @param machineMode 設備型態；缺省依 `modes[0]` 解釋（與引擎一致）
@@ -25,7 +36,13 @@ export function toMachineCardFormulas(
     const modeId = machine.modes.length > 0 ? getMachineMode(machine, machineMode).id : undefined;
     return getRecipesForMachine(machine.name, modeId).map((recipe) => ({
         duration: recipe.timeSeconds,
-        input: recipe.inputs.map((item) => ({ name: item.itemId, amount: item.quantity })),
-        output: recipe.outputs.map((item) => ({ name: item.itemId, amount: item.quantity })),
+        input: recipe.inputs.map((item) => ({
+            name: toItemDisplayName(item.itemId),
+            amount: item.quantity,
+        })),
+        output: recipe.outputs.map((item) => ({
+            name: toItemDisplayName(item.itemId),
+            amount: item.quantity,
+        })),
     }));
 }

@@ -192,7 +192,8 @@ useFlowEngine();
 }
 
 /*
- * 寬度＝MachineCard 設計寬 451px＋右緣三角形凸出 10px，三角形不被裁切也不產生橫向溢出。
+ * 寬度隨卡片（設計寬 451px）；右側留 10px 給右緣三角形凸出，
+ * 下方留 14px 給底板陰影（0 4px 10px），兩者都不被本槽的 overflow 裁掉。
  * 卡片自帶底板，本槽不另鋪底色。高度隨卡片而不撐滿：卡片下方留給畫布接點擊。
  * 畫面比卡片矮時由本槽捲動；捲軸隱藏，改用滾輪或按住左鍵拖曳（useDragScroll）。
  */
@@ -201,7 +202,8 @@ useFlowEngine();
     top: 0;
     left: 0;
     z-index: 10;
-    width: 461px;
+    width: max-content;
+    padding: 0 10px 14px 0;
     max-height: 100%;
     overflow: auto;
     scrollbar-width: none;
