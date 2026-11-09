@@ -3,18 +3,35 @@ import { computed, ref } from 'vue';
 import Navbar from '@/editor/navbar/Navbar.vue';
 import ToolbarPanel from '@/editor/toolbar/ToolbarPanel.vue';
 import LayoutView from '@/editor/layout/LayoutView.vue';
-import StatsPanel from '@/app/StatsPanel/Index.vue';
+import ProductionStats from '@/editor/stats/ProductionStats.vue';
 import MachineCard, { type MachineCardProps } from '@/app/MachineCard/Index.vue';
 import SourceOutputPanel from '@/editor/sourceOutput/SourceOutputPanel.vue';
 import { useLayoutStore } from '@/store/layoutStore';
+import { useFlowStore } from '@/store/flowStore';
 import type { PlacedDevice } from '@/types/layout';
 import { getMachineById } from '@/data/machines';
+import { getRecipesForMachine } from '@/data/products';
 import { resolveDisplayGrid } from '@/utils/portUtils';
-import { useFlowEngine } from '@/composables/useFlowEngine';
+import {
+    matchRecipeByInputs,
+    resolveMachineMode,
+    useFlowEngine,
+} from '@/composables/useFlowEngine';
 import { useValidation } from '@/composables/useValidation';
+import { toTopology } from '@/utils/layout/toTopology';
 
 /** 讀取已放置設備，供左側面板由選中 id 反查設備實例 */
 const layoutStore = useLayoutStore();
+
+/** 唯讀引擎算出的實際入料，用於呈現目前匹配的正式配方。 */
+const flowStore = useFlowStore();
+
+/** 驗證與引擎共用正式畫布的格子拓撲，不同步寫入舊 editorStore。 */
+const topology = computed(() => {
+    /** 沿用 store 的快照 API，避免把深層唯讀管線強制轉型成可變陣列。 */
+    const { devices, pipelines } = layoutStore.toSnapshot();
+    return toTopology(devices, pipelines, [...layoutStore.connections]);
+});
 
 /**
  * 目前選中的設備實例 id，`null` 表示未選取。  \
@@ -33,7 +50,7 @@ const selectedDevice = computed<PlacedDevice | null>(
 
 /**
  * 選中設備轉成 MachineCard 的 props；找不到設備或機器定義時為 `null`，面板隨之隱藏。  \
- * 尺寸取目前旋轉後的顯示長寬；配方清單本週不轉接，交給 MachineCard 的預設呈現。
+ * 尺寸取目前旋轉後的顯示長寬；正式配方依設備名稱及有效模式查詢，再映射為展示資料。
  */
 const selectedMachineCard = computed<MachineCardProps | null>(() => {
     const device = selectedDevice.value;
@@ -42,18 +59,40 @@ const selectedMachineCard = computed<MachineCardProps | null>(() => {
     if (!machine) return null;
     /** 與畫布共用旋轉後尺寸，避免選取面板仍顯示旋轉前長寬。 */
     const display = resolveDisplayGrid(machine.width, machine.height, device.rotation);
+    /** 與引擎沿用相同的缺省模式，避免面板混入其他模式的配方。 */
+    const mode = resolveMachineMode(device.machineType, device.machineMode);
+    const recipes = getRecipesForMachine(machine.name, mode);
+    /** 只讀實際正流量，避免把有連線但尚未供料的品項誤顯示成目前配方。 */
+    const incomingItems = new Set<string>();
+    for (const edge of topology.value.edges) {
+        if (edge.target !== device.id) continue;
+        const flow = flowStore.edgeFlows.get(edge.id);
+        if (flow && flow.rate > 0) incomingItems.add(flow.itemId);
+    }
+    /** 重用引擎的配方匹配規則；非法鏈路不顯示目前配方。 */
+    const matched = flowStore.invalidChainUids.has(device.id)
+        ? null
+        : matchRecipeByInputs(device.machineType, incomingItems, mode, device.environment);
     return {
         id: device.id,
         name: machine.name,
         sizeText: `${display.widthCells}×${display.heightCells}`,
         /** 負值（含 -1 資料未定義）不是耗電量，留給卡片顯示佔位符號 */
         power: machine.power >= 0 ? `${machine.power}kW` : undefined,
+        selectedRecipe: matched
+            ? `${matched.recipe.outputs.map((item) => item.itemId).join('、')}（${matched.recipe.timeSeconds}秒）`
+            : undefined,
+        formulas: recipes.map((recipe) => ({
+            duration: recipe.timeSeconds,
+            input: recipe.inputs.map((item) => ({ name: item.itemId, amount: item.quantity })),
+            output: recipe.outputs.map((item) => ({ name: item.itemId, amount: item.quantity })),
+        })),
     };
 });
 
 /**
  * 右側產線總覽是否展開，預設展開。  \
- * 收合只把欄寬歸零、不卸載 StatsPanel，避免面板內的輸入（如倉庫容量）在開合之間被重置。
+ * 收合只把欄寬歸零、不卸載面板，避免面板內的狀態（產品展開、Tips 分割線高度）在開合之間被重置。
  */
 const statsOpen = ref(true);
 
@@ -61,10 +100,10 @@ const statsOpen = ref(true);
  * 啟動 CR-03 驗證監聽（藍圖變動時 sync 重跑所有 detector）。  \
  * 必須在 useFlowEngine() 之前呼叫，FlowEngine 才能讀到最新的 alerts。
  */
-useValidation();
+useValidation(() => topology.value);
 
 /** 啟動 CR-04 FlowEngine 監聽（watch + debounce 150ms） */
-useFlowEngine();
+useFlowEngine(() => topology.value);
 </script>
 
 <template>
@@ -91,28 +130,26 @@ useFlowEngine();
                     <ToolbarPanel />
                 </section>
                 <!--
+                    設計稿 collapse button：黃色三角形貼畫布右緣、垂直置中。
                     放在 stage 內而非 aside 內：收合後 aside 寬度為 0，按鈕仍需留在畫面上。
-                    外包一層 div 承接定位：scoped style 的 data-v 屬性傳不進 UButton 的根節點。
+                    展開時指向右（收合），收合時翻轉指向左（展開）。
                 -->
-                <div class="area-stats-toggle">
-                    <UButton
-                        size="sm"
-                        color="neutral"
-                        variant="soft"
-                        :icon="
-                            statsOpen ? 'i-lucide-panel-right-close' : 'i-lucide-panel-right-open'
-                        "
-                        :aria-label="statsOpen ? '收合產線總覽' : '展開產線總覽'"
-                        :aria-expanded="statsOpen"
-                        aria-controls="area-stats"
-                        @click="statsOpen = !statsOpen"
-                    />
-                </div>
+                <button
+                    type="button"
+                    class="area-stats-toggle"
+                    :class="{ 'is-collapsed': !statsOpen }"
+                    :aria-label="statsOpen ? '收合產線總覽' : '展開產線總覽'"
+                    :aria-expanded="statsOpen"
+                    aria-controls="area-stats"
+                    @click="statsOpen = !statsOpen"
+                >
+                    <span class="area-stats-toggle__triangle" />
+                </button>
             </div>
 
             <aside id="area-stats" class="area-stats" :class="{ 'is-collapsed': !statsOpen }">
                 <div class="area-stats__body">
-                    <StatsPanel />
+                    <ProductionStats />
                 </div>
             </aside>
         </div>
@@ -189,33 +226,65 @@ useFlowEngine();
 
 .area-stats-toggle {
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
+    top: 50%;
+    right: 12px;
     z-index: 30;
+    display: flex;
+    width: 24px;
+    height: 39px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    align-items: center;
+    justify-content: flex-end;
+    opacity: 0.8;
+    transition: opacity 150ms ease;
 }
 
-/* 寬度＝StatsPanel 設計寬 333px（主體 320＋標籤左凸 13）＋左邊框 1px */
-.area-stats {
-    width: 334px;
-    flex-shrink: 0;
-    min-height: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-    border-left: 1px solid #27272a;
-    transition: width 150ms ease;
+.area-stats-toggle:hover {
+    opacity: 1;
 }
 
-.area-stats.is-collapsed {
+/* 設計稿向量 20×39、#EEFD1C；以邊框畫出指向右的三角形 */
+.area-stats-toggle__triangle {
     width: 0;
-    border-left-width: 0;
+    height: 0;
+    border-top: 19.5px solid transparent;
+    border-bottom: 19.5px solid transparent;
+    border-left: 20px solid #eefd1c;
+}
+
+.area-stats-toggle.is-collapsed .area-stats-toggle__triangle {
+    transform: rotate(180deg);
 }
 
 /*
- * 內容寬度固定，收合動畫期間只裁切、不讓 StatsPanel 跟著重排。
+ * 寬度＝StatsPanel 主體 320px。面板標籤往左凸出 13px 疊在畫布上（同設計稿），
+ * 所以本欄不設 overflow（會把凸出部分裁掉），改用 clip-path 只放行左側 13px，
+ * 同時裁掉收合動畫中超出右緣的內容。position＋z-index 讓凸出的標籤蓋在 stage 之上。
+ */
+.area-stats {
+    position: relative;
+    z-index: 1;
+    width: 320px;
+    flex-shrink: 0;
+    min-height: 0;
+    clip-path: inset(0 0 0 -13px);
+    transition: width 150ms ease;
+}
+
+/* 收合後連凸出的標籤一起裁掉，不在畫布右緣留下 13px 殘影 */
+.area-stats.is-collapsed {
+    width: 0;
+    clip-path: inset(0);
+}
+
+/*
+ * 內容寬度固定為 StatsPanel 的 333px，左移 13px 讓主體對齊本欄；收合動畫期間只裁切、不重排。
  * 高度撐滿欄位：StatsPanel 根節點是 h-full，這層沒有高度時會退回內容高度。
  */
 .area-stats__body {
     width: 333px;
     height: 100%;
+    margin-left: -13px;
 }
 </style>
