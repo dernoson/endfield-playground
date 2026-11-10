@@ -4,12 +4,14 @@
 |------|-------|
 | 對應大綱 | [ROADMAP_OUTLINE.md](../ROADMAP_OUTLINE.md) §6 |
 | 里程碑 | M4（2026-11-29）；首次可演示 11/22 |
-| 擋門檻 | **是**（主編步驟 10） |
-| 建議主責／備援 | aaaaa／— |
-| 性質 | 純函式 ＋ 接線 |
+| 擋門檻 | **否**（2026-11-08 會議：移出 POC 驗收） |
+| 建議主責／備援 | azure（加分切片）／aaaaa 只改驗收範圍文字 |
+| 性質 | 純函式 |
 | 依賴 | [B2](./B2_placement_chain.md)、[C1](./C1_port_hit_and_draft.md)、[C2](./C2_add_connection_contract.md) |
-| 狀態 | `[ ]` **已定義、待實作**（2026-09-19 依新模型重訂完成） |
-| 最後更新 | 2026-09-19 |
+| 狀態 | `[ ]` **已定義、待實作**。不擋 11/29 |
+| 最後更新 | 2026-11-10 |
+
+> **2026-11-08：** 會議把本項移出 POC。格式與「沿用 `loadSnapshot`」不變。11/09–11/22 只派純函式一小步，見 [W1109-Z1](../../work_dispatch/azure9572/1109/W1109-Z1_blueprint_slice.md)。
 
 > **2026-09-19 重訂：** 本檔原 schema `{ version, planId?, nodes, edges }` 自 2026-08-25 佈局自建裁決後標 `[!]` 失效。本次依已合入 master 的 `LayoutSnapshot`／`layoutStore` 重寫 §3、§4、§5、§8、§10。重訂理由見 [V13-C2](../../aaaaa/dev/dev_v13/C2_d4_blueprint_format.md)。
 

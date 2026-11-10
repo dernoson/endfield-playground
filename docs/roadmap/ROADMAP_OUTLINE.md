@@ -1,11 +1,11 @@
 # Roadmap 大綱｜2026-08-23 → 2026-11-29
 
-**版本：** v1.25（2026-11-03；Device 分檔）
+**版本：** v1.26（2026-11-10；11/08 會議，派工改為 11/09–11/22）
 **建立日期：** 2026-08-22
 **規劃：** aaaaa
 **守門與合入：** dernoson（主編）
 **上游來源：** 主編提出並確認的 ROADMAP v0.2（決策層原始文件，未公開；其內容已完整拆進本檔與 `detail/`）
-**狀態總覽：** **M1／M2 功能門檻成立。** **W1026 結算（11/03）：** [#78](https://github.com/dernoson/endfield-playground/pull/78)（C1 埠連線）與 [#81](https://github.com/dernoson/endfield-playground/pull/81)（C5 正式頁源素材）於 **10/31 合入**；[#82](https://github.com/dernoson/endfield-playground/pull/82)（L1 Hub／catalog）於 **11/02 合入**。**OPEN＝0。** **仍欠：** DeviceShape（MBD 有碼、**無 PR**）、P2 點選稿（paper 自報已交，**repo 0 提交、無 PR**）。旋轉／Delete **仍鎖**（#78 標題寫了旋轉，程式 diff 沒有 `rotateDevice`）。**W1102 v1.2：** 右側產耗＝toby；供水邏輯＝harry；設備樣式＝MBD（vue）與 goodmorning（故事）同一張 PR，paper 審；源設備左欄稿＝paper；E005＝azure。見 [WEEK_20261102](../work_dispatch/WEEK_20261102.md)。
+**狀態總覽：** **M1／M2 功能門檻成立。** **W1026 結算（11/03）：** [#78](https://github.com/dernoson/endfield-playground/pull/78)（C1 埠連線）與 [#81](https://github.com/dernoson/endfield-playground/pull/81)（C5 正式頁源素材）於 **10/31 合入**；[#82](https://github.com/dernoson/endfield-playground/pull/82)（L1 Hub／catalog）於 **11/02 合入**。**OPEN＝0。** **仍欠：** DeviceShape（MBD 有碼、**無 PR**）、P2 點選稿（paper 自報已交，**repo 0 提交、無 PR**）。旋轉／Delete 的畫面**仍不派**（#78 標題寫了旋轉，程式 diff 沒有 `rotateDevice`）。**2026-11-10：** 11/15 不開會，派工一次看到 11/22。JSON 移出 POC。供電樁先拆元件再開樣式；左欄等白紙連結。#84 與警示放在 11/16 之後。見 [WEEK_20261109](../work_dispatch/WEEK_20261109.md)。
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 
@@ -81,7 +81,7 @@ R-B 擺放（9/6→9/27）──── 使用者可見：真機器選單、擺�
       ▼
 R-C 連線（10/4→10/25）── **W1026 結算：C1 UI #78 合、C5 表單 #81 合**；DeviceShape／P2 仍欠
       ▼
-R-D 串通（11/1→11/29）── D4 格式跟新模型；D1–D3 相對獨立
+R-D 串通（11/1→11/29）── D1–D3 相對獨立；D4 不擋 POC
       ▼
    11/29 驗收劇本 8 步
 
@@ -89,6 +89,8 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 ```
 
 **讀法：** 上面是使用者功能軸；右邊是技術前置軸。兩邊都要動，但**門檻必要項在殼落地前只能押在左邊不依賴畫布的塊**（本月＝B1）與右邊的 **L1 純函式／契約**。store 已交未合時，**不以「分支有 store」假裝 B2 已解**。
+
+**2026-11-10 更新：** 11/08 會議把 JSON 移出 POC。刪除／旋轉的畫面仍不派，先由 aaaaa 確認底層。供電樁與左欄改成先後兩段。見 [WEEK_20261109](../work_dispatch/WEEK_20261109.md)。
 
 **2026-11-03 更新：W1026 結算——#78、#81 合，#82 合，OPEN＝0。** **未齊：** DeviceShape（無 PR）、P2（無 git）。**解鎖仍是裁決：** 旋轉／Delete 仍鎖。**W1102 v1.1（11/01 會議）：** 右側產耗改派 toby。見 [WEEK_20261102](../work_dispatch/WEEK_20261102.md)。
 
@@ -99,7 +101,7 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 | M1 對齊 | 2026-08-30 | 新 clone 能開；放一台佔格證據 | A1、A2 | **已過**；不改 |
 | M2 擺放 | 2026-09-27（**驗收延至 2026-10-04**） | 拉多種真機器放到畫布 | B1、B2（點擊落子） | **硬綁 B1 功能句已過**（#43 列表＋#54／#55 落子）。B4 點選看資訊、單刪、旋轉**未列入該月必要**，延入 10 月；#48 視覺轉 W1004-G1 |
 | M3 連線 | 2026-10-25 | 兩 port 拉管線可彎折；拖移；源設素材 | C1、C2、C3、C5 | **整段依賴新畫布**；C2 須 9 月重訂 |
-| M4 串通 | 2026-11-29 | 右側產耗＋警訊；JSON 存讀 | D1、D2、D4、D5 | D4 跟新儲存形狀；D1–D3 可並行 |
+| M4 串通 | 2026-11-29 | 右側產耗＋警訊 | D1、D2、D5 | **2026-11-08：** D4 改加分，不進 POC |
 
 「必要」＝該月門檻缺此項即不通過，只能派給 `risk ≤ 中`。  
 「加分」＝未交不影響門檻，須在工單寫明頂替。
@@ -112,14 +114,14 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 | **不改什麼？** | **不是**捨棄 Vue.js；流程視角可續用 Vue Flow；右側 Stats／detector 純函式不因換殼重寫 |
 | **為何改？** | Vue Flow 節點盒限制 paper 稿 1:1 落地；佔格／port／管線與資料模型長期分叉；8/30 主編：不提前則設計 UI「沒地方擺」 |
 | **為何提前？** | **已定案提前開工**（8/30–31）。評估與閘門：[EARLY_START](../aaaaa/LAYOUT_REWRITE_EARLY_START_0831.md) |
-| **優先序** | **2026-11-03：** ① 右側產耗（toby，[W1102-T1](../work_dispatch/toby/1102/W1102-T1_stats_panel.md)）→ ② 供水邏輯（harry）與設備樣式（MBD 的 vue、goodmorning 的故事，paper 審）→ ③ 源設備左欄稿、E005 |
-| **卡住誰？** | **已解：** store、容器、viewport、點擊落子、C2 L1、換殼、無邊界、出界、`hitTestPortAt`、拖曳 #67、左面板 #75、C5 寫入 #72、引擎讀 #74、C5 驗收鏈 #79、PipelineShape #68、**C1 L2 UI #78**、**C5 正式頁表單 #81**、折線套用隨 #78 的 `connectionWaypoints`。**仍鎖：** 旋轉、Delete。**仍等：** DeviceShape、P2。**不卡：** B1、D1 空狀態 |
-| **關鍵路徑** | **#78 已離開關鍵路徑。** 本週右側產耗派給 toby。11/29 整項門檻仍在；本週未交不改派加時 |
+| **優先序** | **2026-11-10：** ① paper 的左欄／取貨口連結，shirone 再改 `MachineCard` → ② goodmorning 拆 `Electric.vue`，MBD 再做供電樁樣式 → ③ 11/16 起 toby 先收 #84，再接右側警示與設備變紅。JSON 不進 POC。見 [WEEK_20261109](../work_dispatch/WEEK_20261109.md) |
+| **卡住誰？** | **已解：** store、容器、viewport、點擊落子、C2 L1、換殼、無邊界、出界、`hitTestPortAt`、拖曳 #67、左面板 #75、C5 寫入 #72、引擎讀 #74、C5 驗收鏈 #79、PipelineShape #68、**C1 L2 UI #78**、**C5 正式頁表單 #81**、折線套用隨 #78 的 `connectionWaypoints`、供水 #85、E005 #87、主畫面 #89／#90。**畫面仍不派：** 旋轉、Delete，等 aaaaa 確認底層。**仍等：** 供電樁獨立元件、左欄新稿、#84 可合。**不卡 POC：** JSON 匯入匯出 |
+| **關鍵路徑** | **#84 仍未合。** 11/16 前 toby 不開工。11/29 的 POC 不再包含 JSON |
 | **誰做 L1？** | aaaaa；store＝#45；契約＝#51；出界＝#60；埠命中＝#65；C5 寫入＝#72；引擎讀＝#74 |
-| **L2 解鎖** | **2026-09-23：** 點擊落子。**2026-10-04 追加：** 管線點選變藍＋左設備面板。旋轉／Delete 仍鎖。原則不變——底層就緒不等於自動解鎖 |
-| **L2 檔案切分** | 鎖表見 [WEEK_20261102](../work_dispatch/WEEK_20261102.md) §2.2。產耗三檔＝toby；供水寫入＝harry；`DeviceShape.vue`＝MBD；故事＝goodmorning |
-| **視角切換器** | 照稿；**工程仍未派**。casey 本週只弄清設計現況，不畫這顆 |
-| **誰不做？** | dernoson 不兼功能。本週右側產耗＝toby（W1102-T1），不是 shirone |
+| **L2 解鎖** | **2026-09-23：** 點擊落子。**2026-10-04 追加：** 管線點選變藍＋左設備面板。旋轉／Delete 的畫面仍不派，等 aaaaa 本週期寫底層結論。原則不變——底層就緒不等於自動解鎖 |
+| **L2 檔案切分** | 鎖表見 [WEEK_20261109](../work_dispatch/WEEK_20261109.md) §2.2。左欄程式＝shirone；供電樁元件＝goodmorning 先拆、MBD 再改樣式；右側警示＝toby |
+| **視角切換器** | 照稿；**工程仍未派**。casey 已於 2026-11-10 退出，不畫這顆 |
+| **誰不做？** | dernoson 不兼功能。casey 已退出。harry 這週期不加主畫面的後續修改 |
 
 首次派工影響分析（8/25）：[LAYOUT_REWRITE_DISPATCH_IMPACT_0825](../aaaaa/LAYOUT_REWRITE_DISPATCH_IMPACT_0825.md)。
 
@@ -146,7 +148,7 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 | R-D1 | 右側產耗表接 flowStore | M4 | aaaaa | 接線＋畫面 | **是** | [D1](./detail/D1_stats_item_summary.md) |
 | R-D2 | E001 重疊警訊上右側 | M4 | shirone（純函式）＋L2 | 純函式＋接線 | **是** | [D2](./detail/D2_e001_overlap_alert.md) |
 | R-D3 | 配方類警訊 E004／E005／W001 | M4（**純函式段提前至 10 月**） | **azure9572**（10/04 會議點名）／備援 aaaaa | 純函式 | 否 | [D3](./detail/D3_recipe_alerts.md) |
-| R-D4 | 最小藍圖 JSON 匯出／匯入 | M4 | aaaaa | 純函式＋接線 | **是** | [D4](./detail/D4_blueprint_json_io.md) |
+| R-D4 | 最小藍圖 JSON 匯出／匯入 | M4 | azure（不擋 POC） | 純函式 | 否 | [D4](./detail/D4_blueprint_json_io.md) |
 | R-D5 | 11/29 驗收劇本與彩排 | M4 | aaaaa＋dernoson | 驗收 | **是** | [D5](./detail/D5_acceptance_rehearsal.md) |
 | R-E1 | 資料與 codegen 維運 | 跨月 | aaaaa | 資料 | 否 | [E1](./detail/E1_data_codegen_ops.md) |
 | R-E2 | 三層守門與 PR 規範 | 跨月 | dernoson | 流程 | 否 | [E2](./detail/E2_layer_guard_pr_rules.md) |
@@ -209,7 +211,7 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 
 ## 6. R-D｜串通月（→ 2026-11-29）
 
-**門檻句：** 一條「源 → 加工 → 匯出點」連起來後，右側看到產耗（含中間物）；重疊與缺 IO／配方不符在右側有字；頂欄 JSON 存檔再開得回來。對應主編步驟 7 ＋ 8 ＋ 9 ＋ 10。
+**門檻句：** 一條「源 → 加工 → 匯出點」連起來後，右側看到產耗（含中間物）；重疊與缺 IO／配方不符在右側有字。對應主編步驟 7 ＋ 8 ＋ 9。**2026-11-08：** 步驟 10 的 JSON 存讀**移出 POC**，改為加分。
 
 - [~] **R-D1** 右側產耗表接 flowStore：空狀態切片 #37；路徑搬家 #53；樣式 **#62 已合**。**尚未**接 `flowStore` 產耗數字（引擎讀 layout 路徑已於 #74 開最小切片）
   - 細項：[detail/D1_stats_item_summary.md](./detail/D1_stats_item_summary.md)
@@ -219,9 +221,8 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
   - 細項：[detail/D3_recipe_alerts.md](./detail/D3_recipe_alerts.md)（**W001 已合入 master** PR #35；右側未接）
   - **2026-10-19：** [#64](https://github.com/dernoson/endfield-playground/pull/64)（E004＋W001＋Z2）**已合**；E005 未完。上右側仍排 11/08。ID 表凍結 E004／E005／W001。
 - **2026-11-03：** E005 偵測器與測試在 `dev/azure9572_w1026_e005`（11-01，**無 PR、不在 master**）。本人週報寫尚未驗完。不改「上右側」排程。
-- [ ] **R-D4** 最小藍圖 JSON 匯出／匯入：`{ version: 2, planId?, devices, pipelines }` ＋ Zod 驗證；頂欄 Save／Load
-  - 細項：[detail/D4_blueprint_json_io.md](./detail/D4_blueprint_json_io.md)（**2026-09-19 依新模型重訂完成**：version 跳 2、**不讀舊檔**、匯入沿用 `layoutStore.loadSnapshot` 不新增 action）
-  - **頂欄按鈕外觀：** MBD 有碼於 `Button/`（曾無 PR）；W1018 不派頂欄（MBD＝DeviceShape）
+- [ ] **R-D4** 最小藍圖 JSON 匯出／匯入：`{ version: 2, planId?, devices, pipelines }`。**2026-11-08 起不擋 POC**。這週期由 azure 做純函式一小步，不做頂欄
+  - 細項：[detail/D4_blueprint_json_io.md](./detail/D4_blueprint_json_io.md)（格式仍是 2026-09-19 的 v2；**驗收身分改為加分**）
 - [ ] **R-D5** 驗收劇本與彩排：8 步劇本文件化，11/22 先彩排一次，11/29 正式演示
   - 細項：[detail/D5_acceptance_rehearsal.md](./detail/D5_acceptance_rehearsal.md)
 
@@ -262,11 +263,11 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 | **10/18** | **C1 UI＋M3 彩排（必要）** | **已結算（10/27）：** C1＝**#78 OPEN**；C5 驗收 **#79 合**；DeviceShape／P2 未過。見 [WEEK_20261018](../work_dispatch/WEEK_20261018.md) |
 
 | **10/25** | **M3 結算＋#78 合入週** | **已結算（11/03）。** #78、#81 合；#82 合；DeviceShape 無 PR；P2 無 git。見 [WEEK_20261026](../work_dispatch/WEEK_20261026.md) |
-| 11/01 | D1 | 右側產耗表接 `itemSummary`，空產線有一句空狀態。**派工中：** [W1102-T1](../work_dispatch/toby/1102/W1102-T1_stats_panel.md)（11/01 會議自 harry 改派）。四種空狀態仍是 11/08 |
-| 11/08 | D2 | 兩台重疊 → 右側一條訊息。**E001 純函式＋dev 頁已就位**；缺右側 Tips |
-| 11/15 | D3 | 缺輸入或輸出、材料組合不符，至少一類上右側。**純函式段已於 10/04 週提前（W1004-Z1）**，本週只剩「上右側」 |
-| 11/22 | D4、D5 | JSON 匯出下載；匯入還原；**驗收劇本彩排一次**。**D4 格式已於 2026-09-19 重訂完成**（v2；舊檔不讀） |
-| 11/29 | **D1＋D2＋D4＋D5（門檻）** | 步驟 7～10 串在同一條演示產線上 |
+| 11/01 | D1 | 右側產耗表接 `itemSummary`。**當週未合：** [#84](https://github.com/dernoson/endfield-playground/pull/84) 仍衝突。見 [W1102-T1](../work_dispatch/toby/1102/W1102-T1_stats_panel.md) |
+| 11/08 | D2 | 兩台重疊 → 右側一條訊息。**當週未接到右側**（#84 仍衝突）。E001 純函式與 E005（#87）已在 master |
+| 11/15 | — | **週日會暫停。** 派工與 11/09 合成一份，看到 11/22。原「警示上右側」改由 toby 在 11/16 之後做 |
+| 11/22 | D2、D5 | 右側警示與設備變紅；**驗收劇本不在這份派工裡重開**。JSON **不在**這週的驗收 |
+| 11/29 | **D1＋D2＋D5（門檻）** | 步驟 7～9 串在同一條演示產線上。JSON 不在此句 |
 
 ### 8.1 10 月緊湊化（2026-10-06）
 
@@ -389,6 +390,7 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 
 | 版 | 日期 | 說明 |
 |----|------|------|
+| **v1.26** | **2026-11-10** | **11/08 會議，派工改為 11/09–11/22**（11/15 不開會）。JSON 移出 POC。刪除／旋轉先由 aaaaa 確認底層。供電樁拆檔後才做樣式。左欄等白紙新稿。#84 與警示放在 11/16 之後。casey 退出。見 [WEEK_20261109](../work_dispatch/WEEK_20261109.md) |
 | **v1.25** | **2026-11-03** | **Device 分檔：** 其餘 W1102 照 v1.1 核准。MBD 續寫 `DeviceShape.vue`，goodmorning 寫故事並開同一張 PR。見 [WEEK_20261102](../work_dispatch/WEEK_20261102.md) v1.2 |
 | **v1.24** | **2026-11-03** | **11/01 會議改派 W1102：** 右側產耗＝toby；供水邏輯＝harry；設備樣式曾只寫 goodmorning；源設備左欄＝paper；E005＝azure；casey 只了解設計現況。 |
 | **v1.23** | **2026-11-03** | **W1102 送審稿（已被 v1.24 取代）：** 右側產耗曾寫 harry；DeviceShape 曾寫 MBD；折線核對曾寫 toby。 |
