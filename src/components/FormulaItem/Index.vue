@@ -29,14 +29,14 @@ defineProps<FormulaItemProps>();
     flex-direction: column;
     align-items: center;
     gap: 3px;
-    width: 71px;
+    /* 寬度隨名稱撐開（最少 71px），圖示恆在字塊中間正上方 */
+    min-width: 71px;
     flex-shrink: 0;
     box-sizing: border-box;
 }
 
 /* item-name */
 .item-name {
-    width: 71px;
     min-height: 18px;
     font-style: normal;
     font-weight: 400;

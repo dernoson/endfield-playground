@@ -28,6 +28,13 @@ describe('toMachineCardFormulas', () => {
         });
     });
 
+    it('瓶裝素材只顯示瓶子本身的名稱', () => {
+        const formulas = toMachineCardFormulas(machineOf('filling_machine'), undefined);
+        const names = formulas.flatMap((f) => [...f.input, ...f.output].map((i) => i.name));
+        expect(names).toContain('藍鐵瓶');
+        expect(names.some((name) => name?.includes('-'))).toBe(false);
+    });
+
     it('沒有配方的物流元件回傳空陣列', () => {
         expect(toMachineCardFormulas(machineOf('splitter'), undefined)).toEqual([]);
     });
