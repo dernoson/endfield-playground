@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import SingleFormula from './SingleFormula.vue';
 import type { Formula } from './types';
 
@@ -7,6 +8,14 @@ const props = defineProps<{
     /** 機器支援的可用配方清單 */
     formulas?: Formula[];
 }>();
+
+/** 正在運行的配方置頂，其餘維持原本順序 */
+const orderedFormulas = computed(() => {
+    const list = props.formulas;
+    if (!list?.length) return [];
+    const running = list.filter((f) => f.isRunning);
+    return running.length > 0 ? [...running, ...list.filter((f) => !f.isRunning)] : list;
+});
 </script>
 
 <template>
@@ -19,7 +28,7 @@ const props = defineProps<{
             <slot>
                 <!-- formula 項目 -->
                 <SingleFormula
-                    v-for="(formula, index) in props.formulas"
+                    v-for="(formula, index) in orderedFormulas"
                     :key="index"
                     :singleformula="formula"
                 />

@@ -12,6 +12,8 @@ export interface Formula {
     input: FormulaItem[];
     /** 生產完成後的輸出產物清單 */
     output: FormulaItem[];
+    /** 該配方是否為目前正在運行的配方；為 true 時置頂並顯示「正在運作中」標籤 */
+    isRunning?: boolean;
 }
 
 /**

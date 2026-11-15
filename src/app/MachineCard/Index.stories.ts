@@ -77,3 +77,24 @@ export const LongFormulaOverflow: Story = {
         ],
     },
 };
+
+/** 運行狀態：第二條配方為運行中，顯示「正在運作中」標籤並自動置頂 */
+export const RunningFormulaPinned: Story = {
+    name: '運行配方置頂（正在運作中）',
+    args: {
+        id: 'refinery_running',
+        name: '精煉爐',
+        sizeText: '3×3',
+        power: '25kW',
+        selectedRecipe: '紫晶纖維(15s)',
+        formulas: [
+            overflowFormula,
+            { ...sampleFormula, isRunning: true },
+            {
+                duration: 10,
+                input: [{ name: '粗製紫晶', image: defaultItemImage, amount: 1 }],
+                output: [{ name: '紫晶零件', image: defaultItemImage, amount: 1 }],
+            },
+        ],
+    },
+};

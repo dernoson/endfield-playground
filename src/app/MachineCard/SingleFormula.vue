@@ -1,20 +1,21 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { useScroll } from '@vueuse/core';
 import FormulaItem from '@/components/FormulaItem/Index.vue';
 import type { Formula } from './types';
 
 /** 單一配方展示元件之屬性定義 */
-defineProps<{
+const props = defineProps<{
     /** 所要呈現的單一配方資料（包含週期、原料與產物） */
     singleformula: Formula;
 }>();
 
 const rowRef = ref<HTMLElement | null>(null);
 
-// 透過 VueUse 自動追蹤橫向滾動與邊界到達狀態
-const { arrivedState } = useScroll(rowRef, {
-    offset: { right: 3 },
+// 透過 VueUse 追蹤橫向滾動與邊界到達狀態；開啟 mutation 觀察以在內容變化時更新
+const { arrivedState, measure } = useScroll(rowRef, {
+    offset: { left: 1, right: 1 },
+    observe: { mutation: true },
 });
 
 const canScrollLeft = computed(() => !arrivedState.left);
@@ -82,6 +83,16 @@ function onWheel(e: WheelEvent): void {
     el.scrollLeft += delta;
 }
 
+/** 配方內容切換或重新排序複用實例時，歸零捲動並重測提示狀態 */
+watch(
+    () => props.singleformula,
+    () => {
+        if (rowRef.value) rowRef.value.scrollLeft = 0;
+        measure();
+    },
+    { flush: 'post' },
+);
+
 onMounted(() => {
     const el = rowRef.value;
     if (el) {
@@ -101,7 +112,24 @@ onUnmounted(() => {
 
 <template>
     <div class="single-formula">
-        <div class="duration">週期 {{ singleformula.duration }}s</div>
+        <div class="duration-row">
+            <span class="duration">週期 {{ singleformula.duration }}s</span>
+            <!-- 設計稿 3712:1527 running 標籤：僅於該配方正在運行時顯示 -->
+            <div v-if="singleformula.isRunning" class="running-badge">
+                <svg
+                    class="running-icon"
+                    width="19"
+                    height="12"
+                    viewBox="0 0 19 12"
+                    fill="none"
+                    aria-hidden="true"
+                >
+                    <path d="M0 0.5L9.5 6L0 11.5V0.5Z" fill="#2B2B2B" />
+                    <path d="M9.5 0.5L19 6L9.5 11.5V0.5Z" fill="#2B2B2B" />
+                </svg>
+                <span class="running-text">正在運作中</span>
+            </div>
+        </div>
 
         <div class="formula-row-wrapper">
             <div
@@ -147,14 +175,47 @@ onUnmounted(() => {
     overflow: hidden;
 }
 
+.duration-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    padding-left: 2px;
+}
+
 .duration {
     font-style: normal;
     font-weight: 400;
     font-size: 18px;
     line-height: 21px;
     color: #cfcfcf;
-    margin-bottom: 6px;
-    padding-left: 2px;
+}
+
+.running-badge {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 105px;
+    height: 20px;
+    padding: 0 5px;
+    background: #eefd1c;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.running-icon {
+    flex-shrink: 0;
+}
+
+.running-text {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    color: #2b2b2b;
+    white-space: nowrap;
 }
 
 .formula-row-wrapper {

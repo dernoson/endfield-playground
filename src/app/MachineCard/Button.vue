@@ -12,10 +12,11 @@
 </template>
 
 <style scoped>
-/* 按鈕位置定位層（貼附於卡片右側） */
+/* 按鈕位置定位層（貼附於卡片右側，位於標題列 52px 下緣至卡片底部的 50% 垂直置中） */
 .button {
     position: absolute;
-    top: 45%;
+    top: calc(52px + (100% - 52px) / 2);
+    transform: translateY(-50%);
     right: -10px;
     cursor: pointer;
     display: flex;

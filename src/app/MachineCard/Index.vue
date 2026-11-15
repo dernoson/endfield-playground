@@ -1,8 +1,24 @@
 <script lang="ts">
+import { ref } from 'vue';
 export * from './types';
+
+const DEFAULT_CARD_HEIGHT = 686;
+const MIN_CARD_HEIGHT = 260;
+const MAX_CARD_HEIGHT = 1200;
+
+/**
+ * 切換設備或收合重開時是否保留使用者拉伸後的面板高度。
+ * - `true`：保留上次拉伸的高度（預設）
+ * - `false`：每次切換設備或重新開啟皆重置為 `DEFAULT_CARD_HEIGHT`
+ */
+const PERSIST_RESIZED_HEIGHT = true;
+
+/** 跨卸載／切換設備保存的拉伸高度（模組層級，僅於 `PERSIST_RESIZED_HEIGHT === true` 使用） */
+const persistedCardHeight = ref(DEFAULT_CARD_HEIGHT);
 </script>
 
 <script setup lang="ts">
+import { onUnmounted, watch } from 'vue';
 import Title from './Title.vue';
 import Machine from './Machine.vue';
 import FormulaList from './FormulaList.vue';
@@ -28,6 +44,87 @@ const emit = defineEmits<{
     (event: 'collapse'): void;
 }>();
 
+const cardHeight = PERSIST_RESIZED_HEIGHT ? persistedCardHeight : ref(DEFAULT_CARD_HEIGHT);
+
+if (!PERSIST_RESIZED_HEIGHT) {
+    watch(
+        () => props.id,
+        () => {
+            cardHeight.value = DEFAULT_CARD_HEIGHT;
+        },
+    );
+}
+
+let isResizing = false;
+let resizeStartY = 0;
+let resizeStartHeight = DEFAULT_CARD_HEIGHT;
+let suppressNextClick = false;
+let clearSuppressTimer: ReturnType<typeof setTimeout> | null = null;
+
+/** 開始拖曳調整卡片高度；阻止預設與冒泡以避開外層 useDragScroll */
+function onResizeMouseDown(event: MouseEvent): void {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    event.stopPropagation();
+
+    isResizing = true;
+    suppressNextClick = false;
+    if (clearSuppressTimer !== null) {
+        clearTimeout(clearSuppressTimer);
+        clearSuppressTimer = null;
+    }
+    resizeStartY = event.clientY;
+    resizeStartHeight = cardHeight.value;
+
+    window.addEventListener('mousemove', onResizeMouseMove);
+    window.addEventListener('mouseup', onResizeMouseUp);
+}
+
+/** 拖曳過程即時限制並更新卡片高度 */
+function onResizeMouseMove(event: MouseEvent): void {
+    if (!isResizing) return;
+    const dy = event.clientY - resizeStartY;
+    if (Math.abs(dy) > 2) {
+        suppressNextClick = true;
+    }
+    cardHeight.value = Math.round(
+        Math.min(MAX_CARD_HEIGHT, Math.max(MIN_CARD_HEIGHT, resizeStartHeight + dy)),
+    );
+}
+
+/** 結束拖曳調整並於事件輪結束後歸零防誤觸旗標（避免卡片外放開滑鼠殘留） */
+function onResizeMouseUp(): void {
+    if (!isResizing) return;
+    isResizing = false;
+    window.removeEventListener('mousemove', onResizeMouseMove);
+    window.removeEventListener('mouseup', onResizeMouseUp);
+    if (suppressNextClick) {
+        clearSuppressTimer = setTimeout(() => {
+            suppressNextClick = false;
+            clearSuppressTimer = null;
+        }, 0);
+    }
+}
+
+/** 拖曳拉伸結束後放開滑鼠若落在卡片內，阻斷誤觸選取事件 */
+function onClickCapture(event: MouseEvent): void {
+    if (!suppressNextClick) return;
+    suppressNextClick = false;
+    if (clearSuppressTimer !== null) {
+        clearTimeout(clearSuppressTimer);
+        clearSuppressTimer = null;
+    }
+    event.stopPropagation();
+}
+
+onUnmounted(() => {
+    window.removeEventListener('mousemove', onResizeMouseMove);
+    window.removeEventListener('mouseup', onResizeMouseUp);
+    if (clearSuppressTimer !== null) {
+        clearTimeout(clearSuppressTimer);
+    }
+});
+
 /**
  * 處理卡片點擊互動，向外部發送選取事件與機器 ID。
  *
@@ -41,7 +138,12 @@ function onClick(): void {
 </script>
 
 <template>
-    <div class="machine-card" @click="onClick">
+    <div
+        class="machine-card"
+        :style="{ height: `${cardHeight}px` }"
+        @click.capture="onClickCapture"
+        @click="onClick"
+    >
         <!-- 1. 卡片底板 -->
         <div class="plate"></div>
 
@@ -61,6 +163,16 @@ function onClick(): void {
         <Machine :src="iconUrl" />
         <!-- 根節點是 div：click 經屬性穿透掛上；.stop 避免同時觸發卡片的 pick -->
         <Button role="button" aria-label="收起物件資訊面板" @click.stop="emit('collapse')" />
+
+        <!-- 4. 底緣拉伸把手 -->
+        <div
+            class="resize-handle"
+            role="separator"
+            aria-orientation="horizontal"
+            aria-label="上下拖曳調整面板高度"
+            @mousedown="onResizeMouseDown"
+            @click.stop
+        />
     </div>
 </template>
 
@@ -98,5 +210,16 @@ function onClick(): void {
     right: 6px;
     top: 52px;
     bottom: 0px;
+}
+
+/* 底緣拉伸熱區 */
+.resize-handle {
+    position: absolute;
+    left: 3px;
+    right: 0;
+    bottom: 0;
+    height: 10px;
+    cursor: ns-resize;
+    z-index: 2;
 }
 </style>
