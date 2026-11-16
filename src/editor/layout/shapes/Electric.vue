@@ -16,7 +16,7 @@ import {
  * 狀態：
  * - 預設：淡黃色底（#EEFD1C 20%）與同色描邊、虛線方框
  * - selected：底色、描邊與虛線方框改為 #1CAEFD，圖示線條也變成 #1CAEFD
- * - dragging：底框、邊線與虛線方框 Opacity 70%（圖示維持原樣）
+ * - dragging：底框、邊線與虛線方框 Opacity 70%，圖示 Opacity 50%
  */
 
 /**
@@ -83,7 +83,7 @@ const outlineStroke = computed(() => (props.selected ? SELECTED_COLOR : STROKE))
 
 <template>
     <g data-testid="electric-shape" :data-dragging="props.dragging" :data-selected="props.selected">
-        <!-- 圓形底框與邊線：拖曳中套用 Opacity 70% -->
+        <!-- 底框、邊線與虛線方框：拖曳中套用 Opacity 70% -->
         <g :opacity="props.dragging ? DRAG_BODY_OPACITY : 1">
             <rect
                 data-testid="electric-dashed-frame"
@@ -118,6 +118,7 @@ const outlineStroke = computed(() => (props.selected ? SELECTED_COLOR : STROKE))
                 :width="ICON_WIDTH"
                 :height="ICON_HEIGHT"
                 :filter="props.selected ? `url(#${tintId})` : undefined"
+                :opacity="props.dragging ? 0.5 : 1"
             />
         </g>
     </g>
