@@ -7,24 +7,18 @@ import ProductionStats from '@/editor/stats/ProductionStats.vue';
 import MachineCard, { type MachineCardProps } from '@/app/MachineCard/Index.vue';
 import SourceOutputPanel from '@/editor/sourceOutput/SourceOutputPanel.vue';
 import { useLayoutStore } from '@/store/layoutStore';
-import { useFlowStore } from '@/store/flowStore';
 import type { PlacedDevice } from '@/types/layout';
 import { getMachineById } from '@/data/machines';
-import { getRecipesForMachine } from '@/data/products';
+import { getMachineIconUrl } from '@/editor/toolbar/toolbarMachines';
+import { toMachineCardFormulas } from './toMachineCardFormulas';
 import { resolveDisplayGrid } from '@/utils/portUtils';
-import {
-    matchRecipeByInputs,
-    resolveMachineMode,
-    useFlowEngine,
-} from '@/composables/useFlowEngine';
+import { useFlowEngine } from '@/composables/useFlowEngine';
 import { useValidation } from '@/composables/useValidation';
 import { toTopology } from '@/utils/layout/toTopology';
+import { useDragScroll } from '@/composables/useDragScroll';
 
 /** 讀取已放置設備，供左側面板由選中 id 反查設備實例 */
 const layoutStore = useLayoutStore();
-
-/** 唯讀引擎算出的實際入料，用於呈現目前匹配的正式配方。 */
-const flowStore = useFlowStore();
 
 /** 驗證與引擎共用正式畫布的格子拓撲，不同步寫入舊 editorStore。 */
 const topology = computed(() => {
@@ -41,6 +35,20 @@ const topology = computed(() => {
 const selectedDeviceId = ref<string | null>(null);
 
 /**
+ * 物件資訊卡片是否被使用者收起（點卡片右緣黃色三角形）。   * 只隱藏卡片、不清掉選取，避免影響其他依選取運作的功能；再點一次設備就重新顯示。
+ */
+const devicePanelHidden = ref(false);
+
+/**
+ * 畫布選取設備：記下選取並重新顯示卡片。
+ * @param deviceId 選中的設備 id；點空白處為 `null`
+ */
+function onSelectDevice(deviceId: string | null): void {
+    selectedDeviceId.value = deviceId;
+    devicePanelHidden.value = false;
+}
+
+/**
  * 選中的設備實例；找不到時為 `null`。  \
  * 每次從 store 反查而非保存快照：設備被復原移除後面板自動收起，不會顯示已不存在的設備。
  */
@@ -50,7 +58,8 @@ const selectedDevice = computed<PlacedDevice | null>(
 
 /**
  * 選中設備轉成 MachineCard 的 props；找不到設備或機器定義時為 `null`，面板隨之隱藏。  \
- * 尺寸取目前旋轉後的顯示長寬；正式配方依設備名稱及有效模式查詢，再映射為展示資料。
+ * 尺寸取目前旋轉後的顯示長寬；可用配方依設備模式查詢。
+ * `selectedRecipe` 不給：正式頁沒有指定配方，配方由引擎依實際輸入判斷，卡片顯示佔位符號。
  */
 const selectedMachineCard = computed<MachineCardProps | null>(() => {
     const device = selectedDevice.value;
@@ -59,40 +68,25 @@ const selectedMachineCard = computed<MachineCardProps | null>(() => {
     if (!machine) return null;
     /** 與畫布共用旋轉後尺寸，避免選取面板仍顯示旋轉前長寬。 */
     const display = resolveDisplayGrid(machine.width, machine.height, device.rotation);
-    /** 與引擎沿用相同的缺省模式，避免面板混入其他模式的配方。 */
-    const mode = resolveMachineMode(device.machineType, device.machineMode);
-    const recipes = getRecipesForMachine(machine.name, mode);
-    /** 只讀實際正流量，避免把有連線但尚未供料的品項誤顯示成目前配方。 */
-    const incomingItems = new Set<string>();
-    for (const edge of topology.value.edges) {
-        if (edge.target !== device.id) continue;
-        const flow = flowStore.edgeFlows.get(edge.id);
-        if (flow && flow.rate > 0) incomingItems.add(flow.itemId);
-    }
-    /** 重用引擎的配方匹配規則；非法鏈路不顯示目前配方。 */
-    const matched = flowStore.invalidChainUids.has(device.id)
-        ? null
-        : matchRecipeByInputs(device.machineType, incomingItems, mode, device.environment);
     return {
         id: device.id,
         name: machine.name,
         sizeText: `${display.widthCells}×${display.heightCells}`,
         /** 負值（含 -1 資料未定義）不是耗電量，留給卡片顯示佔位符號 */
         power: machine.power >= 0 ? `${machine.power}kW` : undefined,
-        selectedRecipe: matched
-            ? `${matched.recipe.outputs.map((item) => item.itemId).join('、')}（${matched.recipe.timeSeconds}秒）`
-            : undefined,
-        formulas: recipes.map((recipe) => ({
-            duration: recipe.timeSeconds,
-            input: recipe.inputs.map((item) => ({ name: item.itemId, amount: item.quantity })),
-            output: recipe.outputs.map((item) => ({ name: item.itemId, amount: item.quantity })),
-        })),
+        /** 沒有機器圖的機型為 undefined，卡片改用內建占位圖 */
+        iconUrl: getMachineIconUrl(machine.id),
+        formulas: toMachineCardFormulas(machine, device.machineMode),
     };
 });
 
+/** 左側物件資訊槽的 DOM；捲軸隱藏，改以按住左鍵拖曳捲動 */
+const devicePanelRef = ref<HTMLElement | null>(null);
+useDragScroll(devicePanelRef);
+
 /**
  * 右側產線總覽是否展開，預設展開。  \
- * 收合只把欄寬歸零、不卸載 StatsPanel，避免面板內的輸入（如倉庫容量）在開合之間被重置。
+ * 收合只把欄寬歸零，維持 ProductionStats 掛載，保留倉庫容量等輸入。
  */
 const statsOpen = ref(true);
 
@@ -118,11 +112,18 @@ useFlowEngine(() => topology.value);
                 <div class="area-canvas">
                     <LayoutView
                         :selected-device-id="selectedDeviceId"
-                        @select-device="selectedDeviceId = $event"
+                        @select-device="onSelectDevice"
                     />
                 </div>
-                <aside v-if="selectedMachineCard" class="area-device-panel">
-                    <MachineCard v-bind="selectedMachineCard" />
+                <aside
+                    v-if="selectedMachineCard && !devicePanelHidden"
+                    ref="devicePanelRef"
+                    class="area-device-panel"
+                >
+                    <MachineCard
+                        v-bind="selectedMachineCard"
+                        @collapse="devicePanelHidden = true"
+                    />
                     <!-- C5：源設備才會渲染內容，非源設備此元件為空 -->
                     <SourceOutputPanel v-if="selectedDevice" :device="selectedDevice" />
                 </aside>
@@ -199,17 +200,23 @@ useFlowEngine(() => topology.value);
 }
 
 /*
- * 寬度＝MachineCard 設計寬 451px；卡片自帶底板，本槽不另鋪底色。
- * 高度隨卡片而不撐滿：卡片下方留給畫布接點擊。畫面比卡片矮時改由本槽捲動。
+ * 寬度＝MachineCard 設計寬 451px＋右緣三角形凸出 10px，三角形不被裁切也不產生橫向溢出。
+ * 卡片自帶底板，本槽不另鋪底色。高度隨卡片而不撐滿：卡片下方留給畫布接點擊。
+ * 畫面比卡片矮時由本槽捲動；捲軸隱藏，改用滾輪或按住左鍵拖曳（useDragScroll）。
  */
 .area-device-panel {
     position: absolute;
     top: 0;
     left: 0;
     z-index: 10;
-    width: 451px;
+    width: 461px;
     max-height: 100%;
-    overflow-y: auto;
+    overflow: auto;
+    scrollbar-width: none;
+}
+
+.area-device-panel::-webkit-scrollbar {
+    display: none;
 }
 
 /*

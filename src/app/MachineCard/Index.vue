@@ -21,6 +21,11 @@ const emit = defineEmits<{
      * @param machineId 被選取的機器唯一識別碼
      */
     (event: 'pick', machineId: string): void;
+    /**
+     * 點擊右緣黃色三角形時對外觸發，通知上層收起卡片。
+     * @param event 事件名稱 'collapse'
+     */
+    (event: 'collapse'): void;
 }>();
 
 /**
@@ -54,7 +59,8 @@ function onClick(): void {
         <!-- 3. 貼附於 Frame 的漂浮元素 -->
         <Title />
         <Machine :src="iconUrl" />
-        <Button />
+        <!-- 根節點是 div：click 經屬性穿透掛上；.stop 避免同時觸發卡片的 pick -->
+        <Button role="button" aria-label="收起物件資訊面板" @click.stop="emit('collapse')" />
     </div>
 </template>
 

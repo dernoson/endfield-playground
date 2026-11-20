@@ -22,7 +22,11 @@ defineProps<{
     top: 30px;
 }
 
+/* 設計稿 image 153×153；固定尺寸，避免來源圖較大時蓋到左側資訊文字 */
 .machine-image {
     display: block;
+    width: 153px;
+    height: 153px;
+    object-fit: contain;
 }
 </style>

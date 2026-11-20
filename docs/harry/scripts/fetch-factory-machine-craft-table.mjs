@@ -6,6 +6,8 @@
  * 用法：
  *   node docs/harry/scripts/fetch-factory-machine-craft-table.mjs
  *   node docs/harry/scripts/fetch-factory-machine-craft-table.mjs --dry-run
+ *   node docs/harry/scripts/fetch-factory-machine-craft-table.mjs --webp-only
+ *     （不連網，只把本機既有的 icons/*.png 轉成 WebP 並匯出前端用圖）
  *
  * 流程：
  *   1. GET manifest.json，用 manifest.latest 對應 versions[] 找出該版本的 tableCfgPath
@@ -15,13 +17,17 @@
  *   4. 用 FactoryBuildingTable.json 的 buildingId 透過 FactoryBuildingItemTable.json 換出對應
  *      itemId，下載 sprites/itemiconbig/<itemId>.png，落地存到 docs/harry/dev/icons/<buildingId>.png
  *      （沒有對應 itemId，或該 itemId 沒有大圖示，就跳過並記錄，不視為錯誤）
+ *   5. 以 ffmpeg 把每張 PNG 轉成 WEBP_SIZE 見方的 WebP（docs/harry/dev/icons/<buildingId>.webp），
+ *      再依 MACHINE_ICON_BUILDING_ID 複製成前端用圖 src/assets/machines/<機器 id>.webp。
+ *      系統找不到 ffmpeg 時只略過本步並警告，不影響前面的資料表落地
  *
  * 注意：抽取 "id" 參照時必須用 fetch 回應的原始文字（regex），不能先 JSON.parse 再讀欄位——
  * 這些 id 是超過 Number.MAX_SAFE_INTEGER 的 int64，JSON.parse 轉成 JS number 會直接失真
  * （小數精度不足導致尾數被捨去成 0），之後就永遠比對不到 I18nTextTable_CN.json 裡的原始 key。
  */
 
-import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { copyFileSync, existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -29,6 +35,57 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const HARRY_ROOT = join(__dirname, '..');
 const DEST_DIR = join(HARRY_ROOT, 'dev', 'data');
 const ICON_DEST_DIR = join(HARRY_ROOT, 'dev', 'icons');
+/** 前端打包用的機器圖目錄；檔名用專案的機器 id，前端不必再查遊戲 buildingId */
+const MACHINE_ASSET_DIR = join(HARRY_ROOT, '..', '..', 'src', 'assets', 'machines');
+
+/** WebP 輸出邊長（px）：工具列卡片顯示 100px，留 2 倍給高 DPI 螢幕 */
+const WEBP_SIZE = 200;
+
+/**
+ * 專案機器 id（src/data/machines.ts 的 Machine.id）→ 遊戲 buildingId。
+ *
+ * 由 FactoryBuildingTable 的建築名稱（I18nTextTable_CN 簡中）對照專案機器中文名人工確認。
+ * 注意兩套 id 不能直接比對：專案的 `grinder`（研磨機）是遊戲的 `thickener_1`，
+ * 遊戲的 `grinder_1` 是粉碎機（專案 `crusher`）。
+ * 物流元件（分流器、匯流器、物流橋、管道元件、准入口）與專案自訂的源／匯節點在遊戲表中沒有大圖示，不列入。
+ */
+const MACHINE_ICON_BUILDING_ID = {
+    shaping_machine: 'shaper_1',
+    filling_machine: 'filling_powder_mc_1',
+    refinery: 'furnance_1',
+    crusher: 'grinder_1',
+    parts_machine: 'component_mc_1',
+    equipment_parts_machine: 'winder_1',
+    packaging_machine: 'tools_assebling_mc_1',
+    grinder: 'thickener_1',
+    reactor: 'mix_pool_1',
+    tianyou_furnace: 'xiranite_oven_1',
+    purifier: 'liquid_purifier_1',
+    disassembler: 'dismantler_1',
+    protocol_storage_box: 'storager_1',
+    warehouse_input: 'loader_1',
+    warehouse_output: 'unloader_1',
+    liquid_tank: 'liquid_storager_1',
+    warehouse_line_base: 'log_hongs_bus',
+    warehouse_line_source: 'log_hongs_bus_source',
+    conduit_inlet: 'udpipe_loader_1',
+    conduit_outlet: 'udpipe_unloader_1',
+    multi_conduit_inlet: 'udpipe_loader_2',
+    multi_conduit_outlet: 'udpipe_unloader_2',
+    seed_harvester: 'seedcollector_1',
+    planter: 'planter_1',
+    wastewater_processor: 'liquid_cleaner_1',
+    large_reactor: 'mix_pool_2',
+    power_pole: 'power_diffuser_1',
+    xi_rang_power_pole: 'power_diffuser_2',
+    relay: 'power_pole_2',
+    xi_rang_relay: 'power_pole_3',
+    thermal_pool: 'power_station_1',
+    liquid_gas_converter: 'transmuter_1',
+    solid_gas_converter: 'transmuter_2',
+    gas_reactor: 'gas_reactor_1',
+    gas_disperser: 'vaporizer_1',
+};
 
 const MANIFEST_URL = 'https://data.akedata.wiki/manifest.json';
 const DATA_HOST = 'https://data.akedata.wiki';
@@ -64,6 +121,7 @@ function extractReferencedIds(rawText) {
 }
 
 const dryRun = process.argv.includes('--dry-run');
+const webpOnly = process.argv.includes('--webp-only');
 
 /**
  * 將 repo 相對路徑印成可讀字串。
@@ -125,7 +183,97 @@ async function fetchBinary(url) {
     return Buffer.from(await res.arrayBuffer());
 }
 
+/**
+ * 以 ffmpeg 將 PNG 縮放並轉成 WebP（保留透明通道）。
+ * @param {string} pngPath 來源 PNG
+ * @param {string} webpPath 輸出 WebP
+ * @returns {boolean} 轉檔是否成功
+ */
+function convertToWebp(pngPath, webpPath) {
+    const result = spawnSync(
+        'ffmpeg',
+        [
+            '-y',
+            '-loglevel',
+            'error',
+            '-i',
+            pngPath,
+            '-vf',
+            `scale=${WEBP_SIZE}:${WEBP_SIZE}:flags=lanczos`,
+            '-c:v',
+            'libwebp',
+            '-quality',
+            '90',
+            webpPath,
+        ],
+        { encoding: 'utf8' },
+    );
+    if (result.status !== 0) {
+        console.warn(
+            `[fetch-factory-machine-craft-table] WebP 轉檔失敗：${rel(pngPath)}（${result.stderr?.trim() || result.error?.message}）`,
+        );
+        return false;
+    }
+    return true;
+}
+
+/**
+ * 把 ICON_DEST_DIR 內所有 PNG 轉成同名 WebP，再依 MACHINE_ICON_BUILDING_ID 匯出前端用圖。
+ * 系統沒有 ffmpeg 時整步略過並警告。
+ */
+function exportWebpIcons() {
+    const probe = spawnSync('ffmpeg', ['-version'], { encoding: 'utf8' });
+    if (probe.error || probe.status !== 0) {
+        console.warn(
+            '[fetch-factory-machine-craft-table] 找不到 ffmpeg，略過 WebP 轉檔（安裝 ffmpeg 後可用 --webp-only 補做）',
+        );
+        return;
+    }
+    if (!existsSync(ICON_DEST_DIR)) {
+        console.warn(
+            `[fetch-factory-machine-craft-table] ${rel(ICON_DEST_DIR)} 不存在，略過 WebP 轉檔`,
+        );
+        return;
+    }
+
+    const pngFiles = readdirSync(ICON_DEST_DIR).filter((f) => f.endsWith('.png'));
+    let converted = 0;
+    for (const file of pngFiles) {
+        const pngPath = join(ICON_DEST_DIR, file);
+        if (convertToWebp(pngPath, pngPath.replace(/\.png$/, '.webp'))) converted++;
+    }
+    console.log(
+        `[fetch-factory-machine-craft-table] WebP 轉檔：${converted}/${pngFiles.length} 張（${WEBP_SIZE}×${WEBP_SIZE}）`,
+    );
+
+    if (!existsSync(MACHINE_ASSET_DIR)) {
+        mkdirSync(MACHINE_ASSET_DIR, { recursive: true });
+        console.log(`[fetch-factory-machine-craft-table] 已建立目錄 ${rel(MACHINE_ASSET_DIR)}`);
+    }
+    let exported = 0;
+    for (const [machineId, buildingId] of Object.entries(MACHINE_ICON_BUILDING_ID)) {
+        const source = join(ICON_DEST_DIR, `${buildingId}.webp`);
+        if (!existsSync(source)) {
+            console.warn(
+                `[fetch-factory-machine-craft-table] 缺少 ${buildingId}.webp，${machineId} 無前端用圖`,
+            );
+            continue;
+        }
+        copyFileSync(source, join(MACHINE_ASSET_DIR, `${machineId}.webp`));
+        exported++;
+    }
+    console.log(
+        `[fetch-factory-machine-craft-table] 前端用圖：已匯出 ${exported}/${Object.keys(MACHINE_ICON_BUILDING_ID).length} 張到 ${rel(MACHINE_ASSET_DIR)}`,
+    );
+}
+
 async function main() {
+    if (webpOnly) {
+        console.log('[fetch-factory-machine-craft-table] 模式：webp-only（不連網）');
+        exportWebpIcons();
+        return;
+    }
+
     console.log(`[fetch-factory-machine-craft-table] 模式：${dryRun ? 'dry-run' : 'write'}`);
     console.log('');
 
@@ -248,6 +396,9 @@ async function main() {
             `[fetch-factory-machine-craft-table] 完成：已寫入 ${rel(destFile)}（${buffer.length} bytes）`,
         );
     }
+
+    console.log('');
+    exportWebpIcons();
 }
 
 main();
