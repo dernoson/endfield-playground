@@ -58,7 +58,7 @@ const selectedDevice = computed<PlacedDevice | null>(
 
 /**
  * 選中設備轉成 MachineCard 的 props；找不到設備或機器定義時為 `null`，面板隨之隱藏。  \
- * 尺寸取目前旋轉後的顯示長寬；可用配方依設備模式查詢。
+ * 尺寸取目前旋轉後的顯示長寬。
  * `selectedRecipe` 不給：正式頁沒有指定配方，配方由引擎依實際輸入判斷，卡片顯示佔位符號。
  */
 const selectedMachineCard = computed<MachineCardProps | null>(() => {
