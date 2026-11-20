@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 import Navbar from '@/editor/navbar/Navbar.vue';
 import ToolbarPanel from '@/editor/toolbar/ToolbarPanel.vue';
 import LayoutView from '@/editor/layout/LayoutView.vue';
-import ProductionStats from '@/editor/stats/ProductionStats.vue';
+import StatsPanel from '@/app/StatsPanel/Index.vue';
 import MachineCard, { type MachineCardProps } from '@/app/MachineCard/Index.vue';
 import SourceOutputPanel from '@/editor/sourceOutput/SourceOutputPanel.vue';
 import { useLayoutStore } from '@/store/layoutStore';
@@ -14,18 +14,10 @@ import { toMachineCardFormulas } from './toMachineCardFormulas';
 import { resolveDisplayGrid } from '@/utils/portUtils';
 import { useFlowEngine } from '@/composables/useFlowEngine';
 import { useValidation } from '@/composables/useValidation';
-import { toTopology } from '@/utils/layout/toTopology';
 import { useDragScroll } from '@/composables/useDragScroll';
 
 /** 讀取已放置設備，供左側面板由選中 id 反查設備實例 */
 const layoutStore = useLayoutStore();
-
-/** 驗證與引擎共用正式畫布的格子拓撲，不同步寫入舊 editorStore。 */
-const topology = computed(() => {
-    /** 沿用 store 的快照 API，避免把深層唯讀管線強制轉型成可變陣列。 */
-    const { devices, pipelines } = layoutStore.toSnapshot();
-    return toTopology(devices, pipelines, [...layoutStore.connections]);
-});
 
 /**
  * 目前選中的設備實例 id，`null` 表示未選取。  \
@@ -86,7 +78,7 @@ useDragScroll(devicePanelRef);
 
 /**
  * 右側產線總覽是否展開，預設展開。  \
- * 收合只把欄寬歸零，維持 ProductionStats 掛載，保留倉庫容量等輸入。
+ * 收合只把欄寬歸零、不卸載 StatsPanel，避免面板內的輸入（如倉庫容量）在開合之間被重置。
  */
 const statsOpen = ref(true);
 
@@ -94,10 +86,10 @@ const statsOpen = ref(true);
  * 啟動 CR-03 驗證監聽（藍圖變動時 sync 重跑所有 detector）。  \
  * 必須在 useFlowEngine() 之前呼叫，FlowEngine 才能讀到最新的 alerts。
  */
-useValidation(() => topology.value);
+useValidation();
 
 /** 啟動 CR-04 FlowEngine 監聽（watch + debounce 150ms） */
-useFlowEngine(() => topology.value);
+useFlowEngine();
 </script>
 
 <template>
@@ -152,7 +144,7 @@ useFlowEngine(() => topology.value);
 
             <aside id="area-stats" class="area-stats" :class="{ 'is-collapsed': !statsOpen }">
                 <div class="area-stats__body">
-                    <ProductionStats overview />
+                    <StatsPanel />
                 </div>
             </aside>
         </div>

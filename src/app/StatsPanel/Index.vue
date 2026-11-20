@@ -3,15 +3,18 @@ export * from './types.ts';
 </script>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import { useEventListener } from '@vueuse/core';
 import HeaderLabel from './HeaderLabel.vue';
 import ResultPanel from './ResultPanel.vue';
 import AttentionPanel from './AttentionPanel.vue';
-import type { StatsPanelProps } from './types.ts';
+import { statsOverviewKey, type StatsPanelProps } from './types.ts';
 
 /** 未提供設備狀態時保留 undefined，避免 Vue 將可選 Boolean 自動轉成 false。 */
 const props = withDefaults(defineProps<StatsPanelProps>(), { hasDevices: undefined });
+
+/** 正式編輯器傳入即時統計；獨立預覽由面板 props 提供資料。 */
+const overview = inject(statsOverviewKey, undefined);
 
 /**
  * 下半部 Tips 區最少保留高度（px）：拖曳時的下限，也是縱向壓縮時上半部的讓位基準，
@@ -79,11 +82,11 @@ useEventListener(window, 'touchend', stopDrag);
         >
             <!-- 上半部：整體統計與產能估算 -->
             <ResultPanel
-                :has-devices="props.hasDevices"
-                :power="props.power"
-                :products="props.products"
-                :exchange-rate="props.exchangeRate"
-                :exchange-rates="props.exchangeRates"
+                :has-devices="props.hasDevices ?? overview?.hasDevices"
+                :power="props.power ?? overview?.power"
+                :products="props.products ?? overview?.products"
+                :exchange-rate="props.exchangeRate ?? overview?.exchangeRate"
+                :exchange-rates="props.exchangeRates ?? overview?.exchangeRates"
                 :style="{
                     height: `${topHeight}px`,
                     maxHeight: `calc(100% - ${MIN_BOTTOM_HEIGHT}px)`,

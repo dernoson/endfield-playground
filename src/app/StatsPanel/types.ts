@@ -1,4 +1,5 @@
 import type { TicketCurrencyRate } from '@/types/flow';
+import type { InjectionKey, Ref } from 'vue';
 
 /** 單一產品的產能估算明細資料 */
 export interface SingleProductDetail {
@@ -47,3 +48,7 @@ export interface StatsPanelProps {
     /** 下半部提示與警報訊息列表 */
     tips?: SingleTip[];
 }
+
+/** 正式編輯器提供給總覽容器的統計資料，獨立預覽仍可直接傳入 props。 */
+export const statsOverviewKey: InjectionKey<Readonly<Ref<StatsPanelProps>>> =
+    Symbol('statsOverview');

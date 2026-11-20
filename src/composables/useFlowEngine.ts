@@ -41,8 +41,8 @@ import { useEditorStore } from '@/store/editorStore';
 import { useFlowStore } from '@/store/flowStore';
 import { useValidationStore } from '@/store/validationStore';
 import type { FactoryNode, FactoryEdge } from '@/types/graph';
-import type { TopologyResult } from '@/utils/layout/toTopology';
-import { watch } from 'vue';
+import { layoutTopologyKey, type TopologyResult } from '@/utils/layout/toTopology';
+import { hasInjectionContext, inject, watch } from 'vue';
 import { useTimeoutFn } from '@vueuse/core';
 
 // ─── 內部工具 ─────────────────────────────────────────────────────────────────
@@ -1399,7 +1399,7 @@ export async function runFlowEngine(topology?: TopologyResult): Promise<void> {
  * 為了讓 FlowEngine 能用到最新的 validation 結果，**請先呼叫 `useValidation()` 再呼叫本函式**。
  *
  * 監聽策略：
- *   - 監聽目標：指定拓撲來源（省略則沿用 editorStore）與 validationStore.alerts
+ *   - 監聽目標：指定或由正式編輯器提供的拓撲來源，其餘入口沿用 editorStore；同時監聽 validationStore.alerts
  *   - `immediate: true`：setup 時排程一次全量計算
  *   - `deep: true`：捕捉節點內部變動（配方更改、旋轉等）
  *   - 可重啟的 150ms 計時器合併連續操作，scope 結束時自動取消，避免離頁後覆寫結果
@@ -1416,6 +1416,7 @@ export function useFlowEngine(getTopology?: () => TopologyResult) {
     /** 舊頁面不傳來源時才讀 editorStore；正式頁不監聽舊 mock 資料。 */
     const readTopology =
         getTopology ??
+        (hasInjectionContext() ? inject(layoutTopologyKey, undefined) : undefined) ??
         (() => {
             const editorStore = useEditorStore();
             return { nodes: editorStore.nodes, edges: editorStore.edges };

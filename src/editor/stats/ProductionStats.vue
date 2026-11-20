@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, provide, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useFlowStore } from '@/store/flowStore';
 import { useEditorStore } from '@/store/editorStore';
 import { useLayoutStore } from '@/store/layoutStore';
-import StatsPanel from '@/app/StatsPanel/Index.vue';
-import type { PowerData, SingleProductDetail } from '@/app/StatsPanel/types';
+import { statsOverviewKey, type PowerData, type SingleProductDetail } from '@/app/StatsPanel/types';
+import { layoutTopologyKey, toTopology } from '@/utils/layout/toTopology';
 
 /** 正式右欄使用現行展示面板；省略時保留舊 Inspector 的完整統計畫面。 */
 const props = defineProps<{
@@ -67,6 +67,26 @@ const products = computed<SingleProductDetail[]>(() =>
         isExpanded: true,
     })),
 );
+
+/** 正式編輯器插槽使用即時拓撲與統計；舊 Inspector 維持獨立渲染。 */
+if (props.overview) {
+    /** 共用畫布快照，讓驗證與引擎處理相同的設備與連線。 */
+    const topology = computed(() => {
+        const { devices, pipelines } = layoutStore.toSnapshot();
+        return toTopology(devices, pipelines, [...layoutStore.connections]);
+    });
+    provide(layoutTopologyKey, () => topology.value);
+    provide(
+        statsOverviewKey,
+        computed(() => ({
+            hasDevices: hasDevices.value,
+            power: power.value,
+            products: products.value,
+            exchangeRate: exchangeRate.value,
+            exchangeRates: exchangeRates.value,
+        })),
+    );
+}
 
 /** 解構 flowStore 的 action，供調度券兌換率與倉庫容量輸入框直接呼叫 */
 const { setTicketRate, setWarehouseCapacity } = flowStore;
@@ -262,14 +282,7 @@ function applyPlanRates(): void {
 </script>
 
 <template>
-    <StatsPanel
-        v-if="props.overview"
-        :power="power"
-        :products="products"
-        :has-devices="hasDevices"
-        :exchange-rate="exchangeRate"
-        :exchange-rates="exchangeRates"
-    />
+    <slot v-if="props.overview" />
     <div v-else class="space-y-4 text-sm text-zinc-200">
         <!-- G2：整體電力統計 -->
         <section>

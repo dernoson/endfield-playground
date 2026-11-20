@@ -1,11 +1,11 @@
 /**
  * CR-03 useValidation
  *
- * 串接 editorStore 變動到 validationStore：藍圖一改，所有已註冊 detector 立即重新執行，  \
+ * 串接正式拓撲或 editorStore 變動到 validationStore：藍圖一改，所有已註冊 detector 立即重新執行，  \
  * 結果寫入 `validationStore.alerts`，供 CR-04 FlowEngine 與右側統計面板消費。
  *
  * 監聽策略：
- *   - 監聽目標：`editorStore.nodes` 與 `editorStore.edges`
+ *   - 監聽目標：正式拓撲，或舊入口的 `editorStore.nodes` 與 `editorStore.edges`
  *   - `immediate: true`：setup 時跑一次初始驗證
  *   - `deep: true`：捕捉節點內部變動（旋轉、配方、tag 變更等）
  *   - **不使用 debounce**：驗證必須先於 FlowEngine 完成，FlowEngine 才能讀到最新 alerts
@@ -18,25 +18,28 @@
  * useFlowEngine()
  */
 
-import { watch } from 'vue';
+import { hasInjectionContext, inject, watch } from 'vue';
 import { useEditorStore } from '@/store/editorStore';
 import { useCanvasStore } from '@/store/canvasStore';
 import { useValidationStore } from '@/store/validationStore';
 import { resolveMachineDef } from '@/data/machines';
 import type { ValidationContext } from '@/types/validation';
-import type { TopologyResult } from '@/utils/layout/toTopology';
+import { layoutTopologyKey, type TopologyResult } from '@/utils/layout/toTopology';
 
 /**
  * 啟動驗證監聽。  \
  * 元件生命週期結束時 Vue 會自動清理本 composable 註冊的 watcher。
  *
- * @param getTopology 可選的響應式格子拓撲來源；省略時沿用 editorStore 的像素換算
+ * @param getTopology 可選的響應式格子拓撲來源；正式編輯器提供預設值，其餘入口沿用 editorStore 的像素換算
  * @returns 暴露 `runValidation()` 供外部手動觸發（如 dev 測試頁、單元測試）
  */
 export function useValidation(getTopology?: () => TopologyResult) {
+    /** 明確指定的來源優先，其次使用正式編輯器提供的格子拓撲。 */
+    const readGridTopology =
+        getTopology ?? (hasInjectionContext() ? inject(layoutTopologyKey, undefined) : undefined);
     /** 舊入口保留像素資料；指定格子拓撲時不建立舊 editorStore。 */
     const readTopology =
-        getTopology ??
+        readGridTopology ??
         (() => {
             const editorStore = useEditorStore();
             return { nodes: editorStore.nodes, edges: editorStore.edges };
@@ -59,7 +62,7 @@ export function useValidation(getTopology?: () => TopologyResult) {
     function buildContext(): ValidationContext {
         /** 驗證與引擎各次執行均讀取最新資料，不保留初始化快照。 */
         const { nodes, edges } = readTopology();
-        if (getTopology) {
+        if (readGridTopology) {
             /** toTopology 已輸出格子座標，不能再次除以 gridSize。 */
             return {
                 devices: nodes,
@@ -107,7 +110,7 @@ export function useValidation(getTopology?: () => TopologyResult) {
     watch(readTopology, runValidation, {
         deep: true,
         immediate: true,
-        flush: getTopology ? 'sync' : 'pre',
+        flush: readGridTopology ? 'sync' : 'pre',
     });
 
     return {
