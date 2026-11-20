@@ -108,7 +108,7 @@ useEventListener(window, 'touchend', stopDrag);
             </div>
 
             <!-- 下半部：Tips 提示與警報清單 -->
-            <AttentionPanel :tips="props.tips" />
+            <AttentionPanel :tips="props.tips ?? overview?.tips" />
         </div>
     </div>
 </template>

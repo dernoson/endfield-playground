@@ -4,6 +4,9 @@ import { storeToRefs } from 'pinia';
 import { useFlowStore } from '@/store/flowStore';
 import { useEditorStore } from '@/store/editorStore';
 import { useLayoutStore } from '@/store/layoutStore';
+import { useValidationStore } from '@/store/validationStore';
+import { E001_deviceOverlap } from '@/lib/validation/detectors/E001_deviceOverlap';
+import { E005_missingOutput } from '@/lib/validation/detectors/E005_missingOutput';
 import { statsOverviewKey, type PowerData, type SingleProductDetail } from '@/app/StatsPanel/types';
 import { layoutTopologyKey, toTopology } from '@/utils/layout/toTopology';
 
@@ -70,6 +73,11 @@ const products = computed<SingleProductDetail[]>(() =>
 
 /** 正式編輯器插槽使用即時拓撲與統計；舊 Inspector 維持獨立渲染。 */
 if (props.overview) {
+    /** 讓總覽與既有驗證共用警示來源。 */
+    const validationStore = useValidationStore();
+    /** 內層編輯器的驗證會立即執行，因此先掛上正式頁使用的偵測器。 */
+    validationStore.registerDetector(E001_deviceOverlap);
+    validationStore.registerDetector(E005_missingOutput);
     /** 共用畫布快照，讓驗證與引擎處理相同的設備與連線。 */
     const topology = computed(() => {
         const { devices, pipelines } = layoutStore.toSnapshot();
@@ -84,6 +92,10 @@ if (props.overview) {
             products: products.value,
             exchangeRate: exchangeRate.value,
             exchangeRates: exchangeRates.value,
+            tips: validationStore.alerts.map(({ level, message }) => ({
+                type: level,
+                text: message,
+            })),
         })),
     );
 }
