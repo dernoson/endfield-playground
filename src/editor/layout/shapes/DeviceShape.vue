@@ -399,11 +399,7 @@ const markers = computed(() => {
 </script>
 
 <template>
-    <g
-        data-testid="device-shape"
-        :data-dragging="props.dragging"
-        :data-selected="props.selected"
-    >
+    <g data-testid="device-shape" :data-dragging="props.dragging" :data-selected="props.selected">
         <!-- 供電樁類：整個交給 Electric.vue（圓形外框、中央圖示） -->
         <Electric
             v-if="isElectric"
