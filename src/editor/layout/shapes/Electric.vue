@@ -9,14 +9,14 @@ import {
 } from './deviceShapeConstants';
 
 /**
- * 供電樁（power_pole、xi_rang_power_pole）：2×2、圓形外框、正中央放電力圖示。
+ * 供電樁（power_pole、xi_rang_power_pole）：2×2、圓形外框加 12×12 格虛線方框，圖示置於方框的 (6, 6) 中心。
  * 輸出是 SVG 的 `<g>`，原點在設備左上角，必須放進 `<svg>` 才看得到。
  * 平常由 DeviceShape.vue 依機器 id 轉交過來，不需要直接使用。
  *
  * 狀態：
- * - 預設：淡黃色底（#EEFD1C 20%）與同色描邊
- * - selected：底色與描邊改為 #1CAEFD，圖示線條也變成 #1CAEFD
- * - dragging：底框與邊線 Opacity 70%（圖示維持原樣）
+ * - 預設：淡黃色底（#EEFD1C 20%）與同色描邊、虛線方框
+ * - selected：底色、描邊與虛線方框改為 #1CAEFD，圖示線條也變成 #1CAEFD
+ * - dragging：底框、邊線與虛線方框 Opacity 70%，圖示 Opacity 50%
  */
 
 /**
@@ -33,6 +33,8 @@ const ICON_URL = Object.values(electricFiles)[0];
 
 /** 供電樁固定為 2×2 格 */
 const CELLS = 2;
+/** 外圍虛線方框固定為 12×12 格 */
+const FRAME_CELLS = 12;
 /** 正中央圖示的顯示寬高（設計單位，Figma：36 × 33.77） */
 const ICON_WIDTH = 36;
 const ICON_HEIGHT = 33.77;
@@ -62,7 +64,10 @@ const pixelSize = computed(() => CELLS * props.gridSize);
 const designSize = CELLS * CELL_DESIGN;
 
 /** 設計單位 → 像素；X/Y 同一個倍率，圖示才不會被拉扁 */
-const shapeTransform = computed(() => `scale(${props.gridSize / CELL_DESIGN})`);
+const shapeScale = computed(() => props.gridSize / CELL_DESIGN);
+const shapeTransform = computed(() => `scale(${shapeScale.value})`);
+/** 12×12 格虛線框；以 2×2 設備中心對齊，中心位於框內的 (6, 6) */
+const frameSize = computed(() => FRAME_CELLS * props.gridSize);
 
 /** 圓形外框路徑：內接於 2×2 方形，路徑偏移 0.5px 讓線條落在像素中間 */
 const outline = computed(() => {
@@ -78,8 +83,18 @@ const outlineStroke = computed(() => (props.selected ? SELECTED_COLOR : STROKE))
 
 <template>
     <g data-testid="electric-shape" :data-dragging="props.dragging" :data-selected="props.selected">
-        <!-- 圓形底框與邊線：拖曳中套用 Opacity 70% -->
+        <!-- 底框、邊線與虛線方框：拖曳中套用 Opacity 70% -->
         <g :opacity="props.dragging ? DRAG_BODY_OPACITY : 1">
+            <rect
+                data-testid="electric-dashed-frame"
+                :x="pixelSize / 2 - frameSize / 2"
+                :y="pixelSize / 2 - frameSize / 2"
+                :width="frameSize"
+                :height="frameSize"
+                fill="none"
+                :stroke="outlineStroke"
+                stroke-dasharray="4 4"
+            />
             <path
                 :d="outline"
                 :fill="outlineFill"
@@ -103,6 +118,7 @@ const outlineStroke = computed(() => (props.selected ? SELECTED_COLOR : STROKE))
                 :width="ICON_WIDTH"
                 :height="ICON_HEIGHT"
                 :filter="props.selected ? `url(#${tintId})` : undefined"
+                :opacity="props.dragging ? 0.5 : 1"
             />
         </g>
     </g>
