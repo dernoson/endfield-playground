@@ -10,6 +10,7 @@ import { useLayoutStore } from '@/store/layoutStore';
 import { useCanvasStore } from '@/store/canvasStore';
 import { useEditorStore } from '@/store/editorStore';
 import { useKeybindingStore } from '@/store/keybindingStore';
+import { useValidationStore } from '@/store/validationStore';
 import type { Rotation } from '@/types/editor';
 import { devicesOutsideBase } from '@/utils/layout/devicesOutsideBase';
 import type { Position } from '@/types/euclideanSpace';
@@ -73,6 +74,12 @@ const canvasStore = useCanvasStore();
 const editorStore = useEditorStore();
 /** 快捷鍵設定面板開啟時暫停旋轉，避免錄製鍵位期間改動佈局。 */
 const keybindingStore = useKeybindingStore();
+/** 讀取目前藍圖的驗證結果，供畫布顯示設備警示。 */
+const validationStore = useValidationStore();
+/** 同一台設備有多筆警示時，保留其標示直到相關警示全數解除。 */
+const alertedDeviceIds = computed(
+    () => new Set(validationStore.alerts.flatMap(({ relatedDeviceUids }) => relatedDeviceUids)),
+);
 /** 將單選事件交給上層；選取資料的保存由 MainLayout 負責 */
 const emit = defineEmits<{
     /** 一般左鍵未拖動時選取設備，空白點擊清除選取 */
@@ -834,6 +841,7 @@ function handleCellClick(position: Position): void {
             :screen-to-cell="screenToCell"
             :base-size="canvasStore.canvasSize"
             :outside-device-ids="outsideDeviceIds"
+            :alerted-device-ids="alertedDeviceIds"
             :device-drag-preview="deviceDragPreview"
             :highlighted-port="highlightedPort"
             :connection-preview="connectionPreview"

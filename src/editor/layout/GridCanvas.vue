@@ -60,6 +60,8 @@ interface Props {
     baseSize?: { w: number; h: number } | null;
     /** 容器計算的出界設備識別清單 */
     outsideDeviceIds?: readonly string[];
+    /** 有驗證警示的設備識別，供設備格子切換顏色。 */
+    readonly alertedDeviceIds?: ReadonlySet<string>;
 }
 
 /** 單一設備在 xy 平面上要渲染的佔格 */
@@ -330,10 +332,12 @@ function pipelinePath(waypoints: DeepReadonly<Pipeline['waypoints']>): string {
                         :height="props.cellSize - 2"
                         rx="3"
                         :class="[
-                            device.id === props.deviceDragPreview?.deviceId
-                                ? 'fill-sky-300 dark:fill-sky-300'
-                                : 'fill-sky-200 dark:fill-sky-900',
-                            outsideDevices.has(device.id)
+                            props.alertedDeviceIds?.has(device.id)
+                                ? 'fill-red-200 dark:fill-red-900'
+                                : device.id === props.deviceDragPreview?.deviceId
+                                  ? 'fill-sky-300 dark:fill-sky-300'
+                                  : 'fill-sky-200 dark:fill-sky-900',
+                            outsideDevices.has(device.id) || props.alertedDeviceIds?.has(device.id)
                                 ? 'stroke-red-600 dark:stroke-red-400'
                                 : 'stroke-sky-600 dark:stroke-sky-400',
                         ]"
