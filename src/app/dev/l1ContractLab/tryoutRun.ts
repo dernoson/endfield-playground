@@ -8,7 +8,11 @@ import type { PortMedia } from '@/types/machine';
 import { getMachineById } from '@/data/machines';
 import { hitTestPortAt } from '@/utils/layout/portHitTest';
 import { collectPortAnchors, findPortAt } from '@/utils/layout/portAnchorIndex';
-import { canConnect, describeConnectFailure, type ConnectResult } from '@/utils/layout/connectRules';
+import {
+    canConnect,
+    describeConnectFailure,
+    type ConnectResult,
+} from '@/utils/layout/connectRules';
 import type {
     TryoutApiId,
     TryoutFixtureId,
@@ -210,10 +214,7 @@ export function runTryout(request: TryoutRequest): TryoutRunResult {
         const media: PortMedia = request.media ?? 'belt';
         const start = { x: request.x, y: request.y, z: 0 };
         const end = { x: endX, y: endY, z: 0 };
-        const result = canConnect(
-            { media, waypoints: [start, end] },
-            { devices, pipelines: [] },
-        );
+        const result = canConnect({ media, waypoints: [start, end] }, { devices, pipelines: [] });
         const failure = describeConnectFailure(result);
         const plain = result.ok ? describeConnectOk(result) : failure;
         return {
