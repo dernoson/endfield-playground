@@ -253,11 +253,8 @@ describe('parseBlueprint — 欄位缺失或型別錯誤', () => {
 });
 
 describe('parseBlueprint — 完全不是物件', () => {
-    it.each([null, undefined, 42, 'hello', true, [1, 2, 3]])(
-        '輸入 %j → 拒絕',
-        (input) => {
-            const result = parseBlueprint(input);
-            expect(result.ok).toBe(false);
-        },
-    );
+    it.each([null, undefined, 42, 'hello', true, [1, 2, 3]])('輸入 %j → 拒絕', (input) => {
+        const result = parseBlueprint(input);
+        expect(result.ok).toBe(false);
+    });
 });

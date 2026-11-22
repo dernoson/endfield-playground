@@ -24,10 +24,7 @@ import { blueprintSchema, type BlueprintFile } from '@/types/blueprint';
  * @param planId 所屬計畫 UUID；省略時 JSON 中不出現此欄位
  * @returns 可直接 `JSON.stringify` 的藍圖物件
  */
-export function serializeBlueprint(
-    snapshot: LayoutSnapshot,
-    planId?: string,
-): BlueprintFile {
+export function serializeBlueprint(snapshot: LayoutSnapshot, planId?: string): BlueprintFile {
     return {
         version: 2,
         ...(planId !== undefined ? { planId } : {}),
