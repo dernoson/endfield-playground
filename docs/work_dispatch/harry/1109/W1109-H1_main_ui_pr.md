@@ -40,3 +40,9 @@
 - [ ] 這兩週的 diff 沒有會議說要留下次的修改
 
 未交：主畫面停在 #89／#90，不追加。
+
+---
+
+## 4. 驗收（2026-11-22）
+
+過。[#89](https://github.com/dernoson/endfield-playground/pull/89)、[#90](https://github.com/dernoson/endfield-playground/pull/90) 已合。[#88](https://github.com/dernoson/endfield-playground/pull/88) 已關，沒有再加主畫面修改。

@@ -42,3 +42,9 @@
 - [ ] 遠端看得到這次提交
 
 未交，或元件還沒出現：供電樁維持拆分前的樣子。你不用補另一種設備。
+
+---
+
+## 4. 驗收（2026-11-22）
+
+過。[#93](https://github.com/dernoson/endfield-playground/pull/93) 在 #92 之後合入。改的是 `Electric.vue`，並新增 `Electric.stories.ts`。

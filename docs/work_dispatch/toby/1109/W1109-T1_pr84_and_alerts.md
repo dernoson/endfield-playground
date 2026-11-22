@@ -58,3 +58,9 @@
 - [ ] 表格元件仍然不 import store
 
 未交：右側維持現況。警示整段留到下次，不換人在這週接手。
+
+---
+
+## 5. 驗收（2026-11-22）
+
+未過。[#84](https://github.com/dernoson/endfield-playground/pull/84) 已經可以合，但還沒合進 master。PR 裡右側有 tips，設備格子可變紅；同一張 PR 仍改著 `useFlowEngine.ts`、`flowStore.ts`、`LayoutView.vue`。
