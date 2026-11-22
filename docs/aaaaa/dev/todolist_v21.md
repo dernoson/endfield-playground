@@ -9,6 +9,7 @@
 **週次：** 2026-11-02 → 2026-11-08（公開工單＝只開版，≤2h）
 **開發分支：** `dev/aaaaa1102`（自已含 #82 的 `origin/master` 新開；不沿用 `dev/aaaaa1026`）
 **狀態總覽：** **`[~]` C1 已交**（2026-11-08；A1／C1 `[x]`；E1 交接已寫；D1 未開工）
+**下一批：** [todolist_v22](./todolist_v22.md)（**未啟用**。2026-11-22 已建檔。啟用條件＝本版 D1 與 E1 皆 `[x]` 且已合入 `master`）
 **待確認問題：** [dispatch_private/1102/PENDING](../collaborator_survey/dispatch_private/1102/PENDING_DECISIONS_20261101.md)（A 組已決；試玩＝獨立分頁，C1 已依此實作）
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中
