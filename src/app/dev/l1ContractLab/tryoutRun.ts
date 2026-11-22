@@ -215,10 +215,11 @@ export function runTryout(request: TryoutRequest): TryoutRunResult {
             { devices, pipelines: [] },
         );
         const failure = describeConnectFailure(result);
+        const plain = result.ok ? describeConnectOk(result) : failure;
         return {
             title: '試玩 · 這條線能不能接上',
             value: {
-                plain: failure ?? describeConnectOk(result),
+                plain,
                 api: 'canConnect',
                 media: describeMedia(media),
                 waypoints: [start, end],
