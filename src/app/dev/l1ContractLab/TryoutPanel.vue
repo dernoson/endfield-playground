@@ -9,6 +9,7 @@ import {
     TRYOUT_APIS,
     type TryoutApiId,
     type TryoutFixtureId,
+    type TryoutMedia,
     type TryoutPrefer,
     type TryoutScenario,
 } from '@/app/dev/l1ContractLab/contractCatalog';
@@ -42,6 +43,15 @@ const fixture = ref<TryoutFixtureId>(apis[0]!.scenarios[0]!.fixture);
 
 /** 最近一次快捷說明 */
 const hint = ref(apis[0]!.scenarios[0]!.hint);
+
+/** canConnect 終點 x */
+const endX = ref(apis[0]!.scenarios[0]!.endX ?? 0);
+
+/** canConnect 終點 y */
+const endY = ref(apis[0]!.scenarios[0]!.endY ?? 0);
+
+/** canConnect 媒質 */
+const media = ref<TryoutMedia>(apis[0]!.scenarios[0]!.media ?? 'belt');
 
 /** 座標不是數字時的提示；空＝可執行 */
 const fieldError = ref('');
@@ -81,6 +91,9 @@ function applyScenario(scenario: TryoutScenario) {
     prefer.value = scenario.prefer;
     fixture.value = scenario.fixture;
     hint.value = scenario.hint;
+    endX.value = scenario.endX ?? endX.value;
+    endY.value = scenario.endY ?? endY.value;
+    media.value = scenario.media ?? media.value;
     execute();
 }
 
@@ -105,8 +118,17 @@ function onApiChange(event: Event) {
 function execute() {
     const xNum = typeof x.value === 'number' ? x.value : Number(x.value);
     const yNum = typeof y.value === 'number' ? y.value : Number(y.value);
-    if (!Number.isFinite(xNum) || !Number.isFinite(yNum)) {
-        fieldError.value = '橫向和縱向都要填數字。';
+    const endXNum = typeof endX.value === 'number' ? endX.value : Number(endX.value);
+    const endYNum = typeof endY.value === 'number' ? endY.value : Number(endY.value);
+    const askingConnect = apiId.value === 'canConnect';
+    if (
+        !Number.isFinite(xNum) ||
+        !Number.isFinite(yNum) ||
+        (askingConnect && (!Number.isFinite(endXNum) || !Number.isFinite(endYNum)))
+    ) {
+        fieldError.value = askingConnect
+            ? '起點和終點的橫向、縱向都要填數字。'
+            : '橫向和縱向都要填數字。';
         lastPlain.value = fieldError.value;
         emit('result', {
             title: '試玩 · 位置還沒填好',
@@ -122,6 +144,9 @@ function execute() {
         prefer: prefer.value,
         fixture: fixture.value,
         hint: hint.value,
+        endX: askingConnect ? endXNum : undefined,
+        endY: askingConnect ? endYNum : undefined,
+        media: askingConnect ? media.value : undefined,
     });
     const body = ran.value as { plain?: string };
     lastPlain.value = body.plain ?? '';
@@ -136,7 +161,7 @@ function execute() {
         >
             <h2 class="text-lg font-semibold">試玩：滑鼠點到的埠，和管子接的格子</h2>
             <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                這兩件事常被當成同一件事。滑鼠是看「點在埠旁邊的圓形範圍裡嗎」。接管子是看「是不是機器外面那一個整數格」。
+                前兩題常被當成同一件事。滑鼠是看「點在埠旁邊的圓形範圍裡嗎」。接管子是看「是不是機器外面那一個整數格」。第三題用那兩個整數格，問這條線能不能接上。
             </p>
             <ol class="mt-3 list-decimal space-y-1 pl-5 text-sm text-gray-700 dark:text-gray-300">
                 <li>選一個要問的問題。</li>
@@ -159,7 +184,20 @@ function execute() {
                 </select>
                 <span class="mt-1 block text-xs text-gray-500">{{ activeApi.summary }}</span>
             </label>
-            <label class="block text-sm">
+            <label v-if="apiId === 'canConnect'" class="block text-sm">
+                <span class="mb-1 block font-medium">這條線走什麼</span>
+                <select
+                    v-model="media"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 dark:border-gray-600 dark:bg-gray-900"
+                >
+                    <option value="belt">皮帶（belt）</option>
+                    <option value="pipe">水管（pipe）</option>
+                </select>
+                <span class="mt-1 block text-xs text-gray-500">
+                    要和兩端埠的媒質一樣。這兩台分流器的埠都是皮帶。
+                </span>
+            </label>
+            <label v-else class="block text-sm">
                 <span class="mb-1 block font-medium">優先找哪一種埠</span>
                 <select
                     v-model="prefer"
@@ -174,7 +212,9 @@ function execute() {
                 </span>
             </label>
             <label class="block text-sm">
-                <span class="mb-1 block font-medium">橫向 x（格）</span>
+                <span class="mb-1 block font-medium">{{
+                    apiId === 'canConnect' ? '起點橫向 x（格）' : '橫向 x（格）'
+                }}</span>
                 <input
                     v-model.number="x"
                     type="number"
@@ -183,11 +223,31 @@ function execute() {
                 />
             </label>
             <label class="block text-sm">
-                <span class="mb-1 block font-medium">縱向 y（格）</span>
+                <span class="mb-1 block font-medium">{{
+                    apiId === 'canConnect' ? '起點縱向 y（格）' : '縱向 y（格）'
+                }}</span>
                 <input
                     v-model.number="y"
                     type="number"
                     step="0.1"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 dark:border-gray-600 dark:bg-gray-900"
+                />
+            </label>
+            <label v-if="apiId === 'canConnect'" class="block text-sm">
+                <span class="mb-1 block font-medium">終點橫向 x（格）</span>
+                <input
+                    v-model.number="endX"
+                    type="number"
+                    step="1"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 dark:border-gray-600 dark:bg-gray-900"
+                />
+            </label>
+            <label v-if="apiId === 'canConnect'" class="block text-sm">
+                <span class="mb-1 block font-medium">終點縱向 y（格）</span>
+                <input
+                    v-model.number="endY"
+                    type="number"
+                    step="1"
                     class="w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 dark:border-gray-600 dark:bg-gray-900"
                 />
             </label>

@@ -1,15 +1,18 @@
 /**
  * V21-C1 試玩執行器。
  *
- * 只呼叫既有 `hitTestPortAt`／`findPortAt`，不改簽名、不寫 store。
+ * 只呼叫既有 `hitTestPortAt`／`findPortAt`／`canConnect`，不改簽名、不寫 store。
  */
 import type { PlacedDevice, PortDirection } from '@/types/layout';
+import type { PortMedia } from '@/types/machine';
 import { getMachineById } from '@/data/machines';
 import { hitTestPortAt } from '@/utils/layout/portHitTest';
 import { collectPortAnchors, findPortAt } from '@/utils/layout/portAnchorIndex';
+import { canConnect, describeConnectFailure, type ConnectResult } from '@/utils/layout/connectRules';
 import type {
     TryoutApiId,
     TryoutFixtureId,
+    TryoutMedia,
     TryoutPrefer,
 } from '@/app/dev/l1ContractLab/contractCatalog';
 
@@ -41,6 +44,12 @@ export interface TryoutRequest {
     fixture: TryoutFixtureId;
     /** 情境說明（可選，原樣放進 JSON） */
     hint?: string;
+    /** canConnect 終點 x */
+    endX?: number;
+    /** canConnect 終點 y */
+    endY?: number;
+    /** canConnect 管線媒質 */
+    media?: TryoutMedia;
 }
 
 /** 寫進輸出面板的結果 */
@@ -160,6 +169,27 @@ function describeResult(
 }
 
 /**
+ * 把媒質說成人話。
+ *
+ * @param media 皮帶或水管
+ */
+function describeMedia(media: PortMedia): string {
+    return media === 'belt' ? '皮帶' : '水管';
+}
+
+/**
+ * canConnect 成功時的人話。失敗句用 describeConnectFailure，不在這裡重寫。
+ *
+ * @param result 已通過的連線結果
+ */
+function describeConnectOk(result: Extract<ConnectResult, { ok: true }>): string {
+    if (result.from && result.to) {
+        return `可以接。從機器 ${result.from.deviceId} 的${describePort(result.from.portType, result.from.portIndex)}，接到機器 ${result.to.deviceId} 的${describePort(result.to.portType, result.to.portIndex)}。`;
+    }
+    return '這條線沒有被擋下，但還沒接到兩端。懸空的那一端本身不算錯誤。';
+}
+
+/**
  * 真呼叫白名單 API，回傳可 JSON 化的結果。
  *
  * @param request 表單現值
@@ -173,6 +203,33 @@ export function runTryout(request: TryoutRequest): TryoutRunResult {
         machineType: device.machineType,
         position: device.position,
     }));
+
+    if (request.api === 'canConnect') {
+        const endX = request.endX ?? request.x;
+        const endY = request.endY ?? request.y;
+        const media: PortMedia = request.media ?? 'belt';
+        const start = { x: request.x, y: request.y, z: 0 };
+        const end = { x: endX, y: endY, z: 0 };
+        const result = canConnect(
+            { media, waypoints: [start, end] },
+            { devices, pipelines: [] },
+        );
+        const failure = describeConnectFailure(result);
+        return {
+            title: '試玩 · 這條線能不能接上',
+            value: {
+                plain: failure ?? describeConnectOk(result),
+                api: 'canConnect',
+                media: describeMedia(media),
+                waypoints: [start, end],
+                fixture: fixtureCaption(request.fixture),
+                devices: deviceBrief,
+                hint: request.hint ?? '',
+                failure,
+                result,
+            },
+        };
+    }
 
     if (request.api === 'hitTestPortAt') {
         const result = hitTestPortAt(
