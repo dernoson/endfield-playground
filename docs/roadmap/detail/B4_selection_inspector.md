@@ -8,8 +8,8 @@
 | 建議主責／備援 | L2 攤平（toby／harry 暫定）＋L3 呈現（MBD／goodmorning）／aaaaa |
 | 性質 | 接線 ＋ 畫面 |
 | 依賴 | [A2](./A2_grid_and_port_alignment.md)、[B2](./B2_placement_chain.md) |
-| 狀態 | `[~]` 進行中（W0823-T1 提前切片已合入；攤平契約未完成） |
-| 最後更新 | 2026-08-30 |
+| 狀態 | `[~]`；正式頁已接 `MachineCard`。**W1123：** paper↔shirone 對左側新稿 |
+| 最後更新 | **2026-11-23** |
 
 ---
 
@@ -128,6 +128,9 @@ L2 負責把 store 物件轉成 plain props，L3 只認以下形狀：
 **未交頂替：** L3 視覺可丟棄，攤平契約不可丟棄——後續 [D1](./D1_stats_item_summary.md)、[D2](./D2_e001_overlap_alert.md) 都要照抄這個範例。
 
 ## 11. 開發日誌
+
+### 2026-11-23
+- W1123：paper 與 shirone 對左側設備視窗新稿。無打得開連結則程式停。見 [W1123-P1](../../work_dispatch/paper/1123/W1123-P1_left_panel_with_shirone.md)、[W1123-S1](../../work_dispatch/shirone/1123/W1123-S1_machine_card_new.md)
 
 ### 2026-08-22
 - 建檔
