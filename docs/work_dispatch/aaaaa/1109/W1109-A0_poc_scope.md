@@ -6,6 +6,7 @@
 | 等級 | **確定** |
 | 擋門檻 | 否。結論本身不擋別人的畫面 |
 | 上游 | [WEEK_20261109](../../WEEK_20261109.md)、[B3](../../../roadmap/detail/B3_rotation_90.md)、[B5](../../../roadmap/detail/B5_delete_single_device.md) |
+| 會議說明 | [INTRO_meeting_w1109](./INTRO_meeting_w1109.md) |
 | 畫面｜交哪個檔｜不要碰｜卡住找誰 | 無新畫面｜`docs/roadmap/ROADMAP_OUTLINE.md` 的 POC 句子，必要時各寫一行到 B3／B5｜畫布、store 簽名、警示、供電樁、左欄｜dernoson（文件怎麼合） |
 
 ---
