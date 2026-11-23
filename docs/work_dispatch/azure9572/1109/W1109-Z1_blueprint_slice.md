@@ -46,3 +46,9 @@ store 已經有 `toSnapshot()` 和 `loadSnapshot()`。缺的是檔案外殼：�
 - [ ] 沒有改 store 簽名
 
 未交：JSON 維持未做。POC 不因此失敗。
+
+---
+
+## 4. 驗收（2026-11-22）
+
+未交，不擋 POC。`origin/azure9572-w1109-z1-blueprint` 的 `a1cb228` 有純函式與測試。沒有 PR，不在 master。

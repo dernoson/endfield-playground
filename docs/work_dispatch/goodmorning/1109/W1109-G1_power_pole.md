@@ -47,3 +47,9 @@
 - [ ] PR 上找得到 paper
 
 未交：MBD 繼續等，不另做一套供電樁。
+
+---
+
+## 4. 驗收（2026-11-22）
+
+過。[#92](https://github.com/dernoson/endfield-playground/pull/92) 已合，裡面有 `Electric.vue`。說明記白紙口頭確認。同一張 PR 也新增了整份 `DeviceShape.vue`。

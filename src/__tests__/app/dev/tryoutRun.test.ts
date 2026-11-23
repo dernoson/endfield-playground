@@ -71,4 +71,43 @@ describe('runTryout', () => {
         });
         expect(miss.value).toMatchObject({ result: null });
     });
+
+    it('合法皮帶：a 的右出料接到 b 的左進料', () => {
+        const ran = runTryout({
+            api: 'canConnect',
+            x: 1,
+            y: 0,
+            endX: 0,
+            endY: 0,
+            media: 'belt',
+            prefer: '',
+            fixture: 'splitters-adjacent',
+        });
+        expect(ran.value).toMatchObject({
+            api: 'canConnect',
+            failure: null,
+            result: {
+                ok: true,
+                from: { deviceId: 'a', portType: 'output', portIndex: 1 },
+                to: { deviceId: 'b', portType: 'input', portIndex: 0 },
+            },
+        });
+    });
+
+    it('終點斜走：describeConnectFailure 的句子進 plain', () => {
+        const ran = runTryout({
+            api: 'canConnect',
+            x: 1,
+            y: 0,
+            endX: 0,
+            endY: 1,
+            media: 'belt',
+            prefer: '',
+            fixture: 'splitters-adjacent',
+        });
+        const body = ran.value as { plain: string; failure: string; result: { ok: boolean } };
+        expect(body.result).toEqual({ ok: false, reason: 'malformed' });
+        expect(body.failure).toContain('不良構');
+        expect(body.plain).toBe(body.failure);
+    });
 });

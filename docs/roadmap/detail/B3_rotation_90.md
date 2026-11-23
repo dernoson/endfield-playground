@@ -8,8 +8,10 @@
 | 建議主責／備援 | toby／harry（暫定）／aaaaa 提供 port 換算測試 |
 | 性質 | 接線（L2） |
 | 依賴 | [A2](./A2_grid_and_port_alignment.md)、[B2](./B2_placement_chain.md) |
-| 狀態 | `[!]` 封鎖中（A2 依賴已解除；仍等 B2／佈局層） |
-| 最後更新 | 2026-08-30 |
+| 狀態 | `[~]` **底層已完成**（2026-11-22）。畫面未完成 |
+| 最後更新 | 2026-11-22 |
+
+> **2026-11-22：** `layoutStore.rotateDevice` 與 `src/__tests__/store/layoutStore.rotation.test.ts` 已在 master，底層納入 POC。`LayoutView.vue` 有快捷鍵，這不算畫面完成，按鈕仍不派。
 
 ---
 
