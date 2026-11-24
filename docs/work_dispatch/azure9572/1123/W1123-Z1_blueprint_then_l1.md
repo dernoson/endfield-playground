@@ -3,7 +3,7 @@
 | meta | value |
 |------|-------|
 | 週次 | 2026-11-23 → 2026-11-29 |
-| 等級 | **加分**（11/22 主裁；自報 **3–5h**）。不擋 POC |
+| 等級 | **加分**（11/22 主裁；可投入時數 **3–5h**；11/24 主裁：同意本段）。不擋 POC |
 | 上游 | [WEEK_20261123](../../WEEK_20261123.md)、[D4](../../../roadmap/detail/D4_blueprint_json_io.md)、[W1109-Z1](../1109/W1109-Z1_blueprint_slice.md) |
 | 畫面｜交哪個檔｜不要碰｜卡住找誰 | 無新畫面｜[#95](https://github.com/dernoson/endfield-playground/pull/95)／`blueprintFile.ts` 與測試｜頂欄、`layoutStore` 簽名、右側、畫布｜dernoson（合入）、aaaaa（下一塊 L1 選什麼） |
 
