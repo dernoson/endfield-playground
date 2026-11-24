@@ -15,11 +15,11 @@
 
 | # | 裁示 | 閘門含義 |
 |---|------|----------|
-| **#84** | 主裁：toby 完成上週 PR | **本週合入第一優先**。可合就合 |
+| **#84** | 主裁：toby 完成上週 PR；11/24 主裁：只修職責小問題，不擴第二套 | **本週合入第一優先**。可合就合 |
 | POC | JSON 不進門檻；旋轉／刪除只收底層 | #95 不合也不擋 11/29。不收新的刪除／旋轉畫面 |
-| 畫布外形 | harry 只接 shapes | 重寫 `DeviceShape` 整檔、或拆掉埠命中的 PR 不收 |
-| 左欄 | paper 連結＋shirone 實作 | 沒有打得開連結的 `MachineCard` PR 不合。有 `MainLayout` diff 不合 |
-| L3 自由人 | G／M 各一塊 | 互搶同一檔或動 `GridCanvas` 的不收 |
+| 畫布外形 | harry 只接一處（一般設備改掛 `DeviceShape`）；toby 陪看對位 | 重寫 `DeviceShape` 整檔、或拆掉埠命中的 PR 不收 |
+| 左欄 | paper 與 shirone 群組合議，不以連結為先後前提 | 合議有分歧、未在群組對齊就合的 `MachineCard` PR 不收。有 `MainLayout` diff 不合 |
+| L3 自由人 | goodmorning：`PipelineShape` 擁塞外觀；MBD：供電樁核對 | 互搶同一檔或動 `GridCanvas` 的不收 |
 | 「已開 PR」 | 以 gh 為準 | 只有分支不算交 |
 
 ---
@@ -30,9 +30,9 @@
 |------|--------|
 | 1 | **#84**：MERGEABLE；正式頁產耗＋警示；不要第二套右側 |
 | 2 | **#95**：純函式＋測試；無頂欄。可等，不擋 POC |
-| 3 | harry：`GridCanvas` 改掛 shapes；沒有重畫 L3 本體 |
-| 4 | shirone：`MachineCard` 對得上連結；無 `MainLayout` |
-| 5 | goodmorning／MBD：單一 L3 塊 |
+| 3 | harry：`GridCanvas` 只改一般設備段；toby 看過對位 |
+| 4 | shirone：`MachineCard` 與 paper 群組合議一致；無 `MainLayout` |
+| 5 | goodmorning（`PipelineShape` congested）／MBD（核對，可能無 PR） |
 | 6 | aaaaa：D5 文件 |
 
 #96 若只是派工說明，可與本週派工週一起清。
