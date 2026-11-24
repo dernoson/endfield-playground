@@ -1,47 +1,48 @@
-# W1123-M1｜MBD｜L3 自由人（一塊）
+# W1123-M1｜MBD｜L3 自由人：供電樁外形核對（Electric.vue）
 
 | meta | value |
 |------|-------|
 | 週次 | 2026-11-23 → 2026-11-29 |
-| 等級 | **加分**（11/22 主裁；自報 **≤2h**、**時間不穩**） |
+| 等級 | **加分**（11/22 主裁；**11/24 主裁裁：供電範圍虛線已實作完成，本週改為核對，不另寫新元件**） |
+| 時數 | **≤1h** |
 | 擋門檻 | 否 |
 | 上游 | [WEEK_20261123](../../WEEK_20261123.md)、[#93](https://github.com/dernoson/endfield-playground/pull/93)、[W1109-G1](../../goodmorning/1109/W1109-G1_power_pole.md) |
-| 畫面｜交哪個檔｜不要碰｜卡住找誰 | 供電樁外形增量｜`Electric.vue`（必要時 stories）｜`DeviceShape.vue` 整檔、`GridCanvas`、`MachineCard`｜paper（若跟稿）、dernoson |
+| 畫面｜交哪個檔｜不要碰｜卡住找誰 | 供電樁外形核對（12×12 虛線、選取色、拖曳透明度）｜`src/editor/layout/shapes/Electric.vue`（僅在不符時改）、`Electric.stories.ts`｜`DeviceShape.vue`、`GridCanvas`、`MachineCard`、右側產耗｜paper（若白紙有新稿）、dernoson |
 
 ---
 
 ## 0. 白話目標
 
-主裁：L3 自由人。白紙有改到供電樁就跟著改；否則做指定的那一塊還沒弄完的 UI。
+主裁（11/24）：供電範圍虛線看起來已完成。這週你只做**核對**：
 
-上週 #93 已合。上上週工單曾把「供電樁範圍虛線」留給樣式側——這週就做這一塊，可中斷。
+- master 上 `Electric.vue` 的 12×12 虛線、選取色、拖曳淡化是否與白紙的供電樁稿一致。
+- 若一致，回報「不需改」即完成。
+- 若不一致，才改 `Electric.vue`（與其 stories）。
+
+不再派「新做虛線」這件事。
 
 ---
 
 ## 1. 這週派給你的一塊
 
-**預設：**
-
-在 `Electric.vue` 加上**供電範圍虛線外框**（選取或供電狀態看得到一圈虛線）。Storybook 能單獨演示。不要另做一套供電樁檔。
-
-**若白紙這週改了供電樁稿：** 改跟稿，並註明幀。
-
-時間不穩：做不完就 push 現況＋Discord 一句停在哪，算有交代。
+1. 對照 `src/editor/layout/shapes/Electric.vue` 與 `Electric.stories.ts`，確認：虛線、選取色、拖曳不透明度。
+2. 若白紙這週有供電樁稿，對照該幀。
+3. 有差就改 `Electric.vue`，PR 寫「對白紙哪一幀」；沒差就在 Discord 寫「核對過，不需改」。
 
 ---
 
 ## 2. 不要做
 
+- 改 `DeviceShape.vue`（goodmorning 那段已改派，本週不碰）
 - 改 `GridCanvas`（harry）
-- 改 `DeviceShape.vue` 整檔（goodmorning 的狀態樣式區）
 - 改 `MachineCard`、右側產耗
-- 檔案還沒想清楚就開第二套元件
+- 另開供電樁新元件或新檔
 
 ---
 
 ## 3. DoD
 
-- [ ] 有提交／PR，或 Discord 寫停在哪
-- [ ] diff 以 `Electric.vue`（＋其 stories）為主
+- [ ] 在 Discord 或 PR 留一句「核對結果：不需改／已改（哪一點）」
+- [ ] diff 若有，只在 `Electric.vue` 與其 stories
 
-未交：不擋門檻。供電樁維持 #93 長相。
+未交：不擋門檻。供電樁維持 #93 的長相。
