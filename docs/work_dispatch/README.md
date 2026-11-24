@@ -2,10 +2,10 @@
 
 | meta | value |
 |------|-------|
-| version | **v3.25（2026-11-23；發出 W1123／M4 週）** |
-| 本週區間 | **2026-11-23 → 2026-11-29**（[WEEK_20261123](./WEEK_20261123.md) **v1.0**） |
+| version | **v3.26（2026-11-24；W1123 依主裁 11/24 修訂）** |
+| 本週區間 | **2026-11-23 → 2026-11-29**（[WEEK_20261123](./WEEK_20261123.md) **v1.1**） |
 | 上週區間 | 2026-11-09 → 2026-11-22（[WEEK_20261109](./WEEK_20261109.md) **v1.1**；已結算） |
-| 上游 | [ROADMAP_OUTLINE](../roadmap/ROADMAP_OUTLINE.md) **v1.28** |
+| 上游 | [ROADMAP_OUTLINE](../roadmap/ROADMAP_OUTLINE.md) **v1.29** |
 
 ---
 
@@ -22,12 +22,12 @@
 
 | code | 工單 | 一句話 |
 |------|------|--------|
-| [toby](./toby/1123/) | [T1](./toby/1123/W1123-T1_merge_pr84.md) | 把 #84 合進 master |
-| [harry](./harry/1123/) | [H1](./harry/1123/W1123-H1_device_shape_on_canvas.md) | 設備＋供電樁接到正式畫布 |
-| [paper](./paper/1123/) | [P1](./paper/1123/W1123-P1_left_panel_with_shirone.md) | 跟 shirone 對完左欄稿 |
-| [shirone](./shirone/1123/) | [S1](./shirone/1123/W1123-S1_machine_card_new.md) | 照新稿做完左側設備視窗 |
-| [goodmorning](./goodmorning/1123/) | [G1](./goodmorning/1123/W1123-G1_l3_free.md) | L3 一塊（選取／未供電或跟稿） |
-| [MBD](./MBD/1123/) | [M1](./MBD/1123/W1123-M1_l3_free.md) | L3 一塊（供電範圍虛線或跟稿） |
+| [toby](./toby/1123/) | [T1](./toby/1123/W1123-T1_merge_pr84.md) | 合 #84（只修職責小問題）；陪 harry 看對位 |
+| [harry](./harry/1123/) | [H1](./harry/1123/W1123-H1_device_shape_on_canvas.md) | 縮為一處：一般設備改掛 `DeviceShape` |
+| [paper](./paper/1123/) | [P1](./paper/1123/W1123-P1_left_panel_with_shirone.md) | 左欄稿，與 shirone 群組合議 |
+| [shirone](./shirone/1123/) | [S1](./shirone/1123/W1123-S1_machine_card_new.md) | 與 paper 合議後做左側設備視窗 |
+| [goodmorning](./goodmorning/1123/) | [G1](./goodmorning/1123/W1123-G1_l3_free.md) | 改派：`PipelineShape` 擁塞外觀 |
+| [MBD](./MBD/1123/) | [M1](./MBD/1123/W1123-M1_l3_free.md) | 改派：供電樁核對（虛線已在 master） |
 | [azure9572](./azure9572/1123/) | [Z1](./azure9572/1123/W1123-Z1_blueprint_then_l1.md) | 先收 #95，再視情況非首要 L1 |
 | [aaaaa](./aaaaa/1123/) | [A0](./aaaaa/1123/W1123-A0_d5_rehearsal.md) | D5 劇本對齊現行 POC |
 | [dernoson](./dernoson/1123/) | [D0](./dernoson/1123/W1123-D0_gate.md) | 守閘；#84 優先 |
@@ -41,9 +41,9 @@
 
 1. **M4＝11/29。** 門檻句＝右側產耗＋警訊；旋轉／刪除只收底層；JSON 不進 POC
 2. **toby** 先合 #84，不要第二套右側
-3. **harry** 把已合的 `DeviceShape`／`Electric` 接到 `GridCanvas`
-4. **paper ↔ shirone** 對完左側設備視窗（先連結再改碼）
-5. **goodmorning／MBD** 各一塊 L3；不擋門檻
+3. **harry** 只接一般設備一處到 `GridCanvas`；**toby** 陪看對位
+4. **paper ↔ shirone** 群組合議左側設備視窗；不以誰先交為前提
+5. **goodmorning**：`PipelineShape` 擁塞；**MBD**：供電樁核對；不擋門檻
 6. **azure** 先 #95；合了再談非首要 L1
 7. **aaaaa** 更新 D5 勾選表；**dernoson** 守閘
 8. **avery、casey** 不派工
@@ -60,5 +60,5 @@
 
 | 檔 | 狀態 |
 |----|------|
-| WEEK_20261123 | **v1.0** |
-| ROADMAP_OUTLINE | **v1.28** |
+| WEEK_20261123 | **v1.1** |
+| ROADMAP_OUTLINE | **v1.29** |
