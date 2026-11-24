@@ -1,11 +1,11 @@
 # Roadmap 大綱｜2026-08-23 → 2026-11-29
 
-**版本：** v1.28（2026-11-23；W1109 結算＋W1123／M4 派工）
+**版本：** v1.29（2026-11-24；W1109 結算＋W1123／M4 派工，依主裁 11/24 修訂）
 **建立日期：** 2026-08-22
 **規劃：** aaaaa
 **守門與合入：** dernoson（主編）
 **上游來源：** 主編提出並確認的 ROADMAP v0.2（決策層原始文件，未公開；其內容已完整拆進本檔與 `detail/`）
-**狀態總覽：** **M1／M2 功能門檻成立。** **W1109 結算（11/22）：** 過 V1（POC 底層；**#94 於 11-23 合**）、V2（#89／#90）、V5／V6（#92／#93 供電樁）、V9。未過 V3（paper 無連結）、V7（**#84 OPEN MERGEABLE**）。V8 JSON 不擋（**#95 OPEN**）。**DeviceShape／Electric 已合但未接正式畫布。** **2026-11-23：** M4 週派工見 [WEEK_20261123](../work_dispatch/WEEK_20261123.md)——toby 合 #84；harry 接 shapes 上畫布；paper↔shirone 左欄；G／M 各一塊 L3；azure 先 #95；aaaaa 更新 D5。
+**狀態總覽：** **M1／M2 功能門檻成立。** **W1109 結算（11/22）：** 過 V1（POC 底層；**#94 於 11-23 合**）、V2（#89／#90）、V5／V6（#92／#93 供電樁）、V9。未過 V3（paper 無連結）、V7（**#84 OPEN MERGEABLE**）。V8 JSON 不擋（**#95 OPEN**）。**DeviceShape／Electric 已合但未接正式畫布。** **2026-11-23：** M4 週派工見 [WEEK_20261123](../work_dispatch/WEEK_20261123.md) **v1.1**——toby 合 #84（只修職責小問題）並陪 harry；harry 只接一般設備一處上畫布；paper↔shirone 群組合議左欄；goodmorning 改派 `PipelineShape` 擁塞、MBD 改供電樁核對；azure 先 #95；aaaaa 更新 D5。
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中（等待依賴）
 
@@ -90,7 +90,7 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 
 **讀法：** 上面是使用者功能軸；右邊是技術前置軸。兩邊都要動，但**門檻必要項在殼落地前只能押在左邊不依賴畫布的塊**（本月＝B1）與右邊的 **L1 純函式／契約**。store 已交未合時，**不以「分支有 store」假裝 B2 已解**。
 
-**2026-11-23 更新：** W1109 結算＋W1123／M4 派工。#84 仍為關鍵路徑；shapes 接畫布＝harry；左欄＝paper↔shirone。見 [WEEK_20261123](../work_dispatch/WEEK_20261123.md)。
+**2026-11-24 更新：** W1123 依主裁回覆修訂（v1.1）。#84 仍為關鍵路徑；畫布只接一般設備一處＝harry（toby 陪）；左欄＝paper↔shirone 群組合議。見 [WEEK_20261123](../work_dispatch/WEEK_20261123.md)。
 
 **2026-11-22 更新：** 旋轉、刪除的底層納入 POC。畫面不納入。JSON 仍不在 POC。見 [W1109-A0](../work_dispatch/aaaaa/1109/W1109-A0_poc_scope.md)（結論隨 #94 合入）。
 
@@ -118,8 +118,8 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 | **不改什麼？** | **不是**捨棄 Vue.js；流程視角可續用 Vue Flow；右側 Stats／detector 純函式不因換殼重寫 |
 | **為何改？** | Vue Flow 節點盒限制 paper 稿 1:1 落地；佔格／port／管線與資料模型長期分叉；8/30 主編：不提前則設計 UI「沒地方擺」 |
 | **為何提前？** | **已定案提前開工**（8/30–31）。評估與閘門：[EARLY_START](../aaaaa/LAYOUT_REWRITE_EARLY_START_0831.md) |
-| **優先序** | **2026-11-23：** ① **合 #84**（toby）→ ② harry 接 `DeviceShape`／`Electric` 上畫布 → ③ paper↔shirone 左欄 → ④ #95（azure，不擋）→ ⑤ D5 劇本（aaaaa）。G／M 各一塊 L3 加分。見 [WEEK_20261123](../work_dispatch/WEEK_20261123.md) |
-| **卡住誰？** | **已解（摘）：** C1 #78、C5 #81、供水 #85、E005 #87、主畫面 #89／#90、供電樁 L3 #92／#93、POC 底層 #94。**底層已納入 POC：** 旋轉、刪除（畫面仍不派）。**仍等：** #84 合入、shapes 上正式畫布、左欄打得開連結。**不卡 POC：** JSON（#95） |
+| **優先序** | **2026-11-24 修訂：** ① **合 #84**（toby，只修職責小問題）→ ② harry 一般設備改掛 `DeviceShape` 一處（toby 陪看）→ ③ paper↔shirone 左欄（群組合議，不互等）→ ④ #95（azure，不擋）→ ⑤ D5 劇本（aaaaa）。L3 加分：goodmorning＝`PipelineShape` 擁塞；MBD＝供電樁核對。見 [WEEK_20261123](../work_dispatch/WEEK_20261123.md) |
+| **卡住誰？** | **已解（摘）：** C1 #78、C5 #81、供水 #85、E005 #87、主畫面 #89／#90、供電樁 L3 #92／#93、POC 底層 #94。**底層已納入 POC：** 旋轉、刪除（畫面仍不派）。**仍等：** #84 合入、一般設備上正式畫布（harry 一處）、左欄群組合議定稿。**不卡 POC：** JSON（#95） |
 | **關鍵路徑** | **#84 仍未合（MERGEABLE）。** 11/29 POC 不含 JSON |
 | **誰做 L1？** | aaaaa；store＝#45；契約＝#51；出界＝#60；埠命中＝#65；C5 寫入＝#72；引擎讀＝#74；藍圖外殼＝azure #95 |
 | **L2 解鎖** | 旋轉、刪除底層已納入 POC。畫面仍不派。原則不變——底層就緒不等於畫面解鎖 |
@@ -189,7 +189,7 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
   - 細項：[detail/B2_placement_chain.md](./detail/B2_placement_chain.md)
 - [~] **R-B3** 旋轉 90 度：**底層已完成並納入 POC**（`layoutStore.rotateDevice` 與測試）。畫面未完成，仍不派按鈕
   - 細項：[detail/B3_rotation_90.md](./detail/B3_rotation_90.md)
-- [~] **R-B4** 選取與設備資訊面板：右側舊 Inspector 已從正式頁卸載（#63）。**W1011-H2：** 接 `MachineCard`。**W1123：** paper↔shirone 對左側新稿；無打得開連結則程式停。畫布外形改由 harry 接 `DeviceShape`（與面板無關）
+- [~] **R-B4** 選取與設備資訊面板：右側舊 Inspector 已從正式頁卸載（#63）。**W1011-H2：** 接 `MachineCard`。**W1123：** paper↔shirone 群組合議左側新稿，雙方合議即可，不互等。畫布外形由 harry 只接一般設備一處（toby 陪看，與面板無關）
   - 細項：[detail/B4_selection_inspector.md](./detail/B4_selection_inspector.md)
 - [~] **R-B5** 刪除單台：**底層已完成並納入 POC**（`layoutStore.removeDevice` 與測試）。正式畫布未接，畫面不納入
   - 細項：[detail/B5_delete_single_device.md](./detail/B5_delete_single_device.md)
@@ -393,6 +393,7 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
 
 | 版 | 日期 | 說明 |
 |----|------|------|
+| **v1.29** | **2026-11-24** | **主裁 11/24 回覆（W1123 v1.1）：** harry 範圍縮為一般設備一處，toby 陪看；toby 合 #84 只修職責小問題，不擴第二套；供電虛線已在 master，MBD 改核對；goodmorning 改派 `PipelineShape` 擁塞；azure 同意；paper↔shirone 群組合議不互等。見 [WEEK_20261123](../work_dispatch/WEEK_20261123.md) v1.1 |
 | **v1.27** | **2026-11-22** | **W1109-A0：** 旋轉、刪除的底層納入 POC；畫面不納入。JSON 維持移出。見 [W1109-A0](../work_dispatch/aaaaa/1109/W1109-A0_poc_scope.md) |
 | **v1.26** | **2026-11-10** | **11/08 會議，派工改為 11/09–11/22**（11/15 不開會）。JSON 移出 POC。刪除／旋轉先由 aaaaa 確認底層。供電樁拆檔後才做樣式。左欄等白紙新稿。#84 與警示放在 11/16 之後。casey 退出。見 [WEEK_20261109](../work_dispatch/WEEK_20261109.md) |
 | **v1.25** | **2026-11-03** | **Device 分檔：** 其餘 W1102 照 v1.1 核准。MBD 續寫 `DeviceShape.vue`，goodmorning 寫故事並開同一張 PR。見 [WEEK_20261102](../work_dispatch/WEEK_20261102.md) v1.2 |
