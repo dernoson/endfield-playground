@@ -51,4 +51,4 @@ store 已經有 `toSnapshot()` 和 `loadSnapshot()`。缺的是檔案外殼：�
 
 ## 4. 驗收（2026-11-22）
 
-未交，不擋 POC。`origin/azure9572-w1109-z1-blueprint` 的 `a1cb228` 有純函式與測試。沒有 PR，不在 master。
+未交，不擋 POC。`origin/azure9572-w1109-z1-blueprint` 的 `a1cb228` 有純函式與測試。結算當日開 [#95](https://github.com/dernoson/endfield-playground/pull/95)（仍 OPEN）。續見 [W1123-Z1](../1123/W1123-Z1_blueprint_then_l1.md)。

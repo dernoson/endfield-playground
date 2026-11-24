@@ -51,4 +51,4 @@ JSON 匯入匯出已經由會議移出 POC。你要把它寫進驗收範圍，�
 
 ## 4. 驗收（2026-11-22）
 
-過。兩項底層記已完成並寫進大綱 v1.27，畫面不記完成，JSON 仍移出。結論在 `dev/aaaaa1109`，尚未合入 master。
+過。兩項底層記已完成並寫進大綱 v1.27，畫面不記完成，JSON 仍移出。結論隨 [#94](https://github.com/dernoson/endfield-playground/pull/94) 於 **2026-11-23** 合入 master。
