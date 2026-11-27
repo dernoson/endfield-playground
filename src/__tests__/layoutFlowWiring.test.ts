@@ -108,18 +108,18 @@ describe('正式 layout 產耗接線', () => {
     it('基地價格跟隨選擇，自由畫布逐品項使用武陵與谷地價格', () => {
         const canvas = useCanvasStore();
         const flow = useFlowStore();
-        expect(flow.deliveryTicketPrices.get('低容量武陵電池')).toBe(25);
-        expect(flow.deliveryTicketPrices.get('低容量谷地電池')).toBe(16);
-        expect(flow.deliveryTicketPrices.get('鋼製零件')).toBe(3);
+        expect(flow.deliveryTicketPrices.get('中容量武陵電池')).toBe(54);
+        expect(flow.deliveryTicketPrices.get('低容量谷地電池')).toBe(25);
+        expect(flow.deliveryTicketPrices.get('鋼製零件')).toBe(1);
 
         canvas.setBaseRegion('wuling');
-        expect(flow.deliveryTicketPrices.get('低容量武陵電池')).toBe(25);
-        expect(flow.deliveryTicketPrices.has('低容量谷地電池')).toBe(false);
+        expect(flow.deliveryTicketPrices.get('中容量武陵電池')).toBe(54);
+        expect(flow.deliveryTicketPrices.get('低容量谷地電池')).toBe(25);
         canvas.setBaseRegion('valley4');
         expect(flow.deliveryTicketPrices.get('低容量谷地電池')).toBe(16);
-        expect(flow.deliveryTicketPrices.has('低容量武陵電池')).toBe(false);
+        expect(flow.deliveryTicketPrices.has('中容量武陵電池')).toBe(false);
         canvas.setBaseRegion(null);
-        expect(flow.deliveryTicketPrices.get('低容量武陵電池')).toBe(25);
+        expect(flow.deliveryTicketPrices.get('低容量谷地電池')).toBe(25);
         expect(flow.deliveryTicketPrices.get('紫晶質瓶')).toBe(2);
     });
 
@@ -154,18 +154,18 @@ describe('正式 layout 產耗接線', () => {
         const flow = useFlowStore();
         const canvas = useCanvasStore();
         flow.sinkDeliveries = new Map([
-            ['低容量武陵電池', 2],
+            ['中容量武陵電池', 2],
             ['紫晶質瓶', 2],
         ]);
-        expect(flow.deliveryTicketTotal).toBe(3240);
-        expect(flow.deliveryTicketOutput.get('低容量武陵電池')).toBe(3000);
+        expect(flow.deliveryTicketTotal).toBe(6720);
+        expect(flow.deliveryTicketOutput.get('中容量武陵電池')).toBe(6480);
         expect(flow.deliveryTicketRates).toEqual([
-            { currency: 'wuling', rate: 3000 },
+            { currency: 'wuling', rate: 6480 },
             { currency: 'valley4', rate: 240 },
         ]);
         canvas.setBaseRegion('wuling');
-        expect(flow.deliveryTicketTotal).toBe(3000);
-        expect(flow.deliveryTicketRates).toEqual([{ currency: 'wuling', rate: 3000 }]);
+        expect(flow.deliveryTicketTotal).toBe(6480);
+        expect(flow.deliveryTicketRates).toEqual([{ currency: 'wuling', rate: 6480 }]);
         canvas.setBaseRegion('valley4');
         expect(flow.deliveryTicketTotal).toBe(240);
         expect(flow.deliveryTicketRates).toEqual([{ currency: 'valley4', rate: 240 }]);
@@ -173,12 +173,12 @@ describe('正式 layout 產耗接線', () => {
         flow.sinkDeliveries = new Map([['低容量谷地電池', 2]]);
         expect(flow.deliveryTicketTotal).toBe(1920);
         canvas.setBaseRegion('wuling');
-        expect(flow.deliveryTicketTotal).toBe(0);
+        expect(flow.deliveryTicketTotal).toBe(3000);
         canvas.setBaseRegion(null);
-        expect(flow.deliveryTicketTotal).toBe(1920);
+        expect(flow.deliveryTicketTotal).toBe(3000);
 
         flow.sinkDeliveries = new Map([['鋼製零件', 2]]);
-        expect(flow.deliveryTicketTotal).toBe(360);
+        expect(flow.deliveryTicketTotal).toBe(120);
         flow.reset();
         expect(flow.deliveryTicketTotal).toBe(0);
         expect(flow.deliveryTicketOutput.size).toBe(0);
@@ -209,11 +209,11 @@ describe('正式 layout 產耗接線', () => {
             ['鋼製零件', Number.NaN],
             ['紫晶質瓶', Number.POSITIVE_INFINITY],
             ['低容量谷地電池', -2],
-            ['低容量武陵電池', 0],
+            ['中容量武陵電池', 0],
         ]);
         expect(flow.deliveryTicketTotal).toBe(0);
         flow.sinkDeliveries = new Map([['鋼製零件', 0.125]]);
-        expect(flow.deliveryTicketTotal).toBe(22.5);
+        expect(flow.deliveryTicketTotal).toBe(7.5);
         expect(flow.ticketTotal).toBe(990);
     });
 
