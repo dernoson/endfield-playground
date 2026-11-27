@@ -1,6 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { defineComponent, h } from 'vue';
 import MainLayout from '@/app/layouts/MainLayout.vue';
+import ProductionStats from '@/editor/stats/ProductionStats.vue';
 import { installClearHistoryOnContextSwitch } from '@/utils/history/clearHistoryOnContextSwitch';
+
+/** 只在正式編輯器提供畫布拓撲與右欄統計。 */
+const EditorView = defineComponent({
+    name: 'EditorView',
+    setup() {
+        return () => h(ProductionStats, { overview: true }, { default: () => h(MainLayout) });
+    },
+});
 
 const router = createRouter({
     history: createWebHistory(),
@@ -8,7 +18,7 @@ const router = createRouter({
         {
             path: '/',
             name: 'editor',
-            component: MainLayout,
+            component: EditorView,
         },
         // Dev-only routes (僅在開發環境可訪問)
         {

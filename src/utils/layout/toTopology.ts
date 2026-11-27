@@ -15,6 +15,7 @@ import type { FactoryEdge, FactoryNode } from '@/types/graph';
 import type { Connection, PlacedDevice, Pipeline, PortRef } from '@/types/layout';
 import { getMachineById } from '@/data/machines';
 import type { GetMachineFn } from '@/utils/layout/resolveConnections';
+import type { InjectionKey } from 'vue';
 
 /** toTopology 輸出 */
 export interface TopologyResult {
@@ -23,6 +24,9 @@ export interface TopologyResult {
     /** 僅含兩端皆連接的邊 */
     edges: FactoryEdge[];
 }
+
+/** 正式編輯器提供的格子拓撲，供驗證與流量引擎共用。 */
+export const layoutTopologyKey: InjectionKey<() => TopologyResult> = Symbol('layoutTopology');
 
 /**
  * 埠參照 → Vue Flow handle id（`out-N`／`in-N`）
