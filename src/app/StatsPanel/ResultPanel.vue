@@ -6,7 +6,7 @@ import type { PowerData, SingleProductDetail, TicketCurrencyDisplayRate } from '
 /** 上半部統計與產能估算面板傳入屬性；未提供設備狀態時保留原有預覽行為。 */
 const props = withDefaults(
     defineProps<{
-        /** 明確為 false 時隱藏上一輪摘要；任何空清單皆顯示空白提示。 */
+        /** 明確為 false 時隱藏上一輪摘要；為 true 且清單為空時提示目前沒有產耗資料。 */
         hasDevices?: boolean;
         /** 耗電與供電唯讀統計數據 */
         power?: PowerData;
@@ -163,7 +163,7 @@ const cutText = (text: string) => {
             class="stats-panel-scrollbar mt-[16px] ml-[21px] flex min-h-0 w-[278px] flex-1 flex-col gap-[9px] overflow-x-hidden overflow-y-auto pr-[13px] [scrollbar-gutter:stable]"
         >
             <p v-if="visibleProducts.length === 0" role="status" class="text-sm text-[#cfcfcf]">
-                尚未擺放設備
+                {{ props.hasDevices === true ? '目前沒有產耗資料' : '尚未擺放設備' }}
             </p>
             <div
                 v-for="(item, index) in visibleProducts"

@@ -74,7 +74,7 @@ export const Default: Story = {
 export const MinimalProps: Story = {
     name: '邊界：最小 props (無資料狀態)',
     args: {},
-    /** 空白提示不依賴 hasDevices 是否有傳入。 */
+    /** 未傳入 hasDevices 時仍顯示空畫布文案。 */
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         await expect(canvas.getByRole('status')).toHaveTextContent('尚未擺放設備');
@@ -92,13 +92,13 @@ export const EmptyFactory: Story = {
     },
 };
 
-/** 依使用者指定，已有設備但沒有產耗摘要時，也顯示相同的空白提示。 */
+/** 已有設備但沒有產耗摘要時，顯示無產耗資料的提示。 */
 export const DevicesWithoutSummary: Story = {
     name: '邊界：有設備但無產耗摘要',
     args: { hasDevices: true, products: [] },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        await expect(canvas.getByRole('status')).toHaveTextContent('尚未擺放設備');
+        await expect(canvas.getByRole('status')).toHaveTextContent('目前沒有產耗資料');
     },
 };
 
