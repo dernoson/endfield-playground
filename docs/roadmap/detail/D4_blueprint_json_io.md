@@ -8,8 +8,10 @@
 | 建議主責／備援 | azure（加分切片）／aaaaa 只改驗收範圍文字 |
 | 性質 | 純函式 |
 | 依賴 | [B2](./B2_placement_chain.md)、[C1](./C1_port_hit_and_draft.md)、[C2](./C2_add_connection_contract.md) |
-| 狀態 | `[ ]` **已定義、待實作**。不擋 11/29 |
-| 最後更新 | 2026-11-10 |
+| 狀態 | `[~]` 純函式＋測試在 **[#95](https://github.com/dernoson/endfield-playground/pull/95) OPEN**。不擋 11/29 |
+| 最後更新 | **2026-11-23** |
+
+> **2026-11-23：** W1109 結算時無 PR；同日開 #95（MERGEABLE）。W1123＝先合 #95，再視情況非首要 L1。見 [W1123-Z1](../../work_dispatch/azure9572/1123/W1123-Z1_blueprint_then_l1.md)。
 
 > **2026-11-08：** 會議把本項移出 POC。格式與「沿用 `loadSnapshot`」不變。11/09–11/22 只派純函式一小步，見 [W1109-Z1](../../work_dispatch/azure9572/1109/W1109-Z1_blueprint_slice.md)。
 
@@ -236,6 +238,10 @@ interface BlueprintFile {
 **未交頂替：** 無。這是驗收劇本第 7 步。若 11/22 未完成，最低限度提供「匯出」單向功能（讓成果不會遺失），匯入延到下一輪——但這會讓門檻降級，須在 11/22 會上明確記錄。
 
 ## 11. 開發日誌
+
+### 2026-11-23
+- [#95](https://github.com/dernoson/endfield-playground/pull/95) OPEN MERGEABLE（serialize／parse＋測試）。狀態 `[ ]`→`[~]`。頂欄仍未做、不擋 POC
+- W1123：先合 #95；合完才談非首要 L1。見 [W1123-Z1](../../work_dispatch/azure9572/1123/W1123-Z1_blueprint_then_l1.md)
 
 ### 2026-09-20
 - **主編核准引入 Zod**（PR [#51](https://github.com/dernoson/endfield-playground/pull/51) review）。§4.7 改為已核准、方案 B 退路移除；§5 補 `package.json`；§8 依賴與 §10 風險結案

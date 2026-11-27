@@ -627,8 +627,11 @@ export const CONTRACT_BLOCKS: ContractVersionBlock[] = [
     },
 ];
 
-/** 試玩白名單 API（V21-C1；不含 canConnect） */
-export type TryoutApiId = 'hitTestPortAt' | 'findPortAt';
+/** 試玩白名單 API（V21-C1 兩題；V21-D1 加上 canConnect） */
+export type TryoutApiId = 'hitTestPortAt' | 'findPortAt' | 'canConnect';
+
+/** 試玩連線用的管線媒質 */
+export type TryoutMedia = 'belt' | 'pipe';
 
 /** 試玩用的固定裝置場景 */
 export type TryoutFixtureId = 'crusher-origin' | 'splitters-adjacent';
@@ -654,6 +657,12 @@ export interface TryoutScenario {
     fixture: TryoutFixtureId;
     /** 給人讀的預期 */
     hint: string;
+    /** canConnect 的終點格；沒有則不是連線題 */
+    endX?: number;
+    /** canConnect 的終點格 */
+    endY?: number;
+    /** canConnect 的管線媒質 */
+    media?: TryoutMedia;
 }
 
 /**
@@ -735,6 +744,38 @@ export const TRYOUT_APIS: readonly TryoutApiDef[] = [
                 prefer: '',
                 fixture: 'crusher-origin',
                 hint: '(0.5, 0.1) 是滑鼠用的小數點，下面的表沒有這一格，所以結果是空的。滑鼠點得到，不代表管子能接在這裡。',
+            },
+        ],
+    },
+    {
+        id: 'canConnect',
+        label: '這條線能不能接上',
+        summary:
+            '看起點到終點這條線會不會被擋下。起點要落在出料口外面的整數格，終點要落在進料口外面的整數格，而且要沿橫或直走。程式裡叫 canConnect。',
+        scenarios: [
+            {
+                id: 'connect-belt-ok',
+                label: '皮帶從出料接到進料',
+                x: 1,
+                y: 0,
+                endX: 0,
+                endY: 0,
+                media: 'belt',
+                prefer: '',
+                fixture: 'splitters-adjacent',
+                hint: '起點 (1, 0) 是 a 右邊出料口外面的格子，終點 (0, 0) 是 b 左邊進料口外面的格子。媒質都是皮帶，所以可以接。',
+            },
+            {
+                id: 'connect-misaligned',
+                label: '終點沒有沿直走',
+                x: 1,
+                y: 0,
+                endX: 0,
+                endY: 1,
+                media: 'belt',
+                prefer: '',
+                fixture: 'splitters-adjacent',
+                hint: '起點仍是 a 的出料格，終點改到斜對面。路徑又橫又直，檢查會說這條線不良構。',
             },
         ],
     },

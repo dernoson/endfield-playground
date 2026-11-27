@@ -51,3 +51,9 @@
 - [ ] 沒有在 aaaaa 結論之前合入新的刪除或旋轉畫面
 
 未守：合入停。不改由主編補做功能。
+
+---
+
+## 4. 驗收（2026-11-22）
+
+過。當時 OPEN＝1，只有 [#84](https://github.com/dernoson/endfield-playground/pull/84)。[#88](https://github.com/dernoson/endfield-playground/pull/88) 已關。JSON 沒有被收成必交。沒有新的刪除或旋轉畫面合入。

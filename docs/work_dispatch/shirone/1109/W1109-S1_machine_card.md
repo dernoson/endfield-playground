@@ -43,3 +43,9 @@
 - [ ] diff 沒有 `MainLayout.vue`
 
 未交，或稿沒到：左欄維持 master 現況。這不算你未交。
+
+---
+
+## 4. 驗收（2026-11-22）
+
+不算未交。沒有打得開的連結，master 上也沒有新的 `MachineCard` PR。

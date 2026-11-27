@@ -43,3 +43,9 @@ shirone 在等這份稿才改程式。goodmorning 的供電樁 PR 開出來後�
 - [ ] 取貨口的按鈕看得出是按鈕
 
 未交：shirone 這兩週不改左欄。供電樁 PR 不因為沒有你的留言而一直停著。
+
+---
+
+## 4. 驗收（2026-11-22）
+
+未過。gh 沒有打得開的 Figma 連結。供電樁 [#92](https://github.com/dernoson/endfield-playground/pull/92)、[#93](https://github.com/dernoson/endfield-playground/pull/93) 的說明只記口頭確認。

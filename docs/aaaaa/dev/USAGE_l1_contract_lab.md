@@ -85,5 +85,5 @@ pnpm dev
 改契約說明時優先改此檔，避免 Vue 模板散落。
 
 **V20 已交（可點測）：** `findPortAt`／`resolveConnections`；`buildGapConnectionWaypoints`；`addPipeline`／`removePipeline`。  
-**V21-C1 已交：** 分頁「試玩」可調 `hitTestPortAt`／`findPortAt`。`canConnect` 仍是牌 3。見 [todolist_v21](./todolist_v21.md)。  
+**V21-C1 已交：** 分頁「試玩」可調 `hitTestPortAt`／`findPortAt`。**V21-D1：** 同一分頁可調 `canConnect`（`dev/aaaaa1109`，尚未合入）。見 [todolist_v21](./todolist_v21.md)。  
 其餘 inventory `todo`（佔格／snapshot／detectors…）與試玩**脫鉤**另牌——見 [F0 §2.3](./dev_v19/F0_next_catalog_batch.md)。

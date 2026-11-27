@@ -8,8 +8,10 @@
 | 建議主責／備援 | toby／harry（暫定）／aaaaa |
 | 性質 | 接線（L2） |
 | 依賴 | [B2](./B2_placement_chain.md) |
-| 狀態 | `[ ]` 未開始 |
-| 最後更新 | 2026-08-22 |
+| 狀態 | `[~]` **底層已完成**（2026-11-22）。正式畫布未接 |
+| 最後更新 | 2026-11-22 |
+
+> **2026-11-22：** `layoutStore.removeDevice` 與 `src/__tests__/store/layoutStore.test.ts` 的刪除案例已在 master，底層納入 POC。`LayoutView.vue` 沒有呼叫它，畫面不納入。
 
 ---
 
