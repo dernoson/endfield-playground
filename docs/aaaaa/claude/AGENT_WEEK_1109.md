@@ -6,6 +6,7 @@
 | 用途 | Agent 執行本週 V22 時的強制約束 |
 | 公開 | [WEEK_20261109](../../work_dispatch/WEEK_20261109.md) v1.0、[W1109-A0](../../work_dispatch/aaaaa/1109/W1109-A0_poc_scope.md) |
 | 執行計畫 | [todolist_v22](../dev/todolist_v22.md)、[dev_v22/](../dev/dev_v22/) |
+| 下週 | [AGENT_WEEK_1123](./AGENT_WEEK_1123.md)（V22 已於 11-23 隨 #94 合入） |
 | 上週 | [AGENT_WEEK_1102](./AGENT_WEEK_1102.md)（V21 試玩 P0 已由 #86 合入；牌 3 在本分支） |
 | 撰寫 | aaaaa |
 | 最後更新 | 2026-11-22 |
@@ -77,6 +78,11 @@
 ---
 
 ## 6. 日誌
+
+### 2026-11-28（收斂補記）
+
+- #94 已於 2026-11-23 合入 master。V21 D1／E1 與 V22 皆已收斂、結案；上文「未合入」「不啟用」是 11-22 當時的表述，不改寫
+- 接續：[AGENT_WEEK_1123](./AGENT_WEEK_1123.md)、[todolist_v23](../dev/todolist_v23.md)
 
 ### 2026-11-22（v1.2）
 

@@ -1,9 +1,9 @@
 # V21-E1 — 驗收、USAGE／交接
 
 **對應工項：** V21-E1
-**狀態：** `[~]` D1 已在 `dev/aaaaa1109` 可驗（2026-11-22）；全版仍等這次變更合入 master
+**狀態：** `[x]` 結案（2026-11-28）。D1 隨 #94 於 2026-11-23 合入 master
 **日期：** 2026-11-08
-**依賴：** [C1](./C1_tryout_shell_p0.md) `[x]`、[D1](./D1_can_connect_tryout.md) `[x]`（未合入）
+**依賴：** [C1](./C1_tryout_shell_p0.md) `[x]`、[D1](./D1_can_connect_tryout.md) `[x]`（已合入）
 **準則：** [A0 §5](./A0_tryout_panel_plan.md)
 **開發分支：** `dev/aaaaa1102`
 **給別人看的版本：** [會議報告](../../../work_dispatch/aaaaa/1102/INTRO_meeting_v21_tryout.md)、[交接](../../../work_dispatch/aaaaa/1102/HANDOFF_tryout_p0.md)
@@ -32,8 +32,8 @@
 - [x] 工單 §4、WEEK 進度日誌、會議報告、交接
 - [x] 不發解鎖句
 - [x] D1 完成後把 §1 第 3 列補上
-- [ ] 本項改 `[x]`：等這次 `canConnect` 合入 master。未合入不算 V21 收斂
-- [ ] 文件 PR（另裁）
+- [x] 本項改 `[x]`：`canConnect` 已隨 #94 合入 master（2026-11-23），V21 收斂
+- [x] 文件 PR：#94（已合）
 
 ---
 
@@ -60,6 +60,11 @@ canConnect 試玩尚未做。
 ---
 
 ## 4. 開發日誌
+
+### 2026-11-28｜結案
+
+- 核對 #94 MERGED（11-23）；master 上試玩相關測試 3 檔 29 項通過
+- 狀態改 `[x]`；V21 收斂，V22 已跟著結案
 
 ### 2026-11-22｜第 3 列
 

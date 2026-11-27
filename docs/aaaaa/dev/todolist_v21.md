@@ -8,14 +8,14 @@
 **上游：** [todolist_v19](./todolist_v19.md)、[todolist_v20](./todolist_v20.md)、[AGENT_WEEK_1102](../claude/AGENT_WEEK_1102.md)
 **週次：** 2026-11-02 → 2026-11-08（公開工單＝只開版，≤2h）
 **開發分支：** `dev/aaaaa1102`（自已含 #82 的 `origin/master` 新開；不沿用 `dev/aaaaa1026`）
-**狀態總覽：** **`[~]` D1 已在 `dev/aaaaa1109`**（2026-11-22；尚未合入 master。E1 仍等合入）
-**下一批：** [todolist_v22](./todolist_v22.md)（**未啟用**。2026-11-22 已建檔。啟用條件＝本版 D1 與 E1 皆 `[x]` 且已合入 `master`）
+**狀態總覽：** **`[x]` 已收斂**（2026-11-28 核）。D1 `canConnect` 試玩與 E1 驗收隨 [#94](https://github.com/dernoson/endfield-playground/pull/94) 於 **2026-11-23 MERGED**，`dev/aaaaa1109` 為 `origin/master` 祖先
+**下一批：** [todolist_v22](./todolist_v22.md)（**已結案**）→ [todolist_v23](./todolist_v23.md)（W1123，D5 劇本對齊）
 **待確認問題：** [dispatch_private/1102/PENDING](../collaborator_survey/dispatch_private/1102/PENDING_DECISIONS_20261101.md)（A 組已決；試玩＝獨立分頁，C1 已依此實作）
 
 > 標記說明：`[ ]` 未開始 / `[~]` 進行中 / `[x]` 完成 / `[!]` 封鎖中
 >
 > **收斂定義（仍有效，現況已滿足）：**（1）V19／V20 主線 DoD 皆 `[x]`；（2）相關變更已 **合入 `master`**（PR MERGED；以 `git`／`gh` 為準）。
-> **本週實況：** 牌 1 已開。牌 2／C1 已交並由 #86 合入。牌 3 `canConnect` 於 2026-11-22 做在 `dev/aaaaa1109`，尚未合入。
+> **收斂實況（2026-11-28）：** 牌 1 已開。牌 2／C1 由 #86 合入。牌 3 `canConnect` 與牌 4 驗收由 #94 於 11-23 合入。兩條收斂定義皆滿足。
 
 ---
 
@@ -63,8 +63,8 @@
 | 0 | V19＋V20 收斂 | `[x]` #82 |
 | 1 | A1 開版 | `[x]` |
 | 2 | C1 試玩殼＋P0 | `[x]` |
-| 3 | D1 canConnect | `[x]` 本分支已做；未合入 |
-| 4 | E1 驗收 | `[ ]` 未開工 |
+| 3 | D1 canConnect | `[x]` 已合入（#94，11-23） |
+| 4 | E1 驗收 | `[x]` 已合入（#94，11-23） |
 
 ### 閘門現況（2026-11-08 核）
 
@@ -95,7 +95,7 @@
 
 ## V21-D｜P1
 
-- [x] **V21-D1** `canConnect` 可調參＋成功／失敗情境（`dev/aaaaa1109`，尚未合入）
+- [x] **V21-D1** `canConnect` 可調參＋成功／失敗情境（#94 於 2026-11-23 合入）
     - 細項：[D1](./dev_v21/D1_can_connect_tryout.md)
     - 準則：A0 §2／§5
 
@@ -103,7 +103,7 @@
 
 ## V21-E｜驗收
 
-- [~] **V21-E1** C1 的 USAGE／LAB／會議報告／交接已寫；全版仍等 `canConnect`
+- [x] **V21-E1** 七列驗收通過；USAGE／LAB／會議報告／交接已寫；#94 合入後結案（2026-11-28）
     - 細項：[E1](./dev_v21/E1_acceptance_and_handoff.md)
     - 給別人：[HANDOFF](../../work_dispatch/aaaaa/1102/HANDOFF_tryout_p0.md)、[會議報告](../../work_dispatch/aaaaa/1102/INTRO_meeting_v21_tryout.md)
 
@@ -123,13 +123,19 @@
 
 - [x] 閘門已過（#82）
 - [x] C1：單一 hub「試玩」分頁；P0 各 ≥2 快捷；無簽名變更
-- [ ] A0 §5 實作 DoD（牌 2–4）
-- [ ] 未做完整 swagger／OpenAPI／第二 hub（實作完成時再勾）
-- [ ] 未改鎖檔／簽名（實作完成時再勾）
+- [x] A0 §5 實作 DoD（牌 2–4）：C1 #86、D1／E1 #94
+- [x] 未做完整 swagger／OpenAPI／第二 hub（2026-11-28 核：試玩仍只在 `/dev/l1-contract-lab`）
+- [x] 未改鎖檔／簽名（2026-11-28 核：#86／#94 只動 `docs/` 與 `src/app/dev/`）
 
 ---
 
 ## 開發日誌
+
+### 2026-11-28｜收斂結案
+
+- `git`／`gh` 核對：#94 MERGED（2026-11-23），`dev/aaaaa1109` 為 `origin/master` 祖先
+- master 上 `canConnect` 試玩測試（`tryoutRun`／`layoutStore.canConnect`／`connectRules`）3 檔 29 項通過
+- D1、E1 改 `[x]`；本版結案。後續見 [todolist_v23](./todolist_v23.md)
 
 ### 2026-11-08｜進度、會議報告、交接
 
