@@ -225,7 +225,7 @@ R-E 跨月支撐（貫穿；含人力／門檻縮小裁示）
   - 細項：[detail/D3_recipe_alerts.md](./detail/D3_recipe_alerts.md)
 - [~] **R-D4** 最小藍圖 JSON 匯出／匯入：純函式＋測試在 **[#95](https://github.com/dernoson/endfield-playground/pull/95) OPEN**。**不擋 POC**。無頂欄。W1123＝azure 先合 #95
   - 細項：[detail/D4_blueprint_json_io.md](./detail/D4_blueprint_json_io.md)
-- [~] **R-D5** 驗收劇本與彩排：需對齊現行 POC（JSON 移出；旋轉／刪除只收底層）。**W1123＝aaaaa 更新勾選表**；11/29 正式演示
+- [~] **R-D5** 驗收劇本與彩排：**2026-11-28 勾選表已對齊現行 POC**（JSON 移出；旋轉／刪除只收底層）；演示產線已核定（粉碎機線）。步驟 4～6 待 #84；正式頁實操與座標待補；11/29 正式演示
   - 細項：[detail/D5_acceptance_rehearsal.md](./detail/D5_acceptance_rehearsal.md)
 
 ---
