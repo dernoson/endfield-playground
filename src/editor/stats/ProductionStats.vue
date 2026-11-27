@@ -47,9 +47,13 @@ const {
 /** 映射自動交付券數；空畫布立即歸零，避免顯示等待引擎更新的舊值。 */
 const exchangeRate = computed(() => (hasDevices.value ? deliveryTicketTotal.value : 0));
 
-/** 映射各券種與數值；清空設備時立即將每一種券歸零，保留名稱。 */
+/** 補上各券種的顯示名稱；清空設備時立即歸零，避免短暫顯示舊數字。 */
 const exchangeRates = computed(() =>
-    deliveryTicketRates.value.map((item) => ({ ...item, rate: hasDevices.value ? item.rate : 0 })),
+    deliveryTicketRates.value.map(({ currency, rate }) => ({
+        currency,
+        label: currency === 'wuling' ? '武陵調度券' : '谷地調度券',
+        rate: hasDevices.value ? rate : 0,
+    })),
 );
 
 /** 僅映射引擎的耗電／供電結果，不提供供電設定輸入。 */

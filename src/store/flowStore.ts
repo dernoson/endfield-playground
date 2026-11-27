@@ -112,7 +112,6 @@ export const useFlowStore = defineStore('flow', () => {
         }
         return currencies.map((currency) => ({
             currency,
-            label: currency === 'wuling' ? '武陵調度券' : '谷地調度券',
             rate: totals[currency],
         }));
     });

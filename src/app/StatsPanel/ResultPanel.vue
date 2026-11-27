@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import iconArrowRaw from '@/assets/icon/icon arrow.svg?raw';
-import type { PowerData, SingleProductDetail } from './types';
-import type { TicketCurrencyRate } from '@/types/flow';
+import type { PowerData, SingleProductDetail, TicketCurrencyDisplayRate } from './types';
 
 /** 上半部統計與產能估算面板傳入屬性；未提供設備狀態時保留原有預覽行為。 */
 const props = withDefaults(
@@ -16,7 +15,7 @@ const props = withDefaults(
         /** 調度券每小時兌換效率（券/hr） */
         exchangeRate?: number;
         /** 各券種兌換效率；提供時分別顯示，優先於單一 exchangeRate。 */
-        exchangeRates?: TicketCurrencyRate[];
+        exchangeRates?: TicketCurrencyDisplayRate[];
     }>(),
     { hasDevices: undefined },
 );

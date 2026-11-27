@@ -123,8 +123,6 @@ export interface TicketUnitPrice {
 export interface TicketCurrencyRate {
     /** 券種識別值，用於保持顯示與更新順序穩定。 */
     currency: TicketCurrency;
-    /** 使用者可見的券種名稱。 */
-    label: string;
     /** 實際交付量換算的券數／小時。 */
     rate: number;
 }

@@ -33,6 +33,12 @@ export interface SingleTip {
     text: string;
 }
 
+/** 統計面板顯示的單一券種兌換效率。 */
+export interface TicketCurrencyDisplayRate extends TicketCurrencyRate {
+    /** 使用者可見的券種名稱。 */
+    label: string;
+}
+
 /** 產線總覽統計面板（StatsPanel）的 Props 定義 */
 export interface StatsPanelProps {
     /** 正式畫布是否有設備；未傳時保留既有獨立預覽的行為。 */
@@ -44,7 +50,7 @@ export interface StatsPanelProps {
     /** 調度券每小時兌換效率（券/hr） */
     exchangeRate?: number;
     /** 各券種兌換效率；提供時分別顯示，優先於單一 exchangeRate。 */
-    exchangeRates?: TicketCurrencyRate[];
+    exchangeRates?: TicketCurrencyDisplayRate[];
     /** 下半部提示與警報訊息列表 */
     tips?: SingleTip[];
 }
