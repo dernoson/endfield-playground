@@ -7,6 +7,7 @@
 | 擋門檻 | **是**（D5＝門檻定義本身） |
 | 上游 | [WEEK_20261123](../../WEEK_20261123.md)、[D5](../../../roadmap/detail/D5_acceptance_rehearsal.md)、大綱 v1.27／v1.28 |
 | 畫面｜交哪個檔｜不要碰｜卡住找誰 | 無新畫面｜`docs/roadmap/detail/D5_acceptance_rehearsal.md`、必要時大綱 §10.3／§8｜功能碼、別人 PR｜dernoson（11/29 主持） |
+| 周會 | [INTRO_meeting_d5](./INTRO_meeting_d5.md)（aaaaa 本週不在場。改了哪些檔、11/29 怎麼擺，都寫在那份） |
 
 ---
 
