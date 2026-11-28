@@ -5,9 +5,9 @@ import { getMachineById } from '@/data/machines';
 import type { Position } from '@/types/euclideanSpace';
 import type { PlacedDevice, Pipeline, PortRef } from '@/types/layout';
 import type { PortMedia } from '@/types/machine';
-import { getDeviceOccupiedCells } from '@/utils/layout/deviceOccupancy';
-import { deviceSizeFromMachine, toDeviceFootprint } from '@/utils/layout/toFootprint';
+import { deviceSizeFromMachine } from '@/utils/layout/toFootprint';
 import WarningIcon from '@/components/WarningIcon/Index.vue';
+import DeviceShape from './shapes/DeviceShape.vue';
 
 /** GridCanvas 的唯讀輸入資料 */
 interface Props {
@@ -62,16 +62,12 @@ interface Props {
     outsideDeviceIds?: readonly string[];
 }
 
-/** 單一設備在 xy 平面上要渲染的佔格 */
-interface RenderedDeviceCell {
-    /** Vue 列表使用的穩定識別 */
-    key: string;
-    /** 所屬設備的實例識別 */
-    deviceId: string;
-    /** 格點的 x 座標 */
-    x: number;
-    /** 格點的 y 座標 */
-    y: number;
+/** 單一設備交給 DeviceShape 的外形尺寸（格） */
+interface RenderedDeviceSize {
+    /** 寬度（格） */
+    width: number;
+    /** 高度（格） */
+    height: number;
 }
 
 /** 用於埠繪製的 plain 資料，沿用共用埠身分並明列世界連續格座標。 */
@@ -220,33 +216,18 @@ function handleCanvasClick(event: MouseEvent): void {
 }
 
 /**
- * 設備在 xy 平面上的佔格；同一設備不同 z 層的相同位置只保留一次。
+ * 每台設備交給 DeviceShape 的寬高（格）；查不到機器定義的設備不畫外形，與舊版逐格方塊一致。
+ * 尚未處理旋轉：DeviceShape 沒有 rotation prop，這裡沿用機器原始寬高。
  */
-const deviceCells = computed(() => {
-    const result = new Map<string, RenderedDeviceCell[]>();
+const deviceSizes = computed(() => {
+    const result = new Map<string, RenderedDeviceSize>();
 
     for (const device of renderedDevices.value) {
         const machine = getMachineById(device.machineType);
         if (!machine) continue;
 
         const size = deviceSizeFromMachine(machine);
-        const occupiedCells = getDeviceOccupiedCells(toDeviceFootprint(device, size));
-        const seenCoordinates = new Set<string>();
-        const renderedCells: RenderedDeviceCell[] = [];
-
-        for (const cell of occupiedCells) {
-            const coordinate = `${cell.x},${cell.y}`;
-            if (seenCoordinates.has(coordinate)) continue;
-
-            seenCoordinates.add(coordinate);
-            renderedCells.push({
-                key: `${device.id}-${coordinate}`,
-                deviceId: device.id,
-                x: cell.x,
-                y: cell.y,
-            });
-        }
-        result.set(device.id, renderedCells);
+        result.set(device.id, { width: size.x, height: size.y });
     }
 
     return result;
@@ -321,37 +302,28 @@ function pipelinePath(waypoints: DeepReadonly<Pipeline['waypoints']>): string {
                         }}{{ device.id === props.deviceDragPreview?.deviceId ? '：拖曳中' : ''
                         }}{{ outsideDevices.has(device.id) ? '：Error，設備超出基地範圍' : '' }}
                     </title>
-                    <rect
-                        v-for="cell in deviceCells.get(device.id) ?? []"
-                        :key="cell.key"
-                        :x="cell.x * props.cellSize + 1"
-                        :y="cell.y * props.cellSize + 1"
-                        :width="props.cellSize - 2"
-                        :height="props.cellSize - 2"
-                        rx="3"
-                        :class="[
-                            device.id === props.deviceDragPreview?.deviceId
-                                ? 'fill-sky-300 dark:fill-sky-300'
-                                : 'fill-sky-200 dark:fill-sky-900',
-                            outsideDevices.has(device.id)
-                                ? 'stroke-red-600 dark:stroke-red-400'
-                                : 'stroke-sky-600 dark:stroke-sky-400',
-                        ]"
-                        stroke-width="1.5"
-                    />
-                    <text
-                        :x="(device.position.x + 0.5) * props.cellSize"
-                        :y="(device.position.y + 0.55) * props.cellSize"
-                        text-anchor="middle"
-                        class="text-[10px] font-semibold"
-                        :class="
-                            device.id === props.deviceDragPreview?.deviceId
-                                ? 'fill-sky-950 dark:fill-sky-950'
-                                : 'fill-sky-950 dark:fill-sky-100'
-                        "
+                    <!-- 設備外形：DeviceShape 以 (0,0) 為左上角繪製，位置沿用 position × cellSize -->
+                    <g
+                        v-if="deviceSizes.get(device.id)"
+                        :transform="`translate(${device.position.x * props.cellSize}, ${device.position.y * props.cellSize})`"
                     >
-                        {{ device.label ?? device.machineType }}
-                    </text>
+                        <DeviceShape
+                            :machine-type="device.machineType"
+                            :width="deviceSizes.get(device.id)!.width"
+                            :height="deviceSizes.get(device.id)!.height"
+                            :grid-size="props.cellSize"
+                            :dragging="device.id === props.deviceDragPreview?.deviceId"
+                        />
+                        <!-- 拖曳中疊一層半透明藍色遮罩，標示被拿起的設備 -->
+                        <rect
+                            v-if="device.id === props.deviceDragPreview?.deviceId"
+                            data-testid="device-drag-mask"
+                            :width="deviceSizes.get(device.id)!.width * props.cellSize"
+                            :height="deviceSizes.get(device.id)!.height * props.cellSize"
+                            class="pointer-events-none fill-sky-400"
+                            fill-opacity="0.25"
+                        />
+                    </g>
                     <text
                         v-if="outsideDevices.has(device.id)"
                         :x="device.position.x * props.cellSize"
