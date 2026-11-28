@@ -5,11 +5,11 @@
 | 對應大綱 | [ROADMAP_OUTLINE.md](../ROADMAP_OUTLINE.md) §6 |
 | 里程碑 | M4（2026-11-29）；首次可演示 11/1 |
 | 擋門檻 | **是**（主編步驟 7） |
-| 建議主責／備援 | 整項仍是 aaaaa。**11/01 切片本週＝toby**（[W1102-T1](../../work_dispatch/toby/1102/W1102-T1_stats_panel.md)，11/01 會議）。不把 11/29 整項單獨押在這一週 |
+| 建議主責／備援 | **本週切片＝toby**（[W1123-T1](../../work_dispatch/toby/1123/W1123-T1_merge_pr84.md)）。整項備援 aaaaa |
 | 性質 | 接線 ＋ 畫面 |
 | 依賴 | [B2](./B2_placement_chain.md)、[C1](./C1_port_hit_and_draft.md)、[C5](./C5_source_primary_output.md) |
-| 狀態 | `[~]` 進行中（空狀態切片已合入；**master 仍未接 flowStore**） |
-| 最後更新 | **2026-11-03** |
+| 狀態 | `[~]`；**[#84](https://github.com/dernoson/endfield-playground/pull/84) OPEN MERGEABLE**，尚未合入 master |
+| 最後更新 | **2026-11-23** |
 
 ---
 
@@ -128,6 +128,10 @@ FlowEngine 完整、`flowStore` 完整、`ItemSummaryTable.vue` 存在、`MainLa
 **未交頂替：** 無。這是 11/29 門檻的核心，也是 [D5](./D5_acceptance_rehearsal.md) 驗收劇本第 4 步。
 
 ## 11. 開發日誌
+
+### 2026-11-23
+- W1109 結算：#84 已可合（MERGEABLE），內含產耗／電力／調度券與警示；**尚未合入**
+- W1123：主裁要 toby **完成上週 PR**＝合入 #84。見 [W1123-T1](../../work_dispatch/toby/1123/W1123-T1_merge_pr84.md)
 
 ### 2026-11-03
 - harry 的 `dev/cake_prodstats` 有「右側產線總覽接上 flowStore／驗證結果」（10-31），**沒有 PR、不在 master**

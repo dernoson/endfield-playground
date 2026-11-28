@@ -2,10 +2,10 @@
 
 | meta | value |
 |------|-------|
-| version | **v3.23（2026-11-10；1109–1122 兩週派工）** |
-| 本週區間 | **2026-11-09 → 2026-11-22**（[WEEK_20261109](./WEEK_20261109.md) **v1.0**；11/15 不開會） |
-| 上週區間 | 2026-11-02 → 2026-11-08（[WEEK_20261102](./WEEK_20261102.md) **v1.3**） |
-| 上游 | [ROADMAP_OUTLINE](../roadmap/ROADMAP_OUTLINE.md) **v1.26** |
+| version | **v3.26（2026-11-24；W1123 依主裁 11/24 修訂）** |
+| 本週區間 | **2026-11-23 → 2026-11-29**（[WEEK_20261123](./WEEK_20261123.md) **v1.1**） |
+| 上週區間 | 2026-11-09 → 2026-11-22（[WEEK_20261109](./WEEK_20261109.md) **v1.1**；已結算） |
+| 上游 | [ROADMAP_OUTLINE](../roadmap/ROADMAP_OUTLINE.md) **v1.29** |
 
 ---
 
@@ -13,45 +13,46 @@
 
 | 你想知道 | 打開 |
 |----------|------|
-| **我這週要交什麼** | 下表 **1109** |
-| 這週全隊／驗收 | [WEEK_20261109.md](./WEEK_20261109.md) |
-| **檔案鎖** | [WEEK_20261109.md](./WEEK_20261109.md) §2.2 |
+| **我這週要交什麼** | 下表 **1123** |
+| 這週全隊／驗收 | [WEEK_20261123.md](./WEEK_20261123.md) |
+| **檔案鎖** | [WEEK_20261123.md](./WEEK_20261123.md) §2.2 |
 | L1 API／詞彙 | [`/dev/l1-contract-lab`](../aaaaa/dev/USAGE_l1_contract_lab.md)、[LAB 指南](./aaaaa/1018/LAB_l1_contract_guide.md) |
 
-### 本週期（11/09–11/22｜11/08 會議；11/15 不開會）
+### 本週（11/23–11/29｜M4；11/22 主裁）
 
 | code | 工單 | 一句話 |
 |------|------|--------|
-| [aaaaa](./aaaaa/1109/) | [A0](./aaaaa/1109/W1109-A0_poc_scope.md) | 確認刪除／旋轉底層；JSON 移出 POC |
-| [harry](./harry/1109/) | [H1](./harry/1109/W1109-H1_main_ui_pr.md) | 主畫面 UI 收到已過審的 PR，其餘下次 |
-| [paper](./paper/1109/) | [P1](./paper/1109/W1109-P1_pickup_panel.md) | 左欄與取貨口；按鈕要像按鈕 |
-| [shirone](./shirone/1109/) | [S1](./shirone/1109/W1109-S1_machine_card.md) | 照稿改左邊設備資訊 |
-| [goodmorning](./goodmorning/1109/) | [G1](./goodmorning/1109/W1109-G1_power_pole.md) | 供電樁拆成元件並開 PR |
-| [MBD](./MBD/1109/) | [M1](./MBD/1109/W1109-M1_power_pole_style.md) | 等元件 push 後做供電樁樣式 |
-| [toby](./toby/1109/) | [T1](./toby/1109/W1109-T1_pr84_and_alerts.md) | 11/16 起先收 #84，再接警示 |
-| [azure9572](./azure9572/1109/) | [Z1](./azure9572/1109/W1109-Z1_blueprint_slice.md) | JSON 一小步，不進 POC |
-| [dernoson](./dernoson/1109/) | [D0](./dernoson/1109/W1109-D0_gate.md) | 守閘 |
+| [toby](./toby/1123/) | [T1](./toby/1123/W1123-T1_merge_pr84.md) | 合 #84（只修職責小問題）；陪 harry 看對位 |
+| [harry](./harry/1123/) | [H1](./harry/1123/W1123-H1_device_shape_on_canvas.md) | 縮為一處：一般設備改掛 `DeviceShape` |
+| [paper](./paper/1123/) | [P1](./paper/1123/W1123-P1_left_panel_with_shirone.md) | 左欄稿，與 shirone 群組合議 |
+| [shirone](./shirone/1123/) | [S1](./shirone/1123/W1123-S1_machine_card_new.md) | 與 paper 合議後做左側設備視窗 |
+| [goodmorning](./goodmorning/1123/) | [G1](./goodmorning/1123/W1123-G1_l3_free.md) | 改派：`PipelineShape` 擁塞外觀 |
+| [MBD](./MBD/1123/) | [M1](./MBD/1123/W1123-M1_l3_free.md) | 改派：供電樁核對（虛線已在 master） |
+| [azure9572](./azure9572/1123/) | [Z1](./azure9572/1123/W1123-Z1_blueprint_then_l1.md) | 先收 #95，再視情況非首要 L1 |
+| [aaaaa](./aaaaa/1123/) | [A0](./aaaaa/1123/W1123-A0_d5_rehearsal.md) | D5 劇本對齊現行 POC |
+| [dernoson](./dernoson/1123/) | [D0](./dernoson/1123/W1123-D0_gate.md) | 守閘；#84 優先 |
 | [casey](./casey/README.md) | — | **已退出，不再派工** |
 
-上週工單在各人的 `1102/`。
+上週工單在各人的 `1109/`。
 
 ---
 
 ## 1. 定案摘要（全員）
 
-1. **11/09–11/22 一次派兩週**，因為 11/15 週日會暫停
-2. JSON 匯入匯出**不進 POC**。刪除與旋轉要等 aaaaa 確認底層
-3. 供電樁：goodmorning 先拆 `Electric.vue` 並開 PR，MBD 再做樣式
-4. 左欄：paper 交連結，shirone 再改 `MachineCard`
-5. toby 11/15 前不開工；之後先 #84，再把警示接到右側與設備紅色
-6. harry 的主畫面停在已過審的 #89／#90，剩下的修改等下次
-7. **avery、casey 退出協作，不再派工**（[avery/README](./avery/README.md)、[casey/README](./casey/README.md)）
+1. **M4＝11/29。** 門檻句＝右側產耗＋警訊；旋轉／刪除只收底層；JSON 不進 POC
+2. **toby** 先合 #84，不要第二套右側
+3. **harry** 只接一般設備一處到 `GridCanvas`；**toby** 陪看對位
+4. **paper ↔ shirone** 群組合議左側設備視窗；不以誰先交為前提
+5. **goodmorning**：`PipelineShape` 擁塞；**MBD**：供電樁核對；不擋門檻
+6. **azure** 先 #95；合了再談非首要 L1
+7. **aaaaa** 更新 D5 勾選表；**dernoson** 守閘
+8. **avery、casey** 不派工
 
 ---
 
 ## 2. 目錄
 
-`1109/`＝本週期（11/09–11/22）；`1102/`／`1026/`／`1018/`／…＝封存。
+`1123/`＝本週（11/23–11/29）；`1109/`／`1102/`／…＝封存。
 
 ---
 
@@ -59,5 +60,5 @@
 
 | 檔 | 狀態 |
 |----|------|
-| WEEK_20261109 | **v1.0** |
-| ROADMAP_OUTLINE | **v1.26** |
+| WEEK_20261123 | **v1.1** |
+| ROADMAP_OUTLINE | **v1.29** |
