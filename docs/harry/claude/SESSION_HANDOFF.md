@@ -1,6 +1,6 @@
 # Session Handoff —— 給下一個聊天用的接續筆記
 
-**最後更新：** 2026-11-08（W1102-H1 供水邏輯已在 `dev/cake` commit，未 push、未開 PR；W1026-H1 已以 #81 合入；工單外的 `dev/cake_toolbar`、`dev/cake_prodstats`、`dev/cake_machinecard` 本週不動）
+**最後更新：** 2026-11-28（W1123-H1 正式畫布一般設備改掛 `DeviceShape`，已在 `dev/cake` commit，未 push、未開 PR；W1102-H1 已以 #85、工具列以 #89、左側卡片以 #90 合入）
 **用途：** 開新聊天時給 Claude 看，快速還原現況與待跟進項目。長期規則在同資料夾的 [CLAUDE.md](CLAUDE.md)。
 **身分：** L2 接線層（harry），負責 CR-01（畫布）+ CR-02（管線）+ CR-11（工具列）的互動與接線。詳細角色定位見 [README.md](../README.md)，早期 editorStore action 缺口清單見 [MILESTONE_0726.md](../MILESTONE_0726.md)（屬舊 Vue Flow 世界，參考用）。
 
@@ -25,14 +25,36 @@
 | W1011-H2：刪舊左側面板、接上 `MachineCard`＋WASD 補回 | [PLAN_leftPanelSwap.md](../PLAN_leftPanelSwap.md) / [PR_DESCRIPTION_1018.md](../PR_DESCRIPTION_1018.md) | 刪 `ProjectSidebar`、Navbar 拿掉 ☰、`MainLayout.vue` 左槽 451px 掛 `MachineCard`、`LayoutView` WASD（`a1da734`／`e1d35e4`／`6a73be5`） | PR #75，10-19 合入（`59aac12`）；與 #76 的 `LayoutView` import 衝突由 dernoson 在 `5de3c04` 解（拿掉 `onMounted`、保留 WASD 用的 `watch`／`useRafFn`） |
 
 | W1026-H1：正式頁源素材選擇（C5 左面板） | [PLAN_c5SourceForm.md](../PLAN_c5SourceForm.md) / [PR_DESCRIPTION_1031.md](../PR_DESCRIPTION_1031.md) | `src/editor/sourceOutput/SourceOutputPanel.vue`、`sourceMaterialOptions.ts`、`MainLayout.vue` 掛面板 | PR #81，10-31 合入 |
+| W1102-H1：源設備選液氣素材時切換 `machineMode` | [PLAN_waterSupply.md](../PLAN_waterSupply.md) / [PR_DESCRIPTION_1108.md](../PR_DESCRIPTION_1108.md) | `layoutStore.ts` 的 `syncSourceMachineMode`、`sourceMaterialOptions.ts` | PR #85，11-08 合入 |
+| 工單外：工具列對齊設計稿 | [PLAN_toolbarFigmaAlign.md](../PLAN_toolbarFigmaAlign.md) | `dev/cake_toolbar` | PR #89，11-09 合入 |
+| 工單外：左側卡片接機器圖與配方 | 見下方 §3.3（舊紀錄） | `dev/cake_machinecard` | PR #90，11-09 合入 |
 
 **額外設計筆記（尚未實作）：** [DESIGN_clipboardAndEdgeSelectionState.md](../DESIGN_clipboardAndEdgeSelectionState.md)——clipboard store 與管線選取狀態構想，寫於舊 Vue Flow 世界，若要用需先對照新 `layoutStore` 重新評估。
 
-## 3. 本週（W1102，11/02→11/08）：W1102-H1 水源供給的設備邏輯
+## 3. 本週（W1123，11/23→11/29）：W1123-H1 正式畫布一般設備改掛 DeviceShape（≤2h，一處）
+
+工單：[W1123-H1_device_shape_on_canvas.md](../../work_dispatch/harry/1123/W1123-H1_device_shape_on_canvas.md)｜週總表：[WEEK_20261123.md](../../work_dispatch/WEEK_20261123.md) v1.1｜PR 描述：[PR_DESCRIPTION_1128.md](../PR_DESCRIPTION_1128.md)｜陪做：toby（看對位）
+
+**狀態：** 已在 `dev/cake`（＝`upstream/master` `0c72c9f` 之上）commit，**未 push、未開 PR**（等使用者指示；PR 要 @ toby）。四項全綠（61 檔、1060 測試）；Edge 實測過。工單小，沒寫 PLAN。
+
+**使用者裁決（2026-11-28）：** 旋轉不處理、只在 PR 註明；出界紅框直接拿掉（保留紅字）；拖曳時傳 `dragging`（70% 不透明）並疊半透明藍遮罩。
+
+**變更：** 只動 `GridCanvas.vue` 設備區段——逐格 `<rect>`＋名稱 `<text>` 換成外層 `translate` 包 `DeviceShape`＋拖曳遮罩；script 的 `deviceCells` 換成 `deviceSizes`（每台寬高）。供電樁與一般設備走同一個 `v-for`，由 `DeviceShape` 內部轉給 `Electric`。
+
+**待跟進：**
+
+1. push＋開 PR（@ toby）——等使用者指示（PR 描述貼上前刪掉最後一行 Claude Code 標記）
+2. 回報 MBD／paper：`DeviceShape` 外框白色在淺色主題看不見；`DeviceShape` 沒有 `rotation` prop（見 §6）
+
+---
+
+以下為 W1102 的舊紀錄（已以 #85 合入），保留作背景。
+
+## 3-1102. W1102（11/02→11/08）：W1102-H1 水源供給的設備邏輯
 
 工單：[W1102-H1_water_supply.md](../../work_dispatch/harry/1102/W1102-H1_water_supply.md)｜週總表：[WEEK_20261102.md](../../work_dispatch/WEEK_20261102.md) v1.2｜計畫：[PLAN_waterSupply.md](../PLAN_waterSupply.md)｜PR 描述：[PR_DESCRIPTION_1108.md](../PR_DESCRIPTION_1108.md)
 
-**狀態：** 已在 `dev/cake`（快轉到 `upstream/master` `3b368b1` 後）commit，**未 push、未開 PR**（等使用者指示）。四項全綠（58 檔、1039 測試）；Edge 實測過。
+**狀態：** 已以 PR #85 於 11-08 合入。四項全綠（58 檔、1039 測試）；Edge 實測過。
 
 **本週分工提醒：** 11/01 會議把右側產耗（W1102-T1）改派 **toby**，harry 不做右側面板。週總表 §2.2 把 `ProductionStats.vue`、`StatsPanel/Index.vue`、`ItemSummaryTable.vue` 鎖給 toby。toby 已交 **PR #84**（`upstream/dev/toby`，含 `layoutStore` 拓撲接引擎、電力、調度券），`dev/cake_prodstats` 不再作底。
 
@@ -183,10 +205,10 @@
 
 ## 5. Git 狀態
 
-- **`dev/cake`**：11-08 快轉到 `upstream/master` `3b368b1`（W1026-H1 已以 #81 合入），其上為 W1102-H1 的 commit，未 push
-- **`dev/cake_toolbar`**：自 `upstream/master` 切出，工具列對齊設計稿，已 push（`8cf8b48`），未開 PR
-- **`dev/cake_prodstats`**：自 `dev/cake` 切出，右側產線總覽，已 push 主要 commit
-- **`dev/cake_machinecard`**：自 `dev/cake` 切出並 merge `dev/cake_toolbar`，左側卡片接機器圖與配方（目前所在分支）
+- **`dev/cake`**：11-28 在 `upstream/master` `0c72c9f` 之上，W1123-H1 的 commit，未 push
+- **`dev/cake_toolbar`**：已以 #89 合入
+- **`dev/cake_prodstats`**：自 `dev/cake` 切出，右側產線總覽，已 push 主要 commit；右側已改派 toby（#84），此分支不再作底
+- **`dev/cake_machinecard`**：已以 #90 合入
 - 10/31 四個分支都各加了兩個 commit：刪除 `docs/harry/dev/icons/*.png`（92 張，約 24MB）、`.gitignore` 加 `docs/harry/dev/icons/*.png`。刪 PNG 後 `--webp-only` 無法重產 WebP，要重跑完整腳本（會連網）
 - `cv/cake`（`573ed22`）的內容已併入 `dev/cake`，之後可不再使用
 - `.git/info/exclude`（本機）排除了 `docs/harry/claude/CLAUDE.md`、`docs/harry/figma_full.json`、`docs/harry/dev/icons/*.webp`：從 `upstream/master` 切出的分支沒有 `dev/cake` 加的 `.gitignore` 規則，靠這裡補
@@ -200,6 +222,9 @@
 - ~~Esc 打不開快捷鍵設定~~（`6163114`）：舊五顆按鈕 `editorStore.armPlacement()` 設的 `placementArmed`，原本只有 `FactoryCanvas.vue` 會在 Esc 時解除；09-20 正式頁改掛 `LayoutView` 後沒人解除，`openSettings` 被永久擋下。現由 `useShortcuts.ts` 補固定 Escape 監聽解除，**必須註冊在 `openSettings` 之後**（同一次 keydown 依註冊順序執行，一次 Esc 只做一件事）。舊五顆在 #48／G1 後會消失，屆時這段可再檢討
 
 **仍未修：**
+
+- **`DeviceShape` 外框在淺色主題看不見**（2026-11-28 W1123-H1 實測發現）：外框與箭頭寫死白色，正式畫布淺色主題是白底，只剩頭像圓框與埠；深色主題正常。`DeviceShape.vue` 本週凍結，未改，已寫進 PR 描述
+- **`DeviceShape` 沒有 `rotation` prop**：`GridCanvas` 傳機器原始寬高，旋轉 90°／270° 的非正方形設備外形與佔格長寬顛倒（埠由 `GridCanvas` 依旋轉畫，位置正確）。使用者裁決只在 PR 註明
 
 - **Ctrl+Z 會同時觸發瀏覽器原生文字復原**（2026-10-31 發現，已在原始 `d48ac99` 重現）：`onComboTriggered`（`src/composables/useKeybinding.ts:137`）註冊 undo／redo 時沒有 `preventDefault`，按 Ctrl+Z 時瀏覽器也會復原工具列搜尋框的輸入，焦點跳進 `<input>`，之後 `isTypingTarget()` 會擋掉 Ctrl+Y，看起來就像重做失效。只要搜尋框打過兩次字就會發生。尚未回報，不在 W1026-H1 範圍
 - ~~**`layoutStore` 沒有切換 `machineMode` 的 action**~~：W1102-H1 改由 `setDevicePrimaryOutput` 依素材物態一併切換（基礎材料輸出點），不新增 action
